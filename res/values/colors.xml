@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="blue">#ff2b82af</color>
+    <color name="touming">#ffffffff</color>
+    <color name="txtblue">#ff578daa</color>
+    <color name="red">#ffff0000</color>
+    <color name="green">#ff2bb121</color>
+    <color name="huise02">#ff555555</color>
+</resources>
