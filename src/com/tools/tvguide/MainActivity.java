@@ -7,6 +7,7 @@ import java.util.List;
 import android.os.Bundle;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,6 +53,7 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
             mTab = tab;
             mImage = image;
             mText = text;
+            mOrignTextColor = mText.getCurrentTextColor();
         }
         
         public String id()
@@ -77,6 +79,7 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
                 else if (mTabId == mStringMore) {
                     mImage.setImageResource(R.drawable.icon_5_c);
                 }
+                mText.setTextColor(Color.WHITE);
             } else {
                 if (mTabId == mStringHome) {
                     mImage.setImageResource(R.drawable.icon_1_n);
@@ -93,12 +96,14 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
                 else if (mTabId == mStringMore) {
                     mImage.setImageResource(R.drawable.icon_5_n);
                 }
+                mText.setTextColor(mOrignTextColor);
             }
         }
         private String mTabId;
         private LinearLayout mTab;
         private ImageView mImage;
         private TextView mText;
+        private int mOrignTextColor;
     }
     
     private List<TabContainer>  mTabList;
@@ -168,6 +173,10 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
         {
             TabContainer container = iterator.next();
             container.mTab.setOnClickListener(this);
+            if (container.id() == mStringHome)
+            {
+                container.focus(true);
+            }
         }
     }
 
