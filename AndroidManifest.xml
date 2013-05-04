@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tools.tvguide"
+    package="com.tools.tvguide.activities"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
-            android:name="com.tools.tvguide.MainActivity"
+            android:name="com.tools.tvguide.activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,22 +23,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tools.tvguide.HomeActivity"
-            android:label="@string/category_home" />
-        <activity
-            android:name="com.tools.tvguide.CollectActivity"
-            android:label="@string/title_activity_collect" >
+            android:name="com.tools.tvguide.activities.HomeActivity"
+            android:label="@string/title_activity_more" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.SearchActivity"
-            android:label="@string/title_activity_search" >
+            android:name="com.tools.tvguide.activities.CollectActivity"
+            android:label="@string/title_activity_more" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.AboutActivity"
-            android:label="@string/title_activity_about" >
+            android:name="com.tools.tvguide.activities.SearchActivity"
+            android:label="@string/title_activity_more" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.MoreActivity"
+            android:name="com.tools.tvguide.activities.AboutActivity"
+            android:label="@string/title_activity_more" >
+        </activity>
+        <activity
+            android:name="com.tools.tvguide.activities.MoreActivity"
             android:label="@string/title_activity_more" >
         </activity>
     </application>

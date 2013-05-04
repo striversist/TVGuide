@@ -1,4 +1,4 @@
-package com.tools.tvguide;
+package com.tools.tvguide.activities;
 
 import android.os.Bundle;
 import android.app.Activity;

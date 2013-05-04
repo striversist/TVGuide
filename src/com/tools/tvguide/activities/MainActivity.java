@@ -1,4 +1,4 @@
-package com.tools.tvguide;
+package com.tools.tvguide.activities;
 
 import java.util.ArrayList;
 import java.util.Iterator;
