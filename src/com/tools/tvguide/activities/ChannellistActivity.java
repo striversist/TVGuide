@@ -7,52 +7,59 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.tools.tvguide.utils.NetDataGetter;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.app.Activity;
 import android.util.Pair;
+import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class HomeActivity extends Activity 
+public class ChannellistActivity extends Activity 
 {
-    private ListView mCategoryListView;
+    private String mCategoryId;
+    private ListView mChannelListView;
+    private List<Pair<String, String>> mChannelList;
     private HandlerThread mUpdateThread;
     private Handler mUpdateHandler;
-    private List<Pair<String, String>> mCategoryList;
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        mCategoryListView = (ListView)findViewById(R.id.category_list);
-        mCategoryList = new ArrayList<Pair<String,String>>();
-        
-        mCategoryListView.setOnItemClickListener(new OnItemClickListener() 
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
-            {
-                if (mCategoryList != null)
-                {
-                    String categoryId = mCategoryList.get(position).first;
-                    Intent intent = new Intent(HomeActivity.this, ChannellistActivity.class);
-                    intent.putExtra("category", categoryId);
-                    startActivity(intent);
-                }
-            }
-        });
-        
+        setContentView(R.layout.activity_channellist);
+        mChannelListView = (ListView)findViewById(R.id.channel_list);
+        mChannelList = new ArrayList<Pair<String,String>>();
         createUpdateThreadAndHandler();
-        update();
+        
+        mCategoryId = getIntent().getStringExtra("category");
+        if (mCategoryId != null)
+        {
+            update();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.activity_channellist, menu);
+        return true;
+    }
+
+    public void back(View view)
+    {
+        if (view instanceof Button)
+        {
+            // The same effect with press back key
+            finish();
+        }
     }
     
     private void createUpdateThreadAndHandler()
@@ -68,23 +75,23 @@ public class HomeActivity extends Activity
         {
             public void run()
             {
-                String url = "http://192.168.1.103/projects/TV/json/categories.php";
+                String url = "http://192.168.1.103/projects/TV/json/channels.php?category=" + mCategoryId;
                 NetDataGetter getter;
                 try 
                 {
                     getter = new NetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
-                    mCategoryList.clear();
+                    mChannelList.clear();
                     if (jsonRoot != null)
                     {
-                        JSONArray categoryArray = jsonRoot.getJSONArray("categories");
+                        JSONArray categoryArray = jsonRoot.getJSONArray("channel_list");
                         if (categoryArray != null)
                         {
                             for (int i=0; i<categoryArray.length(); ++i)
                             {
                                 Pair<String, String> pair = new Pair<String, String>(categoryArray.getJSONObject(i).getString("id"), 
                                         categoryArray.getJSONObject(i).getString("name"));
-                                mCategoryList.add(pair);
+                                mChannelList.add(pair);
                             }
                         }
                     }
@@ -107,14 +114,14 @@ public class HomeActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            if (mCategoryList != null)
+            if (mChannelList != null)
             {
-                String categories[] = new String[mCategoryList.size()];
-                for (int i=0; i<mCategoryList.size(); ++i)
+                String channelList[] = new String[mChannelList.size()];
+                for (int i=0; i<mChannelList.size(); ++i)
                 {
-                    categories[i] = mCategoryList.get(i).second;
+                    channelList[i] = mChannelList.get(i).second;
                 }
-                mCategoryListView.setAdapter(new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_list_item_1, categories));
+                mChannelListView.setAdapter(new ArrayAdapter<String>(ChannellistActivity.this, android.R.layout.simple_list_item_1, channelList));
             }
         }
     };
