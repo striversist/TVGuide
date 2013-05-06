@@ -9,4 +9,163 @@
     <channel id="cctv3">
         <logo>cctv3.jpg</logo>
     </channel>
+    <channel id="cctv3d">
+        <logo>cctv3d.jpg</logo>
+    </channel>
+    <channel id="cctv4">
+        <logo>cctv4.jpg</logo>
+    </channel>
+    <channel id="cctv5">
+        <logo>cctv5.jpg</logo>
+    </channel>
+    <channel id="cctv6">
+        <logo>cctv6.jpg</logo>
+    </channel>
+    <channel id="cctv7">
+        <logo>cctv7.jpg</logo>
+    </channel>
+    <channel id="cctv8">
+        <logo>cctv8.jpg</logo>
+    </channel>
+    <channel id="cctv9">
+        <logo>cctv9.jpg</logo>
+    </channel>
+    <channel id="cctv10">
+        <logo>cctv10.jpg</logo>
+    </channel>
+    <channel id="cctv11">
+        <logo>cctv11.jpg</logo>
+    </channel>
+    <channel id="cctv12">
+        <logo>cctv12.jpg</logo>
+    </channel>
+    <channel id="cctv13">
+        <logo>cctv13.jpg</logo>
+    </channel>
+    <channel id="cctv15">
+        <logo>cctv15.jpg</logo>
+    </channel>
+    <channel id="cctv16">
+        <logo>cctv16.jpg</logo>
+    </channel>
+    <channel id="cctv17">
+        <logo>cctv17.jpg</logo>
+    </channel>
+    <channel id="cctv18">
+        <logo>cctv18.jpg</logo>
+    </channel>
+    <channel id="cctv19">
+        <logo>cctv19.jpg</logo>
+    </channel>
+    <channel id="cctva">
+        <logo>cctva.jpg</logo>
+    </channel>
+    <channel id="cctvhd">
+        <logo>cctvhd.jpg</logo>
+    </channel>
+    <channel id="anhuist">
+        <logo>anhuist.gif</logo>
+    </channel>
+    <channel id="beijingst">
+        <logo>beijingst.gif</logo>
+    </channel>
+    <channel id="bingtuanst">
+        <logo>bingtuanst.gif</logo>
+    </channel>
+    <channel id="chongqingst">
+        <logo>chongqingst.gif</logo>
+    </channel>
+    <channel id="dongfangst">
+        <logo>dongfangst.jpg</logo>
+    </channel>
+    <channel id="dongnanst">
+        <logo>dongnanst.gif</logo>
+    </channel>
+    <channel id="fjhaixia">
+        <logo>fjhaixia.gif</logo>
+    </channel>
+    <channel id="gansust">
+        <logo>gansust.gif</logo>
+    </channel>
+    <channel id="guangdongst">
+        <logo>guangdongst.gif</logo>
+    </channel>
+    <channel id="guanxist">
+        <logo>guanxist.gif</logo>
+    </channel>
+    <channel id="guizhoust">
+        <logo>guizhoust.gif</logo>
+    </channel>
+    <channel id="hebeist">
+        <logo>hebeist.gif</logo>
+    </channel>
+    <channel id="heilongjiangst">
+        <logo>heilongjiangst.gif</logo>
+    </channel>
+    <channel id="henanst">
+        <logo>henanst.jpg</logo>
+    </channel>
+    <channel id="hubeist">
+        <logo>hubeist.gif</logo>
+    </channel>
+    <channel id="hunanst">
+        <logo>hunanst.gif</logo>
+    </channel>
+    <channel id="jiangsust">
+        <logo>jiangsust.jpg</logo>
+    </channel>
+    <channel id="jiangxist">
+        <logo>jiangxist.gif</logo>
+    </channel>
+    <channel id="liaoningst">
+        <logo>liaoningst.gif</logo>
+    </channel>
+    <channel id="lvyoust">
+        <logo>lvyoust.gif</logo>
+    </channel>
+    <channel id="nanfangst">
+        <logo>nanfangst.gif</logo>
+    </channel>
+    <channel id="neimenggust">
+        <logo>neimenggust.gif</logo>
+    </channel>
+    <channel id="ningxiast">
+        <logo>ningxiast.gif</logo>
+    </channel>
+    <channel id="qinghaist">
+        <logo>qinghaist.gif</logo>
+    </channel>
+    <channel id="shandongst">
+        <logo>shandongst.gif</logo>
+    </channel>
+    <channel id="shanxi2">
+        <logo>shanxi2.gif</logo>
+    </channel>
+    <channel id="shanxist">
+        <logo>shanxist.gif</logo>
+    </channel>
+    <channel id="shenzhenst">
+        <logo>shenzhenst.jpg</logo>
+    </channel>
+    <channel id="sichuanst">
+        <logo>sichuanst.gif</logo>
+    </channel>
+    <channel id="tianjinst">
+        <logo>tianjinst.jpg</logo>
+    </channel>
+    <channel id="xinjiangst">
+        <logo>xinjiangst.gif</logo>
+    </channel>
+    <channel id="xizangst">
+        <logo>xizangst.gif</logo>
+    </channel>
+    <channel id="yanbianst">
+        <logo>yanbianst.jpg</logo>
+    </channel>
+    <channel id="yunnanst">
+        <logo>yunnanst.gif</logo>
+    </channel>
+    <channel id="zhejiangst">
+        <logo>zhejiangst.gif</logo>
+    </channel>
 </channels>
