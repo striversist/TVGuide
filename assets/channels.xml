@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <channels>
+    <!-- ====================== 央视频道 ====================== -->
     <channel id="cctv1">
         <logo>cctv1.jpg</logo>
     </channel>
@@ -60,9 +61,7 @@
     <channel id="cctva">
         <logo>cctva.jpg</logo>
     </channel>
-    <channel id="cctvhd">
-        <logo>cctvhd.jpg</logo>
-    </channel>
+    <!-- ====================== 卫视频道 ====================== -->
     <channel id="anhuist">
         <logo>anhuist.gif</logo>
     </channel>
@@ -168,4 +167,74 @@
     <channel id="zhejiangst">
         <logo>zhejiangst.gif</logo>
     </channel>
+    <channel id="phoenixst">
+        <logo>phoenix.gif</logo>
+    </channel>
+    <channel id="phoenixinfo">
+        <logo>phoenixinfo.gif</logo>
+    </channel>
+    <!-- ====================== 高清频道 ====================== -->
+	<channel id="cctvhd">
+        <logo>cctvhd.jpg</logo>
+    </channel>
+	<channel id="cctv1hd">
+		<logo>cctv1.jpg</logo>
+	</channel>
+	<channel id="cctv3hd">
+		<logo>cctv3.jpg</logo>
+	</channel>
+	<channel id="cctv5hd">
+		<logo>cctv5.jpg</logo>
+	</channel>
+	<channel id="cctv8hd">
+		<logo>cctv8.jpg</logo>
+	</channel>
+	<channel id="hunansthd">
+		<logo>hunanst.gif</logo>
+	</channel>
+	<channel id="beijingsthd">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="jiangsusthd">
+		<logo>jiangsust.jpg</logo>
+	</channel>
+	<channel id="zhejiangsthd">
+		<logo>zhejiangst.gif</logo>
+	</channel>
+	<channel id="dongfangsthd">
+		<logo>dongfangst.jpg</logo>
+	</channel>
+	<channel id="shenzhensthd">
+		<logo>shenzhenst.jpg</logo>
+	</channel>
+	<channel id="guangdongsthd">
+		<logo>guangdongst.gif</logo>
+	</channel>
+	<channel id="tianjinsthd">
+		<logo>tianjinst.jpg</logo>
+	</channel>
+	<channel id="shandongsthd">
+		<logo>shandongst.gif</logo>
+	</channel>
+	<channel id="hubeisthd">
+		<logo>hubeist.gif</logo>
+	</channel>
+	<channel id="heilongjiangsthd">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="meiyahd">
+		<logo>meiya.gif</logo>
+	</channel>
+	<channel id="chchd">
+		<logo>chchd.jpg</logo>
+	</channel>
+	<channel id="tvbhd">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="sitvhd">
+		<logo>sitvhd.jpg</logo>
+	</channel>
+	<channel id="aoshihd">
+		<logo>aoshi.gif</logo>
+	</channel>
 </channels>
