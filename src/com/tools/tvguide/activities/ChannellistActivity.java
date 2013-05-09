@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,8 @@ public class ChannellistActivity extends Activity
 {
     private String mCategoryId;
     private ListView mChannelListView;
-    private List<Pair<String, String>> mChannelList;
+    private List<Pair<String, String>> mChannelList;                    // List of "id"-"name" pair
+    private List<Pair<String, String>> mOnPlayingProgramList;           // List of "id"-"title" pair
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
@@ -50,6 +52,8 @@ public class ChannellistActivity extends Activity
     private final String XML_FILE = "channels.xml";
     private final String XML_ELEMENT_LOGO = "logo";
     private final String XML_ELEMENT_CHANNEL = "channel";
+    private final int MSG_REFRESH_CHANNEL_LIST              = 0;
+    private final int MSG_REFRESH_ON_PLAYING_PROGRAM_LIST   = 1;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -58,6 +62,7 @@ public class ChannellistActivity extends Activity
         setContentView(R.layout.activity_channellist);
         mChannelListView = (ListView)findViewById(R.id.channel_list);
         mChannelList = new ArrayList<Pair<String, String>>();
+        mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
         mXmlChannelInfo = new HashMap<String, HashMap<String,Object>>();
         mItemList = new ArrayList<HashMap<String, Object>>();
         createUpdateThreadAndHandler();
@@ -67,7 +72,7 @@ public class ChannellistActivity extends Activity
         mCategoryId = getIntent().getStringExtra("category");
         if (mCategoryId != null)
         {
-            update();
+            updateChannelList();
         }
     }
 
@@ -120,7 +125,7 @@ public class ChannellistActivity extends Activity
         }
     }
        
-    private void update()
+    private void updateChannelList()
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -146,7 +151,62 @@ public class ChannellistActivity extends Activity
                             }
                         }
                     }
-                    uiHandler.sendEmptyMessage(0);
+                    uiHandler.sendEmptyMessage(MSG_REFRESH_CHANNEL_LIST);
+                }
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                }
+                catch (JSONException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    private void updateOnPlayingProgramList()
+    {
+        mUpdateHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                assert(mChannelList != null);
+                String url = "http://192.168.1.103/projects/TV/json/onplaying_programs.php";
+                NetDataGetter getter;
+                try 
+                {
+                    getter = new NetDataGetter(url);
+                    List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                    //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
+                    String idArray = "[";
+                    for (int i=0; i<mChannelList.size(); ++i)
+                    {
+                        idArray += "\"" + mChannelList.get(i).first + "\"";
+                        if (i < (mChannelList.size() - 1))
+                        {
+                            idArray += ",";
+                        }
+                    }
+                    idArray += "]";
+                    
+                    pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));                    
+                    JSONObject jsonRoot = getter.getJSONsObject(pairs);
+                    mOnPlayingProgramList.clear();
+                    if (jsonRoot != null)
+                    {
+                        JSONArray resultArray = jsonRoot.getJSONArray("result");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                Pair<String, String> pair = new Pair<String, String>(resultArray.getJSONObject(i).getString("id"), 
+                                        resultArray.getJSONObject(i).getString("title"));
+                                mOnPlayingProgramList.add(pair);
+                            }
+                        }
+                    }
+                    uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM_LIST);
                 }
                 catch (MalformedURLException e) 
                 {
@@ -235,19 +295,35 @@ public class ChannellistActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            if (mChannelList != null)
-            {
-                for(int i=0; i<mChannelList.size(); ++i)
+            switch (msg.what) {
+            case MSG_REFRESH_CHANNEL_LIST:
+                if (mChannelList != null)
                 {
-                    HashMap<String, Object> item = new HashMap<String, Object>();
-                    if (mXmlChannelInfo.get(mChannelList.get(i).first) != null)
+                    for(int i=0; i<mChannelList.size(); ++i)
                     {
-                        item.put("image", getImage((String) mXmlChannelInfo.get(mChannelList.get(i).first).get(XML_ELEMENT_LOGO)));                        
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+                        if (mXmlChannelInfo.get(mChannelList.get(i).first) != null)
+                        {
+                            item.put("image", getImage((String) mXmlChannelInfo.get(mChannelList.get(i).first).get(XML_ELEMENT_LOGO)));                        
+                        }
+                        item.put("name", mChannelList.get(i).second);
+                        mItemList.add(item);
                     }
-                    item.put("name", mChannelList.get(i).second);
-                    mItemList.add(item);
+                    mListViewAdapter.notifyDataSetChanged();
+                    updateOnPlayingProgramList();
                 }
-                mListViewAdapter.notifyDataSetChanged();
+                break;
+            case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
+                if (mOnPlayingProgramList != null)
+                {
+                    for (int i=0; i<mOnPlayingProgramList.size(); ++i)
+                    {
+                        
+                    }
+                }
+                break;
+            default:
+                break;
             }
         }
     };
