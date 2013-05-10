@@ -103,8 +103,8 @@ public class ChannellistActivity extends Activity
     private void createAndSetListViewAdapter()
     {
         mListViewAdapter = new SimpleAdapter(ChannellistActivity.this, mItemList, R.layout.channellist_item,
-                new String[]{"image", "name"}, 
-                new int[]{R.id.itemImage, R.id.itemText});
+                new String[]{"image", "name", "program"}, 
+                new int[]{R.id.itemImage, R.id.itemChannel, R.id.itemProgram});
         mListViewAdapter.setViewBinder(new MyViewBinder());
         mChannelListView.setAdapter(mListViewAdapter);
     }
@@ -318,8 +318,9 @@ public class ChannellistActivity extends Activity
                 {
                     for (int i=0; i<mOnPlayingProgramList.size(); ++i)
                     {
-                        
+                        mItemList.get(i).put("program", "ÕýÔÚ²¥·Å£º  " + mOnPlayingProgramList.get(i).second);
                     }
+                    mListViewAdapter.notifyDataSetChanged();
                 }
                 break;
             default:

@@ -16,5 +16,6 @@
     <string name="title_activity_more">MoreActivity</string>
     <string name="title_activity_channellist">ChannellistActivity</string>
     <string name="sample_item_text">CCTV-1(综合)</string>
+    <string name="sample_item_program">电视剧:赵氏孤儿案32</string>
 
 </resources>
