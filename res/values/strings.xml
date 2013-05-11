@@ -17,5 +17,15 @@
     <string name="title_activity_channellist">ChannellistActivity</string>
     <string name="sample_item_text">CCTV-1(综合)</string>
     <string name="sample_item_program">电视剧:赵氏孤儿案32</string>
+    <string name="title_activity_channel_detail">ChannelDetailActivity</string>
+    <string name="sample_title">CCTV-1</string>
+    <string name="collect">收藏</string>
+    <string name="Mon">周一</string>
+    <string name="Tue">周二</string>
+    <string name="Wed">周三</string>
+    <string name="Thu">周四</string>
+    <string name="Fri">周五</string>
+    <string name="Sat">周六</string>
+    <string name="Sun">周日</string>
 
 </resources>

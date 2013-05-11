@@ -21,21 +21,25 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.utils.NetworkManager;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter.ViewBinder;
 
 public class ChannellistActivity extends Activity 
@@ -74,6 +78,21 @@ public class ChannellistActivity extends Activity
         {
             updateChannelList();
         }
+        mChannelListView.setOnItemClickListener(new OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+            {
+                String channelId = mChannelList.get(position).first;
+                String channelName = mChannelList.get(position).second;
+                String onPlayingProgram = mOnPlayingProgramList.get(position).second;
+                Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
+                intent.putExtra("id", channelId);
+                intent.putExtra("name", channelName);
+                intent.putExtra("program", onPlayingProgram);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -95,9 +114,10 @@ public class ChannellistActivity extends Activity
     
     private void createUpdateThreadAndHandler()
     {
-        mUpdateThread = new HandlerThread("SearchThread");
-        mUpdateThread.start();
-        mUpdateHandler = new Handler(mUpdateThread.getLooper());
+        //mUpdateThread = new HandlerThread("SearchThread");
+        //mUpdateThread.start();
+        //mUpdateHandler = new Handler(mUpdateThread.getLooper());
+        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
     private void createAndSetListViewAdapter()
@@ -190,7 +210,7 @@ public class ChannellistActivity extends Activity
                     }
                     idArray += "]";
                     
-                    pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));                    
+                    pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
                     JSONObject jsonRoot = getter.getJSONsObject(pairs);
                     mOnPlayingProgramList.clear();
                     if (jsonRoot != null)

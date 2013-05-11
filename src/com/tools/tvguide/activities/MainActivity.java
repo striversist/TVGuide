@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +20,7 @@ import android.widget.TabHost.OnTabChangeListener;
 
 public class MainActivity extends TabActivity implements OnTabChangeListener, OnClickListener
 {
+    private static final String TAG = "MainActivity";
     private TabHost         mTabHost;
     
     private LinearLayout    mTabHome;
@@ -111,6 +113,7 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
+        Log.e(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTabHost = getTabHost();

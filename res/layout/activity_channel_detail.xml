@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@color/white" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout android:gravity="center_vertical" android:id="@+id/shake_title_bar" android:background="@drawable/title_bar" android:layout_width="fill_parent" android:layout_height="45.0dip">
+        <Button android:textSize="14.0sp" android:textColor="#ffffffff" android:background="@drawable/title_btn_back" android:layout_width="70.0dip" android:layout_height="wrap_content" android:text="@string/back" android:layout_centerVertical="true" android:onClick="back" />
+        <TextView android:textSize="20.0sp" android:textColor="#ffffffff" android:id="@+id/title" android:text="@string/sample_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true" />
+        <Button android:textColor="#ffffffff" android:id="@+id/button1" android:background="@drawable/title_btn_right" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="16.0dip" android:text="@string/collect" android:layout_alignParentTop="true" android:layout_alignParentRight="true" android:onClick="collectChannel" />
+    </RelativeLayout>
+    <LinearLayout android:gravity="center" android:orientation="horizontal" android:id="@+id/zhou" android:layout_width="fill_parent" android:layout_height="40.0dip" android:layout_margin="2.0dip" android:layout_marginTop="3.0dip">
+        <Button android:textColor="@color/white" android:id="@+id/Mon" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Mon" android:onClick="selectDay" />
+        <Button android:textColor="@color/white" android:id="@+id/Tue" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Tue" android:onClick="selectDay" />
+        <Button android:textColor="@color/white" android:id="@+id/Wed" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Wed" android:onClick="selectDay" />
+        <Button android:textColor="@color/white" android:id="@+id/Thu" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Thu" android:onClick="selectDay" />
+        <Button android:textColor="@color/white" android:id="@+id/Fri" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Fri" android:onClick="selectDay" />
+        <Button android:textColor="@color/white" android:id="@+id/Sat" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Sat" android:onClick="selectDay" />
+        <Button android:textColor="@color/white" android:id="@+id/Sun" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Sun" android:onClick="selectDay" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:background="@drawable/shape_bottom_corner_no_top_line" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="10.0dip">
+        <ListView android:id="@+id/detail_listview" android:padding="2.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+    </LinearLayout>
+</LinearLayout>

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.utils.NetworkManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class HomeActivity extends Activity 
 {
+    private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;
     private HandlerThread mUpdateThread;
     private Handler mUpdateHandler;
@@ -31,6 +34,7 @@ public class HomeActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
+        Log.e(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mCategoryListView = (ListView)findViewById(R.id.category_list);
@@ -57,9 +61,10 @@ public class HomeActivity extends Activity
     
     private void createUpdateThreadAndHandler()
     {
-        mUpdateThread = new HandlerThread("SearchThread");
-        mUpdateThread.start();
-        mUpdateHandler = new Handler(mUpdateThread.getLooper());
+        //mUpdateThread = new HandlerThread("SearchThread");
+        //mUpdateThread.start();
+        //mUpdateHandler = new Handler(mUpdateThread.getLooper());
+        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
     private void update()
