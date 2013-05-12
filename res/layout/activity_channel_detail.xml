@@ -16,6 +16,6 @@
         <Button android:textColor="@color/white" android:id="@+id/Sun" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Sun" android:onClick="selectDay" />
     </LinearLayout>
     <LinearLayout android:orientation="vertical" android:background="@drawable/shape_bottom_corner_no_top_line" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="10.0dip">
-        <ListView android:id="@+id/detail_listview" android:padding="2.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+        <ListView android:id="@+id/detail_listview" android:fadingEdge="none" android:padding="2.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
     </LinearLayout>
 </LinearLayout>

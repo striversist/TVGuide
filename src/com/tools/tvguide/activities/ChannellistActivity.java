@@ -160,13 +160,13 @@ public class ChannellistActivity extends Activity
                     mChannelList.clear();
                     if (jsonRoot != null)
                     {
-                        JSONArray categoryArray = jsonRoot.getJSONArray("channel_list");
-                        if (categoryArray != null)
+                        JSONArray channelListArray = jsonRoot.getJSONArray("channel_list");
+                        if (channelListArray != null)
                         {
-                            for (int i=0; i<categoryArray.length(); ++i)
+                            for (int i=0; i<channelListArray.length(); ++i)
                             {
-                                Pair<String, String> pair = new Pair<String, String>(categoryArray.getJSONObject(i).getString("id"), 
-                                        categoryArray.getJSONObject(i).getString("name"));
+                                Pair<String, String> pair = new Pair<String, String>(channelListArray.getJSONObject(i).getString("id"), 
+                                        channelListArray.getJSONObject(i).getString("name"));
                                 mChannelList.add(pair);
                             }
                         }
@@ -193,9 +193,9 @@ public class ChannellistActivity extends Activity
             {
                 assert(mChannelList != null);
                 String url = "http://192.168.1.103/projects/TV/json/onplaying_programs.php";
-                NetDataGetter getter;
                 try 
                 {
+                    NetDataGetter getter;
                     getter = new NetDataGetter(url);
                     List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                     //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
@@ -315,36 +315,38 @@ public class ChannellistActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            switch (msg.what) {
-            case MSG_REFRESH_CHANNEL_LIST:
-                if (mChannelList != null)
-                {
-                    for(int i=0; i<mChannelList.size(); ++i)
+            switch (msg.what) 
+            {
+                case MSG_REFRESH_CHANNEL_LIST:
+                    if (mChannelList != null)
                     {
-                        HashMap<String, Object> item = new HashMap<String, Object>();
-                        if (mXmlChannelInfo.get(mChannelList.get(i).first) != null)
+                        mItemList.clear();
+                        for(int i=0; i<mChannelList.size(); ++i)
                         {
-                            item.put("image", getImage((String) mXmlChannelInfo.get(mChannelList.get(i).first).get(XML_ELEMENT_LOGO)));                        
+                            HashMap<String, Object> item = new HashMap<String, Object>();
+                            if (mXmlChannelInfo.get(mChannelList.get(i).first) != null)
+                            {
+                                item.put("image", getImage((String) mXmlChannelInfo.get(mChannelList.get(i).first).get(XML_ELEMENT_LOGO)));                        
+                            }
+                            item.put("name", mChannelList.get(i).second);
+                            mItemList.add(item);
                         }
-                        item.put("name", mChannelList.get(i).second);
-                        mItemList.add(item);
+                        mListViewAdapter.notifyDataSetChanged();
+                        updateOnPlayingProgramList();
                     }
-                    mListViewAdapter.notifyDataSetChanged();
-                    updateOnPlayingProgramList();
-                }
-                break;
-            case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
-                if (mOnPlayingProgramList != null)
-                {
-                    for (int i=0; i<mOnPlayingProgramList.size(); ++i)
+                    break;
+                case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
+                    if (mOnPlayingProgramList != null)
                     {
-                        mItemList.get(i).put("program", "正在播放：  " + mOnPlayingProgramList.get(i).second);
+                        for (int i=0; i<mOnPlayingProgramList.size(); ++i)
+                        {
+                            mItemList.get(i).put("program", "正在播放：  " + mOnPlayingProgramList.get(i).second);
+                        }
+                        mListViewAdapter.notifyDataSetChanged();
                     }
-                    mListViewAdapter.notifyDataSetChanged();
-                }
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     };
