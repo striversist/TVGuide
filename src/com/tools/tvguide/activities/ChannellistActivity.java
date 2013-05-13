@@ -85,11 +85,9 @@ public class ChannellistActivity extends Activity
             {
                 String channelId = mChannelList.get(position).first;
                 String channelName = mChannelList.get(position).second;
-                String onPlayingProgram = mOnPlayingProgramList.get(position).second;
                 Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
                 intent.putExtra("id", channelId);
                 intent.putExtra("name", channelName);
-                intent.putExtra("program", onPlayingProgram);
                 startActivity(intent);
             }
         });

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -27,11 +29,14 @@ import android.graphics.Color;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -40,12 +45,11 @@ import android.widget.SimpleAdapter.ViewBinder;
 public class ChannelDetailActivity extends Activity 
 {
     private List<Pair<Integer, Button>> mDaysBtnList = new ArrayList<Pair<Integer,Button>>();
-    private int mCurrentIndex;
+    private int mCurrentSelectedDay;
     private ListView mDetailListView;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
     private List<String> mProgramList;
-    private List<TextView> mProgramTextViewList;
     private Handler mUpdateHandler;
     private String mChannelId;
     private String mChannelName;
@@ -54,6 +58,35 @@ public class ChannelDetailActivity extends Activity
     private String SEPERATOR                                = ": ";
     private final int MSG_REFRESH_PROGRAM_LIST              = 0;
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM        = 1;
+    
+    class MySimpleAdapter extends SimpleAdapter
+    {
+        public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) 
+        {
+            super(context, data, resource, from, to);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) 
+        {
+            String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
+            View view = super.getView(position, convertView, parent);
+            if (view instanceof RelativeLayout)
+            {
+                TextView textView = (TextView) view.findViewById(R.id.detail_item_program);
+                if (((String)(mItemList.get(position).get("program"))).equals(onPlayingProgram) 
+                        && (mCurrentSelectedDay == Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
+                {
+                    textView.setTextColor(Color.RED);
+                }
+                else
+                {
+                    textView.setTextColor(Color.BLACK);
+                }
+            }
+            return view;
+        }
+    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -71,6 +104,7 @@ public class ChannelDetailActivity extends Activity
         createAndSetListViewAdapter();
         createUpdateThreadAndHandler();
         updateProgramList();
+        updateOnplayingProgram();
     }
 
     @Override
@@ -96,7 +130,7 @@ public class ChannelDetailActivity extends Activity
             if (mDaysBtnList.get(i).first.intValue() == Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
             {
                 mDaysBtnList.get(i).second.setBackgroundResource(R.drawable.text_bg2);
-                mCurrentIndex = mDaysBtnList.get(i).first.intValue();
+                mCurrentSelectedDay = mDaysBtnList.get(i).first.intValue();
             }
         }
         
@@ -105,30 +139,12 @@ public class ChannelDetailActivity extends Activity
     
     private void createAndSetListViewAdapter()
     {
-        mListViewAdapter = new SimpleAdapter(ChannelDetailActivity.this, mItemList, R.layout.channeldetail_item,
+        mListViewAdapter = new MySimpleAdapter(ChannelDetailActivity.this, mItemList, R.layout.channeldetail_item,
                 new String[]{"program"}, 
                 new int[]{R.id.detail_item_program});
-        mListViewAdapter.setViewBinder(new MyViewBinder());
         mDetailListView.setAdapter(mListViewAdapter);
     }
-    
-    public class MyViewBinder implements ViewBinder
-    {
-        public boolean setViewValue(View view, Object data,
-                String textRepresentation)
-        {
-            if(view instanceof TextView)
-            {
-                String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
-                if (((String)data).equals(onPlayingProgram))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-    
+       
     private void createUpdateThreadAndHandler()
     {
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
@@ -140,7 +156,7 @@ public class ChannelDetailActivity extends Activity
         {
             public void run()
             {
-                String url = "http://192.168.1.103/projects/TV/json/choose.php?" + "channel=" + mChannelId + "&day=" + getHostDay(mCurrentIndex);
+                String url = "http://192.168.1.103/projects/TV/json/choose.php?" + "channel=" + mChannelId + "&day=" + getHostDay(mCurrentSelectedDay);
                 NetDataGetter getter;
                 try 
                 {
@@ -229,7 +245,8 @@ public class ChannelDetailActivity extends Activity
             if (mDaysBtnList.get(i).second.getId() == view.getId())
             {
                 mDaysBtnList.get(i).second.setBackgroundResource(R.drawable.text_bg2);
-                mCurrentIndex = mDaysBtnList.get(i).first.intValue();
+                mCurrentSelectedDay = mDaysBtnList.get(i).first.intValue();
+                updateProgramList();
             }
             else
             {
@@ -288,15 +305,15 @@ public class ChannelDetailActivity extends Activity
                         mItemList.add(item);
                     }
                     mListViewAdapter.notifyDataSetChanged();
-                    updateOnplayingProgram();
+                    mDetailListView.setSelection(15);
                     break;
                 case MSG_REFRESH_ON_PLAYING_PROGRAM:
+                    String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
                     for (int i=0; i<mItemList.size(); ++i)
                     {
-                        String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
-                        String program = (String) mItemList.get(i).get("program");
-                        if (program.equals(onPlayingProgram))
+                        if (((String)(mItemList.get(i).get("program"))).equals(onPlayingProgram))
                         {
+                            mDetailListView.setSelection(i);
                         }
                     }
                     break;
