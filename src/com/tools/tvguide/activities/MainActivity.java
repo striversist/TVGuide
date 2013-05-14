@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.tools.tvguide.managers.AppEngine;
+
 import android.os.Bundle;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -181,6 +183,9 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
                 container.focus(true);
             }
         }
+        
+        AppEngine.getInstance().setContext(this);
+        AppEngine.getInstance().setApplicationContext(getApplicationContext());
     }
 
     @Override

@@ -27,5 +27,6 @@
     <string name="Fri">周五</string>
     <string name="Sat">周六</string>
     <string name="Sun">周日</string>
+    <string name="delete">删除</string>
 
 </resources>

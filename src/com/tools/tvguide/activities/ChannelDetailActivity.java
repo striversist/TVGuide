@@ -7,46 +7,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.tools.tvguide.activities.ChannellistActivity.MyViewBinder;
+import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
-import android.R.integer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SimpleAdapter.ViewBinder;
 
 public class ChannelDetailActivity extends Activity 
 {
     private List<Pair<Integer, Button>> mDaysBtnList = new ArrayList<Pair<Integer,Button>>();
     private int mCurrentSelectedDay;
-    private ListView mDetailListView;
+    private ListView mListView;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
     private List<String> mProgramList;
@@ -134,7 +123,7 @@ public class ChannelDetailActivity extends Activity
             }
         }
         
-        mDetailListView = (ListView)findViewById(R.id.detail_listview);
+        mListView = (ListView)findViewById(R.id.detail_listview);
     }
     
     private void createAndSetListViewAdapter()
@@ -142,7 +131,7 @@ public class ChannelDetailActivity extends Activity
         mListViewAdapter = new MySimpleAdapter(ChannelDetailActivity.this, mItemList, R.layout.channeldetail_item,
                 new String[]{"program"}, 
                 new int[]{R.id.detail_item_program});
-        mDetailListView.setAdapter(mListViewAdapter);
+        mListView.setAdapter(mListViewAdapter);
     }
        
     private void createUpdateThreadAndHandler()
@@ -234,7 +223,7 @@ public class ChannelDetailActivity extends Activity
     {
         if (view instanceof Button)
         {
-            
+            AppEngine.getInstance().getUserManager().addCollectChannel(mChannelId);
         }
     }
     
@@ -305,7 +294,7 @@ public class ChannelDetailActivity extends Activity
                         mItemList.add(item);
                     }
                     mListViewAdapter.notifyDataSetChanged();
-                    mDetailListView.setSelection(15);
+                    mListView.setSelection(15);
                     break;
                 case MSG_REFRESH_ON_PLAYING_PROGRAM:
                     String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
@@ -313,7 +302,7 @@ public class ChannelDetailActivity extends Activity
                     {
                         if (((String)(mItemList.get(i).get("program"))).equals(onPlayingProgram))
                         {
-                            mDetailListView.setSelection(i);
+                            mListView.setSelection(i);
                         }
                     }
                     break;
