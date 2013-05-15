@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChannelDetailActivity extends Activity 
 {
@@ -223,7 +224,10 @@ public class ChannelDetailActivity extends Activity
     {
         if (view instanceof Button)
         {
-            AppEngine.getInstance().getUserManager().addCollectChannel(mChannelId);
+            HashMap<String, Object> info = new HashMap<String, Object>();
+            info.put("name", mChannelName);
+            AppEngine.getInstance().getUserSettingManager().addCollectChannel(mChannelId, info);
+            Toast.makeText(this, R.string.collect_success, Toast.LENGTH_SHORT).show();
         }
     }
     

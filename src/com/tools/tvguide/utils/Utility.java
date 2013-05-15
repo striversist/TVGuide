@@ -1,10 +1,15 @@
 package com.tools.tvguide.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.tools.tvguide.activities.R;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -62,4 +67,22 @@ public class Utility
 		}).show();
 		return false;
 	}
+	
+	public static Bitmap getImage(Context context, String fileName)
+    {
+        Bitmap bitmap = null;
+        try
+        {
+            InputStream is = context.getAssets().open(fileName);
+            bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        
+        return bitmap;
+    }
 }

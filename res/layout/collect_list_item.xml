@@ -10,5 +10,5 @@
     </LinearLayout>
     <Button android:id="@+id/collect_item_del_btn" android:layout_width="wrap_content" android:layout_height="fill_parent" 
             android:layout_marginLeft="60.0dip" android:layout_marginRight="15.0dip" android:background="@drawable/title_btn_right" 
-            android:layout_gravity="right" android:text="@string/delete" android:onClick="remove"/>
+            android:layout_gravity="right" android:text="@string/delete" />
 </LinearLayout>
