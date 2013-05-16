@@ -189,6 +189,12 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
     }
 
     @Override
+    protected void onDestroy() 
+    {
+        AppEngine.getInstance().prepareBeforeExit();
+    };
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) 
     {
         // Inflate the menu; this adds items to the action bar if it is present.

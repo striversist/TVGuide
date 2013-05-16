@@ -8,7 +8,7 @@ public class AppEngine
     private static AppEngine                        mInstance                   = new AppEngine();
     private Context                                 mContext;
     private Context                                 mApplicationContext;
-    private UserSettingManager                             mUserManager;
+    private UserSettingManager                      mUserSettingManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -39,9 +39,14 @@ public class AppEngine
     
     public UserSettingManager getUserSettingManager()
     {
-        if (mUserManager == null)
-            mUserManager = new UserSettingManager(mContext);
-        return mUserManager;
+        if (mUserSettingManager == null)
+            mUserSettingManager = new UserSettingManager(mContext);
+        return mUserSettingManager;
+    }
+    
+    public void prepareBeforeExit()
+    {
+        mUserSettingManager.shutDown();
     }
     
 }

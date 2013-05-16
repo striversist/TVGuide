@@ -26,7 +26,7 @@ public class XmlParser
         HashMap<String, HashMap<String, Object>> channelInfo = new HashMap<String, HashMap<String,Object>>();
         
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        try 
+        try
         {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(context.getAssets().open(XML_FILE));
@@ -60,7 +60,7 @@ public class XmlParser
                     channelInfo.put(id, item);
                 }
             }
-        } 
+        }
         catch (ParserConfigurationException e) 
         {
             parseSuccess = false;

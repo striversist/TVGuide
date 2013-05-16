@@ -7,8 +7,7 @@
             <TextView android:id="@+id/collect_item_channel" android:singleLine="true" android:textSize="15.0dip" android:text="@string/sample_item_text"  android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="12.0dip" android:layout_marginBottom="6.0dip" />
             <TextView android:id="@+id/collect_item_program" android:singleLine="true" android:ellipsize="marquee" android:textSize="12.0dip" android:text="@string/sample_item_program" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2.0dip" android:layout_marginBottom="6.0dip" />
         </LinearLayout>
+        <Button android:id="@+id/collect_item_del_btn" android:layout_width="wrap_content" android:layout_height="fill_parent" 
+                android:background="@drawable/title_btn_right" android:layout_gravity="right" android:text="@string/delete" android:textSize="16sp" />
     </LinearLayout>
-    <Button android:id="@+id/collect_item_del_btn" android:layout_width="wrap_content" android:layout_height="fill_parent" 
-            android:layout_marginLeft="60.0dip" android:layout_marginRight="15.0dip" android:background="@drawable/title_btn_right" 
-            android:layout_gravity="right" android:text="@string/delete" />
 </LinearLayout>
