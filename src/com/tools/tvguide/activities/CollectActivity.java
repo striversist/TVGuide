@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,15 +25,23 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
+import android.widget.Toast;
 
 public class CollectActivity extends Activity 
 {
     private ListView mChannelListView;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
-    private HashMap<String, HashMap<String, Object>> mCollectChannels;
+    private List<Channel> mChannelList;        // id-name pair
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private final String XML_ELEMENT_LOGO = "logo";
+    
+    private class Channel
+    {
+        String id;
+        String name;
+        int position;
+    }
     
     private class MySimpleAdatper extends SimpleAdapter
     {
@@ -54,7 +63,18 @@ public class CollectActivity extends Activity
                     @Override
                     public void onClick(View v) 
                     {
+                        int position = Integer.parseInt(v.getTag().toString());
                         
+                        for (int i=0; i<mChannelList.size(); ++i)
+                        {
+                            if (mChannelList.get(i).position == position)
+                            {
+                                AppEngine.getInstance().getUserSettingManager().removeCollectChannel(mChannelList.get(i).id);
+                            }
+                        }
+                        mChannelList.remove(position);
+                        mItemList.remove(position);
+                        mListViewAdapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -69,8 +89,8 @@ public class CollectActivity extends Activity
         setContentView(R.layout.activity_collect);
         
         mChannelListView = (ListView)findViewById(R.id.collect_channel_list_view);
-        mCollectChannels = AppEngine.getInstance().getUserSettingManager().getCollectChannels();
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
+        mChannelList = new ArrayList<CollectActivity.Channel>();
         
         createAndSetListViewAdapter();
     }
@@ -79,7 +99,7 @@ public class CollectActivity extends Activity
     protected void onResume() 
     {
         super.onResume();
-        updateChannelList();
+        updateChannelListView();
     };
 
     @Override
@@ -123,15 +143,28 @@ public class CollectActivity extends Activity
         }
     }
     
-    private void updateChannelList()
+    private void initChannelList()
     {
-        Iterator<Entry<String, HashMap<String, Object>>> iter = mCollectChannels.entrySet().iterator();
-        mItemList.clear();
+        mChannelList.clear();
+        Iterator<Entry<String, HashMap<String, Object>>> iter = AppEngine.getInstance().getUserSettingManager().getCollectChannels().entrySet().iterator();
         while (iter.hasNext())
         {
-            Map.Entry<String, HashMap<String, Object>> entry = (Map.Entry<String, HashMap<String,Object>>)iter.next(); 
-            String id = entry.getKey();
-            String name = (String) entry.getValue().get("name");
+            Map.Entry<String, HashMap<String, Object>> entry = (Map.Entry<String, HashMap<String,Object>>)iter.next();
+            Channel channel = new Channel();
+            channel.id = entry.getKey();
+            channel.name = (String) entry.getValue().get("name");
+            mChannelList.add(channel);
+        }
+    }
+    
+    private void updateChannelListView()
+    {
+        initChannelList();
+        mItemList.clear();
+        for (int i=0; i<mChannelList.size(); ++i)
+        { 
+            String id = mChannelList.get(i).id;
+            String name = mChannelList.get(i).name;
             HashMap<String, Object> item = new HashMap<String, Object>();
             if (mXmlChannelInfo.get(id) != null)
             {
@@ -139,8 +172,9 @@ public class CollectActivity extends Activity
             }
             item.put("name", name);
             mItemList.add(item);
+            mChannelList.get(i).position = i;
         }
         mListViewAdapter.notifyDataSetChanged();
     }
-    
+        
 }

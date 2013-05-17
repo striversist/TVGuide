@@ -11,6 +11,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
 public class MainActivity extends TabActivity implements OnTabChangeListener, OnClickListener
@@ -48,6 +50,8 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
     private String          mStringSearch;
     private String          mStringAbout;
     private String          mStringMore;
+    
+    private long mExitTime;
     
     private class TabContainer
     {
@@ -218,6 +222,25 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
                 container.focus(false);
             }
         }
+    }
+    
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) 
+    {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+        {
+            if ((System.currentTimeMillis() - mExitTime) > 2000)
+            {
+                mExitTime = System.currentTimeMillis();
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                finish();
+            }
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

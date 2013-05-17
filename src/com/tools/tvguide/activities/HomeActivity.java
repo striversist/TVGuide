@@ -18,10 +18,12 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class HomeActivity extends Activity 
@@ -31,6 +33,8 @@ public class HomeActivity extends Activity
     private HandlerThread mUpdateThread;
     private Handler mUpdateHandler;
     private List<Pair<String, String>> mCategoryList;
+    private long mExitTime;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -57,6 +61,25 @@ public class HomeActivity extends Activity
         
         createUpdateThreadAndHandler();
         update();
+    }
+    
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+//        if (keyCode == KeyEvent.KEYCODE_BACK)
+//        {
+//            if ((System.currentTimeMillis() - mExitTime) > 2000)
+//            {
+//                mExitTime = System.currentTimeMillis();
+//                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//            }
+//            else
+//            {
+//                finish();
+//            }
+//            return true;
+//        }
+        return super.onKeyDown(keyCode, event);
     }
     
     private void createUpdateThreadAndHandler()

@@ -34,15 +34,8 @@ public class UserSettingManager
     
     public void removeCollectChannel(String id)
     {
-        for (int i=0; i<mCollectChannels.size(); ++i)
-        {
-            if (mCollectChannels.get(i).equals(id))
-            {
-                mCollectChannels.remove(i);
-                mSettingChanged = true;
-                break;
-            }
-        }
+        mCollectChannels.remove(id);
+        mSettingChanged = true;
     }
     
     public HashMap<String, HashMap<String, Object>> getCollectChannels()
