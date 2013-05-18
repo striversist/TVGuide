@@ -29,5 +29,7 @@
     <string name="Sun">周日</string>
     <string name="delete">删除</string>
     <string name="collect_success">收藏成功！</string>
+    <string name="search_hint">搜索节目关键字</string>
+    <string name="search">搜索</string>
 
 </resources>

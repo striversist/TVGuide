@@ -1,14 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="search" />
-
-</RelativeLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+	    <AutoCompleteTextView android:id="@+id/search_auto_text_view"
+			    android:layout_width="0dip"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:hint="@string/search_hint"
+			    android:singleLine="true" />
+	    <Button android:id="@+id/search_button"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/search"
+		        android:onClick="search" />
+    </LinearLayout>
+    
+    <ListView android:id="@+id/search_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    
+</LinearLayout>
