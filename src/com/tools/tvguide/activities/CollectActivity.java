@@ -24,16 +24,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter.ViewBinder;
 
 public class CollectActivity extends Activity 
@@ -104,6 +107,20 @@ public class CollectActivity extends Activity
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mChannelList = new ArrayList<CollectActivity.Channel>();
         mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
+        
+        mChannelListView.setOnItemClickListener(new OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+            {
+                String channelId = mChannelList.get(position).id;
+                String channelName = mChannelList.get(position).name;
+                Intent intent = new Intent(CollectActivity.this, ChannelDetailActivity.class);
+                intent.putExtra("id", channelId);
+                intent.putExtra("name", channelName);
+                startActivity(intent);
+            }
+        });
         
         createAndSetListViewAdapter();
         createUpdateThreadAndHandler();
