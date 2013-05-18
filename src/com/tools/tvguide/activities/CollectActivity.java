@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,11 +8,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.utils.NetworkManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,16 +35,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
-import android.widget.Toast;
 
 public class CollectActivity extends Activity 
 {
     private ListView mChannelListView;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
-    private List<Channel> mChannelList;        // id-name pair
+    private List<Channel> mChannelList;
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private final String XML_ELEMENT_LOGO = "logo";
+    private Handler mUpdateHandler;
+    private List<Pair<String, String>> mOnPlayingProgramList;           // List of "id"-"title" pair
+    private final int MSG_REFRESH_ON_PLAYING_PROGRAM_LIST   = 1;
     
     private class Channel
     {
@@ -91,8 +103,10 @@ public class CollectActivity extends Activity
         mChannelListView = (ListView)findViewById(R.id.collect_channel_list_view);
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mChannelList = new ArrayList<CollectActivity.Channel>();
+        mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
         
         createAndSetListViewAdapter();
+        createUpdateThreadAndHandler();
     }
     
     @Override
@@ -100,6 +114,7 @@ public class CollectActivity extends Activity
     {
         super.onResume();
         updateChannelListView();
+        updateOnPlayingProgramList();
     };
 
     @Override
@@ -176,5 +191,87 @@ public class CollectActivity extends Activity
         }
         mListViewAdapter.notifyDataSetChanged();
     }
-        
+    
+    private void createUpdateThreadAndHandler()
+    {
+        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
+    }
+    
+    private void updateOnPlayingProgramList()
+    {
+        mUpdateHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                assert(mChannelList != null);
+                String url = "http://192.168.1.103/projects/TV/json/onplaying_programs.php";
+                try 
+                {
+                    NetDataGetter getter;
+                    getter = new NetDataGetter(url);
+                    List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                    //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
+                    String idArray = "[";
+                    for (int i=0; i<mChannelList.size(); ++i)
+                    {
+                        idArray += "\"" + mChannelList.get(i).id + "\"";
+                        if (i < (mChannelList.size() - 1))
+                        {
+                            idArray += ",";
+                        }
+                    }
+                    idArray += "]";
+                    
+                    pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
+                    JSONObject jsonRoot = getter.getJSONsObject(pairs);
+                    mOnPlayingProgramList.clear();
+                    if (jsonRoot != null)
+                    {
+                        JSONArray resultArray = jsonRoot.getJSONArray("result");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                Pair<String, String> pair = new Pair<String, String>(resultArray.getJSONObject(i).getString("id"), 
+                                        resultArray.getJSONObject(i).getString("title"));
+                                mOnPlayingProgramList.add(pair);
+                            }
+                        }
+                    }
+                    uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM_LIST);
+                }
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                }
+                catch (JSONException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    private Handler uiHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            switch (msg.what) 
+            {
+                case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
+                    if (mOnPlayingProgramList != null)
+                    {
+                        for (int i=0; i<mOnPlayingProgramList.size(); ++i)
+                        {
+                            mItemList.get(i).put("program", "ÕýÔÚ²¥·Å£º  " + mOnPlayingProgramList.get(i).second);
+                        }
+                        mListViewAdapter.notifyDataSetChanged();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
