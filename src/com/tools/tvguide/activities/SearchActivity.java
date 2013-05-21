@@ -2,12 +2,12 @@ package com.tools.tvguide.activities;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
@@ -125,7 +125,7 @@ public class SearchActivity extends Activity
         {
             public void run()
             {
-                String url = "http://192.168.1.103/projects/TV/json/search.php?" + "keyword=" + mSearchTextView.getText().toString();
+                String url = UrlManager.URL_SEARCH + "?keyword=" + mSearchTextView.getText().toString();
                 NetDataGetter getter;
                 try 
                 {

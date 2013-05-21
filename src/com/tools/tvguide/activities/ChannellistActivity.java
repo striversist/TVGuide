@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 import com.tools.tvguide.utils.Utility;
@@ -17,7 +18,6 @@ import com.tools.tvguide.utils.XmlParser;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
@@ -42,7 +42,6 @@ public class ChannellistActivity extends Activity
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
-    private HandlerThread mUpdateThread;
     private Handler mUpdateHandler;
     private final String XML_ELEMENT_LOGO = "logo";
     private final int MSG_REFRESH_CHANNEL_LIST              = 0;
@@ -100,9 +99,6 @@ public class ChannellistActivity extends Activity
     
     private void createUpdateThreadAndHandler()
     {
-        //mUpdateThread = new HandlerThread("SearchThread");
-        //mUpdateThread.start();
-        //mUpdateHandler = new Handler(mUpdateThread.getLooper());
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
@@ -137,7 +133,7 @@ public class ChannellistActivity extends Activity
         {
             public void run()
             {
-                String url = "http://192.168.1.103/projects/TV/json/channels.php?category=" + mCategoryId;
+                String url = UrlManager.URL_CHANNELS + "?category=" + mCategoryId;
                 NetDataGetter getter;
                 try 
                 {
@@ -178,7 +174,7 @@ public class ChannellistActivity extends Activity
             public void run()
             {
                 assert(mChannelList != null);
-                String url = "http://192.168.1.103/projects/TV/json/onplaying_programs.php";
+                String url = UrlManager.URL_ON_PLAYING_PROGRAMS;
                 try 
                 {
                     NetDataGetter getter;

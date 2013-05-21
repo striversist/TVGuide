@@ -7,6 +7,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
@@ -14,26 +16,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class HomeActivity extends Activity 
 {
     private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;
-    private HandlerThread mUpdateThread;
     private Handler mUpdateHandler;
     private List<Pair<String, String>> mCategoryList;
-    private long mExitTime;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -62,31 +59,9 @@ public class HomeActivity extends Activity
         createUpdateThreadAndHandler();
         update();
     }
-    
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) 
-    {
-//        if (keyCode == KeyEvent.KEYCODE_BACK)
-//        {
-//            if ((System.currentTimeMillis() - mExitTime) > 2000)
-//            {
-//                mExitTime = System.currentTimeMillis();
-//                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-//            }
-//            else
-//            {
-//                finish();
-//            }
-//            return true;
-//        }
-        return super.onKeyDown(keyCode, event);
-    }
-    
+        
     private void createUpdateThreadAndHandler()
     {
-        //mUpdateThread = new HandlerThread("SearchThread");
-        //mUpdateThread.start();
-        //mUpdateHandler = new Handler(mUpdateThread.getLooper());
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
@@ -96,7 +71,7 @@ public class HomeActivity extends Activity
         {
             public void run()
             {
-                String url = "http://192.168.1.103/projects/TV/json/categories.php";
+                String url = UrlManager.URL_CATEGORIES;
                 NetDataGetter getter;
                 try 
                 {

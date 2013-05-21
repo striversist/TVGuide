@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
@@ -146,7 +147,7 @@ public class ChannelDetailActivity extends Activity
         {
             public void run()
             {
-                String url = "http://192.168.1.103/projects/TV/json/choose.php?" + "channel=" + mChannelId + "&day=" + getHostDay(mCurrentSelectedDay);
+                String url = UrlManager.URL_CHOOSE + "?channel=" + mChannelId + "&day=" + getHostDay(mCurrentSelectedDay);
                 NetDataGetter getter;
                 try 
                 {
@@ -186,7 +187,7 @@ public class ChannelDetailActivity extends Activity
             public void run()
             {
                 assert(mProgramList != null);
-                String url = "http://192.168.1.103/projects/TV/json/onplaying_program.php?channel=" + mChannelId;
+                String url = UrlManager.URL_ON_PLAYING_PROGRAM + "?channel=" + mChannelId;
                 try 
                 {
                     NetDataGetter getter;
