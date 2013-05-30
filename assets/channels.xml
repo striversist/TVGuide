@@ -43,6 +43,9 @@
     <channel id="cctv13">
         <logo>cctv13.jpg</logo>
     </channel>
+    <channel id="cctv14">
+        <logo>cctv14.jpg</logo>
+    </channel>
     <channel id="cctv15">
         <logo>cctv15.jpg</logo>
     </channel>
@@ -89,8 +92,8 @@
     <channel id="guangdongst">
         <logo>guangdongst.gif</logo>
     </channel>
-    <channel id="guanxist">
-        <logo>guanxist.gif</logo>
+    <channel id="guangxist">
+        <logo>guangxist.gif</logo>
     </channel>
     <channel id="guizhoust">
         <logo>guizhoust.gif</logo>
@@ -123,7 +126,7 @@
         <logo>lvyoust.gif</logo>
     </channel>
     <channel id="nanfangst">
-        <logo>nanfangst.gif</logo>
+        <logo>nanfangst.jpg</logo>
     </channel>
     <channel id="neimenggust">
         <logo>neimenggust.gif</logo>
