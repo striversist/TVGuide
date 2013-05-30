@@ -5,7 +5,7 @@ import android.content.Context;
 public class UrlManager 
 {
     public static final String TAG                      = "UrlManager";
-    private static final String HOST                    = "192.168.1.101";
+    private static final String HOST                    = "192.168.1.103";
     public static final String URL_CATEGORIES           = "http://" + HOST + "/projects/TV/json/categories.php";
     public static final String URL_CHANNELS             = "http://" + HOST + "/projects/TV/json/channels.php";
     public static final String URL_ON_PLAYING_PROGRAM   = "http://" + HOST + "/projects/TV/json/onplaying_program.php";

@@ -57,6 +57,10 @@
             android:name="com.tools.tvguide.activities.ChannelDetailActivity"
             android:label="@string/title_activity_channel_detail" >
         </activity>
+        <activity
+            android:name="com.tools.tvguide.activities.CategorylistActivity"
+            android:label="@string/title_activity_categorylist" >
+        </activity>
     </application>
 
 </manifest>

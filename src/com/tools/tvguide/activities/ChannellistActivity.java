@@ -142,7 +142,7 @@ public class ChannellistActivity extends Activity
                     mChannelList.clear();
                     if (jsonRoot != null)
                     {
-                        JSONArray channelListArray = jsonRoot.getJSONArray("channel_list");
+                        JSONArray channelListArray = jsonRoot.getJSONArray("channels");
                         if (channelListArray != null)
                         {
                             for (int i=0; i<channelListArray.length(); ++i)

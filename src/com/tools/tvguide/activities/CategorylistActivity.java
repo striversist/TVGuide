@@ -12,22 +12,24 @@ import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.app.Activity;
+import android.content.Intent;
 import android.util.Pair;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class HomeActivity extends Activity 
+public class CategorylistActivity extends Activity 
 {
-    private static final String TAG = "HomeActivity";
+    private static final String TAG = "CategorylistActivity";
+    private String mCategoryId;
     private ListView mCategoryListView;
     private Handler mUpdateHandler;
     private List<Pair<String, String>> mCategoryList;
@@ -35,11 +37,17 @@ public class HomeActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
-        Log.e(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        mCategoryListView = (ListView)findViewById(R.id.category_list);
+        setContentView(R.layout.activity_categorylist);
+        mCategoryListView = (ListView)findViewById(R.id.categorylist_listview);
         mCategoryList = new ArrayList<Pair<String,String>>();
+        createUpdateThreadAndHandler();
+        
+        mCategoryId = getIntent().getStringExtra("category");
+        if (mCategoryId != null)
+        {
+            update();
+        }
         
         mCategoryListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -49,25 +57,31 @@ public class HomeActivity extends Activity
                 if (mCategoryList != null)
                 {
                     String categoryId = mCategoryList.get(position).first;
-                    Intent intent;
-                    if (categoryId.equals("local"))
-                    {
-                        intent = new Intent(HomeActivity.this, CategorylistActivity.class);
-                    }
-                    else
-                    {
-                        intent = new Intent(HomeActivity.this, ChannellistActivity.class);
-                    }
+                    Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
                     intent.putExtra("category", categoryId);
                     startActivity(intent);
                 }
             }
         });
-        
-        createUpdateThreadAndHandler();
-        update();
     }
-        
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.activity_categorylist, menu);
+        return true;
+    }
+
+    public void back(View view)
+    {
+        if (view instanceof Button)
+        {
+            // The same effect with press back key
+            finish();
+        }
+    }
+    
     private void createUpdateThreadAndHandler()
     {
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
@@ -79,7 +93,7 @@ public class HomeActivity extends Activity
         {
             public void run()
             {
-                String url = UrlManager.URL_CATEGORIES;
+                String url = UrlManager.URL_CATEGORIES + "?type=" + mCategoryId;
                 NetDataGetter getter;
                 try 
                 {
@@ -125,7 +139,7 @@ public class HomeActivity extends Activity
                 {
                     categories[i] = mCategoryList.get(i).second;
                 }
-                mCategoryListView.setAdapter(new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_list_item_1, categories));
+                mCategoryListView.setAdapter(new ArrayAdapter<String>(CategorylistActivity.this, android.R.layout.simple_list_item_1, categories));
             }
         }
     };
