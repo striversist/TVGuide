@@ -119,6 +119,9 @@
     <channel id="jiangxist">
         <logo>jiangxist.gif</logo>
     </channel>
+    <channel id="jilinst">
+        <logo>jilinst.jpg</logo>
+    </channel>
     <channel id="liaoningst">
         <logo>liaoningst.gif</logo>
     </channel>
@@ -161,6 +164,9 @@
     <channel id="xizangst">
         <logo>xizangst.gif</logo>
     </channel>
+    <channel id="xiamenst">
+        <logo>xiamenst.gif</logo>
+    </channel>
     <channel id="yanbianst">
         <logo>yanbianst.jpg</logo>
     </channel>
@@ -169,6 +175,9 @@
     </channel>
     <channel id="zhejiangst">
         <logo>zhejiangst.gif</logo>
+    </channel>
+    <channel id="zhujiangst">
+        <logo>zhujiangst.jpg</logo>
     </channel>
     <channel id="phoenixst">
         <logo>phoenix.gif</logo>
