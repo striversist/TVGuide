@@ -2,6 +2,7 @@ package com.tools.tvguide.activities;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -18,7 +19,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,7 +30,7 @@ public class HomeActivity extends Activity
     private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;
     private Handler mUpdateHandler;
-    private List<Pair<String, String>> mCategoryList;
+    private List<HashMap<String, String>> mCategoryList;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -39,7 +39,7 @@ public class HomeActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mCategoryListView = (ListView)findViewById(R.id.category_list);
-        mCategoryList = new ArrayList<Pair<String,String>>();
+        mCategoryList = new ArrayList<HashMap<String,String>>();
         
         mCategoryListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -48,9 +48,9 @@ public class HomeActivity extends Activity
             {
                 if (mCategoryList != null)
                 {
-                    String categoryId = mCategoryList.get(position).first;
+                    String categoryId = mCategoryList.get(position).get("id");
                     Intent intent;
-                    if (categoryId.equals("local"))
+                    if (mCategoryList.get(position).get("has_sub_category").equals("1"))
                     {
                         intent = new Intent(HomeActivity.this, CategorylistActivity.class);
                     }
@@ -93,9 +93,11 @@ public class HomeActivity extends Activity
                         {
                             for (int i=0; i<categoryArray.length(); ++i)
                             {
-                                Pair<String, String> pair = new Pair<String, String>(categoryArray.getJSONObject(i).getString("id"), 
-                                        categoryArray.getJSONObject(i).getString("name"));
-                                mCategoryList.add(pair);
+                                HashMap<String, String> category = new HashMap<String, String>();
+                                category.put("id", categoryArray.getJSONObject(i).getString("id"));
+                                category.put("name", categoryArray.getJSONObject(i).getString("name"));
+                                category.put("has_sub_category", categoryArray.getJSONObject(i).getString("has_sub_category"));
+                                mCategoryList.add(category);
                             }
                         }
                     }
@@ -123,7 +125,7 @@ public class HomeActivity extends Activity
                 String categories[] = new String[mCategoryList.size()];
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
-                    categories[i] = mCategoryList.get(i).second;
+                    categories[i] = mCategoryList.get(i).get("name");
                 }
                 mCategoryListView.setAdapter(new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_list_item_1, categories));
             }

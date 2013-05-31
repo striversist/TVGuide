@@ -2,6 +2,7 @@ package com.tools.tvguide.activities;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -17,7 +18,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,7 +32,7 @@ public class CategorylistActivity extends Activity
     private String mCategoryId;
     private ListView mCategoryListView;
     private Handler mUpdateHandler;
-    private List<Pair<String, String>> mCategoryList;
+    private List<HashMap<String, String>> mCategoryList;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -40,7 +40,7 @@ public class CategorylistActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categorylist);
         mCategoryListView = (ListView)findViewById(R.id.categorylist_listview);
-        mCategoryList = new ArrayList<Pair<String,String>>();
+        mCategoryList = new ArrayList<HashMap<String,String>>();
         createUpdateThreadAndHandler();
         
         mCategoryId = getIntent().getStringExtra("category");
@@ -56,7 +56,7 @@ public class CategorylistActivity extends Activity
             {
                 if (mCategoryList != null)
                 {
-                    String categoryId = mCategoryList.get(position).first;
+                    String categoryId = mCategoryList.get(position).get("id");
                     Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
                     intent.putExtra("category", categoryId);
                     startActivity(intent);
@@ -107,9 +107,11 @@ public class CategorylistActivity extends Activity
                         {
                             for (int i=0; i<categoryArray.length(); ++i)
                             {
-                                Pair<String, String> pair = new Pair<String, String>(categoryArray.getJSONObject(i).getString("id"), 
-                                        categoryArray.getJSONObject(i).getString("name"));
-                                mCategoryList.add(pair);
+                                HashMap<String, String> category = new HashMap<String, String>();
+                                category.put("id", categoryArray.getJSONObject(i).getString("id"));
+                                category.put("name", categoryArray.getJSONObject(i).getString("name"));
+                                category.put("has_sub_category", categoryArray.getJSONObject(i).getString("has_sub_category"));
+                                mCategoryList.add(category);
                             }
                         }
                     }
@@ -137,7 +139,7 @@ public class CategorylistActivity extends Activity
                 String categories[] = new String[mCategoryList.size()];
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
-                    categories[i] = mCategoryList.get(i).second;
+                    categories[i] = mCategoryList.get(i).get("name");
                 }
                 mCategoryListView.setAdapter(new ArrayAdapter<String>(CategorylistActivity.this, android.R.layout.simple_list_item_1, categories));
             }
