@@ -9,6 +9,7 @@ public class AppEngine
     private Context                                 mContext;
     private Context                                 mApplicationContext;
     private UserSettingManager                      mUserSettingManager;
+    private LoginManager                            mLoginManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -42,6 +43,13 @@ public class AppEngine
         if (mUserSettingManager == null)
             mUserSettingManager = new UserSettingManager(mContext);
         return mUserSettingManager;
+    }
+    
+    public LoginManager getLoginManager()
+    {
+        if (mLoginManager == null)
+            mLoginManager = new LoginManager(mContext);
+        return mLoginManager;
     }
     
     public void prepareBeforeExit()

@@ -190,6 +190,7 @@ public class MainActivity extends TabActivity implements OnTabChangeListener, On
         
         AppEngine.getInstance().setContext(this);
         AppEngine.getInstance().setApplicationContext(getApplicationContext());
+        AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
     }
 
     @Override
