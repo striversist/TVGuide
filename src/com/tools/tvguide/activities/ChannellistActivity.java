@@ -236,6 +236,7 @@ public class ChannellistActivity extends Activity
                         for(int i=0; i<mChannelList.size(); ++i)
                         {
                             HashMap<String, Object> item = new HashMap<String, Object>();
+                            item.put("id", mChannelList.get(i).first);
                             if (mXmlChannelInfo.get(mChannelList.get(i).first) != null)
                             {
                                 item.put("image", Utility.getImage(ChannellistActivity.this, (String) mXmlChannelInfo.get(mChannelList.get(i).first).get(XML_ELEMENT_LOGO)));                        
@@ -250,9 +251,15 @@ public class ChannellistActivity extends Activity
                 case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
                     if (mOnPlayingProgramList != null)
                     {
-                        for (int i=0; i<mOnPlayingProgramList.size(); ++i)
+                        for (int i=0; i<mItemList.size(); ++i)
                         {
-                            mItemList.get(i).put("program", "正在播放：  " + mOnPlayingProgramList.get(i).second);
+                            for (int j=0; j<mOnPlayingProgramList.size(); ++j)
+                            {
+                                if (mItemList.get(i).get("id").equals(mOnPlayingProgramList.get(j).first))
+                                {
+                                    mItemList.get(i).put("program", "正在播放：  " + mOnPlayingProgramList.get(j).second);
+                                }
+                            }
                         }
                         mListViewAdapter.notifyDataSetChanged();
                     }
