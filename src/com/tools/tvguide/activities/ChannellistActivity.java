@@ -30,13 +30,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter.ViewBinder;
 
 public class ChannellistActivity extends Activity 
 {
     private String mCategoryId;
+    private String mCategoryName;
     private ListView mChannelListView;
+    private TextView mTitltTextView;
     private List<Pair<String, String>> mChannelList;                    // List of "id"-"name" pair
     private List<Pair<String, String>> mOnPlayingProgramList;           // List of "id"-"title" pair
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
@@ -53,6 +56,7 @@ public class ChannellistActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channellist);
         mChannelListView = (ListView)findViewById(R.id.channel_list);
+        mTitltTextView = (TextView)findViewById(R.id.channellist_text_title);
         mChannelList = new ArrayList<Pair<String, String>>();
         mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
@@ -60,7 +64,9 @@ public class ChannellistActivity extends Activity
         createUpdateThreadAndHandler();
         createAndSetListViewAdapter();
         
-        mCategoryId = getIntent().getStringExtra("category");
+        mCategoryId = getIntent().getStringExtra("categoryId");
+        mCategoryName = getIntent().getStringExtra("categoryName");
+        mTitltTextView.setText(mCategoryName);
         if (mCategoryId != null)
         {
             updateChannelList();

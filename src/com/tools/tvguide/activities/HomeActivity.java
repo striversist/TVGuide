@@ -49,6 +49,7 @@ public class HomeActivity extends Activity
                 if (mCategoryList != null)
                 {
                     String categoryId = mCategoryList.get(position).get("id");
+                    String categoryName = mCategoryList.get(position).get("name");
                     Intent intent;
                     if (mCategoryList.get(position).get("has_sub_category").equals("1"))
                     {
@@ -58,7 +59,8 @@ public class HomeActivity extends Activity
                     {
                         intent = new Intent(HomeActivity.this, ChannellistActivity.class);
                     }
-                    intent.putExtra("category", categoryId);
+                    intent.putExtra("categoryId", categoryId);
+                    intent.putExtra("categoryName", categoryName);
                     startActivity(intent);
                 }
             }

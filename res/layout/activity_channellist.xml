@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android" >
     <RelativeLayout android:gravity="center_vertical" android:id="@+id/shake_title_bar" android:background="@drawable/title_bar" android:layout_width="fill_parent" android:layout_height="45.0dip">
         <Button android:textSize="14.0sp" android:textColor="#ffffffff" android:background="@drawable/title_btn_back" android:layout_width="70.0dip" android:layout_height="wrap_content" android:text="@string/back" android:layout_centerVertical="true" android:onClick="back" />
-        <TextView android:textSize="20.0sp" android:textColor="#ffffffff" android:id="@+id/text_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:layout_centerInParent="true" />
+        <TextView android:textSize="20.0sp" android:textColor="#ffffffff" android:id="@+id/channellist_text_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:layout_centerInParent="true" />
     </RelativeLayout>
     <ListView android:id="@+id/channel_list" android:padding="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:scrollingCache="false" android:choiceMode="singleChoice" />
 </LinearLayout>

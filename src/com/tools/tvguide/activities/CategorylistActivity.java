@@ -24,13 +24,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class CategorylistActivity extends Activity 
 {
     private static final String TAG = "CategorylistActivity";
     private String mCategoryId;
+    private String mCategoryName;
     private ListView mCategoryListView;
+    private TextView mTitleTextView;
     private Handler mUpdateHandler;
     private List<HashMap<String, String>> mCategoryList;
     
@@ -40,10 +43,13 @@ public class CategorylistActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categorylist);
         mCategoryListView = (ListView)findViewById(R.id.categorylist_listview);
+        mTitleTextView = (TextView)findViewById(R.id.categorylist_text_title);
         mCategoryList = new ArrayList<HashMap<String,String>>();
         createUpdateThreadAndHandler();
         
-        mCategoryId = getIntent().getStringExtra("category");
+        mCategoryId = getIntent().getStringExtra("categoryId");
+        mCategoryName = getIntent().getStringExtra("categoryName");
+        mTitleTextView.setText(mCategoryName);
         if (mCategoryId != null)
         {
             update();
@@ -57,8 +63,10 @@ public class CategorylistActivity extends Activity
                 if (mCategoryList != null)
                 {
                     String categoryId = mCategoryList.get(position).get("id");
+                    String categoryName = mCategoryList.get(position).get("name");
                     Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
-                    intent.putExtra("category", categoryId);
+                    intent.putExtra("categoryId", categoryId);
+                    intent.putExtra("categoryName", categoryName);
                     startActivity(intent);
                 }
             }
