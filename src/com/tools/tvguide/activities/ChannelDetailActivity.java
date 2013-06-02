@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 public class ChannelDetailActivity extends Activity 
 {
+    private static final String TAG = "ChannelDetailActivity";
     private List<Pair<Integer, Button>> mDaysBtnList = new ArrayList<Pair<Integer,Button>>();
     private int mCurrentSelectedDay;
     private ListView mListView;
@@ -212,6 +213,12 @@ public class ChannelDetailActivity extends Activity
         });
     }
 
+    @Override
+    public void onBackPressed() 
+    {
+        finish();
+    };
+    
     public void back(View view)
     {
         if (view instanceof Button)
@@ -299,9 +306,9 @@ public class ChannelDetailActivity extends Activity
                         mItemList.add(item);
                     }
                     mListViewAdapter.notifyDataSetChanged();
-                    mListView.setSelection(15);
                     break;
                 case MSG_REFRESH_ON_PLAYING_PROGRAM:
+                    mListViewAdapter.notifyDataSetChanged();    // 使得正在播出的节目显示红色
                     String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
                     for (int i=0; i<mItemList.size(); ++i)
                     {
