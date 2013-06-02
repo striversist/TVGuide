@@ -8,4 +8,5 @@
     <color name="red">#ffff0000</color>
     <color name="green">#ff2bb121</color>
     <color name="huise02">#ff555555</color>
+    <color name="transparent">#00000000</color>
 </resources>

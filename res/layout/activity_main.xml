@@ -7,27 +7,12 @@
         </RelativeLayout>
         <FrameLayout android:id="@android:id/tabcontent" android:layout_width="fill_parent" android:layout_height="0dip" android:layout_weight="1.0" />
         <TabWidget android:id="@android:id/tabs" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1.0" />
-        <LinearLayout android:id="@+id/tab_background" android:background="@drawable/phonetabview_bg" android:paddingTop="5.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <LinearLayout android:id="@+id/tab_home" style="@style/main_tab_but_linear">
-                <ImageView android:id="@+id/image_home" android:contentDescription="@string/category_home" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/icon_1_c" android:layout_weight="1.0" />
-                <TextView android:id="@+id/text_home" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/category_home" android:layout_weight="1.0" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/tab_collect" style="@style/main_tab_but_linear">
-                <ImageView android:id="@+id/image_collect" android:contentDescription="@string/category_collect" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/icon_2_n" android:layout_weight="1.0" />
-                <TextView android:id="@+id/text_collect" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/category_collect" android:layout_weight="1.0" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/tab_search" style="@style/main_tab_but_linear">
-                <ImageView android:id="@+id/image_search" android:contentDescription="@string/category_search" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/icon_3_n" android:layout_weight="1.0" />
-                <TextView android:id="@+id/text_search" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/category_search" android:layout_weight="1.0" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/tab_about" style="@style/main_tab_but_linear">
-                <ImageView android:id="@+id/image_about" android:contentDescription="@string/category_about" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/icon_4_n" android:layout_weight="1.0" />
-                <TextView android:id="@+id/text_about" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/category_about" android:layout_weight="1.0" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/tab_more" style="@style/main_tab_but_linear">
-                <ImageView android:id="@+id/image_more" android:contentDescription="@string/category_more" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/icon_5_n" android:layout_weight="1.0" />
-                <TextView android:id="@+id/text_more" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/category_more" android:layout_weight="1.0" />
-            </LinearLayout>
-        </LinearLayout>
+        <RadioGroup android:id="@+id/tab_group" android:gravity="center_vertical" android:layout_gravity="bottom" android:orientation="horizontal" android:background="@drawable/phonetabview_bg" android:layout_width="fill_parent" android:layout_height="wrap_content">"
+	        <RadioButton android:id="@+id/tab_home" android:checked="true" android:text="@string/category_home" android:drawableTop="@drawable/tab_home_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+	        <RadioButton android:id="@+id/tab_collect" android:text="@string/category_collect" android:drawableTop="@drawable/tab_collect_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+	        <RadioButton android:id="@+id/tab_search" android:text="@string/category_search" android:drawableTop="@drawable/tab_search_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+	        <RadioButton android:id="@+id/tab_about" android:text="@string/category_about" android:drawableTop="@drawable/tab_about_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+	        <RadioButton android:id="@+id/tab_more" android:text="@string/category_more" android:drawableTop="@drawable/tab_more_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+        </RadioGroup>
     </LinearLayout>
 </TabHost>
