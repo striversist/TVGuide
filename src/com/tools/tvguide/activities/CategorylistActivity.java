@@ -21,9 +21,9 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -33,6 +33,8 @@ public class CategorylistActivity extends Activity
     private String mCategoryId;
     private String mCategoryName;
     private ListView mCategoryListView;
+    private SimpleAdapter mListViewAdapter;
+    private ArrayList<HashMap<String, Object>> mItemList;
     private TextView mTitleTextView;
     private Handler mUpdateHandler;
     private List<HashMap<String, String>> mCategoryList;
@@ -45,6 +47,10 @@ public class CategorylistActivity extends Activity
         mCategoryListView = (ListView)findViewById(R.id.categorylist_listview);
         mTitleTextView = (TextView)findViewById(R.id.categorylist_text_title);
         mCategoryList = new ArrayList<HashMap<String,String>>();
+        mItemList = new ArrayList<HashMap<String, Object>>();
+        mListViewAdapter = new SimpleAdapter(CategorylistActivity.this, mItemList, R.layout.home_list_item,
+                new String[]{"name"}, new int[]{R.id.home_item_text});
+        mCategoryListView.setAdapter(mListViewAdapter);
         createUpdateThreadAndHandler();
         
         mCategoryId = getIntent().getStringExtra("categoryId");
@@ -144,12 +150,14 @@ public class CategorylistActivity extends Activity
             super.handleMessage(msg);
             if (mCategoryList != null)
             {
-                String categories[] = new String[mCategoryList.size()];
+                mItemList.clear();
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
-                    categories[i] = mCategoryList.get(i).get("name");
+                    HashMap<String, Object> item = new HashMap<String, Object>();
+                    item.put("name", mCategoryList.get(i).get("name"));
+                    mItemList.add(item);
                 }
-                mCategoryListView.setAdapter(new ArrayAdapter<String>(CategorylistActivity.this, android.R.layout.simple_list_item_1, categories));
+                mListViewAdapter.notifyDataSetChanged();
             }
         }
     };

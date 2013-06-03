@@ -21,14 +21,16 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class HomeActivity extends Activity 
 {
     private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;
+    private SimpleAdapter mListViewAdapter;
+    private ArrayList<HashMap<String, Object>> mItemList;
     private Handler mUpdateHandler;
     private List<HashMap<String, String>> mCategoryList;
     
@@ -39,8 +41,12 @@ public class HomeActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mCategoryListView = (ListView)findViewById(R.id.category_list);
+        mItemList = new ArrayList<HashMap<String, Object>>();
+        mListViewAdapter = new SimpleAdapter(HomeActivity.this, mItemList, R.layout.home_list_item,
+                new String[]{"name"}, new int[]{R.id.home_item_text});
         mCategoryList = new ArrayList<HashMap<String,String>>();
         
+        mCategoryListView.setAdapter(mListViewAdapter);
         mCategoryListView.setOnItemClickListener(new OnItemClickListener() 
         {
             @Override
@@ -124,12 +130,14 @@ public class HomeActivity extends Activity
             super.handleMessage(msg);
             if (mCategoryList != null)
             {
-                String categories[] = new String[mCategoryList.size()];
+                mItemList.clear();
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
-                    categories[i] = mCategoryList.get(i).get("name");
+                    HashMap<String, Object> item = new HashMap<String, Object>();
+                    item.put("name", mCategoryList.get(i).get("name"));
+                    mItemList.add(item);
                 }
-                mCategoryListView.setAdapter(new ArrayAdapter<String>(HomeActivity.this, android.R.layout.simple_list_item_1, categories));
+                mListViewAdapter.notifyDataSetChanged();
             }
         }
     };
