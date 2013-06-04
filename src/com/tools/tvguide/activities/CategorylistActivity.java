@@ -1,17 +1,11 @@
 package com.tools.tvguide.activities;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.utils.NetDataGetter;
-import com.tools.tvguide.utils.NetworkManager;
+import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.ContentManager;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +30,6 @@ public class CategorylistActivity extends Activity
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
     private TextView mTitleTextView;
-    private Handler mUpdateHandler;
     private List<HashMap<String, String>> mCategoryList;
     
     @Override
@@ -51,7 +44,6 @@ public class CategorylistActivity extends Activity
         mListViewAdapter = new SimpleAdapter(CategorylistActivity.this, mItemList, R.layout.home_list_item,
                 new String[]{"name"}, new int[]{R.id.home_item_text});
         mCategoryListView.setAdapter(mListViewAdapter);
-        createUpdateThreadAndHandler();
         
         mCategoryId = getIntent().getStringExtra("categoryId");
         mCategoryName = getIntent().getStringExtra("categoryName");
@@ -95,50 +87,16 @@ public class CategorylistActivity extends Activity
             finish();
         }
     }
-    
-    private void createUpdateThreadAndHandler()
-    {
-        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
-    }
-    
+        
     private void update()
     {
-        mUpdateHandler.post(new Runnable()
-        {
-            public void run()
+        mCategoryList.clear();
+        AppEngine.getInstance().getContentManager().loadCategory(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
+        {    
+            @Override
+            public void onLoadFinish(int status) 
             {
-                String url = UrlManager.URL_CATEGORIES + "?type=" + mCategoryId;
-                NetDataGetter getter;
-                try 
-                {
-                    getter = new NetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    mCategoryList.clear();
-                    if (jsonRoot != null)
-                    {
-                        JSONArray categoryArray = jsonRoot.getJSONArray("categories");
-                        if (categoryArray != null)
-                        {
-                            for (int i=0; i<categoryArray.length(); ++i)
-                            {
-                                HashMap<String, String> category = new HashMap<String, String>();
-                                category.put("id", categoryArray.getJSONObject(i).getString("id"));
-                                category.put("name", categoryArray.getJSONObject(i).getString("name"));
-                                category.put("has_sub_category", categoryArray.getJSONObject(i).getString("has_sub_category"));
-                                mCategoryList.add(category);
-                            }
-                        }
-                    }
-                    uiHandler.sendEmptyMessage(0);
-                } 
-                catch (MalformedURLException e) 
-                {
-                    e.printStackTrace();
-                } 
-                catch (JSONException e) 
-                {
-                    e.printStackTrace();
-                }
+                uiHandler.sendEmptyMessage(0);
             }
         });
     }
