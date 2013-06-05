@@ -1,20 +1,13 @@
 package com.tools.tvguide.activities;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.utils.NetDataGetter;
-import com.tools.tvguide.utils.NetworkManager;
+import com.tools.tvguide.managers.ContentManager;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,12 +34,10 @@ public class ChannelDetailActivity extends Activity
     private ListView mListView;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
-    private List<String> mProgramList;
-    private Handler mUpdateHandler;
+    private List<Pair<String, String>> mProgramList;        // "time"-"title" pair list
     private String mChannelId;
     private String mChannelName;
-    private String mOnplayingProgramTime;
-    private String mOnplayingProgramTitle;
+    private List<Pair<String, String>> mOnPlayingProgram;   // "time"-"title" pair
     private String SEPERATOR                                = ": ";
     private final int MSG_REFRESH_PROGRAM_LIST              = 0;
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM        = 1;
@@ -61,7 +52,11 @@ public class ChannelDetailActivity extends Activity
         @Override
         public View getView(int position, View convertView, ViewGroup parent) 
         {
-            String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
+            String onPlayingProgram = "";
+            if (mOnPlayingProgram.size() > 0)
+            {
+                onPlayingProgram = mOnPlayingProgram.get(0).first + SEPERATOR + mOnPlayingProgram.get(0).second;
+            }
             View view = super.getView(position, convertView, parent);
             if (view instanceof RelativeLayout)
             {
@@ -89,12 +84,12 @@ public class ChannelDetailActivity extends Activity
         mChannelId = getIntent().getStringExtra("id");
         mChannelName = getIntent().getStringExtra("name");
         ((TextView)findViewById(R.id.title)).setText(mChannelName);
-        mProgramList = new ArrayList<String>();
+        mProgramList = new ArrayList<Pair<String,String>>();
         mItemList = new ArrayList<HashMap<String, Object>>();
+        mOnPlayingProgram = new ArrayList<Pair<String,String>>();
         
         initViews();
         createAndSetListViewAdapter();
-        createUpdateThreadAndHandler();
         updateProgramList();
         updateOnplayingProgram();
     }
@@ -136,79 +131,29 @@ public class ChannelDetailActivity extends Activity
                 new int[]{R.id.detail_item_program});
         mListView.setAdapter(mListViewAdapter);
     }
-       
-    private void createUpdateThreadAndHandler()
-    {
-        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
-    }
-    
+
     private void updateProgramList()
     {
-        mUpdateHandler.post(new Runnable()
-        {
-            public void run()
+        mProgramList.clear();
+        AppEngine.getInstance().getContentManager().loadPrograms(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, new ContentManager.LoadListener() 
+        {    
+            @Override
+            public void onLoadFinish(int status) 
             {
-                String url = UrlManager.URL_CHOOSE + "?channel=" + mChannelId + "&day=" + getHostDay(mCurrentSelectedDay);
-                NetDataGetter getter;
-                try 
-                {
-                    getter = new NetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    mProgramList.clear();
-                    if (jsonRoot != null)
-                    {
-                        JSONArray resultArray = jsonRoot.getJSONArray("result");
-                        if (resultArray != null)
-                        {
-                            for (int i=0; i<resultArray.length(); ++i)
-                            {
-                                String program = resultArray.getJSONObject(i).getString("time") + SEPERATOR + resultArray.getJSONObject(i).getString("title");
-                                mProgramList.add(program);
-                            }
-                        }
-                    }
-                    uiHandler.sendEmptyMessage(MSG_REFRESH_PROGRAM_LIST);
-                }
-                catch (MalformedURLException e) 
-                {
-                    e.printStackTrace();
-                }
-                catch (JSONException e) 
-                {
-                    e.printStackTrace();
-                }
+                uiHandler.sendEmptyMessage(MSG_REFRESH_PROGRAM_LIST);
             }
         });
     }
     
     private void updateOnplayingProgram()
     {
-        mUpdateHandler.post(new Runnable()
-        {
-            public void run()
+        mOnPlayingProgram.clear();
+        AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
+        {    
+            @Override
+            public void onLoadFinish(int status) 
             {
-                assert(mProgramList != null);
-                String url = UrlManager.URL_ON_PLAYING_PROGRAM + "?channel=" + mChannelId;
-                try 
-                {
-                    NetDataGetter getter;
-                    getter = new NetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    if (jsonRoot != null)
-                    {
-                        mOnplayingProgramTime = jsonRoot.getString("time");
-                        mOnplayingProgramTitle = jsonRoot.getString("title");
-                    }
-                    uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM);
-                }
-                catch (MalformedURLException e) 
-                {
-                    e.printStackTrace();
-                }
-                catch (JSONException e) 
-                {
-                    e.printStackTrace();
-                }
+                uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM);
             }
         });
     }
@@ -302,14 +247,18 @@ public class ChannelDetailActivity extends Activity
                     for (int i=0; i<mProgramList.size(); ++i)
                     {
                         HashMap<String, Object> item = new HashMap<String, Object>();
-                        item.put("program", mProgramList.get(i));
+                        item.put("program", mProgramList.get(i).first + SEPERATOR + mProgramList.get(i).second);
                         mItemList.add(item);
                     }
                     mListViewAdapter.notifyDataSetChanged();
                     break;
                 case MSG_REFRESH_ON_PLAYING_PROGRAM:
                     mListViewAdapter.notifyDataSetChanged();    // 使得正在播出的节目显示红色
-                    String onPlayingProgram = mOnplayingProgramTime + SEPERATOR + mOnplayingProgramTitle;
+                    String onPlayingProgram = "";
+                    if (mOnPlayingProgram.size() > 0)
+                    {
+                        onPlayingProgram = mOnPlayingProgram.get(0).first + SEPERATOR + mOnPlayingProgram.get(0).second;
+                    }
                     for (int i=0; i<mItemList.size(); ++i)
                     {
                         if (((String)(mItemList.get(i).get("program"))).equals(onPlayingProgram))
