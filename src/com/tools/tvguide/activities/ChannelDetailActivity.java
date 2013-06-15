@@ -135,7 +135,7 @@ public class ChannelDetailActivity extends Activity
     private void updateProgramList()
     {
         mProgramList.clear();
-        AppEngine.getInstance().getContentManager().loadPrograms(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, new ContentManager.LoadListener() 
+        AppEngine.getInstance().getContentManager().loadProgramsByChannel(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 

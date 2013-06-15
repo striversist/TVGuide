@@ -1,6 +1,7 @@
 package com.tools.tvguide.managers;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,51 +36,7 @@ public class ContentManager
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
-    public boolean loadCategories(final List<HashMap<String, String>> result, final LoadListener listener)
-    {
-        mUpdateHandler.post(new Runnable()
-        {
-            public void run()
-            {
-                String url = UrlManager.URL_CATEGORIES;
-                NetDataGetter getter;
-                try 
-                {
-                    getter = new NetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    if (jsonRoot != null)
-                    {
-                        JSONArray categoryArray = jsonRoot.getJSONArray("categories");
-                        if (categoryArray != null)
-                        {
-                            for (int i=0; i<categoryArray.length(); ++i)
-                            {
-                                HashMap<String, String> category = new HashMap<String, String>();
-                                category.put("id", categoryArray.getJSONObject(i).getString("id"));
-                                category.put("name", categoryArray.getJSONObject(i).getString("name"));
-                                category.put("has_sub_category", categoryArray.getJSONObject(i).getString("has_sub_category"));
-                                result.add(category);
-                            }
-                        }
-                    }
-                    listener.onLoadFinish(LoadListener.SUCCESS);
-                } 
-                catch (MalformedURLException e) 
-                {
-                    listener.onLoadFinish(LoadListener.FAIL);
-                    e.printStackTrace();
-                } 
-                catch (JSONException e) 
-                {
-                    listener.onLoadFinish(LoadListener.FAIL);
-                    e.printStackTrace();
-                }
-            }
-        });
-        return false;
-    }
-    
-    public boolean loadCategories(final String type, final List<HashMap<String, String>> result, final LoadListener listener)
+    public boolean loadCategoriesByType(final String type, final List<HashMap<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -107,12 +64,12 @@ public class ContentManager
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
-                } 
+                }
                 catch (MalformedURLException e) 
                 {
                     listener.onLoadFinish(LoadListener.FAIL);
                     e.printStackTrace();
-                } 
+                }
                 catch (JSONException e) 
                 {
                     listener.onLoadFinish(LoadListener.FAIL);
@@ -165,7 +122,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadPrograms(final String channelId, final int day, final List<Pair<String, String>> result, final LoadListener listener)
+    public boolean loadProgramsByChannel(final String channelId, final int day, final List<Pair<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -207,18 +164,32 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadOnPlayingPrograms(final List<BasicNameValuePair> params, final List<Pair<String, String>> result, final LoadListener listener)
+    public boolean loadOnPlayingPrograms(final List<String> idList, final List<Pair<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
             public void run()
             {
+                List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
+                String idArray = "[";
+                for (int i=0; i<idList.size(); ++i)
+                {
+                    idArray += "\"" + idList.get(i) + "\"";
+                    if (i < (idList.size() - 1))
+                    {
+                        idArray += ",";
+                    }
+                }
+                idArray += "]";
+                pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
+                
                 String url = UrlManager.URL_ON_PLAYING_PROGRAMS;
                 try 
                 {
                     NetDataGetter getter;
                     getter = new NetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject(params);
+                    JSONObject jsonRoot = getter.getJSONsObject(pairs);
                     if (jsonRoot != null)
                     {
                         JSONArray resultArray = jsonRoot.getJSONArray("result");

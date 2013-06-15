@@ -91,7 +91,7 @@ public class CategorylistActivity extends Activity
     private void update()
     {
         mCategoryList.clear();
-        AppEngine.getInstance().getContentManager().loadCategories(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
+        AppEngine.getInstance().getContentManager().loadCategoriesByType(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 

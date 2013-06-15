@@ -137,20 +137,25 @@ public class ChannellistActivity extends Activity
     private void updateOnPlayingProgramList()
     {
         mOnPlayingProgramList.clear();
-        List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
-        //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
-        String idArray = "[";
+//        List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+//        //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
+//        String idArray = "[";
+//        for (int i=0; i<mChannelList.size(); ++i)
+//        {
+//            idArray += "\"" + mChannelList.get(i).first + "\"";
+//            if (i < (mChannelList.size() - 1))
+//            {
+//                idArray += ",";
+//            }
+//        }
+//        idArray += "]";
+//        pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
+        List<String> idList = new ArrayList<String>();
         for (int i=0; i<mChannelList.size(); ++i)
         {
-            idArray += "\"" + mChannelList.get(i).first + "\"";
-            if (i < (mChannelList.size() - 1))
-            {
-                idArray += ",";
-            }
+            idList.add(mChannelList.get(i).first);
         }
-        idArray += "]";
-        pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
-        AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(pairs, mOnPlayingProgramList, new ContentManager.LoadListener() 
+        AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 

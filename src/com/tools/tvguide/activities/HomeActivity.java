@@ -71,7 +71,7 @@ public class HomeActivity extends Activity
     private void update()
     {   
         mCategoryList.clear();
-        AppEngine.getInstance().getContentManager().loadCategories(mCategoryList, new ContentManager.LoadListener() 
+        AppEngine.getInstance().getContentManager().loadCategoriesByType("root", mCategoryList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
