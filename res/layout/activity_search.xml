@@ -3,10 +3,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity" >
+    android:background="#fff5f7fa" >
 
-    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
-	    <AutoCompleteTextView android:id="@+id/search_auto_text_view"
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" >
+	    <EditText android:id="@+id/search_edit_text"
 			    android:layout_width="0dip"
 			    android:layout_height="wrap_content"
 			    android:layout_weight="1"
@@ -20,7 +20,8 @@
     </LinearLayout>
     
     <ListView android:id="@+id/search_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent" android:layout_height="wrap_content" 
+            android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
+            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
     
 </LinearLayout>

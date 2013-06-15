@@ -23,13 +23,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SearchActivity extends Activity 
 {
-    private AutoCompleteTextView mSearchTextView;
+    private EditText mSearchEditText;
     private ListView mListView;
     private BaseAdapter mListViewAdapter;
     private ArrayList<ListItems> mItemList;
@@ -75,7 +76,7 @@ public class SearchActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         
-        mSearchTextView = (AutoCompleteTextView)findViewById(R.id.search_auto_text_view);
+        mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
         mListView = (ListView)findViewById(R.id.search_list_view);
         mItemList = new ArrayList<ListItems>();
         mListViewAdapter = new PartAdapter();
@@ -111,7 +112,7 @@ public class SearchActivity extends Activity
     
     public void search(View view)
     {
-        if (mSearchTextView.getText().toString().trim().equals(""))
+        if (mSearchEditText.getText().toString().trim().equals(""))
         {
             Toast.makeText(this, "请输入要搜索的节目关键字!", Toast.LENGTH_SHORT).show();
             return;
@@ -125,7 +126,7 @@ public class SearchActivity extends Activity
         {
             public void run()
             {
-                String url = UrlManager.URL_SEARCH + "?keyword=" + mSearchTextView.getText().toString();
+                String url = UrlManager.URL_SEARCH + "?keyword=" + mSearchEditText.getText().toString();
                 NetDataGetter getter;
                 try 
                 {
@@ -179,7 +180,7 @@ public class SearchActivity extends Activity
     private void hideInputKeyboard()
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mSearchTextView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
     
     private Handler uiHandler = new Handler()
@@ -250,7 +251,8 @@ class ContentItem implements ListItems
     @Override
     public int getLayout() 
     {
-        return android.R.layout.simple_list_item_1;
+//        return android.R.layout.simple_list_item_1;
+        return R.layout.search_list_content_item;
     }
 
     @Override
@@ -263,7 +265,7 @@ class ContentItem implements ListItems
     public View getView(Context context, View convertView, LayoutInflater inflater) 
     {
         convertView = inflater.inflate(getLayout(), null);
-        TextView title = (TextView) convertView;
+        TextView title = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
         title.setText(mItem.time + SEPERATOR + mItem.title);
         return convertView;
     }

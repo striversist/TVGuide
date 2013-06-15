@@ -9,6 +9,8 @@
 	    android:minHeight="30dip"
 	    android:gravity="center_vertical"
 	    android:paddingLeft="10dip"
-	    android:background="#66ffffff"
+	    android:background="#aa888888"
+	    android:textColor="#ff000000"
+	    android:textSize="18.0dip"
 	    />
 </LinearLayout>
