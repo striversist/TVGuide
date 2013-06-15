@@ -121,7 +121,8 @@ public class ChannellistActivity extends Activity
     private void updateChannelList()
     {
         mChannelList.clear();
-        AppEngine.getInstance().getContentManager().loadChannelsByCategory(mCategoryId, mChannelList, new ContentManager.LoadListener() 
+        boolean isSyncLoad = false;
+        isSyncLoad = AppEngine.getInstance().getContentManager().loadChannelsByCategory(mCategoryId, mChannelList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
@@ -129,6 +130,10 @@ public class ChannellistActivity extends Activity
                 uiHandler.sendEmptyMessage(MSG_REFRESH_CHANNEL_LIST);
             }
         });
+        if (isSyncLoad == true)
+        {
+            uiHandler.sendEmptyMessage(MSG_REFRESH_CHANNEL_LIST);
+        }
     }
     
     private void updateOnPlayingProgramList()

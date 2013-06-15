@@ -88,12 +88,12 @@ public class ContentManager
     
     public boolean loadChannelsByCategory(final String categoryId, final List<HashMap<String, String>> result, final LoadListener listener)
     {
-//        boolean loadFromCache = false;
-//        loadFromCache = AppEngine.getInstance().getCacheManager().loadChannelsByCategory(categoryId, result);
-//        if (loadFromCache == true)
-//        {
-//            return true;    // sync loaded
-//        }
+        boolean loadFromCache = false;
+        loadFromCache = AppEngine.getInstance().getCacheManager().loadChannelsByCategory(categoryId, result);
+        if (loadFromCache == true)
+        {
+            return true;    // sync loaded
+        }
         mUpdateHandler.post(new Runnable()
         {
             public void run()
@@ -119,7 +119,7 @@ public class ContentManager
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
-//                    AppEngine.getInstance().getCacheManager().saveChannelsByCategory(categoryId, result);
+                    AppEngine.getInstance().getCacheManager().saveChannelsByCategory(categoryId, result);
                 }
                 catch (MalformedURLException e) 
                 {

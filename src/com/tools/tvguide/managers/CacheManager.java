@@ -17,7 +17,7 @@ public class CacheManager
 {
     private Context mContext;
     private HashMap<String, List<HashMap<String, String>>> mCategories;
-    private HashMap<String, List<Pair<String, String>>> mChannels;
+    private HashMap<String, List<HashMap<String, String>>> mChannels;
     private final String FILE_CACHED_CATEGORIES = "categories.txt";
     private final String FILE_CACHED_CHANNELS   = "channels.txt";
         
@@ -63,26 +63,26 @@ public class CacheManager
     @SuppressWarnings("unchecked")
     public boolean loadChannelsByCategory(final String categoryId, final List<HashMap<String, String>> result)
     {
-        mChannels = (HashMap<String, List<Pair<String, String>>>) loadObjectFromFile(FILE_CACHED_CHANNELS);
+        mChannels = (HashMap<String, List<HashMap<String, String>>>) loadObjectFromFile(FILE_CACHED_CHANNELS);
         if (mChannels == null)
         {
-            mChannels = new HashMap<String, List<Pair<String,String>>>();
+            mChannels = new HashMap<String, List<HashMap<String,String>>>();
             return false;
         }
         
-        List<Pair<String, String>> channels = mChannels.get(categoryId);
+        List<HashMap<String, String>> channels = mChannels.get(categoryId);
         if (channels == null || channels.isEmpty())
         {
             return false;
         }
         for (int i=0; i<channels.size(); ++i)
         {
-//            result.add(channels.get(i));
+            result.add(channels.get(i));
         }
         return true;
     }
     
-    public boolean saveChannelsByCategory(final String categoryId, final List<Pair<String, String>> channels)
+    public boolean saveChannelsByCategory(final String categoryId, final List<HashMap<String, String>> channels)
     {
         mChannels.put(categoryId, channels);
         return saveObjectToFile(mChannels, FILE_CACHED_CHANNELS);
