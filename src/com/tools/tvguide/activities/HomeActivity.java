@@ -24,7 +24,7 @@ public class HomeActivity extends Activity
     private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;
     private SimpleAdapter mListViewAdapter;
-    private ArrayList<HashMap<String, Object>> mItemList;
+    private List<HashMap<String, Object>> mItemList;
     private List<HashMap<String, String>> mCategoryList;
     
     @Override

@@ -61,7 +61,7 @@ public class CacheManager
     }
     
     @SuppressWarnings("unchecked")
-    public boolean loadChannelsByCategory(final String categoryId, final List<Pair<String, String>> result)
+    public boolean loadChannelsByCategory(final String categoryId, final List<HashMap<String, String>> result)
     {
         mChannels = (HashMap<String, List<Pair<String, String>>>) loadObjectFromFile(FILE_CACHED_CHANNELS);
         if (mChannels == null)
@@ -77,7 +77,7 @@ public class CacheManager
         }
         for (int i=0; i<channels.size(); ++i)
         {
-            result.add(channels.get(i));
+//            result.add(channels.get(i));
         }
         return true;
     }

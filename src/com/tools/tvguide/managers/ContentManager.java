@@ -15,7 +15,6 @@ import com.tools.tvguide.utils.NetworkManager;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Pair;
 
 
 public class ContentManager 
@@ -87,14 +86,14 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadChannelsByCategory(final String categoryId, final List<Pair<String, String>> result, final LoadListener listener)
+    public boolean loadChannelsByCategory(final String categoryId, final List<HashMap<String, String>> result, final LoadListener listener)
     {
-        boolean loadFromCache = false;
-        loadFromCache = AppEngine.getInstance().getCacheManager().loadChannelsByCategory(categoryId, result);
-        if (loadFromCache == true)
-        {
-            return true;    // sync loaded
-        }
+//        boolean loadFromCache = false;
+//        loadFromCache = AppEngine.getInstance().getCacheManager().loadChannelsByCategory(categoryId, result);
+//        if (loadFromCache == true)
+//        {
+//            return true;    // sync loaded
+//        }
         mUpdateHandler.post(new Runnable()
         {
             public void run()
@@ -112,14 +111,15 @@ public class ContentManager
                         {
                             for (int i=0; i<channelListArray.length(); ++i)
                             {
-                                Pair<String, String> pair = new Pair<String, String>(channelListArray.getJSONObject(i).getString("id"), 
-                                        channelListArray.getJSONObject(i).getString("name"));
-                                result.add(pair);
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("id", channelListArray.getJSONObject(i).getString("id"));
+                                map.put("name", channelListArray.getJSONObject(i).getString("name"));
+                                result.add(map);
                             }
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
-                    AppEngine.getInstance().getCacheManager().saveChannelsByCategory(categoryId, result);
+//                    AppEngine.getInstance().getCacheManager().saveChannelsByCategory(categoryId, result);
                 }
                 catch (MalformedURLException e) 
                 {
@@ -136,7 +136,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadProgramsByChannel(final String channelId, final int day, final List<Pair<String, String>> result, final LoadListener listener)
+    public boolean loadProgramsByChannel(final String channelId, final int day, final List<HashMap<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -155,9 +155,10 @@ public class ContentManager
                         {
                             for (int i=0; i<resultArray.length(); ++i)
                             {
-                                Pair<String, String> pair = new Pair<String, String>(resultArray.getJSONObject(i).getString("time"), 
-                                        resultArray.getJSONObject(i).getString("title")); 
-                                result.add(pair);
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("time", resultArray.getJSONObject(i).getString("time"));
+                                map.put("title", resultArray.getJSONObject(i).getString("title"));
+                                result.add(map);
                             }
                         }
                     }
@@ -178,7 +179,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadOnPlayingPrograms(final List<String> idList, final List<Pair<String, String>> result, final LoadListener listener)
+    public boolean loadOnPlayingPrograms(final List<String> idList, final List<HashMap<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -211,9 +212,10 @@ public class ContentManager
                         {
                             for (int i=0; i<resultArray.length(); ++i)
                             {
-                                Pair<String, String> pair = new Pair<String, String>(resultArray.getJSONObject(i).getString("id"), 
-                                        resultArray.getJSONObject(i).getString("title"));
-                                result.add(pair);
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("id", resultArray.getJSONObject(i).getString("id"));
+                                map.put("title", resultArray.getJSONObject(i).getString("title"));
+                                result.add(map);
                             }
                         }
                     }
@@ -234,7 +236,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadOnPlayingProgramByChannel(final String channelId, final List<Pair<String, String>> result, final LoadListener listener)
+    public boolean loadOnPlayingProgramByChannel(final String channelId, final List<HashMap<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -248,8 +250,10 @@ public class ContentManager
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
-                        Pair<String, String> pair = new Pair<String, String>(jsonRoot.getString("time"), jsonRoot.getString("title"));
-                        result.add(pair);
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put("time", jsonRoot.getString("time"));
+                        map.put("title", jsonRoot.getString("title"));
+                        result.add(map);
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
                 }

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.message.BasicNameValuePair;
-
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.utils.Utility;
@@ -17,7 +15,6 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,8 +32,8 @@ public class ChannellistActivity extends Activity
     private String mCategoryName;
     private ListView mChannelListView;
     private TextView mTitltTextView;
-    private List<Pair<String, String>> mChannelList;                    // List of "id"-"name" pair
-    private List<Pair<String, String>> mOnPlayingProgramList;           // List of "id"-"title" pair
+    private List<HashMap<String, String>> mChannelList;                     // Key: id, name
+    private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
@@ -51,8 +48,8 @@ public class ChannellistActivity extends Activity
         setContentView(R.layout.activity_channellist);
         mChannelListView = (ListView)findViewById(R.id.channel_list);
         mTitltTextView = (TextView)findViewById(R.id.channellist_text_title);
-        mChannelList = new ArrayList<Pair<String, String>>();
-        mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
+        mChannelList = new ArrayList<HashMap<String,String>>();
+        mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
         createAndSetListViewAdapter();
@@ -69,8 +66,8 @@ public class ChannellistActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
-                String channelId = mChannelList.get(position).first;
-                String channelName = mChannelList.get(position).second;
+                String channelId = mChannelList.get(position).get("id");
+                String channelName = mChannelList.get(position).get("name");
                 Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
                 intent.putExtra("id", channelId);
                 intent.putExtra("name", channelName);
@@ -137,23 +134,10 @@ public class ChannellistActivity extends Activity
     private void updateOnPlayingProgramList()
     {
         mOnPlayingProgramList.clear();
-//        List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
-//        //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
-//        String idArray = "[";
-//        for (int i=0; i<mChannelList.size(); ++i)
-//        {
-//            idArray += "\"" + mChannelList.get(i).first + "\"";
-//            if (i < (mChannelList.size() - 1))
-//            {
-//                idArray += ",";
-//            }
-//        }
-//        idArray += "]";
-//        pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
         List<String> idList = new ArrayList<String>();
         for (int i=0; i<mChannelList.size(); ++i)
         {
-            idList.add(mChannelList.get(i).first);
+            idList.add(mChannelList.get(i).get("id"));
         }
         AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
         {    
@@ -179,12 +163,12 @@ public class ChannellistActivity extends Activity
                         for(int i=0; i<mChannelList.size(); ++i)
                         {
                             HashMap<String, Object> item = new HashMap<String, Object>();
-                            item.put("id", mChannelList.get(i).first);
-                            if (mXmlChannelInfo.get(mChannelList.get(i).first) != null)
+                            item.put("id", mChannelList.get(i).get("id"));
+                            if (mXmlChannelInfo.get(mChannelList.get(i).get("id")) != null)
                             {
-                                item.put("image", Utility.getImage(ChannellistActivity.this, (String) mXmlChannelInfo.get(mChannelList.get(i).first).get(XML_ELEMENT_LOGO)));                        
+                                item.put("image", Utility.getImage(ChannellistActivity.this, (String) mXmlChannelInfo.get(mChannelList.get(i).get("id")).get(XML_ELEMENT_LOGO)));                        
                             }
-                            item.put("name", mChannelList.get(i).second);
+                            item.put("name", mChannelList.get(i).get("name"));
                             mItemList.add(item);
                         }
                         mListViewAdapter.notifyDataSetChanged();
@@ -198,9 +182,9 @@ public class ChannellistActivity extends Activity
                         {
                             for (int j=0; j<mOnPlayingProgramList.size(); ++j)
                             {
-                                if (mItemList.get(i).get("id").equals(mOnPlayingProgramList.get(j).first))
+                                if (mItemList.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
                                 {
-                                    mItemList.get(i).put("program", "正在播放：  " + mOnPlayingProgramList.get(j).second);
+                                    mItemList.get(i).put("program", "正在播放：  " + mOnPlayingProgramList.get(j).get("title"));
                                 }
                             }
                         }

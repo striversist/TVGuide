@@ -34,10 +34,10 @@ public class ChannelDetailActivity extends Activity
     private ListView mListView;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
-    private List<Pair<String, String>> mProgramList;        // "time"-"title" pair list
+    private List<HashMap<String, String>> mProgramList;             // Key: time, title
     private String mChannelId;
     private String mChannelName;
-    private List<Pair<String, String>> mOnPlayingProgram;   // "time"-"title" pair
+    private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
     private String SEPERATOR                                = ": ";
     private final int MSG_REFRESH_PROGRAM_LIST              = 0;
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM        = 1;
@@ -55,7 +55,7 @@ public class ChannelDetailActivity extends Activity
             String onPlayingProgram = "";
             if (mOnPlayingProgram.size() > 0)
             {
-                onPlayingProgram = mOnPlayingProgram.get(0).first + SEPERATOR + mOnPlayingProgram.get(0).second;
+                onPlayingProgram = mOnPlayingProgram.get(0).get("time") + SEPERATOR + mOnPlayingProgram.get(0).get("title");
             }
             View view = super.getView(position, convertView, parent);
             if (view instanceof RelativeLayout)
@@ -84,9 +84,9 @@ public class ChannelDetailActivity extends Activity
         mChannelId = getIntent().getStringExtra("id");
         mChannelName = getIntent().getStringExtra("name");
         ((TextView)findViewById(R.id.title)).setText(mChannelName);
-        mProgramList = new ArrayList<Pair<String,String>>();
+        mProgramList = new ArrayList<HashMap<String,String>>();
         mItemList = new ArrayList<HashMap<String, Object>>();
-        mOnPlayingProgram = new ArrayList<Pair<String,String>>();
+        mOnPlayingProgram = new ArrayList<HashMap<String,String>>();
         
         initViews();
         createAndSetListViewAdapter();
@@ -247,7 +247,7 @@ public class ChannelDetailActivity extends Activity
                     for (int i=0; i<mProgramList.size(); ++i)
                     {
                         HashMap<String, Object> item = new HashMap<String, Object>();
-                        item.put("program", mProgramList.get(i).first + SEPERATOR + mProgramList.get(i).second);
+                        item.put("program", mProgramList.get(i).get("time") + SEPERATOR + mProgramList.get(i).get("title"));
                         mItemList.add(item);
                     }
                     mListViewAdapter.notifyDataSetChanged();
@@ -257,7 +257,7 @@ public class ChannelDetailActivity extends Activity
                     String onPlayingProgram = "";
                     if (mOnPlayingProgram.size() > 0)
                     {
-                        onPlayingProgram = mOnPlayingProgram.get(0).first + SEPERATOR + mOnPlayingProgram.get(0).second;
+                        onPlayingProgram = mOnPlayingProgram.get(0).get("time") + SEPERATOR + mOnPlayingProgram.get(0).get("title");
                     }
                     for (int i=0; i<mItemList.size(); ++i)
                     {
