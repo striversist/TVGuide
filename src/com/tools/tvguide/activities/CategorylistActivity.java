@@ -91,7 +91,8 @@ public class CategorylistActivity extends Activity
     private void update()
     {
         mCategoryList.clear();
-        AppEngine.getInstance().getContentManager().loadCategoriesByType(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
+        boolean isSyncLoad = false;
+        isSyncLoad = AppEngine.getInstance().getContentManager().loadCategoriesByType(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
@@ -99,6 +100,10 @@ public class CategorylistActivity extends Activity
                 uiHandler.sendEmptyMessage(0);
             }
         });
+        if (isSyncLoad == true)
+        {
+            uiHandler.sendEmptyMessage(0);
+        }
     }
     
     private Handler uiHandler = new Handler()
