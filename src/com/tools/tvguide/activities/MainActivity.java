@@ -37,6 +37,9 @@ public class MainActivity extends TabActivity
         mTabHost = getTabHost();
         mTabGroup = (RadioGroup)findViewById(R.id.tab_group);
         
+        AppEngine.getInstance().setContext(this);
+        AppEngine.getInstance().setApplicationContext(getApplicationContext());
+        
         mStringHome     = getResources().getString(R.string.category_home);
         mStringCollect  = getResources().getString(R.string.category_collect);
         mStringSearch   = getResources().getString(R.string.category_search);
@@ -91,9 +94,6 @@ public class MainActivity extends TabActivity
             }
         });
         
-        
-        AppEngine.getInstance().setContext(this);
-        AppEngine.getInstance().setApplicationContext(getApplicationContext());
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
     }
 
