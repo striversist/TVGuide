@@ -17,8 +17,10 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class SearchActivity extends Activity 
@@ -133,6 +136,26 @@ public class SearchActivity extends Activity
                     return true;
                 }
                 return false;
+            }
+        });
+        
+        mSearchEditText.addTextChangedListener(new TextWatcher() 
+        {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) 
+            {
+                mIsSelectAll = false;                
+            }
+            
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                    int after) {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
             }
         });
         
