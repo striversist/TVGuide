@@ -34,7 +34,8 @@ public class SearchActivity extends Activity
     private boolean mIsSelectAll = false;
     private ListView mListView;
     private BaseAdapter mListViewAdapter;
-    private ArrayList<ListItems> mItemList;
+    private ArrayList<IListItem> mItemList;
+    private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
     private Handler mUpdateHandler;
     
@@ -79,7 +80,8 @@ public class SearchActivity extends Activity
         
         mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
         mListView = (ListView)findViewById(R.id.search_list_view);
-        mItemList = new ArrayList<ListItems>();
+        mItemList = new ArrayList<IListItem>();
+        mItemDataList = new ArrayList<IListItem>();
         mListViewAdapter = new PartAdapter();
         mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
@@ -164,7 +166,7 @@ public class SearchActivity extends Activity
                 {
                     getter = new NetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
-                    mItemList.clear();
+                    mItemDataList.clear();
                     if (jsonRoot != null)
                     {
                         JSONArray resultArray = jsonRoot.getJSONArray("result");
@@ -177,7 +179,7 @@ public class SearchActivity extends Activity
                                 String name = resultArray.getJSONObject(i).getString("name");
                                 JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
                                 
-                                mItemList.add(new LabelItem(name));
+                                mItemDataList.add(new LabelItem(name));
                                 if (programsArray != null)
                                 {
                                     for (int j=0; j<programsArray.length(); ++j)
@@ -189,7 +191,7 @@ public class SearchActivity extends Activity
                                         item.name = name;
                                         item.time = time;
                                         item.title = title;
-                                        mItemList.add(new ContentItem(item));
+                                        mItemDataList.add(new ContentItem(item));
                                     }
                                 }
                             }
@@ -226,19 +228,24 @@ public class SearchActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
+            mItemList.clear();
+            for (int i=0; i<mItemDataList.size(); ++i)
+            {
+                mItemList.add(mItemDataList.get(i));
+            }
             mListViewAdapter.notifyDataSetChanged();
         }
     };
 }
 
-interface ListItems
+interface IListItem
 {
     public int getLayout();
     public boolean isClickable();
     public View getView(Context context, View convertView, LayoutInflater inflater);
 }
 
-class LabelItem implements ListItems 
+class LabelItem implements IListItem 
 {
     private String mLabel;
     public LabelItem(String label)
@@ -276,7 +283,7 @@ class Item
     String title;
 }
 
-class ContentItem implements ListItems 
+class ContentItem implements IListItem 
 {
     private String SEPERATOR = ": ";
     private Item mItem;
