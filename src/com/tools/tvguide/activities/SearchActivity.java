@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -120,6 +121,19 @@ public class SearchActivity extends Activity
             }
         });
         
+        mSearchEditText.setOnKeyListener(new View.OnKeyListener() 
+        {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) 
+            {
+                if (keyCode == KeyEvent.KEYCODE_ENTER)
+                {
+                    search(v);
+                    return true;
+                }
+                return false;
+            }
+        });
         
         // For test
 //        LabelItem label = new LabelItem("CCTV-1");
