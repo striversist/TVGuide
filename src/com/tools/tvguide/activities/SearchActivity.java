@@ -39,6 +39,7 @@ public class SearchActivity extends Activity
     private boolean mIsSelectAll = false;
     private ListView mListView;
     private BaseAdapter mListViewAdapter;
+    private String mKeyword;
     private ArrayList<IListItem> mItemList;
     private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
@@ -169,6 +170,7 @@ public class SearchActivity extends Activity
             Toast.makeText(this, "请输入要搜索的节目关键字!", Toast.LENGTH_SHORT).show();
             return;
         }
+        mKeyword = mSearchEditText.getText().toString().trim().split(" ")[0];
         updateResult();
     }
     
@@ -178,7 +180,7 @@ public class SearchActivity extends Activity
         {
             public void run()
             {
-                String url = UrlManager.URL_SEARCH + "?keyword=" + mSearchEditText.getText().toString().trim();
+                String url = UrlManager.URL_SEARCH + "?keyword=" + mKeyword;
                 NetDataGetter getter;
                 try 
                 {
@@ -209,7 +211,7 @@ public class SearchActivity extends Activity
                                         item.name = name;
                                         item.time = time;
                                         item.title = title;
-                                        item.key = mSearchEditText.getText().toString().trim();
+                                        item.key = mKeyword;
                                         mItemDataList.add(new ContentItem(item));
                                     }
                                 }
