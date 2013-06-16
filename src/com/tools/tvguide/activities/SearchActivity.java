@@ -16,6 +16,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -160,7 +164,7 @@ public class SearchActivity extends Activity
         {
             public void run()
             {
-                String url = UrlManager.URL_SEARCH + "?keyword=" + mSearchEditText.getText().toString();
+                String url = UrlManager.URL_SEARCH + "?keyword=" + mSearchEditText.getText().toString().trim();
                 NetDataGetter getter;
                 try 
                 {
@@ -191,6 +195,7 @@ public class SearchActivity extends Activity
                                         item.name = name;
                                         item.time = time;
                                         item.title = title;
+                                        item.key = mSearchEditText.getText().toString().trim();
                                         mItemDataList.add(new ContentItem(item));
                                     }
                                 }
@@ -281,6 +286,7 @@ class Item
     String name;
     String time;
     String title;
+    String key;
 }
 
 class ContentItem implements IListItem 
@@ -295,7 +301,6 @@ class ContentItem implements IListItem
     @Override
     public int getLayout() 
     {
-//        return android.R.layout.simple_list_item_1;
         return R.layout.search_list_content_item;
     }
 
@@ -309,8 +314,14 @@ class ContentItem implements IListItem
     public View getView(Context context, View convertView, LayoutInflater inflater) 
     {
         convertView = inflater.inflate(getLayout(), null);
-        TextView title = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
-        title.setText(mItem.time + SEPERATOR + mItem.title);
+        TextView tv = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
+        SpannableString ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
+        int start = ss.toString().indexOf(mItem.key);
+        if (start != -1)
+        {
+            ss.setSpan(new ForegroundColorSpan(Color.RED), start, start + mItem.key.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        tv.setText(ss);
         return convertView;
     }
 }
