@@ -18,10 +18,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -31,6 +31,7 @@ import android.widget.Toast;
 public class SearchActivity extends Activity 
 {
     private EditText mSearchEditText;
+    private boolean mIsSelectAll = false;
     private ListView mListView;
     private BaseAdapter mListViewAdapter;
     private ArrayList<ListItems> mItemList;
@@ -84,6 +85,36 @@ public class SearchActivity extends Activity
         mInflater = LayoutInflater.from(this);
         createUpdateThreadAndHandler();
         
+        mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) 
+            {
+                if (v.getId() == mSearchEditText.getId())
+                {
+                    if (event.getAction() != MotionEvent.ACTION_DOWN)
+                    {
+                        return true;
+                    }
+                    
+                    if (mIsSelectAll == true)
+                    {
+                        mSearchEditText.setSelection(mSearchEditText.getText().length());
+                        mIsSelectAll = false;
+                    }
+                    else if (mSearchEditText.getText().length() > 0)
+                    {
+                        mSearchEditText.selectAll();
+                        mIsSelectAll = true;
+                    }
+                    showInputKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+        
+        
         // For test
 //        LabelItem label = new LabelItem("CCTV-1");
 //        mItemList.add(label);
@@ -112,6 +143,7 @@ public class SearchActivity extends Activity
     
     public void search(View view)
     {
+        hideInputKeyboard();
         if (mSearchEditText.getText().toString().trim().equals(""))
         {
             Toast.makeText(this, "请输入要搜索的节目关键字!", Toast.LENGTH_SHORT).show();
@@ -177,6 +209,12 @@ public class SearchActivity extends Activity
         });
     }
     
+    private void showInputKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mSearchEditText, 0);
+    }
+    
     private void hideInputKeyboard()
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -188,7 +226,6 @@ public class SearchActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            hideInputKeyboard();
             mListViewAdapter.notifyDataSetChanged();
         }
     };
