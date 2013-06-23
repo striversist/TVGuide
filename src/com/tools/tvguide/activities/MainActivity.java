@@ -18,7 +18,7 @@ public class MainActivity extends TabActivity
     private static final String TAG = "MainActivity";
     private TabHost         mTabHost;
     
-    private RadioGroup     mTabGroup;
+    private RadioGroup      mTabGroup;
     
     private String          mStringHome;
     private String          mStringCollect;
@@ -43,7 +43,7 @@ public class MainActivity extends TabActivity
         mStringHome     = getResources().getString(R.string.category_home);
         mStringCollect  = getResources().getString(R.string.category_collect);
         mStringSearch   = getResources().getString(R.string.category_search);
-        mStringAbout    = getResources().getString(R.string.category_about);
+        mStringAbout    = getResources().getString(R.string.category_hot);
         mStringMore     = getResources().getString(R.string.category_more);
        
         mTabHost.addTab(mTabHost.newTabSpec(mStringHome)
@@ -59,8 +59,8 @@ public class MainActivity extends TabActivity
                 .setContent(new Intent(this, SearchActivity.class)));
         
         mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
-                .setIndicator(getResources().getString(R.string.category_about))
-                .setContent(new Intent(this, AboutActivity.class)));
+                .setIndicator(getResources().getString(R.string.category_hot))
+                .setContent(new Intent(this, HotActivity.class)));
         
         mTabHost.addTab(mTabHost.newTabSpec(mStringMore)
                 .setIndicator(getResources().getString(R.string.category_more))
@@ -100,6 +100,7 @@ public class MainActivity extends TabActivity
     @Override
     protected void onDestroy() 
     {
+        super.onDestroy();
         AppEngine.getInstance().prepareBeforeExit();
     };
     

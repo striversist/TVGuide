@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.activities.SearchActivity.PartAdapter;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -17,32 +18,21 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
-public class SearchActivity extends Activity 
+public class HotActivity extends Activity 
 {
-    private EditText mSearchEditText;
-    private boolean mIsSelectAll = false;
     private ListView mListView;
     private BaseAdapter mListViewAdapter;
-    private String mKeyword;
     private ArrayList<IListItem> mItemList;
     private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
@@ -77,106 +67,32 @@ public class SearchActivity extends Activity
         @Override
         public View getView(int position, View convertView, ViewGroup parent) 
         {
-            return mItemList.get(position).getView(SearchActivity.this, convertView, mInflater);
+            return mItemList.get(position).getView(HotActivity.this, convertView, mInflater);
         }
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_hot);
         
-        mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
-        mListView = (ListView)findViewById(R.id.search_list_view);
+        mListView = (ListView)findViewById(R.id.hot_list_view);
         mItemList = new ArrayList<IListItem>();
         mItemDataList = new ArrayList<IListItem>();
         mListViewAdapter = new PartAdapter();
         mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
+        
         createUpdateThreadAndHandler();
-        
-        mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) 
-            {
-                if (v.getId() == mSearchEditText.getId())
-                {
-                    if (event.getAction() != MotionEvent.ACTION_DOWN)
-                    {
-                        return true;
-                    }
-                    
-                    if (mIsSelectAll == true)
-                    {
-                        mSearchEditText.setSelection(mSearchEditText.getText().length());
-                        mIsSelectAll = false;
-                    }
-                    else if (mSearchEditText.getText().length() > 0)
-                    {
-                        mSearchEditText.selectAll();
-                        mIsSelectAll = true;
-                    }
-                    showInputKeyboard();
-                    return true;
-                }
-                return false;
-            }
-        });
-        
-        mSearchEditText.setOnKeyListener(new View.OnKeyListener() 
-        {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) 
-            {
-                if (keyCode == KeyEvent.KEYCODE_ENTER)
-                {
-                    search(v);
-                    return true;
-                }
-                return false;
-            }
-        });
-        
-        mSearchEditText.addTextChangedListener(new TextWatcher() 
-        {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) 
-            {
-                mIsSelectAll = false;                
-            }
-            
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-                // TODO Auto-generated method stub
-            }
-            
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-            }
-        });
-        
-        // For test
-//        LabelItem label = new LabelItem("CCTV-1");
-//        mItemList.add(label);
-//        Item item = new Item();
-//        item.id = "cctv1";
-//        item.name = "CCTV-1";
-//        item.time = "00:26";
-//        item.title = "正大综艺";
-//        ContentItem contentItem = new ContentItem(item);
-//        mItemList.add(contentItem);
-//        mListViewAdapter.notifyDataSetChanged();
+        updateResult();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) 
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_search, menu);
+        getMenuInflater().inflate(R.menu.activity_about, menu);
         return true;
     }
 
@@ -185,25 +101,13 @@ public class SearchActivity extends Activity
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
-    public void search(View view)
-    {
-        hideInputKeyboard();
-        if (mSearchEditText.getText().toString().trim().equals(""))
-        {
-            Toast.makeText(this, "请输入要搜索的节目关键字!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mKeyword = mSearchEditText.getText().toString().trim().split(" ")[0];
-        updateResult();
-    }
-    
     private void updateResult()
     {
         mUpdateHandler.post(new Runnable()
         {
             public void run()
             {
-                String url = UrlManager.URL_SEARCH + "?keyword=" + mKeyword;
+                String url = UrlManager.URL_HOT;
                 NetDataGetter getter;
                 try 
                 {
@@ -212,7 +116,7 @@ public class SearchActivity extends Activity
                     mItemDataList.clear();
                     if (jsonRoot != null)
                     {
-                        JSONArray resultArray = jsonRoot.getJSONArray("result");
+                        JSONArray resultArray = jsonRoot.getJSONArray("hot");
                         if (resultArray != null)
                         {
                             
@@ -227,14 +131,11 @@ public class SearchActivity extends Activity
                                 {
                                     for (int j=0; j<programsArray.length(); ++j)
                                     {
-                                        String time = programsArray.getJSONObject(j).getString("time");
-                                        String title = programsArray.getJSONObject(j).getString("title");                               
+                                        String title = programsArray.get(j).toString();
                                         Item item = new Item();
                                         item.id = id;
                                         item.name = name;
-                                        item.time = time;
                                         item.title = title;
-                                        item.key = mKeyword;
                                         mItemDataList.add(new ContentItem(item));
                                     }
                                 }
@@ -253,18 +154,6 @@ public class SearchActivity extends Activity
                 }
             }
         });
-    }
-    
-    private void showInputKeyboard()
-    {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mSearchEditText, 0);
-    }
-    
-    private void hideInputKeyboard()
-    {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
     
     private Handler uiHandler = new Handler()
@@ -329,7 +218,6 @@ public class SearchActivity extends Activity
 
     class ContentItem implements IListItem 
     {
-        private String SEPERATOR = ": ";
         private Item mItem;
         public ContentItem(Item item)
         {
@@ -353,12 +241,7 @@ public class SearchActivity extends Activity
         {
             convertView = inflater.inflate(getLayout(), null);
             TextView tv = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
-            SpannableString ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
-            int start = ss.toString().indexOf(mItem.key);
-            if (start != -1)
-            {
-                ss.setSpan(new ForegroundColorSpan(Color.RED), start, start + mItem.key.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            SpannableString ss = new SpannableString(mItem.title);
             tv.setText(ss);
             return convertView;
         }

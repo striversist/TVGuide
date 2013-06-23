@@ -11,7 +11,7 @@
 	        <RadioButton android:id="@+id/tab_home" android:checked="true" android:text="@string/category_home" android:drawableTop="@drawable/tab_home_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
 	        <RadioButton android:id="@+id/tab_collect" android:text="@string/category_collect" android:drawableTop="@drawable/tab_collect_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
 	        <RadioButton android:id="@+id/tab_search" android:text="@string/category_search" android:drawableTop="@drawable/tab_search_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
-	        <RadioButton android:id="@+id/tab_about" android:text="@string/category_about" android:drawableTop="@drawable/tab_about_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+	        <RadioButton android:id="@+id/tab_about" android:text="@string/category_hot" android:drawableTop="@drawable/tab_about_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
 	        <RadioButton android:id="@+id/tab_more" android:text="@string/category_more" android:drawableTop="@drawable/tab_more_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
         </RadioGroup>
     </LinearLayout>

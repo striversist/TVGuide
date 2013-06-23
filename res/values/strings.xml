@@ -7,7 +7,7 @@
     <string name="category_home">首页</string>
     <string name="category_collect">收藏</string>
     <string name="category_search">搜索</string>
-    <string name="category_about">关于</string>
+    <string name="category_hot">热门</string>
     <string name="category_more">更多</string>
     <string name="back">返回</string>
     <string name="title_activity_collect">CollectActivity</string>

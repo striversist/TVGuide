@@ -70,7 +70,8 @@ public class AppEngine
     
     public void prepareBeforeExit()
     {
-        mUserSettingManager.shutDown();
+        if (mUserSettingManager != null)
+            mUserSettingManager.shutDown();
     }
     
 }
