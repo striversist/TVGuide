@@ -32,5 +32,14 @@
     <string name="search_hint">搜索节目关键字</string>
     <string name="search">搜索</string>
     <string name="title_activity_categorylist">CategorylistActivity</string>
+    <string name="recent_view">最近查看</string>
+    <string name="user_home">个人中心</string>
+    <string name="alarm">闹铃</string>
+    <string name="version_check">检查新版本(ver %1$s)</string>
+    <string name="issue_title">意见反馈</string>
+    <string name="about">关于</string>
+    <string name="refresh">刷新</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="quit">退出</string>
 
 </resources>
