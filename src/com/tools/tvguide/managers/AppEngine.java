@@ -12,6 +12,7 @@ public class AppEngine
     private LoginManager                            mLoginManager;
     private ContentManager                          mContentManager;
     private CacheManager                            mCacheManager;
+    private AlarmHelper                             mAlarmHelper;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -66,6 +67,13 @@ public class AppEngine
         if (mCacheManager == null)
             mCacheManager = new CacheManager(mContext);
         return mCacheManager;
+    }
+    
+    public AlarmHelper getAlarmHelper()
+    {
+        if (mAlarmHelper == null)
+            mAlarmHelper = new AlarmHelper(mContext);
+        return mAlarmHelper;
     }
     
     public void prepareBeforeExit()

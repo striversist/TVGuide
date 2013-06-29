@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView android:id="@+id/detail_item_program" android:textSize="16.0dip" android:textColor="#ff333333" android:paddingLeft="10.0dip" android:paddingTop="12.0dip" android:paddingBottom="12.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="15.0dip" />
+       
+    <ImageView android:id="@+id/setting_list_item_arrow" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginLeft="15.0dip" android:layout_marginRight="15.0dip" android:src="@drawable/icon_arrow_2" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
+    <TextView android:id="@+id/detail_item_program"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent" 
+        android:textSize="16.0dip" 
+        android:textColor="#ff333333" 
+        android:paddingLeft="10.0dip" 
+        android:paddingTop="12.0dip" 
+        android:paddingBottom="12.0dip"
+        android:layout_marginLeft="15.0dip"
+        android:layout_toLeftOf="@id/setting_list_item_arrow" />
+
 </RelativeLayout>

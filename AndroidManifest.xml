@@ -61,6 +61,13 @@
             android:name="com.tools.tvguide.activities.CategorylistActivity"
             android:label="@string/title_activity_categorylist" >
         </activity>
+        <activity
+            android:name="com.tools.tvguide.activities.AlarmAlertActivity"
+            android:label="@string/title_activity_alarmalert" >
+        </activity>
+        <receiver 
+            android:name="com.tools.tvguide.utils.CallAlarmReceiver" >
+        </receiver>
     </application>
 
 </manifest>

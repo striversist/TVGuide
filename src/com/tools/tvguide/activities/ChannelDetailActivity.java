@@ -13,18 +13,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.text.TextUtils;
+import android.text.TextUtils.StringSplitter;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ChannelDetailActivity extends Activity 
 {
@@ -92,6 +99,47 @@ public class ChannelDetailActivity extends Activity
         createAndSetListViewAdapter();
         updateProgramList();
         updateOnplayingProgram();
+        
+        mListView.setOnItemClickListener(new OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+            {
+                final String time = mProgramList.get(position).get("time");
+                final String title = mProgramList.get(position).get("title");
+                final String program = time + SEPERATOR + title;
+                //Toast.makeText(ChannelDetailActivity.this, "Time: " + time, Toast.LENGTH_SHORT).show();
+                
+                String[] alarmTime = new String[4];
+                alarmTime[0] = getResources().getString(R.string.m1_alarm);
+                alarmTime[1] = getResources().getString(R.string.m3_alarm);
+                alarmTime[2] = getResources().getString(R.string.m5_alarm);
+                alarmTime[3] = getResources().getString(R.string.m10_alarm);
+                Dialog alertDialog = new AlertDialog.Builder(ChannelDetailActivity.this)
+                        .setTitle(getResources().getString(R.string.alarm_tips))
+                        .setItems(alarmTime, new DialogInterface.OnClickListener() 
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) 
+                            {
+                                String hour = time.split(":")[0];
+                                String minute = time.split(":")[1];
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTimeInMillis(System.currentTimeMillis() + 5000);
+                                
+//                                calendar.set(Calendar.DAY_OF_WEEK, mCurrentSelectedDay);
+//                                calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
+//                                calendar.set(Calendar.MINUTE, Integer.parseInt(minute));
+//                                calendar.set(Calendar.SECOND, 0);
+//                                calendar.set(Calendar.MILLISECOND, 0);
+                                
+                                AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelName, program, calendar.getTimeInMillis());
+                            }
+                        })
+                        .create();
+                alertDialog.show();
+            }
+        });
     }
 
     @Override
