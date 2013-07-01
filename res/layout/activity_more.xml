@@ -4,20 +4,16 @@
     <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
         <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
             <LinearLayout style="@style/ll_more_menu">
-                <Button android:id="@+id/recent_view" android:tag="0" android:text="@string/recent_view" android:drawableLeft="@drawable/more_menu_history" style="@style/menu_list_item" />
-                <Button android:id="@+id/user_home" android:tag="1" android:text="@string/user_home" android:drawableLeft="@drawable/more_menu_user_home" style="@style/menu_list_item" />
-                <Button android:id="@+id/alarms" android:tag="2" android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/menu_list_item" />
+                <Button android:id="@+id/more_alarms" android:tag="2" android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
             <LinearLayout style="@style/ll_more_menu">
-                <Button android:id="@+id/check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" />
-                <Button android:id="@+id/issue_report" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" />
-                <Button android:id="@+id/about" android:tag="5" android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/menu_list_item" />
+                <Button android:id="@+id/more_check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" android:onClick="onClick" />
+                <Button android:id="@+id/more_issue_report" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" android:onClick="onClick" />
+                <Button android:id="@+id/more_about" android:tag="5" android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
             <LinearLayout style="@style/ll_more_menu">
-                <Button android:id="@+id/refresh" android:tag="6" android:text="@string/refresh" android:drawableLeft="@drawable/more_menu_refresh" style="@style/menu_list_item" />
-                <Button android:id="@+id/clear_cache" android:tag="7" android:text="@string/clear_cache" android:drawableLeft="@drawable/more_menu_clearcache" style="@style/menu_list_item" />
-                <Button android:id="@+id/quit" android:tag="8" android:text="@string/quit" android:drawableLeft="@drawable/more_menu_quit" style="@style/menu_list_item" />
-                <ImageView android:background="@color/ltgray" android:layout_width="fill_parent" android:layout_height="30.0dip" />
+                <Button android:id="@+id/more_clear_cache" android:tag="7" android:text="@string/clear_cache" android:drawableLeft="@drawable/more_menu_clearcache" style="@style/menu_list_item" android:onClick="onClick" />
+                <Button android:id="@+id/more_quit" android:tag="8" android:text="@string/quit" android:drawableLeft="@drawable/more_menu_quit" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

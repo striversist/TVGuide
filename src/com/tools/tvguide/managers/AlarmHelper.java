@@ -30,21 +30,23 @@ public class AlarmHelper
         loadAlarmSettings();
     }
     
-    public void addAlarm(String channelName, String program, long triggerAtMillis)
+    public void addAlarm(String channelId, String channelName, String program, long triggerAtMillis)
     {
-        String key = makeKey(channelName, program);
-        if (isAlarmSet(channelName, program))
-            removeAlarm(channelName, program);
+        String key = makeKey(channelId, channelName, program);
+        if (isAlarmSet(channelId, channelName, program))
+            removeAlarm(channelId, channelName, program);
         
         HashMap<String, String> info = new HashMap<String, String>();
-        info.put("channel", channelName);
+        info.put("channel_id", channelId);
+        info.put("channel_name", channelName);
         info.put("program", program);
         info.put("time", Long.toString(triggerAtMillis));
         mRecords.put(key, info);
         
         // 指定闹钟设置的时间到时，要运行的CallAlarm.class  
         Intent intent = new Intent(mContext, CallAlarmReceiver.class);
-        intent.putExtra("channel", channelName);
+        intent.putExtra("channel_id", channelId);
+        intent.putExtra("channel_name", channelName);
         intent.putExtra("program", program);
         PendingIntent sender = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
@@ -52,9 +54,9 @@ public class AlarmHelper
         mSettingChanged = true;
     }
     
-    public void removeAlarm(String channelName, String program)
+    public void removeAlarm(String channelId, String channelName, String program)
     {
-        String key = makeKey(channelName, program);
+        String key = makeKey(channelId, channelName, program);
         mRecords.remove(key);
         
         Intent intent = new Intent(mContext, CallAlarmReceiver.class);
@@ -66,21 +68,26 @@ public class AlarmHelper
         mSettingChanged = true;
     }
     
-    public long getAlarmTimeAtMillis(String channelName, String program)
+    public HashMap<String, HashMap<String, String>> getAllRecords()
     {
-        if (isAlarmSet(channelName, program))
-            return Long.valueOf(mRecords.get(makeKey(channelName, program)).get("time"));
+        return mRecords;
+    }
+    
+    public long getAlarmTimeAtMillis(String channelId, String channelName, String program)
+    {
+        if (isAlarmSet(channelId, channelName, program))
+            return Long.valueOf(mRecords.get(makeKey(channelId, channelName, program)).get("time"));
         return -1;
     }
     
-    public boolean isAlarmSet(String channelName, String program)
+    public boolean isAlarmSet(String channelId, String channelName, String program)
     {
-        return mRecords.containsKey(makeKey(channelName, program));
+        return mRecords.containsKey(makeKey(channelId, channelName, program));
     }
     
-    private String makeKey(String channelName, String program)
+    private String makeKey(String channelId, String channelName, String program)
     {
-        return channelName + SEPERATOR + program;
+        return channelId + SEPERATOR + channelName + SEPERATOR + program;
     }
     
     public void shutDown()

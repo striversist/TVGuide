@@ -167,7 +167,7 @@ public class ChannelDetailActivity extends Activity
                 alarmList.add(getResources().getString(R.string.m10_alarm));
                 String alarmTimeString[] = (String[]) alarmList.toArray(new String[0]);
                 
-                long alarmTime = AppEngine.getInstance().getAlarmHelper().getAlarmTimeAtMillis(mChannelName, program);
+                long alarmTime = AppEngine.getInstance().getAlarmHelper().getAlarmTimeAtMillis(mChannelId, mChannelName, program);
                 int choice = -1;
                 // Hash already set the alarm clock
                 if (alarmTime > 0)
@@ -210,11 +210,11 @@ public class ChannelDetailActivity extends Activity
                                 }
                                 
                                 // Try to remove the alarm first
-                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelName, program);
+                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
                                 
                                 // Set alarm clock
                                 long alarmTimeInMillis = calendar.getTimeInMillis() - aheadMinute * 60 * 1000;
-                                AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelName, program, alarmTimeInMillis);
+                                AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelId, mChannelName, program, alarmTimeInMillis);
                                 if (alarmTimeInMillis < System.currentTimeMillis())   // The clock will sounds right now
                                 {
                                     mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
@@ -233,7 +233,7 @@ public class ChannelDetailActivity extends Activity
                             @Override
                             public void onClick(DialogInterface dialog, int which) 
                             {
-                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelName, program);
+                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
                                 mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
                                 Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_cancel), Toast.LENGTH_SHORT).show();
                                 mListViewAdapter.notifyDataSetChanged();
@@ -410,7 +410,7 @@ public class ChannelDetailActivity extends Activity
                         HashMap<String, Object> item = new HashMap<String, Object>();
                         String program = mProgramList.get(i).get("time") + SEPERATOR + mProgramList.get(i).get("title");
                         item.put("program", program);
-                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelName, program))
+                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program))
                             item.put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.clock));
                         else
                             item.put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));

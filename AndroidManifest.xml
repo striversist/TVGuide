@@ -65,9 +65,14 @@
             android:name="com.tools.tvguide.activities.AlarmAlertActivity"
             android:label="@string/title_activity_alarmalert" >
         </activity>
-        <receiver 
-            android:name="com.tools.tvguide.utils.CallAlarmReceiver" >
+
+        <receiver android:name="com.tools.tvguide.utils.CallAlarmReceiver" >
         </receiver>
+
+        <activity
+            android:name="com.tools.tvguide.activities.AlarmSettingActivity"
+            android:label="@string/title_activity_alarm_setting" >
+        </activity>
     </application>
 
 </manifest>

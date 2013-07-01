@@ -59,9 +59,9 @@ public class CollectActivity extends Activity
         int position;
     }
     
-    private class MySimpleAdatper extends SimpleAdapter
+    private class MySimpleAdapter extends SimpleAdapter
     {
-        public MySimpleAdatper(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) 
+        public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) 
         {
             super(context, data, resource, from, to);
         }
@@ -95,6 +95,29 @@ public class CollectActivity extends Activity
                 });
             }
             return view;
+        }
+    }
+    
+    private class MyViewBinder implements ViewBinder
+    {
+        public boolean setViewValue(View view, Object data,
+                String textRepresentation)
+        {
+            if((view instanceof ImageView) && (data instanceof Bitmap))
+            {
+                ImageView iv = (ImageView)view;
+                Bitmap bm = (Bitmap)data;
+                iv.setImageBitmap(bm);
+                return true;
+            }
+            else if (view instanceof Button)
+            {
+                Button btn = (Button)view;
+                btn.setText(getResources().getString(R.string.delete));
+                return true;
+            }
+            
+            return false;
         }
     }
     
@@ -146,34 +169,11 @@ public class CollectActivity extends Activity
     private void createAndSetListViewAdapter()
     {
         mItemList = new ArrayList<HashMap<String, Object>>();
-        mListViewAdapter = new MySimpleAdatper(CollectActivity.this, mItemList, R.layout.collect_list_item,
+        mListViewAdapter = new MySimpleAdapter(CollectActivity.this, mItemList, R.layout.collect_list_item,
                 new String[]{"image", "name", "program", "button"}, 
                 new int[]{R.id.collect_item_logo, R.id.collect_item_channel, R.id.collect_item_program, R.id.collect_item_del_btn});
         mListViewAdapter.setViewBinder(new MyViewBinder());
         mChannelListView.setAdapter(mListViewAdapter);
-    }
-    
-    private class MyViewBinder implements ViewBinder
-    {
-        public boolean setViewValue(View view, Object data,
-                String textRepresentation)
-        {
-            if((view instanceof ImageView) && (data instanceof Bitmap))
-            {
-                ImageView iv = (ImageView)view;
-                Bitmap bm = (Bitmap)data;
-                iv.setImageBitmap(bm);
-                return true;
-            }
-            else if (view instanceof Button)
-            {
-                Button btn = (Button)view;
-                btn.setText(getResources().getString(R.string.delete));
-                return true;
-            }
-            
-            return false;
-        }
     }
     
     private void initChannelList()

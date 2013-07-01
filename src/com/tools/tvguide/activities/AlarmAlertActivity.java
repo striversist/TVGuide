@@ -19,10 +19,11 @@ public class AlarmAlertActivity extends Activity
         final MediaPlayer localMediaPlayer = MediaPlayer.create(this, getDefaultRingtoneUri(4));
         localMediaPlayer.setLooping(true);
         localMediaPlayer.start();
-        final String channel = getIntent().getStringExtra("channel");
+        final String channelId = getIntent().getStringExtra("channel_id");
+        final String channelName = getIntent().getStringExtra("channel_name");
         final String program = getIntent().getStringExtra("program");
         AlertDialog dialog = new AlertDialog.Builder(AlarmAlertActivity.this).setIcon(R.drawable.clock)
-                .setTitle(channel)
+                .setTitle(channelName)
                 .setMessage(program)
                 .setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() 
                 {
@@ -30,7 +31,7 @@ public class AlarmAlertActivity extends Activity
                     public void onClick(DialogInterface dialog, int which) 
                     {
                         localMediaPlayer.stop();
-                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channel, program);
+                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program);
                         AlarmAlertActivity.this.finish();
                     }
                 }).create();
