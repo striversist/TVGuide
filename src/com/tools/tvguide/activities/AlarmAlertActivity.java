@@ -1,5 +1,7 @@
 package com.tools.tvguide.activities;
 
+import com.tools.tvguide.managers.AppEngine;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,8 +19,8 @@ public class AlarmAlertActivity extends Activity
         final MediaPlayer localMediaPlayer = MediaPlayer.create(this, getDefaultRingtoneUri(4));
         localMediaPlayer.setLooping(true);
         localMediaPlayer.start();
-        String channel = getIntent().getStringExtra("channel");
-        String program = getIntent().getStringExtra("program");
+        final String channel = getIntent().getStringExtra("channel");
+        final String program = getIntent().getStringExtra("program");
         AlertDialog dialog = new AlertDialog.Builder(AlarmAlertActivity.this).setIcon(R.drawable.clock)
                 .setTitle(channel)
                 .setMessage(program)
@@ -27,8 +29,9 @@ public class AlarmAlertActivity extends Activity
                     @Override
                     public void onClick(DialogInterface dialog, int which) 
                     {
-                        AlarmAlertActivity.this.finish();
                         localMediaPlayer.stop();
+                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channel, program);
+                        AlarmAlertActivity.this.finish();
                     }
                 }).create();
         dialog.setCancelable(false);

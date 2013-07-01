@@ -46,6 +46,7 @@
     <string name="m3_alarm">提前3分钟提醒</string>
     <string name="m5_alarm">提前5分钟提醒</string>
     <string name="m10_alarm">提前10分钟提醒</string>
+    <string name="cancel_alarm">取消闹钟</string>
     <string name="self_decide">自定义</string>
     <string name="alarm_tips">请选择闹钟时间</string>
 
