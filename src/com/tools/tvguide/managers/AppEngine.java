@@ -8,7 +8,7 @@ public class AppEngine
     private static AppEngine                        mInstance                   = new AppEngine();
     private Context                                 mContext;
     private Context                                 mApplicationContext;
-    private UserSettingManager                      mUserSettingManager;
+    private CollectManager                      mUserSettingManager;
     private LoginManager                            mLoginManager;
     private ContentManager                          mContentManager;
     private CacheManager                            mCacheManager;
@@ -41,10 +41,10 @@ public class AppEngine
         return mContext;
     }
     
-    public UserSettingManager getUserSettingManager()
+    public CollectManager getCollectManager()
     {
         if (mUserSettingManager == null)
-            mUserSettingManager = new UserSettingManager(mContext);
+            mUserSettingManager = new CollectManager(mContext);
         return mUserSettingManager;
     }
     

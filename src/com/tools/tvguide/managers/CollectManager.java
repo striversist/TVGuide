@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 import android.content.Context;
 
-public class UserSettingManager
+public class CollectManager
 {
     public static final String TAG = "UserSettingManager";
     
@@ -20,7 +20,7 @@ public class UserSettingManager
     private HashMap<String, HashMap<String, Object>> mCollectChannels;
     private String FILE_COLLECT_CHANNELS = "collect_channels.txt";
     
-    public UserSettingManager(Context context)
+    public CollectManager(Context context)
     {
         mContext = context;
         loadCollectChannels();

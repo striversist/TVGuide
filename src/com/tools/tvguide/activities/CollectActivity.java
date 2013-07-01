@@ -85,7 +85,7 @@ public class CollectActivity extends Activity
                         {
                             if (mChannelList.get(i).position == position)
                             {
-                                AppEngine.getInstance().getUserSettingManager().removeCollectChannel(mChannelList.get(i).id);
+                                AppEngine.getInstance().getCollectManager().removeCollectChannel(mChannelList.get(i).id);
                             }
                         }
                         mChannelList.remove(position);
@@ -179,7 +179,7 @@ public class CollectActivity extends Activity
     private void initChannelList()
     {
         mChannelList.clear();
-        Iterator<Entry<String, HashMap<String, Object>>> iter = AppEngine.getInstance().getUserSettingManager().getCollectChannels().entrySet().iterator();
+        Iterator<Entry<String, HashMap<String, Object>>> iter = AppEngine.getInstance().getCollectManager().getCollectChannels().entrySet().iterator();
         while (iter.hasNext())
         {
             Map.Entry<String, HashMap<String, Object>> entry = (Map.Entry<String, HashMap<String,Object>>)iter.next();

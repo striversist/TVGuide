@@ -340,7 +340,7 @@ public class ChannelDetailActivity extends Activity
         {
             HashMap<String, Object> info = new HashMap<String, Object>();
             info.put("name", mChannelName);
-            AppEngine.getInstance().getUserSettingManager().addCollectChannel(mChannelId, info);
+            AppEngine.getInstance().getCollectManager().addCollectChannel(mChannelId, info);
             Toast.makeText(this, R.string.collect_success, Toast.LENGTH_SHORT).show();
         }
     }
