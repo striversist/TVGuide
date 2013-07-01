@@ -80,6 +80,9 @@ public class AppEngine
     {
         if (mUserSettingManager != null)
             mUserSettingManager.shutDown();
+        
+        if (mAlarmHelper != null)
+            mAlarmHelper.shutDown();
     }
     
 }

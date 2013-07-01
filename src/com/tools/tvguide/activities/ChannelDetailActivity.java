@@ -146,9 +146,9 @@ public class ChannelDetailActivity extends Activity
                 if (calendar.getTimeInMillis() < System.currentTimeMillis())
                 {
                     AlertDialog dialog = new AlertDialog.Builder(ChannelDetailActivity.this)
-                        .setTitle("提示")
-                        .setMessage("您不能给已经播出的节目定闹钟")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() 
+                        .setTitle(getResources().getString(R.string.tips))
+                        .setMessage(getResources().getString(R.string.alarm_tips_cannot_set))
+                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which) 
@@ -222,7 +222,7 @@ public class ChannelDetailActivity extends Activity
                                 else 
                                 {
                                     mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.clock));
-                                    Toast.makeText(ChannelDetailActivity.this, "闹钟已设置", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_set), Toast.LENGTH_SHORT).show();
                                 }
                                 mListViewAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
@@ -235,7 +235,7 @@ public class ChannelDetailActivity extends Activity
                             {
                                 AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelName, program);
                                 mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
-                                Toast.makeText(ChannelDetailActivity.this, "闹钟已取消", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_cancel), Toast.LENGTH_SHORT).show();
                                 mListViewAdapter.notifyDataSetChanged();
                             }
                             
@@ -245,7 +245,7 @@ public class ChannelDetailActivity extends Activity
             }
         });
         
-        Toast.makeText(ChannelDetailActivity.this, "点击节目可以设置闹钟提醒", Toast.LENGTH_LONG).show();
+        Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_LONG).show();
     }
     
     @Override

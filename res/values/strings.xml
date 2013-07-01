@@ -48,6 +48,12 @@
     <string name="m10_alarm">提前10分钟提醒</string>
     <string name="cancel_alarm">取消闹钟</string>
     <string name="self_decide">自定义</string>
+    <string name="ok">确定</string>
+    <string name="tips">提示</string>
     <string name="alarm_tips">请选择闹钟时间</string>
+    <string name="alarm_tips_set">闹钟已设置</string>
+    <string name="alarm_tips_cancel">闹钟已取消</string>
+    <string name="alarm_tips_can_set">提示：点击节目可以设置闹钟提醒</string>
+    <string name="alarm_tips_cannot_set">您不能给已经播出的节目定闹钟</string>
 
 </resources>
