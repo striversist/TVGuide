@@ -1,5 +1,7 @@
 package com.tools.tvguide.activities;
 
+import java.net.UnknownHostException;
+
 import com.tools.tvguide.managers.AppEngine;
 
 import android.os.Bundle;
@@ -95,6 +97,12 @@ public class MainActivity extends TabActivity
         });
         
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
+//        try {
+//            AppEngine.getInstance().getDnsManager().getIPAddress("striversist.oicp.net");
+//        } catch (UnknownHostException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
 
     @Override

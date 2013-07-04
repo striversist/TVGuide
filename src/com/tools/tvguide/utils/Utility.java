@@ -85,4 +85,32 @@ public class Utility
         
         return bitmap;
     }
+	
+	public static boolean isIPAddress(String hostName) {  
+        if (hostName == null)
+        {  
+            return false;
+        }
+        try {
+            String[] nums = hostName.split("\\.");
+            int len = nums.length;
+            if(len != 4)
+            {
+                return false;
+            }
+            for (int i = 0; i < len; i++) 
+            {
+                int ipNum = Integer.parseInt(nums[i]);
+                if(ipNum > 255 || ipNum < 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        } 
+        catch (Exception e) 
+        {
+        }
+        return false;
+    }
 }

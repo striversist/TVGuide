@@ -17,6 +17,7 @@ public class UrlManager
     public static final String URL_CHOOSE               = "http://" + HOST + BASE_PATH + "/json/choose.php";
     public static final String URL_SEARCH               = "http://" + HOST + BASE_PATH + "/json/search.php";
     public static final String URL_HOT                  = "http://" + HOST + BASE_PATH + "/json/hot.php";
+    public static final String URL_CHINAZ_IP            = "http://ip.chinaz.com";
     
     private Context mContext;
     

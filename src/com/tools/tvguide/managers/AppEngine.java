@@ -8,11 +8,12 @@ public class AppEngine
     private static AppEngine                        mInstance                   = new AppEngine();
     private Context                                 mContext;
     private Context                                 mApplicationContext;
-    private CollectManager                      mUserSettingManager;
+    private CollectManager                          mUserSettingManager;
     private LoginManager                            mLoginManager;
     private ContentManager                          mContentManager;
     private CacheManager                            mCacheManager;
     private AlarmHelper                             mAlarmHelper;
+    private DnsManager                              mDnsManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -74,6 +75,13 @@ public class AppEngine
         if (mAlarmHelper == null)
             mAlarmHelper = new AlarmHelper(mContext);
         return mAlarmHelper;
+    }
+    
+    public DnsManager getDnsManager()
+    {
+        if (mDnsManager == null)
+            mDnsManager = new DnsManager(mContext);
+        return mDnsManager;
     }
     
     public void prepareBeforeExit()
