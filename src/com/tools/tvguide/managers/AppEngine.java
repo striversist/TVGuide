@@ -13,6 +13,7 @@ public class AppEngine
     private ContentManager                          mContentManager;
     private CacheManager                            mCacheManager;
     private AlarmHelper                             mAlarmHelper;
+    private UrlManager                              mUrlManager;
     private DnsManager                              mDnsManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
@@ -75,6 +76,13 @@ public class AppEngine
         if (mAlarmHelper == null)
             mAlarmHelper = new AlarmHelper(mContext);
         return mAlarmHelper;
+    }
+    
+    public UrlManager getUrlManager()
+    {
+        if (mUrlManager == null)
+            mUrlManager = new UrlManager(mContext);
+        return mUrlManager;
     }
     
     public DnsManager getDnsManager()

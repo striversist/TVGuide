@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -203,7 +204,7 @@ public class SearchActivity extends Activity
         {
             public void run()
             {
-                String url = UrlManager.URL_SEARCH + "?keyword=" + mKeyword;
+                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_SEARCH) + "?keyword=" + mKeyword;
                 NetDataGetter getter;
                 try 
                 {

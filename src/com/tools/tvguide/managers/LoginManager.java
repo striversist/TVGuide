@@ -10,7 +10,7 @@ import android.content.Context;
 public class LoginManager 
 {
     // millisecond
-    public static final int KEEP_ALIVE_INTERVAL = 5000;
+    public static final int KEEP_ALIVE_INTERVAL = 15000;
     private Context mContext;
     private Thread  mKeepAliveThread;
     private boolean mDone;
@@ -71,7 +71,8 @@ public class LoginManager
             try
             {
                 Thread.sleep(1500);
-                mSocket.connect(new InetSocketAddress(UrlManager.HOST, UrlManager.PORT));
+                UrlManager urlManager = AppEngine.getInstance().getUrlManager();
+                mSocket.connect(new InetSocketAddress(urlManager.getHost(), urlManager.getPort()));
                 mSocket.setSoTimeout(mDelay);
                 mOutputStream = mSocket.getOutputStream();
             }

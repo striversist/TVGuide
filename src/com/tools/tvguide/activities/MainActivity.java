@@ -96,13 +96,8 @@ public class MainActivity extends TabActivity
             }
         });
         
+        AppEngine.getInstance().getUrlManager().init();
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
-//        try {
-//            AppEngine.getInstance().getDnsManager().getIPAddress("striversist.oicp.net");
-//        } catch (UnknownHostException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
     }
 
     @Override

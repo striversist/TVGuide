@@ -86,11 +86,11 @@ public class Utility
         return bitmap;
     }
 	
-	public static boolean isIPAddress(String hostName) {  
+	public static boolean isIPAddress(String hostName) 
+	{  
         if (hostName == null)
-        {  
             return false;
-        }
+
         try {
             String[] nums = hostName.split("\\.");
             int len = nums.length;

@@ -3,44 +3,40 @@ package com.tools.tvguide.managers;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.utils.NetDataGetter;
-import com.tools.tvguide.utils.NetworkManager;
+import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 
 public class DnsManager 
 {
     private Context mContext;
-    private Handler mUpdateHandler;
+    private String  mIpAddress;
     
     public DnsManager(Context context)
     {
         mContext = context;
-        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
     }
     
     public String getIPAddress(String hostName) throws UnknownHostException
     {
         InetAddress addr = null;
+        if (mIpAddress != null)
+            return mIpAddress;
+        
         String ipAddress = getIPFrom_chinaz(hostName);
         if (ipAddress != null)
         {
+            mIpAddress = ipAddress;
             return ipAddress;
         }
         
         addr = InetAddress.getByName (hostName);
         ipAddress = addr.getHostAddress();
+        mIpAddress = ipAddress;
         return ipAddress;
     }
     
@@ -71,6 +67,9 @@ public class DnsManager
         {
             e.printStackTrace();
         }
+        
+        if (!Utility.isIPAddress(ipAddress))
+            return null;
         return ipAddress;
     }
 }

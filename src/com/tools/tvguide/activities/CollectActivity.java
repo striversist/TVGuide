@@ -222,7 +222,7 @@ public class CollectActivity extends Activity
             public void run()
             {
                 assert(mChannelList != null);
-                String url = UrlManager.URL_ON_PLAYING_PROGRAMS;
+                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
                 try 
                 {
                     NetDataGetter getter;
