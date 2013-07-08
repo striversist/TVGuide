@@ -20,14 +20,12 @@ public class UrlManager
     public static final int URL_CHOOSE                  = 5;
     public static final int URL_SEARCH                  = 6;
     public static final int URL_HOT                     = 7;
-    
+        
+    private static final boolean ENABLE_TEST            = false;
     private String  mHostName                           = "striversist.oicp.net";
-//    private String  mHostIP                             = null;
-//    private static final String BASE_PATH               = "/TV";
-//    private static final int    PORT                    = 9999;
-    private String  mHostIP                             = "192.168.1.100";
-    private static final String BASE_PATH               = "/projects/TV";
-    private static final int    PORT                    = 80;
+    private String  mHostIP;
+    private String  BASE_PATH;
+    private int     PORT;
     
     private static final String PATH_CATEGORIES           = "/json/categories.php";
     private static final String PATH_CHANNELS             = "/json/channels.php";
@@ -42,6 +40,18 @@ public class UrlManager
     public UrlManager(Context context)
     {
         mContext = context;
+        if (ENABLE_TEST)
+        {
+            mHostIP = "192.168.1.100";
+            BASE_PATH = "/projects/TV";
+            PORT = 80;
+        }
+        else
+        {
+            mHostIP = null;
+            BASE_PATH = "/TV";
+            PORT = 9999;
+        }
     }
     
     public void init()

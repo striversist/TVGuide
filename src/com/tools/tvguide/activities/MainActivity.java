@@ -41,6 +41,7 @@ public class MainActivity extends TabActivity
         
         AppEngine.getInstance().setContext(this);
         AppEngine.getInstance().setApplicationContext(getApplicationContext());
+        AppEngine.getInstance().getUrlManager().init();
         
         mStringHome     = getResources().getString(R.string.category_home);
         mStringCollect  = getResources().getString(R.string.category_collect);
@@ -96,7 +97,6 @@ public class MainActivity extends TabActivity
             }
         });
         
-        AppEngine.getInstance().getUrlManager().init();
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
     }
 
