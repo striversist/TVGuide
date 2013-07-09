@@ -21,7 +21,7 @@ public class UrlManager
     public static final int URL_SEARCH                  = 6;
     public static final int URL_HOT                     = 7;
         
-    private static final boolean ENABLE_TEST            = false;
+    private static final boolean ENABLE_TEST            = true;
     private String  mHostName                           = "striversist.oicp.net";
     private String  mHostIP;
     private String  BASE_PATH;

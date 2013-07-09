@@ -5,8 +5,14 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -25,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
+import android.util.Pair;
 
 public class NetDataGetter
 {
@@ -34,6 +41,8 @@ public class NetDataGetter
 	//String mRecvDataAsync = null;
 	private int mConnectionTimeout = 6000;
 	private int mSocketTimeout = 10000;
+	private HashMap<String, String> mExtraHeaders;
+	private HttpResponse mResponse;
 	
 	public NetDataGetter()
 	{
@@ -81,6 +90,23 @@ public class NetDataGetter
 		}
 		mSocketTimeout = timeout;
 		return 0;
+	}
+	
+	public void setHeader(String name, String value)
+	{
+	    mExtraHeaders.put(name, value);
+	}
+	
+	public void setHeaders(HashMap<String, String> headers)
+	{
+	    mExtraHeaders = headers;
+	}
+	
+	public String getFirstHeader(String name)
+	{
+	    if (mResponse == null)
+	        return null;
+	    return mResponse.getFirstHeader(name).getValue();
 	}
 	
 	public InputStream getInputStream()
@@ -134,6 +160,18 @@ public class NetDataGetter
     	
         try
 		{
+            if (mExtraHeaders != null)
+            {
+                Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
+                while (iter.hasNext())
+                {
+                    Map.Entry<String, String> entry = iter.next();
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    post.setHeader(key, value);
+                }
+            }
+            
         	if(pairs != null)
         	{
         		post.setEntity(new UrlEncodedFormEntity(pairs, HTTP.UTF_8));
@@ -151,6 +189,7 @@ public class NetDataGetter
         		return null;
         	}
         	
+        	mResponse = response;
         	entity = response.getEntity();
         	if(entity == null)
         	{

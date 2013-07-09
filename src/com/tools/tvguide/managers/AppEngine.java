@@ -1,5 +1,7 @@
 package com.tools.tvguide.managers;
 
+import com.tools.tvguide.activities.R.id;
+
 import android.content.Context;
 
 public class AppEngine 
@@ -15,6 +17,7 @@ public class AppEngine
     private AlarmHelper                             mAlarmHelper;
     private UrlManager                              mUrlManager;
     private DnsManager                              mDnsManager;
+    private UpdateManager                           mUpdateManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -90,6 +93,13 @@ public class AppEngine
         if (mDnsManager == null)
             mDnsManager = new DnsManager(mContext);
         return mDnsManager;
+    }
+    
+    public UpdateManager getUpdateManager()
+    {
+        if (mUpdateManager == null)
+            mUpdateManager = new UpdateManager(mContext);
+        return mUpdateManager;
     }
     
     public void prepareBeforeExit()

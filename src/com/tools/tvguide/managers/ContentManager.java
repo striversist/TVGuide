@@ -52,6 +52,11 @@ public class ContentManager
                 try 
                 {
                     getter = new NetDataGetter(url);
+                    String guid = AppEngine.getInstance().getUpdateManager().getGUID();
+                    if (guid != null)
+                    {
+                        getter.setHeader("GUID", guid);
+                    }
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
@@ -69,6 +74,11 @@ public class ContentManager
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
+                    guid = getter.getFirstHeader("GUID");
+                    if (guid != null)
+                    {
+                        AppEngine.getInstance().getUpdateManager().setGUID(guid);
+                    }
                     AppEngine.getInstance().getCacheManager().saveCatgegoriesByType(type, result);
                 }
                 catch (MalformedURLException e) 
