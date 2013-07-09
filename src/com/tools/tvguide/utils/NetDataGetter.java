@@ -41,7 +41,7 @@ public class NetDataGetter
 	//String mRecvDataAsync = null;
 	private int mConnectionTimeout = 6000;
 	private int mSocketTimeout = 10000;
-	private HashMap<String, String> mExtraHeaders;
+	private HashMap<String, String> mExtraHeaders = new HashMap<String, String>();
 	private HttpResponse mResponse;
 	
 	public NetDataGetter()
@@ -160,16 +160,13 @@ public class NetDataGetter
     	
         try
 		{
-            if (mExtraHeaders != null)
+            Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
+            while (iter.hasNext())
             {
-                Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
-                while (iter.hasNext())
-                {
-                    Map.Entry<String, String> entry = iter.next();
-                    String key = entry.getKey();
-                    String value = entry.getValue();
-                    post.setHeader(key, value);
-                }
+                Map.Entry<String, String> entry = iter.next();
+                String key = entry.getKey();
+                String value = entry.getValue();
+                post.setHeader(key, value);
             }
             
         	if(pairs != null)
