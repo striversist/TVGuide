@@ -19,6 +19,7 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -94,17 +95,23 @@ public class NetDataGetter
 	
 	public void setHeader(String name, String value)
 	{
+	    if (name == null || value == null)
+	        return;
 	    mExtraHeaders.put(name, value);
 	}
 	
 	public void setHeaders(HashMap<String, String> headers)
 	{
+	    if (headers == null)
+	        return;
 	    mExtraHeaders = headers;
 	}
 	
 	public String getFirstHeader(String name)
 	{
 	    if (mResponse == null)
+	        return null;
+	    if (mResponse.getFirstHeader(name) == null)
 	        return null;
 	    return mResponse.getFirstHeader(name).getValue();
 	}
@@ -153,28 +160,42 @@ public class NetDataGetter
 		HttpConnectionParams.setSoTimeout(httpParameters, mSocketTimeout);
 		
 		HttpClient client = new DefaultHttpClient(httpParameters);
-    	HttpPost post = new HttpPost(mUrl.toString());
     	HttpResponse response = null;
     	HttpEntity entity = null;
     	String recvData = null;
     	
         try
 		{
-            Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
-            while (iter.hasNext())
+            // POST 
+            if(pairs != null)
             {
-                Map.Entry<String, String> entry = iter.next();
-                String key = entry.getKey();
-                String value = entry.getValue();
-                post.setHeader(key, value);
+                HttpPost post = new HttpPost(mUrl.toString());
+                post.setEntity(new UrlEncodedFormEntity(pairs, HTTP.UTF_8));
+                Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
+                while (iter.hasNext())
+                {
+                    Map.Entry<String, String> entry = iter.next();
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    post.setHeader(key, value);
+                }
+                response = client.execute(post);
             }
-            
-        	if(pairs != null)
-        	{
-        		post.setEntity(new UrlEncodedFormEntity(pairs, HTTP.UTF_8));
-        	}
+            // GET
+            else
+            {
+                HttpGet get = new HttpGet(mUrl.toString());
+                Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
+                while (iter.hasNext())
+                {
+                    Map.Entry<String, String> entry = iter.next();
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    get.setHeader(key, value);
+                }
+                response = client.execute(get);
+            }
         	
-        	response = client.execute(post);
         	if(response == null)
         	{
         		Log.e("Error", "Response Null");

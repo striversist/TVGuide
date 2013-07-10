@@ -227,6 +227,7 @@ public class CollectActivity extends Activity
                 {
                     NetDataGetter getter;
                     getter = new NetDataGetter(url);
+                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
                     List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                     //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
                     String idArray = "[";

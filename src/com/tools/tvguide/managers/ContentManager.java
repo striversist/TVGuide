@@ -113,6 +113,7 @@ public class ContentManager
                 try 
                 {
                     getter = new NetDataGetter(url);
+                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
@@ -157,6 +158,7 @@ public class ContentManager
                 try 
                 {
                     getter = new NetDataGetter(url);
+                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
@@ -214,6 +216,7 @@ public class ContentManager
                 {
                     NetDataGetter getter;
                     getter = new NetDataGetter(url);
+                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
                     JSONObject jsonRoot = getter.getJSONsObject(pairs);
                     if (jsonRoot != null)
                     {
@@ -257,6 +260,7 @@ public class ContentManager
                 {
                     NetDataGetter getter;
                     getter = new NetDataGetter(url);
+                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {

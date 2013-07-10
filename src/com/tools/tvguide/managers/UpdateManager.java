@@ -1,8 +1,10 @@
 package com.tools.tvguide.managers;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 
 import android.content.Context;
@@ -35,7 +37,6 @@ public class UpdateManager
         {
             e.printStackTrace();
         }
-        
     }
     
     public String getGUID()
@@ -46,11 +47,10 @@ public class UpdateManager
     private void load()
     {
         try
-        {
-            FileInputStream fis = mContext.openFileInput(FILE_GUID);
-            byte[] tmpBytes = new byte[100];
-            fis.read(tmpBytes);
-            mGuid = new String(tmpBytes);
+        {           
+            FileReader reader = new FileReader(mContext.getFileStreamPath(FILE_GUID));
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            mGuid = bufferedReader.readLine();
         } 
         catch (FileNotFoundException e) 
         {
