@@ -123,7 +123,7 @@ public class MainActivity extends TabActivity
             if ((System.currentTimeMillis() - mExitTime) > 2000)
             {
                 mExitTime = System.currentTimeMillis();
-                Toast.makeText(this, "ÔÙ°´Ò»´ÎÍË³ö³ÌĞò", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "å†æŒ‰ä¸€æ¬¡é€€å‡ºç¨‹åº", Toast.LENGTH_SHORT).show();
             }
             else
             {

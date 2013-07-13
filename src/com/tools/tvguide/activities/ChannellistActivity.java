@@ -189,7 +189,7 @@ public class ChannellistActivity extends Activity
                             {
                                 if (mItemList.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
                                 {
-                                    mItemList.get(i).put("program", "ÕýÔÚ²¥·Å£º  " + mOnPlayingProgramList.get(j).get("title"));
+                                    mItemList.get(i).put("program", "æ­£åœ¨æ’­å‡ºï¼š" + mOnPlayingProgramList.get(j).get("title"));
                                 }
                             }
                         }

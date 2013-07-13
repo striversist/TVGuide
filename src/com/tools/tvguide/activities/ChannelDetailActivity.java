@@ -136,6 +136,7 @@ public class ChannelDetailActivity extends Activity
                 String minute = time.split(":")[1];
                 final Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.setFirstDayOfWeek(Calendar.MONDAY);
                 calendar.set(Calendar.DAY_OF_WEEK, mCurrentSelectedDay);
                 calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
                 calendar.set(Calendar.MINUTE, Integer.parseInt(minute));
@@ -419,7 +420,7 @@ public class ChannelDetailActivity extends Activity
                     mListViewAdapter.notifyDataSetChanged();
                     break;
                 case MSG_REFRESH_ON_PLAYING_PROGRAM:
-                    mListViewAdapter.notifyDataSetChanged();    // 使得正在播出的节目显示红色
+                    mListViewAdapter.notifyDataSetChanged();    // 娴ｅ灝绶卞锝呮躬閹绢厼鍤惃鍕Ν閻╊喗妯夌粈铏瑰閼癸拷
                     String onPlayingProgram = "";
                     if (mOnPlayingProgram.size() > 0)
                     {
