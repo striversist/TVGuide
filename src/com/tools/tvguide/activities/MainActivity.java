@@ -3,6 +3,7 @@ package com.tools.tvguide.activities;
 import java.net.UnknownHostException;
 
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.UpdateManager;
 
 import android.os.Bundle;
 import android.app.TabActivity;
@@ -98,6 +99,13 @@ public class MainActivity extends TabActivity
         });
         
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
+        AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
+        {
+            public void OnIOComplete(int result) 
+            {
+                
+            }
+        });
     }
 
     @Override

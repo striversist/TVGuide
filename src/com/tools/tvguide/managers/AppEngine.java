@@ -1,6 +1,7 @@
 package com.tools.tvguide.managers;
 
 import com.tools.tvguide.activities.R.id;
+import com.tools.tvguide.components.VersionController;
 
 import android.content.Context;
 
@@ -19,7 +20,7 @@ public class AppEngine
     private DnsManager                              mDnsManager;
     private UpdateManager                           mUpdateManager;
     
-    /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
+    /********************************* Manager瀹氫箟鍖猴紝鎵�鏈夊彈AppEngine绠＄悊鐨凪anger缁熶竴瀹氫箟 **********************************/
     
     public static AppEngine getInstance()
     {

@@ -20,6 +20,7 @@ public class UrlManager
     public static final int URL_CHOOSE                  = 5;
     public static final int URL_SEARCH                  = 6;
     public static final int URL_HOT                     = 7;
+    public static final int URL_UPDATE                  = 8;
         
     private static final boolean ENABLE_TEST            = true;
     private String  mHostName                           = "striversist.oicp.net";
@@ -34,6 +35,7 @@ public class UrlManager
     private static final String PATH_CHOOSE               = "/json/choose.php";
     private static final String PATH_SEARCH               = "/json/search.php";
     private static final String PATH_HOT                  = "/json/hot.php";
+    private static final String PATH_UPDATE               = "/update/update.php";
     
     private Context mContext;
     
@@ -42,7 +44,7 @@ public class UrlManager
         mContext = context;
         if (ENABLE_TEST)
         {
-            mHostIP = "192.168.1.100";
+            mHostIP = "192.168.1.104";
             BASE_PATH = "/projects/TV";
             PORT = 80;
         }
@@ -107,6 +109,9 @@ public class UrlManager
                 break;
             case URL_HOT:
                 url += PATH_HOT;
+                break;
+            case URL_UPDATE:
+                url += PATH_UPDATE;
                 break;
             default:
                 assert false: "Not reach here";

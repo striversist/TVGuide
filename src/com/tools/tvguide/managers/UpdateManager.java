@@ -1,11 +1,12 @@
 package com.tools.tvguide.managers;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+
+import com.tools.tvguide.components.VersionController;
 
 import android.content.Context;
 
@@ -14,10 +15,18 @@ public class UpdateManager
     private Context mContext;
     private String  mGuid;
     private final String FILE_GUID = "GUID.txt";
+    private VersionController mVersionController;
     
+    public interface IOCompleteCallback
+    {
+        void OnIOComplete(int result);
+        final int NEED_UPDATE = 0;
+        final int NO_NEED_UPDATE = 1;
+    }
     public UpdateManager(Context context)
     {
         mContext = context;
+        mVersionController = new VersionController(context);
         load();
     }
     
@@ -42,6 +51,26 @@ public class UpdateManager
     public String getGUID()
     {
         return mGuid;
+    }
+    
+    public boolean checkUpdate(final IOCompleteCallback callback)
+    {
+        new Thread()
+        {
+            public void run()
+            {
+                if (mVersionController.checkLatestVersion())
+                    callback.OnIOComplete(IOCompleteCallback.NEED_UPDATE);
+                else
+                    callback.OnIOComplete(IOCompleteCallback.NO_NEED_UPDATE);
+            }
+        }.start();
+        return false;
+    }
+    
+    public String currentVersionName()
+    {
+        return mVersionController.getCurrentVersionName();
     }
     
     private void load()
