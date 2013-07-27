@@ -15,7 +15,6 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -74,14 +73,6 @@ public class ChannellistActivity extends Activity
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_channellist, menu);
-        return true;
     }
 
     public void back(View view)

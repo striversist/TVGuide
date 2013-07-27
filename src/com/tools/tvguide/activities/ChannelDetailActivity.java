@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Pair;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -254,14 +253,6 @@ public class ChannelDetailActivity extends Activity
     {
         setIntent(intent);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_channel_detail, menu);
-        return true;
-    }
     
     public void initViews()
     {
@@ -420,7 +411,7 @@ public class ChannelDetailActivity extends Activity
                     mListViewAdapter.notifyDataSetChanged();
                     break;
                 case MSG_REFRESH_ON_PLAYING_PROGRAM:
-                    mListViewAdapter.notifyDataSetChanged();    // 浣垮緱姝ｅ湪鎾嚭鐨勮妭鐩樉绀虹孩鑹�
+                    mListViewAdapter.notifyDataSetChanged();
                     String onPlayingProgram = "";
                     if (mOnPlayingProgram.size() > 0)
                     {

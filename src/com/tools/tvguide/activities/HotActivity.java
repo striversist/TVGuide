@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.tools.tvguide.activities.SearchActivity.PartAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -18,12 +17,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -87,14 +82,6 @@ public class HotActivity extends Activity
         
         createUpdateThreadAndHandler();
         updateResult();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_about, menu);
-        return true;
     }
 
     private void createUpdateThreadAndHandler()

@@ -12,7 +12,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,14 +33,6 @@ public class MoreActivity extends Activity
         String versionFormat = checkBtn.getText().toString();
         String finalVersion = String.format(versionFormat, AppEngine.getInstance().getUpdateManager().currentVersionName());
         checkBtn.setText(finalVersion);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_more, menu);
-        return true;
     }
     
     private void createDialogs()

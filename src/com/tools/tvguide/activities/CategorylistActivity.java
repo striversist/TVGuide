@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -69,14 +68,6 @@ public class CategorylistActivity extends Activity
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_categorylist, menu);
-        return true;
     }
 
     public void back(View view)

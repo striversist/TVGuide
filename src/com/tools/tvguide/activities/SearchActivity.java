@@ -25,7 +25,6 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class SearchActivity extends Activity 
@@ -167,18 +165,10 @@ public class SearchActivity extends Activity
 //        item.id = "cctv1";
 //        item.name = "CCTV-1";
 //        item.time = "00:26";
-//        item.title = "Õı´ó×ÛÒÕ";
+//        item.title = "æ–°é—»è”æ’­";
 //        ContentItem contentItem = new ContentItem(item);
 //        mItemList.add(contentItem);
 //        mListViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_search, menu);
-        return true;
     }
 
     private void createUpdateThreadAndHandler()
@@ -191,7 +181,7 @@ public class SearchActivity extends Activity
         hideInputKeyboard();
         if (mSearchEditText.getText().toString().trim().equals(""))
         {
-            Toast.makeText(this, "ÇëÊäÈëÒªËÑË÷µÄ½ÚÄ¿¹Ø¼ü×Ö!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "è¯·è¾“å…¥æœç´¢å…³é”®å­—ï¼", Toast.LENGTH_SHORT).show();
             return;
         }
         mKeyword = mSearchEditText.getText().toString().trim().split(" ")[0];

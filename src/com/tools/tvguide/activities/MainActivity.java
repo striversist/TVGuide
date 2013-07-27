@@ -7,7 +7,6 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost;
@@ -105,15 +104,7 @@ public class MainActivity extends TabActivity
         super.onDestroy();
         AppEngine.getInstance().prepareBeforeExit();
     };
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-    
+        
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) 
     {

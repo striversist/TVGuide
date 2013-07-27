@@ -25,7 +25,7 @@ public class AlarmAlertActivity extends Activity
         AlertDialog dialog = new AlertDialog.Builder(AlarmAlertActivity.this).setIcon(R.drawable.clock)
                 .setTitle(channelName)
                 .setMessage(program)
-                .setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() 
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) 

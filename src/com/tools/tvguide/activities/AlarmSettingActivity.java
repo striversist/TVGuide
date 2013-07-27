@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -47,7 +46,7 @@ public class AlarmSettingActivity extends Activity
             Button rmBtn = (Button)view.findViewById(R.id.collect_item_del_btn);
             if (rmBtn != null)
             {
-                rmBtn.setText("È¡Ïû");
+                rmBtn.setText("È¡ï¿½ï¿½");
                 rmBtn.setTag(position);
                 rmBtn.setOnClickListener(new OnClickListener() 
                 {
@@ -100,14 +99,6 @@ public class AlarmSettingActivity extends Activity
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         createAndSetListViewAdapter();
         initAlarmList();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_alarm_setting, menu);
-        return true;
     }
     
     @Override
