@@ -283,7 +283,7 @@ public class CollectActivity extends Activity
                     {
                         for (int i=0; i<mOnPlayingProgramList.size(); ++i)
                         {
-                            mItemList.get(i).put("program", "ÕýÔÚ²¥·Å£º  " + mOnPlayingProgramList.get(i).second);
+                            mItemList.get(i).put("program", "æ­£åœ¨æ’­æ”¾ï¼š " +  mOnPlayingProgramList.get(i).second);
                         }
                         mListViewAdapter.notifyDataSetChanged();
                     }

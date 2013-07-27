@@ -9,11 +9,15 @@ import java.io.IOException;
 import com.tools.tvguide.components.VersionController;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.widget.Toast;
 
 public class UpdateManager 
 {
     private Context mContext;
     private String  mGuid;
+    private boolean mChecked = false;
     private final String FILE_GUID = "GUID.txt";
     private VersionController mVersionController;
     
@@ -53,6 +57,18 @@ public class UpdateManager
         return mGuid;
     }
     
+    public void checkUpdate()
+    {
+        checkUpdate(new IOCompleteCallback() 
+        {    
+            @Override
+            public void OnIOComplete(int result) 
+            {
+                uiHandler.sendEmptyMessage(result);
+            }
+        });
+    }
+    
     public boolean checkUpdate(final IOCompleteCallback callback)
     {
         new Thread()
@@ -63,6 +79,7 @@ public class UpdateManager
                     callback.OnIOComplete(IOCompleteCallback.NEED_UPDATE);
                 else
                     callback.OnIOComplete(IOCompleteCallback.NO_NEED_UPDATE);
+                mChecked = true;
             }
         }.start();
         return false;
@@ -73,6 +90,18 @@ public class UpdateManager
         return mVersionController.getCurrentVersionName();
     }
     
+    public String latestVersionName()
+    {
+        assert(mChecked);
+        return mVersionController.getLatestVersionName();
+    }
+    
+    public String getUrl()
+    {
+        assert(mChecked);
+        return mVersionController.getUrl();
+    }
+    
     private void load()
     {
         try
@@ -80,6 +109,7 @@ public class UpdateManager
             FileReader reader = new FileReader(mContext.getFileStreamPath(FILE_GUID));
             BufferedReader bufferedReader = new BufferedReader(reader);
             mGuid = bufferedReader.readLine();
+            bufferedReader.close();
         } 
         catch (FileNotFoundException e) 
         {
@@ -90,4 +120,20 @@ public class UpdateManager
             e.printStackTrace();
         }
     }
+    
+    private Handler uiHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            switch(msg.what)
+            {
+                case IOCompleteCallback.NEED_UPDATE:
+                    Toast.makeText(mContext, "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
+                    break;
+                case IOCompleteCallback.NO_NEED_UPDATE:
+                    break;
+            }
+        }
+    };
 }
