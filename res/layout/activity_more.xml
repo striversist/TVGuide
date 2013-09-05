@@ -8,7 +8,7 @@
             </LinearLayout>
             <LinearLayout style="@style/ll_more_menu">
                 <Button android:id="@+id/more_check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" android:onClick="onClick" />
-                <Button android:id="@+id/more_issue_report" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" android:onClick="onClick" />
+                <Button android:id="@+id/more_feedback" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" android:onClick="onClick" />
                 <Button android:id="@+id/more_about" android:tag="5" android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
             <LinearLayout style="@style/ll_more_menu">

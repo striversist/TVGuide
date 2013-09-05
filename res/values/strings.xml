@@ -59,5 +59,9 @@
     <string name="title_activity_alarm_setting">AlarmSettingActivity</string>
     <string name="check_update">检查更新</string>
     <string name="cancel">取消</string>
+    <string name="feedback_hint">请输入您的建议，这将帮助我们将产品做得更好，谢谢</string>
+    <string name="feedback">问题反馈</string>
+    <string name="submit">提交</string>
+    <string name="title_activity_feedback">FeedbackActivity</string>
 
 </resources>

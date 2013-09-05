@@ -73,6 +73,10 @@
             android:name="com.tools.tvguide.activities.AlarmSettingActivity"
             android:label="@string/title_activity_alarm_setting" >
         </activity>
+        <activity
+            android:name="com.tools.tvguide.activities.FeedbackActivity"
+            android:label="@string/title_activity_feedback" >
+        </activity>
     </application>
 
 </manifest>

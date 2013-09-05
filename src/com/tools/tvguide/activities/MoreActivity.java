@@ -68,13 +68,15 @@ public class MoreActivity extends Activity
         switch (view.getId())
         {
             case R.id.more_alarms:
-                Intent intent = new Intent(MoreActivity.this, AlarmSettingActivity.class);
-                startActivity(intent);
+                Intent alarmIntent = new Intent(MoreActivity.this, AlarmSettingActivity.class);
+                startActivity(alarmIntent);
                 break;
             case R.id.more_check_new_ver:
                 checkNewVersion();
                 break;
-            case R.id.more_issue_report:
+            case R.id.more_feedback:
+                Intent feedbackIntent = new Intent(MoreActivity.this, FeedbackActivity.class);
+                startActivity(feedbackIntent);
                 break;
             case R.id.more_about:
                 break;
@@ -95,7 +97,7 @@ public class MoreActivity extends Activity
                 uiHandler.sendEmptyMessage(result);
             }
         });
-    }    
+    }
     
     private Handler uiHandler = new Handler()
     {

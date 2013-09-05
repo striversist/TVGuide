@@ -49,7 +49,7 @@ public class DnsManager
         {
             getter = new NetDataGetter(url);
             String html = getter.getStringData();
-            Pattern resultPattern = Pattern.compile("²éÑ¯½á¹û\\[1\\](.+)</");
+            Pattern resultPattern = Pattern.compile("æŸ¥è¯¢ç»“æœ\\[1\\](.+)</");
             Matcher resultMatcher = resultPattern.matcher(html);
             
             if (resultMatcher.find())
