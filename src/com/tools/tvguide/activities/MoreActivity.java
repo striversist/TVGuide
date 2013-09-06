@@ -79,6 +79,7 @@ public class MoreActivity extends Activity
                 startActivity(feedbackIntent);
                 break;
             case R.id.more_about:
+                showAbout();
                 break;
             case R.id.more_clear_cache:
                 break;
@@ -97,6 +98,24 @@ public class MoreActivity extends Activity
                 uiHandler.sendEmptyMessage(result);
             }
         });
+    }
+    
+    private void showAbout()
+    {
+        AlertDialog dialog = new AlertDialog.Builder(MoreActivity.this)
+            .setIcon(R.drawable.ic_launcher)
+            .setTitle(getResources().getString(R.string.app_name))
+            .setMessage("作者：striversist\n邮箱：striversist@qq.com\n版权：©2013-2014")
+            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which) 
+                {
+                    dialog.dismiss();
+                }
+            })
+            .create();
+        dialog.show();
     }
     
     private Handler uiHandler = new Handler()
