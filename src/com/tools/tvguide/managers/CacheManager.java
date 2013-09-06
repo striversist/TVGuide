@@ -1,5 +1,6 @@
 package com.tools.tvguide.managers;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -86,6 +87,34 @@ public class CacheManager
     {
         mChannels.put(categoryId, channels);
         return saveObjectToFile(mChannels, FILE_CACHED_CHANNELS);
+    }
+    
+    public void clear()
+    {
+        File file1 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CATEGORIES);
+        File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
+        deleteFile(file1);
+        deleteFile(file2);
+    }
+    
+    private void deleteFile(File file)
+    {
+        if (file.exists())
+        {
+            if (file.isFile())
+            {
+                file.delete();
+            }
+            else if (file.isDirectory())
+            {
+                File files[] = file.listFiles();
+                for (int i=0; i<files.length; i++)
+                {
+                    this.deleteFile(file);
+                }
+            }
+            file.delete();
+        }
     }
     
     private Object loadObjectFromFile(String fileName)

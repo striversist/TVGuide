@@ -82,8 +82,10 @@ public class MoreActivity extends Activity
                 showAbout();
                 break;
             case R.id.more_clear_cache:
+                clearCache();
                 break;
             case R.id.more_quit:
+                quit();
                 break;
         }
     }
@@ -116,6 +118,18 @@ public class MoreActivity extends Activity
             })
             .create();
         dialog.show();
+    }
+    
+    private void clearCache()
+    {
+        AppEngine.getInstance().getCacheManager().clear();
+        Toast.makeText(MoreActivity.this, "缓存已清除", Toast.LENGTH_SHORT).show();
+    }
+    
+    private void quit()
+    {
+        AppEngine.getInstance().prepareBeforeExit();
+        finish();
     }
     
     private Handler uiHandler = new Handler()
