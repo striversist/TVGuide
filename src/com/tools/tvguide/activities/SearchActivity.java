@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -46,6 +47,7 @@ public class SearchActivity extends Activity
     private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
     private Handler mUpdateHandler;
+    private MyProgressDialog mProgressDialog;
     
     class PartAdapter extends BaseAdapter 
     {
@@ -91,6 +93,7 @@ public class SearchActivity extends Activity
         mItemList = new ArrayList<IListItem>();
         mItemDataList = new ArrayList<IListItem>();
         mListViewAdapter = new PartAdapter();
+        mProgressDialog = new MyProgressDialog(this);
         mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
         createUpdateThreadAndHandler();
@@ -245,6 +248,7 @@ public class SearchActivity extends Activity
                 }
             }
         });
+        mProgressDialog.show();
     }
     
     private void showInputKeyboard()
@@ -263,6 +267,7 @@ public class SearchActivity extends Activity
     {
         public void handleMessage(Message msg)
         {
+            mProgressDialog.dismiss();
             super.handleMessage(msg);
             mItemList.clear();
             for (int i=0; i<mItemDataList.size(); ++i)

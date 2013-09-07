@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
 
@@ -47,6 +48,7 @@ public class ChannelDetailActivity extends Activity
     private String mChannelId;
     private String mChannelName;
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
+    private MyProgressDialog mProgressDialog;
     private String SEPERATOR                                = ": ";
     private final int MSG_REFRESH_PROGRAM_LIST              = 0;
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM        = 1;
@@ -116,6 +118,7 @@ public class ChannelDetailActivity extends Activity
         mProgramList = new ArrayList<HashMap<String,String>>();
         mItemList = new ArrayList<HashMap<String, Object>>();
         mOnPlayingProgram = new ArrayList<HashMap<String,String>>();
+        mProgressDialog = new MyProgressDialog(this);
         
         initViews();
         createAndSetListViewAdapter();
@@ -294,7 +297,7 @@ public class ChannelDetailActivity extends Activity
     private void updateProgramList()
     {
         mProgramList.clear();
-        AppEngine.getInstance().getContentManager().loadProgramsByChannel(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, new ContentManager.LoadListener() 
+        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
@@ -302,6 +305,8 @@ public class ChannelDetailActivity extends Activity
                 uiHandler.sendEmptyMessage(MSG_REFRESH_PROGRAM_LIST);
             }
         });
+        if (isSyncLoad == false)
+            mProgressDialog.show();
     }
     
     private void updateOnplayingProgram()
@@ -402,6 +407,7 @@ public class ChannelDetailActivity extends Activity
             switch (msg.what) 
             {
                 case MSG_REFRESH_PROGRAM_LIST:
+                    mProgressDialog.dismiss();
                     mItemList.clear();
                     for (int i=0; i<mProgramList.size(); ++i)
                     {

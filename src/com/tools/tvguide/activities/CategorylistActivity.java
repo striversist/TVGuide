@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
 
@@ -30,6 +31,7 @@ public class CategorylistActivity extends Activity
     private ArrayList<HashMap<String, Object>> mItemList;
     private TextView mTitleTextView;
     private List<HashMap<String, String>> mCategoryList;
+    private MyProgressDialog mProgressDialog;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -39,6 +41,7 @@ public class CategorylistActivity extends Activity
         mCategoryListView = (ListView)findViewById(R.id.categorylist_listview);
         mTitleTextView = (TextView)findViewById(R.id.categorylist_text_title);
         mCategoryList = new ArrayList<HashMap<String,String>>();
+        mProgressDialog = new MyProgressDialog(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
         mListViewAdapter = new SimpleAdapter(CategorylistActivity.this, mItemList, R.layout.home_list_item,
                 new String[]{"name"}, new int[]{R.id.home_item_text});
@@ -82,8 +85,7 @@ public class CategorylistActivity extends Activity
     private void update()
     {
         mCategoryList.clear();
-        boolean isSyncLoad = false;
-        isSyncLoad = AppEngine.getInstance().getContentManager().loadCategoriesByType(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
+        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadCategoriesByType(mCategoryId, mCategoryList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
@@ -92,9 +94,9 @@ public class CategorylistActivity extends Activity
             }
         });
         if (isSyncLoad == true)
-        {
             uiHandler.sendEmptyMessage(0);
-        }
+        else
+            mProgressDialog.show();
     }
     
     private Handler uiHandler = new Handler()
@@ -104,6 +106,7 @@ public class CategorylistActivity extends Activity
             super.handleMessage(msg);
             if (mCategoryList != null)
             {
+                mProgressDialog.dismiss();
                 mItemList.clear();
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {

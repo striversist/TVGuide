@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.utils.Utility;
@@ -36,6 +37,7 @@ public class ChannellistActivity extends Activity
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
+    private MyProgressDialog mProgressDialog;
     private final String XML_ELEMENT_LOGO = "logo";
     private final int MSG_REFRESH_CHANNEL_LIST              = 0;
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM_LIST   = 1;
@@ -51,6 +53,7 @@ public class ChannellistActivity extends Activity
         mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
+        mProgressDialog = new MyProgressDialog(this);
         createAndSetListViewAdapter();
         
         mCategoryId = getIntent().getStringExtra("categoryId");
@@ -112,8 +115,7 @@ public class ChannellistActivity extends Activity
     private void updateChannelList()
     {
         mChannelList.clear();
-        boolean isSyncLoad = false;
-        isSyncLoad = AppEngine.getInstance().getContentManager().loadChannelsByCategory(mCategoryId, mChannelList, new ContentManager.LoadListener() 
+        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadChannelsByCategory(mCategoryId, mChannelList, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
@@ -122,9 +124,9 @@ public class ChannellistActivity extends Activity
             }
         });
         if (isSyncLoad == true)
-        {
             uiHandler.sendEmptyMessage(MSG_REFRESH_CHANNEL_LIST);
-        }
+        else
+            mProgressDialog.show();
     }
     
     private void updateOnPlayingProgramList()
@@ -155,6 +157,7 @@ public class ChannellistActivity extends Activity
                 case MSG_REFRESH_CHANNEL_LIST:
                     if (mChannelList != null)
                     {
+                        mProgressDialog.dismiss();
                         mItemList.clear();
                         for(int i=0; i<mChannelList.size(); ++i)
                         {
