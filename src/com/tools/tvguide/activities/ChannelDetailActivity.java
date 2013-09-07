@@ -135,12 +135,18 @@ public class ChannelDetailActivity extends Activity
                 String minute = time.split(":")[1];
                 final Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.setFirstDayOfWeek(Calendar.MONDAY);
                 calendar.set(Calendar.DAY_OF_WEEK, mCurrentSelectedDay);
                 calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
                 calendar.set(Calendar.MINUTE, Integer.parseInt(minute));
                 calendar.set(Calendar.SECOND, 0);
                 calendar.set(Calendar.MILLISECOND, 0);
+                
+                // 因为周日算一周的第一天，所以这里要做特殊处理。如果使用API setFirstDayOfWeek, 则在月初时会设置到上月的末尾，故不用该API
+                if (mCurrentSelectedDay == Calendar.SUNDAY)
+                {
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + 60*60*24*1000);       // 周六再增加一天时间
+                }
                 
                 // Choose earlier than now time
                 if (calendar.getTimeInMillis() < System.currentTimeMillis())
