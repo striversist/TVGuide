@@ -57,7 +57,7 @@ public class Utility
 			return true;
 		}
 		new AlertDialog.Builder(context)
-		.setIcon(R.drawable.ic_launcher)
+		.setIcon(R.drawable.application)
 		.setMessage("Network is not available\nPlease check!")
 		.setNeutralButton("OK", new DialogInterface.OnClickListener()
 		{

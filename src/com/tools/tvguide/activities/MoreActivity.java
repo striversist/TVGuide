@@ -105,7 +105,7 @@ public class MoreActivity extends Activity
     private void showAbout()
     {
         AlertDialog dialog = new AlertDialog.Builder(MoreActivity.this)
-            .setIcon(R.drawable.ic_launcher)
+            .setIcon(R.drawable.application)
             .setTitle(getResources().getString(R.string.app_name))
             .setMessage("作者：striversist\n邮箱：striversist@qq.com\n版权：©2013-2014")
             .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
