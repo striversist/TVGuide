@@ -82,7 +82,7 @@ public class MainActivity extends TabActivity
                     case R.id.tab_search:
                         mTabHost.setCurrentTabByTag(mStringSearch);
                         break;
-                    case R.id.tab_about:
+                    case R.id.tab_hot:
                         mTabHost.setCurrentTabByTag(mStringAbout);
                         break;
                     case R.id.tab_more:
