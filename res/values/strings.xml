@@ -63,5 +63,6 @@
     <string name="feedback">问题反馈</string>
     <string name="submit">提交</string>
     <string name="title_activity_feedback">FeedbackActivity</string>
+    <string name="no_found_tips">抱歉，没有找到相关节目！</string>
 
 </resources>

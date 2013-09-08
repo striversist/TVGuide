@@ -275,6 +275,8 @@ public class SearchActivity extends Activity
                 mItemList.add(mItemDataList.get(i));
             }
             mListViewAdapter.notifyDataSetChanged();
+            if (mItemDataList.isEmpty())
+                Toast.makeText(SearchActivity.this, getResources().getString(R.string.no_found_tips), Toast.LENGTH_SHORT).show();
         }
     };
     
