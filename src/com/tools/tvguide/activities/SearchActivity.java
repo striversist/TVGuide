@@ -204,6 +204,7 @@ public class SearchActivity extends Activity
                 {
                     getter = new NetDataGetter(url);
                     getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
+                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
                     JSONObject jsonRoot = getter.getJSONsObject();
                     mItemDataList.clear();
                     if (jsonRoot != null)

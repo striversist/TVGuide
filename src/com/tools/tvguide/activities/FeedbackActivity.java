@@ -76,6 +76,7 @@ public class FeedbackActivity extends Activity
                 {
                     NetDataGetter getter = new NetDataGetter(url);
                     getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
+                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
                     getter.getJSONsObject(pairs);
                 }
                 catch (MalformedURLException e)
