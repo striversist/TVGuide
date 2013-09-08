@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UpdateManager;
 import com.tools.tvguide.components.PackageInstaller;

@@ -1,8 +1,5 @@
 package com.tools.tvguide.managers;
 
-import com.tools.tvguide.activities.R.id;
-import com.tools.tvguide.components.VersionController;
-
 import android.content.Context;
 
 public class AppEngine 

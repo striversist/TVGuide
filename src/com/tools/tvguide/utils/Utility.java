@@ -3,7 +3,7 @@ package com.tools.tvguide.utils;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.tools.tvguide.activities.R;
+import com.tools.tvguide.R;
 
 import android.app.AlertDialog;
 import android.content.Context;

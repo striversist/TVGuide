@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
@@ -46,7 +47,7 @@ public class AlarmSettingActivity extends Activity
             Button rmBtn = (Button)view.findViewById(R.id.collect_item_del_btn);
             if (rmBtn != null)
             {
-                rmBtn.setText("ȡ��");
+                rmBtn.setText("删除");
                 rmBtn.setTag(position);
                 rmBtn.setOnClickListener(new OnClickListener() 
                 {

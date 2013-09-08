@@ -2,7 +2,7 @@ package com.tools.tvguide.components;
 
 import java.io.File;
 
-import com.tools.tvguide.activities.R;
+import com.tools.tvguide.R;
 import com.tools.tvguide.utils.DownloadTask;
 import com.tools.tvguide.utils.MyApplication;
 
