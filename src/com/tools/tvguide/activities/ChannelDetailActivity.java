@@ -152,6 +152,12 @@ public class ChannelDetailActivity extends Activity
                     calendar.setTimeInMillis(calendar.getTimeInMillis() + 60*60*24*1000);       // 周六再增加一天时间
                 }
                 
+                // 如果今天是周日，则calendar的处理都是针对下一周的时间，所以这里要做特殊处理：减去一周的时间
+                if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                {
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() - 60*60*24*7*1000);
+                }
+                
                 // Choose earlier than now time
                 if (calendar.getTimeInMillis() < System.currentTimeMillis())
                 {
