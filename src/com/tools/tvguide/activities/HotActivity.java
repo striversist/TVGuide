@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -34,6 +35,7 @@ public class HotActivity extends Activity
     private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
     private Handler mUpdateHandler;
+    private MyProgressDialog mProgressDialog;
     
     class PartAdapter extends BaseAdapter 
     {
@@ -80,6 +82,7 @@ public class HotActivity extends Activity
         mListViewAdapter = new PartAdapter();
         mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
+        mProgressDialog = new MyProgressDialog(this);
         
         createUpdateThreadAndHandler();
         updateResult();
@@ -92,6 +95,7 @@ public class HotActivity extends Activity
     
     private void updateResult()
     {
+        mProgressDialog.show();
         mUpdateHandler.post(new Runnable()
         {
             public void run()
@@ -152,6 +156,7 @@ public class HotActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
+            mProgressDialog.dismiss();
             mItemList.clear();
             for (int i=0; i<mItemDataList.size(); ++i)
             {

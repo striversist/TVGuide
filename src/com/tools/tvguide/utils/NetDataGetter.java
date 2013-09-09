@@ -40,8 +40,12 @@ public class NetDataGetter
 	//ProgressListener mProgressListener = null;
 	List<BasicNameValuePair> mPairs = null;
 	//String mRecvDataAsync = null;
-	private int mConnectionTimeout = 6000;
-	private int mSocketTimeout = 10000;
+	private final int CONNECTION_TIMEOUT_WIFI = 6000;
+	private final int CONNECTION_TIMEOUT_GPRS = 10000;
+	private final int SOCKET_TIMEOUT_WIFI = 10000;
+	private final int SOCKET_TIMEOUT_GPRS = 20000;
+	private int mConnectionTimeout = CONNECTION_TIMEOUT_WIFI;
+	private int mSocketTimeout = SOCKET_TIMEOUT_WIFI;
 	private HashMap<String, String> mExtraHeaders = new HashMap<String, String>();
 	private HttpResponse mResponse;
 	
@@ -146,15 +150,21 @@ public class NetDataGetter
 	
 	public String getStringData(List<BasicNameValuePair> pairs)
 	{
-		if(mUrl == null)
+		if (mUrl == null)
 		{
 			return null;
 		}
-		if(Utility.isNetworkAvailable() == false)
+		if (Utility.isNetworkAvailable() == false)
 		{
 			return null;
 		}
 
+		if (!Utility.isWifi(MyApplication.getInstance()))
+		{
+		    mConnectionTimeout = CONNECTION_TIMEOUT_GPRS;
+		    mSocketTimeout = SOCKET_TIMEOUT_GPRS;
+		}
+		
 		HttpParams httpParameters = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParameters, mConnectionTimeout);
 		HttpConnectionParams.setSoTimeout(httpParameters, mSocketTimeout);
