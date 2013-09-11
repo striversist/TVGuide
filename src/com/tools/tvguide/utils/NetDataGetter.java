@@ -1,8 +1,12 @@
 package com.tools.tvguide.utils;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,6 +52,7 @@ public class NetDataGetter
 	private int mSocketTimeout = SOCKET_TIMEOUT_WIFI;
 	private HashMap<String, String> mExtraHeaders = new HashMap<String, String>();
 	private HttpResponse mResponse;
+	private Map<String, List<String>> mReponseHeaders;
 	
 	public NetDataGetter()
 	{
@@ -257,11 +262,77 @@ public class NetDataGetter
 			return null;
 		}
 
-//        Utility.emulateNetworkDelay();
-        
         return recvData;
+		
+//		String recvData;
+//		try 
+//		{
+//            recvData = getStringData2(pairs);
+//        } 
+//		catch (IOException e) 
+//		{
+//            e.printStackTrace();
+//            return null;
+//        }
+//		return recvData;
 	}
 	
+	private String getStringData2(List<BasicNameValuePair> pairs) throws IOException
+	{
+	    String content = null;
+	    HttpURLConnection conn = (HttpURLConnection) mUrl.openConnection();
+        if (!Utility.isWifi(MyApplication.getInstance()))
+        {
+            mConnectionTimeout = CONNECTION_TIMEOUT_GPRS;
+            mSocketTimeout = SOCKET_TIMEOUT_GPRS;
+        }
+        conn.setConnectTimeout(mConnectionTimeout);
+        conn.setReadTimeout(mSocketTimeout);
+        conn.setDoOutput(true);
+        
+        if (pairs != null)
+        {
+            conn.setRequestMethod("POST");
+            for (int i=0; i<pairs.size(); ++i)
+            {
+                content += pairs.get(i).getName() + "=" + pairs.get(i).getValue();
+                if (i != pairs.size()-1)      // Not the last
+                    content += "&";
+            }
+        }
+        else
+            conn.setRequestMethod("GET");
+        
+        Iterator<Entry<String, String>> iter = mExtraHeaders.entrySet().iterator();
+        while (iter.hasNext())
+        {
+            Map.Entry<String, String> entry = iter.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
+            conn.addRequestProperty(key, value);
+        }
+
+        conn.connect();
+        if (content != null)
+        {
+            DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+            out.writeBytes(content);
+            out.flush();
+            out.close();
+        }
+        
+        mReponseHeaders = conn.getHeaderFields();
+        String line;
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        while ((line = reader.readLine()) != null)
+        {
+            sb.append(line + "\n");
+        }
+        
+        return sb.toString();
+	}
+		
 	public JSONObject getJSONsObject()
 	{
 		return getJSONsObject(null);
