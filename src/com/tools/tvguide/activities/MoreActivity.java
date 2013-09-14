@@ -15,13 +15,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MoreActivity extends Activity 
 {
-    Dialog mCheckingDialog;
-    Dialog mInfoDialog;
-    Dialog mDownloaDialog;
+    private Dialog mCheckingDialog;
+    private Dialog mInfoDialog;
+    private Dialog mDownloaDialog;
+    private TextView mUpdateNewIcon;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -34,6 +36,18 @@ public class MoreActivity extends Activity
         String versionFormat = checkBtn.getText().toString();
         String finalVersion = String.format(versionFormat, AppEngine.getInstance().getUpdateManager().currentVersionName());
         checkBtn.setText(finalVersion);
+        
+        mUpdateNewIcon = (TextView)findViewById(R.id.more_update_new_icon);
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (AppEngine.getInstance().getUpdateManager().isNeedUpdate())
+            mUpdateNewIcon.setVisibility(View.VISIBLE);
+        else
+            mUpdateNewIcon.setVisibility(View.INVISIBLE);
     }
     
     private void createDialogs()

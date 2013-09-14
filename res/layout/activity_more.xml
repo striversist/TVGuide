@@ -7,7 +7,12 @@
                 <Button android:id="@+id/more_alarms" android:tag="2" android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
             <LinearLayout style="@style/ll_more_menu">
-                <Button android:id="@+id/more_check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" android:onClick="onClick" />
+                <FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <Button android:id="@+id/more_check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" android:onClick="onClick" />
+                    <TextView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
+                              android:background="@drawable/more_update_new" android:visibility="invisible" android:layout_width="24.0dip" 
+                              android:layout_height="24.0dip" android:layout_marginLeft="80.0dip" android:layout_marginTop="-8.0dip" />
+                </FrameLayout>
                 <Button android:id="@+id/more_feedback" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" android:onClick="onClick" />
                 <Button android:id="@+id/more_about" android:tag="5" android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>

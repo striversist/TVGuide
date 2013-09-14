@@ -18,6 +18,7 @@ public class UpdateManager
     private Context mContext;
     private String  mGuid;
     private boolean mChecked = false;
+    private boolean mIsNeedUpdate = false;
     private final String FILE_GUID = "GUID.txt";
     private VersionController mVersionController;
     
@@ -65,6 +66,7 @@ public class UpdateManager
             public void OnIOComplete(int result) 
             {
                 uiHandler.sendEmptyMessage(result);
+                mChecked = true;
             }
         });
     }
@@ -76,13 +78,24 @@ public class UpdateManager
             public void run()
             {
                 if (mVersionController.checkLatestVersion())
+                {
+                    mIsNeedUpdate = true;
                     callback.OnIOComplete(IOCompleteCallback.NEED_UPDATE);
+                }
                 else
+                {
                     callback.OnIOComplete(IOCompleteCallback.NO_NEED_UPDATE);
+                }
                 mChecked = true;
             }
         }.start();
         return false;
+    }
+    
+    public boolean isNeedUpdate()
+    {
+        assert(mChecked);
+        return mIsNeedUpdate;
     }
     
     public String currentVersionName()
@@ -129,6 +142,7 @@ public class UpdateManager
             switch(msg.what)
             {
                 case IOCompleteCallback.NEED_UPDATE:
+                    mIsNeedUpdate = true;
                     Toast.makeText(mContext, "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
                     break;
                 case IOCompleteCallback.NO_NEED_UPDATE:
