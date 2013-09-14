@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
@@ -104,9 +105,7 @@ public class HotActivity extends Activity
                 NetDataGetter getter;
                 try 
                 {
-                    getter = new NetDataGetter(url);
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
                     mItemDataList.clear();
                     if (jsonRoot != null)

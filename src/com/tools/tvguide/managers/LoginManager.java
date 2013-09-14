@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 
+import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
@@ -39,9 +40,7 @@ public class LoginManager
             {
                 try 
                 {
-                    NetDataGetter getter = new NetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
                     getter.getStringData();
                 } 
                 catch (MalformedURLException e) 

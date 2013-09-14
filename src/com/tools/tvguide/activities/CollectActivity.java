@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -217,10 +218,7 @@ public class CollectActivity extends Activity
                 String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
                 try 
                 {
-                    NetDataGetter getter;
-                    getter = new NetDataGetter(url);
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    NetDataGetter getter = new DefaultNetDataGetter(url);
                     List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                     //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
                     String idArray = "[";

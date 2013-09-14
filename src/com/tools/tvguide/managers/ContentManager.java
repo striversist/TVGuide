@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
@@ -51,13 +52,7 @@ public class ContentManager
                 NetDataGetter getter;
                 try 
                 {
-                    getter = new NetDataGetter(url);
-                    String guid = AppEngine.getInstance().getUpdateManager().getGUID();
-                    if (guid != null)
-                    {
-                        getter.setHeader("GUID", guid);
-                    }
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
@@ -75,7 +70,7 @@ public class ContentManager
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
-                    guid = getter.getFirstHeader("GUID");
+                    String guid = getter.getFirstHeader("GUID");
                     if (guid != null)
                     {
                         AppEngine.getInstance().getUpdateManager().setGUID(guid);
@@ -113,9 +108,7 @@ public class ContentManager
                 NetDataGetter getter;
                 try 
                 {
-                    getter = new NetDataGetter(url);
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
@@ -159,9 +152,7 @@ public class ContentManager
                 NetDataGetter getter;
                 try 
                 {
-                    getter = new NetDataGetter(url);
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
@@ -217,10 +208,7 @@ public class ContentManager
                 String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
                 try 
                 {
-                    NetDataGetter getter;
-                    getter = new NetDataGetter(url);
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    NetDataGetter getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject(pairs);
                     if (jsonRoot != null)
                     {
@@ -262,10 +250,7 @@ public class ContentManager
                 String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAM) + "?channel=" + channelId;
                 try 
                 {
-                    NetDataGetter getter;
-                    getter = new NetDataGetter(url);
-                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    NetDataGetter getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
