@@ -10,6 +10,8 @@ import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 public class LoginManager 
 {
@@ -33,6 +35,7 @@ public class LoginManager
     
     public void login()
     {
+        final String ua = getUserAgent();
         new Thread()
         {
             @Override
@@ -41,6 +44,7 @@ public class LoginManager
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
+                    getter.setHeader("UA", ua);
                     getter.getStringData();
                 } 
                 catch (MalformedURLException e) 
@@ -50,7 +54,16 @@ public class LoginManager
             }
         }.start();
     }
-    
+
+    // This API should be called in UI main thread
+    private String getUserAgent() 
+    {
+        WebView webView = new WebView(mContext);
+        webView.layout(0, 0, 0, 0);
+        WebSettings settings = webView.getSettings();
+        return settings.getUserAgentString();
+    }
+
     public void startKeepAliveProcess()
     {
         int keepAliveInterval = KEEP_ALIVE_INTERVAL;
