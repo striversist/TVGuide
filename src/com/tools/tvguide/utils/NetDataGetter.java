@@ -236,6 +236,7 @@ public class NetDataGetter
 				Log.e("Error", "Receive Null");
 				return null;
 			}
+			client.getConnectionManager().shutdown();
 		}
 		catch (UnsupportedEncodingException e1)
 		{
