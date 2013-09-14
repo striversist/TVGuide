@@ -22,6 +22,7 @@ public class UrlManager
     public static final int URL_HOT                     = 7;
     public static final int URL_UPDATE                  = 8;
     public static final int URL_FEEDBACK                = 9;
+    public static final int URL_LOGIN                   = 10;
         
     private static final boolean ENABLE_TEST            = true;
     private String  mHostName                           = "striversist.oicp.net";
@@ -38,12 +39,20 @@ public class UrlManager
     private static final String PATH_HOT                  = "/json/hot.php";
     private static final String PATH_UPDATE               = "/update/update.php";
     private static final String PATH_FEEDBACK             = "/feedback.php";
+    private static final String PATH_LOGIN                = "/login.php";
     
     private Context mContext;
+    
+    private Handler initHandler;
+    public interface OnInitCompleteCallback
+    {
+        void OnInitComplete(int result);
+    }
     
     public UrlManager(Context context)
     {
         mContext = context;
+        initHandler = new Handler();
         if (ENABLE_TEST)
         {
             mHostIP = "192.168.1.102";
@@ -58,10 +67,23 @@ public class UrlManager
         }
     }
     
-    public void init()
+    public void init(final OnInitCompleteCallback callback)
     {
         if (mHostIP != null)
+        {
+            if (callback != null)
+            {
+                initHandler.post(new Runnable() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                        callback.OnInitComplete(0);
+                    }
+                });
+            }
             return;
+        }
         
         new Thread() 
         {        
@@ -71,10 +93,21 @@ public class UrlManager
                 try 
                 {
                     mHostIP = AppEngine.getInstance().getDnsManager().getIPAddress(mHostName);
+                    if (callback != null)
+                    {
+                        initHandler.post(new Runnable() 
+                        {
+                            @Override
+                            public void run() 
+                            {
+                                callback.OnInitComplete(0);
+                            }
+                        });
+                    }
                 } 
                 catch (UnknownHostException e) 
                 {
-                } 
+                }
             }
         }.start();
     }
@@ -118,6 +151,8 @@ public class UrlManager
             case URL_FEEDBACK:
                 url += PATH_FEEDBACK;
                 break;
+            case URL_LOGIN:
+                url += PATH_LOGIN;
             default:
                 assert false: "Not reach here";
                 break;

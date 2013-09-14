@@ -3,7 +3,10 @@ package com.tools.tvguide.managers;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
+
+import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
 
@@ -27,6 +30,28 @@ public class LoginManager
         mDone = true;
     }
     
+    public void login()
+    {
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try 
+                {
+                    NetDataGetter getter = new NetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
+                    getter.setHeader("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
+                    getter.setHeader("Version", AppEngine.getInstance().getUpdateManager().currentVersionName());
+                    getter.getStringData();
+                } 
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    
     public void startKeepAliveProcess()
     {
         int keepAliveInterval = KEEP_ALIVE_INTERVAL;
@@ -45,7 +70,7 @@ public class LoginManager
     }
     
     /**
-     * 定时发送心跳包，维持长连接
+     * 瀹氭椂鍙戦�佸績璺冲寘锛岀淮鎸佺儹閾捐矾
      */
     private class KeepAliveTask implements Runnable
     {

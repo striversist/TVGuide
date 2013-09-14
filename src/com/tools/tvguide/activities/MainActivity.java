@@ -2,8 +2,10 @@ package com.tools.tvguide.activities;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.UrlManager;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.util.Log;
@@ -39,7 +41,15 @@ public class MainActivity extends TabActivity
         
         AppEngine.getInstance().setContext(this);
         AppEngine.getInstance().setApplicationContext(getApplicationContext());
-        AppEngine.getInstance().getUrlManager().init();
+        AppEngine.getInstance().getUrlManager().init(new UrlManager.OnInitCompleteCallback() 
+        {
+            @Override
+            public void OnInitComplete(int result)
+            {
+                AppEngine.getInstance().getUpdateManager().checkUpdate();
+                AppEngine.getInstance().getLoginManager().login();
+            }
+        });
         
         mStringHome     = getResources().getString(R.string.category_home);
         mStringCollect  = getResources().getString(R.string.category_collect);
@@ -96,7 +106,6 @@ public class MainActivity extends TabActivity
         });
         
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
-        AppEngine.getInstance().getUpdateManager().checkUpdate();
     }
 
     @Override
