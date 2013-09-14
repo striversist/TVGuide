@@ -5,7 +5,7 @@ import android.content.Context;
 public class AppEngine 
 {
     private static final String                     TAG                         = "AppEngine";
-    private static AppEngine                        mInstance                   = new AppEngine();
+    private static AppEngine                        mInstance;
     private Context                                 mContext;
     private Context                                 mApplicationContext;
     private CollectManager                          mUserSettingManager;
@@ -16,11 +16,14 @@ public class AppEngine
     private UrlManager                              mUrlManager;
     private DnsManager                              mDnsManager;
     private UpdateManager                           mUpdateManager;
+    private BootManager                             mBootManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
     public static AppEngine getInstance()
     {
+        if (mInstance == null)
+            mInstance = new AppEngine();
         return mInstance;
     }
     
@@ -100,6 +103,13 @@ public class AppEngine
         return mUpdateManager;
     }
     
+    public BootManager getBootManager()
+    {
+        if (mBootManager == null)
+            mBootManager = new BootManager(mContext);
+        return mBootManager;
+    }
+    
     public void prepareBeforeExit()
     {
         if (mUserSettingManager != null)
@@ -107,6 +117,12 @@ public class AppEngine
         
         if (mAlarmHelper != null)
             mAlarmHelper.shutDown();
+        
+        exit();
     }
     
+    public void exit()
+    {
+        mInstance = null;
+    }
 }
