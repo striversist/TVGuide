@@ -31,6 +31,11 @@ public class BootManager
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
     }
     
+    public boolean isShowSplash()
+    {
+        return mShowSplash;
+    }
+    
     public void showSplash()
     {
         mSplashDialog = new SplashDialog(mContext);

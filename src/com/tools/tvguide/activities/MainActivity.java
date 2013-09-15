@@ -35,13 +35,33 @@ public class MainActivity extends TabActivity
     {
         Log.e(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mTabHost = getTabHost();
-        mTabGroup = (RadioGroup)findViewById(R.id.tab_group);
         
         AppEngine.getInstance().setContext(this);
         AppEngine.getInstance().setApplicationContext(getApplicationContext());
         AppEngine.getInstance().getBootManager().start();
+        
+        // 延缓MainActivity组件的初始化（显示），否则在闪屏之前背景会闪出一下，影响体验
+        int delayTime = 0;
+        if (AppEngine.getInstance().getBootManager().isShowSplash())
+            delayTime = 500;
+        else
+            delayTime = 0;
+        
+        new Handler().postDelayed(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                config();
+            }
+        }, delayTime);
+    }
+    
+    private void config()
+    {
+        setContentView(R.layout.activity_main);
+        mTabHost = getTabHost();
+        mTabGroup = (RadioGroup)findViewById(R.id.tab_group);
         
         mStringHome     = getResources().getString(R.string.category_home);
         mStringCollect  = getResources().getString(R.string.category_collect);
