@@ -1,17 +1,23 @@
 package com.tools.tvguide.managers;
 
+import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.SplashDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class BootManager 
 {
-    private Context         mContext;
-    private SplashDialog    mSplashDialog;
-    private boolean         mShowSplash     = true;
+    private Context             mContext;
+    private SplashDialog        mSplashDialog;
+    private boolean             mShowSplash                                 = true;
+    private SharedPreferences   mPreference;
+    private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
+    private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
     
     public BootManager(Context context)
     {
         mContext = context;
+        mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
     
     public void start()
@@ -29,6 +35,13 @@ public class BootManager
             }
         });
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
+        if (isFirstStart())
+            new ShortcutInstaller(mContext).createShortCut();
+    }
+    
+    public boolean isFirstStart()
+    {
+        return mPreference.getBoolean(KEY_FIRST_START_FLAG, true);
     }
     
     public boolean isShowSplash()
@@ -55,6 +68,8 @@ public class BootManager
     
     public void onSplashFinished()
     {
+        if (isFirstStart())
+            mPreference.edit().putBoolean(KEY_FIRST_START_FLAG, false).commit();
         mSplashDialog = null;
     }
 }
