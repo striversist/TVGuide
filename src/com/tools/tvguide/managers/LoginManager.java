@@ -109,7 +109,7 @@ public class LoginManager
             {
                 Thread.sleep(1500);
                 UrlManager urlManager = AppEngine.getInstance().getUrlManager();
-                mSocket.connect(new InetSocketAddress(urlManager.getHost(), urlManager.getPort()));
+                mSocket.connect(new InetSocketAddress("www.bing.com", 80));
                 mSocket.setSoTimeout(mDelay);
                 mOutputStream = mSocket.getOutputStream();
             }
