@@ -49,6 +49,8 @@ public class DnsManager
         {
             getter = new NetDataGetter(url);
             String html = getter.getStringData();
+            if (html == null)
+                return null;
             Pattern resultPattern = Pattern.compile("查询结果\\[1\\](.+)</");
             Matcher resultMatcher = resultPattern.matcher(html);
             
