@@ -2,8 +2,11 @@ package com.tools.tvguide.managers;
 
 import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.SplashDialog;
+import com.tools.tvguide.utils.Utility;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 public class BootManager 
 {
@@ -24,6 +27,8 @@ public class BootManager
     {
         if (mShowSplash)
             showSplash();
+        
+        checkNetwork();
         
         AppEngine.getInstance().getUrlManager().init(new UrlManager.OnInitCompleteCallback() 
         {
@@ -71,5 +76,11 @@ public class BootManager
         if (isFirstStart())
             mPreference.edit().putBoolean(KEY_FIRST_START_FLAG, false).commit();
         mSplashDialog = null;
+    }
+    
+    private void checkNetwork()
+    {
+        if (!Utility.isNetworkAvailable())
+            Toast.makeText(mContext, "注意：当前网络不可用！", Toast.LENGTH_LONG).show();
     }
 }
