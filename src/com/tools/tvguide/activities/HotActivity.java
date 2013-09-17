@@ -88,6 +88,15 @@ public class HotActivity extends Activity
         createUpdateThreadAndHandler();
         updateResult();
     }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        // 发现之前获取失败，则重新获取
+        if (mItemList.size() == 0)
+            updateResult();
+    }
 
     private void createUpdateThreadAndHandler()
     {
