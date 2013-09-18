@@ -52,6 +52,7 @@ public class CollectActivity extends Activity
     private Handler mUpdateHandler;
     private List<Pair<String, String>> mOnPlayingProgramList;           // List of "id"-"title" pair
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM_LIST   = 1;
+    private ArrayList<String> mReportList;
     
     private class Channel
     {
@@ -132,6 +133,7 @@ public class CollectActivity extends Activity
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mChannelList = new ArrayList<CollectActivity.Channel>();
         mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
+        mReportList = new ArrayList<String>();
         
         mChannelListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -149,6 +151,7 @@ public class CollectActivity extends Activity
         
         createAndSetListViewAdapter();
         createUpdateThreadAndHandler();
+        report();
     }
     
     @Override
@@ -260,6 +263,49 @@ public class CollectActivity extends Activity
                 }
             }
         });
+    }
+    
+    private void report()
+    {
+        mReportList.clear();
+        Iterator<Entry<String, HashMap<String, Object>>> iter = AppEngine.getInstance().getCollectManager().getCollectChannels().entrySet().iterator();
+        while (iter.hasNext())
+        {
+            Map.Entry<String, HashMap<String, Object>> entry = (Map.Entry<String, HashMap<String,Object>>)iter.next();
+            mReportList.add(entry.getKey());
+        }
+        if (mReportList.size() == 0)
+            return;
+        new Thread(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_REPORT) + "?type=collect";
+                try 
+                {
+                    NetDataGetter getter = new DefaultNetDataGetter(url);
+                    List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                    //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
+                    String idArray = "[";
+                    for (int i=0; i<mReportList.size(); ++i)
+                    {
+                        idArray += "\"" + mReportList.get(i) + "\"";
+                        if (i < (mReportList.size() - 1))
+                        {
+                            idArray += ",";
+                        }
+                    }
+                    idArray += "]";
+                    pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
+                    getter.getJSONsObject(pairs);
+                } 
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
     
     private Handler uiHandler = new Handler()

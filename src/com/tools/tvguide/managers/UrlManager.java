@@ -23,6 +23,7 @@ public class UrlManager
     public static final int URL_UPDATE                  = 8;
     public static final int URL_FEEDBACK                = 9;
     public static final int URL_LOGIN                   = 10;
+    public static final int URL_REPORT                  = 11;
         
     private static final boolean ENABLE_TEST            = true;
     private String  mHostName                           = "striversist.oicp.net";
@@ -40,6 +41,7 @@ public class UrlManager
     private static final String PATH_UPDATE               = "/update/update.php";
     private static final String PATH_FEEDBACK             = "/feedback.php";
     private static final String PATH_LOGIN                = "/login.php";
+    private static final String PATH_REPORT               = "/report.php";
     
     private Context mContext;
     
@@ -153,6 +155,10 @@ public class UrlManager
                 break;
             case URL_LOGIN:
                 url += PATH_LOGIN;
+                break;
+            case URL_REPORT:
+                url += PATH_REPORT;
+                break;
             default:
                 assert false: "Not reach here";
                 break;
