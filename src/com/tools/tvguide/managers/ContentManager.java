@@ -15,11 +15,15 @@ import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 
 
 public class ContentManager 
 {
+    private static final String SHARE_PREFERENCES_NAME                      = "content_settings";
+    private static final String KEY_CHANNEL_VERSION_FLAG                    = "key_channel_version_flag";
+    private SharedPreferences   mPreference;
     private Context mContext;
     private Handler mUpdateHandler;
     
@@ -34,6 +38,7 @@ public class ContentManager
     {
         mContext = context;
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
+        mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
     
     public boolean loadCategoriesByType(final String type, final List<HashMap<String, String>> result, final LoadListener listener)
@@ -276,4 +281,23 @@ public class ContentManager
         return false;
     }
 
+    public void shutDown()
+    {
+        // 如果当前频道的版本号大于等于最新的，则不用清除缓存以更新频道
+        if (getCurrentChannelVersion() >= AppEngine.getInstance().getUpdateManager().getLatestChannelVersion())
+            return;
+        // 否则，需要清除缓存，以便在下次启动的时候重新拉去频道列表
+        setChannelVersion(AppEngine.getInstance().getUpdateManager().getLatestChannelVersion());
+        AppEngine.getInstance().getCacheManager().clear();
+    }
+    
+    private int getCurrentChannelVersion()
+    {
+        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, 1);
+    }
+    
+    private void setChannelVersion(int version)
+    {
+        mPreference.edit().putInt(KEY_CHANNEL_VERSION_FLAG, version).commit();
+    }
 }

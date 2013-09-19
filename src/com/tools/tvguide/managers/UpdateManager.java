@@ -115,6 +115,12 @@ public class UpdateManager
         return mVersionController.getUrl();
     }
     
+    public int getLatestChannelVersion()
+    {
+        assert(mChecked);
+        return mVersionController.getLatestChannelVersion();
+    }
+    
     private void load()
     {
         try

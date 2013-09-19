@@ -32,6 +32,7 @@ public class VersionController
 	private String mCurrentVersionName;
 	private String mLatestVersionName;
 	private String mUrl = null;
+	private int mLatestChannelVersion = 1;
 	
 	public VersionController(Context context)
 	{
@@ -63,6 +64,7 @@ public class VersionController
             mLatestVersionCode = versionHandler.getVersionCode();
             mLatestVersionName = versionHandler.getVersionName();
             mUrl = versionHandler.getUrl();
+            mLatestChannelVersion = versionHandler.getChannelVersion();
             if (mLatestVersionCode > mCurrentVersionCode)
                 return true;
         }
@@ -100,14 +102,21 @@ public class VersionController
 	    return mLatestVersionName;
 	}
 	
+	public int getLatestChannelVersion()
+	{
+	    return mLatestChannelVersion;
+	}
+	
 	private class Version extends DefaultHandler
     {
     	private static final String VERSION_CODE_TAG = "versionCode";
     	private static final String VERSION_NAME_TAG = "versionName";
     	private static final String URL_TAG = "url";
+    	private static final String CHANNEL_VERSION = "channelVersion";
     	private String mVersionCode;
     	private String mVersionName;
     	private String mUrl = null;
+    	private String mChannelVersion;
     	private String mCurrentTag = null;
     	private boolean mIsStartElement = false;
     	
@@ -126,6 +135,13 @@ public class VersionController
     	public String getUrl()
     	{
     		return mUrl;
+    	}
+    	
+    	public int getChannelVersion()
+    	{
+    	    if (mVersionCode == null)
+                return 1;
+            return Integer.valueOf(mChannelVersion).intValue();
     	}
     	
     	@Override
@@ -150,6 +166,10 @@ public class VersionController
     			else if (mCurrentTag.equals(URL_TAG))
     			{
 					mUrl = data;
+    			}
+    			else if (mCurrentTag.equals(CHANNEL_VERSION))
+    			{
+    			    mChannelVersion = data;
     			}
     		}
     	}

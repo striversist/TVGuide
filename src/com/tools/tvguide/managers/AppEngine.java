@@ -118,6 +118,9 @@ public class AppEngine
         if (mAlarmHelper != null)
             mAlarmHelper.shutDown();
         
+        if (mContentManager != null)
+            mContentManager.shutDown();
+        
         exit();
     }
     
