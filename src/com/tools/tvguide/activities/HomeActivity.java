@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
 
@@ -27,6 +28,7 @@ public class HomeActivity extends Activity
     private SimpleAdapter mListViewAdapter;
     private List<HashMap<String, Object>> mItemList;
     private List<HashMap<String, String>> mCategoryList;
+    private MyProgressDialog mProgressDialog;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -39,6 +41,7 @@ public class HomeActivity extends Activity
         mListViewAdapter = new SimpleAdapter(HomeActivity.this, mItemList, R.layout.home_list_item,
                 new String[]{"name"}, new int[]{R.id.home_item_text});
         mCategoryList = new ArrayList<HashMap<String,String>>();
+        mProgressDialog = new MyProgressDialog(this);
         
         mCategoryListView.setAdapter(mListViewAdapter);
         mCategoryListView.setOnItemClickListener(new OnItemClickListener() 
@@ -70,7 +73,7 @@ public class HomeActivity extends Activity
     }
 
     private void update()
-    {   
+    {
         mCategoryList.clear();
         boolean isSyncLoad = false;
         isSyncLoad = AppEngine.getInstance().getContentManager().loadCategoriesByType("root", mCategoryList, new ContentManager.LoadListener() 
@@ -82,9 +85,9 @@ public class HomeActivity extends Activity
             }
         });
         if (isSyncLoad == true)
-        {
             uiHandler.sendEmptyMessage(0);
-        }
+        else 
+            mProgressDialog.show();
     }
     
     private Handler uiHandler = new Handler()
@@ -92,6 +95,8 @@ public class HomeActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
+            if (mProgressDialog.isShowing())
+                mProgressDialog.dismiss();
             if (mCategoryList != null)
             {
                 mItemList.clear();
