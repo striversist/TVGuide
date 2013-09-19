@@ -125,19 +125,16 @@ public class HotActivity extends Activity
                             
                             for (int i=0; i<resultArray.length(); ++i)
                             {
-                                String id = resultArray.getJSONObject(i).getString("id");
-                                String name = resultArray.getJSONObject(i).getString("name");
+                                String channelName = resultArray.getJSONObject(i).getString("name");
                                 JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
                                 
-                                mItemDataList.add(new LabelItem(name));
+                                mItemDataList.add(new LabelItem(channelName));
                                 if (programsArray != null)
                                 {
                                     for (int j=0; j<programsArray.length(); ++j)
                                     {
                                         String title = programsArray.get(j).toString();
                                         Item item = new Item();
-                                        item.id = id;
-                                        item.name = name;
                                         item.title = title;
                                         mItemDataList.add(new ContentItem(item));
                                     }
@@ -213,11 +210,7 @@ public class HotActivity extends Activity
 
     class Item
     {
-        String id;
-        String name;
-        String time;
         String title;
-        String key;
     }
 
     class ContentItem implements IListItem 
