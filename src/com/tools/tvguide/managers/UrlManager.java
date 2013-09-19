@@ -175,4 +175,13 @@ public class UrlManager
     {
         return PORT;
     }
+    
+    public String tryToReplaceHostNameToIP(String url)
+    {
+        if (url == null)
+            return null;
+        if (mHostIP == null)
+            return url;
+        return url.replace(mHostName, mHostIP);
+    }
 }

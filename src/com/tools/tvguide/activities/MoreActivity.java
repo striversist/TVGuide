@@ -180,7 +180,8 @@ public class MoreActivity extends Activity
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) 
                                 {
-                                    new PackageInstaller(MoreActivity.this).installRemotePackage(AppEngine.getInstance().getUpdateManager().getUrl());
+                                    String newUrl = AppEngine.getInstance().getUrlManager().tryToReplaceHostNameToIP(AppEngine.getInstance().getUpdateManager().getUrl());
+                                    new PackageInstaller(MoreActivity.this).installRemotePackage(newUrl);
                                     Toast.makeText(MoreActivity.this, "正在下载...", Toast.LENGTH_SHORT).show();
                                 }
                             })
