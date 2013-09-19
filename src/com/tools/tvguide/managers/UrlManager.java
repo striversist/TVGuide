@@ -32,17 +32,17 @@ public class UrlManager
     private String  BASE_PATH;
     private int     PORT;
     
-    private static final String PATH_CATEGORIES           = "/json/categories.php";
-    private static final String PATH_CHANNELS             = "/json/channels.php";
-    private static final String PATH_ON_PLAYING_PROGRAM   = "/json/onplaying_program.php";
-    private static final String PATH_ON_PLAYING_PROGRAMS  = "/json/onplaying_programs.php";
-    private static final String PATH_CHOOSE               = "/json/choose.php";
-    private static final String PATH_SEARCH               = "/json/search.php";
-    private static final String PATH_HOT                  = "/json/hot.php";
-    private static final String PATH_UPDATE               = "/update/update.php";
-    private static final String PATH_FEEDBACK             = "/feedback.php";
-    private static final String PATH_LOGIN                = "/login.php";
-    private static final String PATH_REPORT               = "/report.php";
+    private static final String PATH_CATEGORIES           = "/public/json/categories.php";
+    private static final String PATH_CHANNELS             = "/public/json/channels.php";
+    private static final String PATH_ON_PLAYING_PROGRAM   = "/public/json/onplaying_program.php";
+    private static final String PATH_ON_PLAYING_PROGRAMS  = "/public/json/onplaying_programs.php";
+    private static final String PATH_CHOOSE               = "/public/json/choose.php";
+    private static final String PATH_SEARCH               = "/public/json/search.php";
+    private static final String PATH_HOT                  = "/public/json/hot.php";
+    private static final String PATH_UPDATE               = "/public/update/update.php";
+    private static final String PATH_FEEDBACK             = "/public/feedback.php";
+    private static final String PATH_LOGIN                = "/public/login.php";
+    private static final String PATH_REPORT               = "/public/report.php";
     
     private Context mContext;
     
