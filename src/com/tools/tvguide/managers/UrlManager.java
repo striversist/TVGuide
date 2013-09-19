@@ -2,11 +2,8 @@ package com.tools.tvguide.managers;
 
 import java.net.UnknownHostException;
 
-import com.tools.tvguide.utils.NetworkManager;
-
 import android.content.Context;
 import android.os.Handler;
-import android.os.HandlerThread;
 
 public class UrlManager 
 {
