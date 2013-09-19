@@ -27,7 +27,15 @@ public class DnsManager
         if (mIpAddress != null)
             return mIpAddress;
         
-        String ipAddress = getIPFrom_chinaz(hostName);
+        String ipAddress;
+        ipAddress= getIPFrom_chinaz(hostName);
+        if (ipAddress != null)
+        {
+            mIpAddress = ipAddress;
+            return ipAddress;
+        }
+        
+        ipAddress= getIPFrom_IPCN(hostName);
         if (ipAddress != null)
         {
             mIpAddress = ipAddress;
@@ -51,12 +59,51 @@ public class DnsManager
             String html = getter.getStringData();
             if (html == null)
                 return null;
+            // 匹配查询结果
             Pattern resultPattern = Pattern.compile("查询结果\\[1\\](.+)</");
             Matcher resultMatcher = resultPattern.matcher(html);
             
             if (resultMatcher.find())
             {
                 String result = resultMatcher.group();
+                // 匹配IP地址
+                Pattern ipPattern = Pattern.compile("((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|[1-9])");
+                Matcher ipMatcher = ipPattern.matcher(result);
+                if (ipMatcher.find()) 
+                {
+                    ipAddress = ipMatcher.group();
+                }
+            }
+        }
+        catch (MalformedURLException e) 
+        {
+            e.printStackTrace();
+        }
+        
+        if (!Utility.isIPAddress(ipAddress))
+            return null;
+        return ipAddress;
+    }
+    
+    private String getIPFrom_IPCN(final String hostName)
+    {
+        String ipAddress = null;
+        String url = UrlManager.URL_IPCN + "/getip.php?action=queryip&ip_url=" + hostName + "&from=web";
+        NetDataGetter getter;
+        try
+        {
+            getter = new NetDataGetter(url);
+            String html = getter.getStringData();
+            if (html == null)
+                return null;
+            // 匹配查询结果
+            Pattern resultPattern = Pattern.compile("查询的 IP：(.+)");
+            Matcher resultMatcher = resultPattern.matcher(html);
+            
+            if (resultMatcher.find())
+            {
+                String result = resultMatcher.group();
+                // 匹配IP地址
                 Pattern ipPattern = Pattern.compile("((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|[1-9])");
                 Matcher ipMatcher = ipPattern.matcher(result);
                 if (ipMatcher.find()) 

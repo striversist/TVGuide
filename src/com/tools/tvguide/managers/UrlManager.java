@@ -12,6 +12,7 @@ public class UrlManager
 {
     public static final String TAG                      = "UrlManager";
     public static final String URL_CHINAZ_IP            = "http://ip.chinaz.com";
+    public static final String URL_IPCN                 = "http://www.ip.cn";
     
     public static final int URL_CATEGORIES              = 1;
     public static final int URL_CHANNELS                = 2;
@@ -25,7 +26,7 @@ public class UrlManager
     public static final int URL_LOGIN                   = 10;
     public static final int URL_REPORT                  = 11;
         
-    private static final boolean ENABLE_TEST            = true;
+    private static final boolean ENABLE_TEST            = false;
     private String  mHostName                           = "striversist.oicp.net";
     private String  mHostIP;
     private String  BASE_PATH;
