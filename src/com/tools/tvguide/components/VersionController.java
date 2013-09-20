@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -109,10 +110,10 @@ public class VersionController
 	
 	private class Version extends DefaultHandler
     {
-    	private static final String VERSION_CODE_TAG = "versionCode";
-    	private static final String VERSION_NAME_TAG = "versionName";
-    	private static final String URL_TAG = "url";
-    	private static final String CHANNEL_VERSION = "channelVersion";
+    	private static final String VERSION_CODE_TAG = "VersionCode";
+    	private static final String VERSION_NAME_TAG = "VersionName";
+    	private static final String URL_TAG = "Url";
+    	private static final String CHANNEL_VERSION = "ChannelVersion";
     	private String mVersionCode;
     	private String mVersionName;
     	private String mUrl = null;
@@ -155,19 +156,19 @@ public class VersionController
     		if(mCurrentTag != null && mIsStartElement)
     		{
     			String data = new String(ch, start, length);
-    			if (mCurrentTag.equals(VERSION_CODE_TAG))
+    			if (mCurrentTag.toLowerCase(Locale.ENGLISH).equals(VERSION_CODE_TAG.toLowerCase(Locale.ENGLISH)))
     			{
 	    			mVersionCode = data;
     			}
-    			else if (mCurrentTag.equals(VERSION_NAME_TAG))
+    			else if (mCurrentTag.toLowerCase(Locale.ENGLISH).equals(VERSION_NAME_TAG.toLowerCase(Locale.ENGLISH)))
     			{
     			    mVersionName = data;
     			}
-    			else if (mCurrentTag.equals(URL_TAG))
+    			else if (mCurrentTag.toLowerCase(Locale.ENGLISH).equals(URL_TAG.toLowerCase(Locale.ENGLISH)))
     			{
 					mUrl = data;
     			}
-    			else if (mCurrentTag.equals(CHANNEL_VERSION))
+    			else if (mCurrentTag.toLowerCase(Locale.ENGLISH).equals(CHANNEL_VERSION.toLowerCase(Locale.ENGLISH)))
     			{
     			    mChannelVersion = data;
     			}
