@@ -249,4 +249,117 @@
 	<channel id="aoshihd">
 		<logo>aoshi.gif</logo>
 	</channel>
+	<!-- ================= 地方台 ================= -->
+	<!-- =================  武汉  ================= -->
+	<channel id="wuhan1">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan2">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan3">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan4">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan5">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan6">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan7">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhan8">
+		<logo>whtv.gif</logo>
+	</channel>
+	<channel id="wuhanedu">
+		<logo>whtv.gif</logo>
+	</channel>
+	<!-- =================  北京  ================= -->
+	<channel id="btv2">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv3">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv4">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv5">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv6">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv7">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv8">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv9">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btv10">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<channel id="btvjishi">
+		<logo>beijingst.gif</logo>
+	</channel>
+	<!-- =================  上海  ================= -->
+	<channel id="shangshixinwenzonghe">
+		<logo>shangshi1.gif</logo>
+	</channel>
+	<channel id="shangshicaijing">
+		<logo>shangshicaijing.gif</logo>
+	</channel>
+	<channel id="shangshixingshang">
+		<logo>shangshixingshang.jpg</logo>
+	</channel>
+	<channel id="shangshidianshiju">
+		<logo>shangshi1.gif</logo>
+	</channel>
+	<channel id="shangshitiyu">
+		<logo>shangshi1.gif</logo>
+	</channel>
+	<channel id="shangshijishi">
+		<logo>shangshijishi.jpg</logo>
+	</channel>
+	<channel id="shangshixinyule">
+		<logo>shangshixinyule.jpg</logo>
+	</channel>
+	<channel id="shangshiyishurenwen">
+		<logo>shangshi2.gif</logo>
+	</channel>
+	<channel id="shangshiwaiyu">
+		<logo>shangshiwaiyu.jpg</logo>
+	</channel>
+	<channel id="shangshigouwu1">
+		<logo>shangshi2.gif</logo>
+	</channel>
+	<channel id="shangshishaoer">
+		<logo>shangshishaoer.jpg</logo>
+	</channel>
+	<channel id="iptvwaihuilicai">
+		<logo>smg.gif</logo>
+	</channel>
+	<channel id="shangshixiju">
+		<logo>smg.gif</logo>
+	</channel>
 </channels>
+
+
+
+
+
+
+
+
+
+
+
+
+
