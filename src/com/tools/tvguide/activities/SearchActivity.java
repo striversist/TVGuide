@@ -199,7 +199,7 @@ public class SearchActivity extends Activity
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_SEARCH) + "?keyword=" + mKeyword;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_SEARCH) + "?keyword=" + mKeyword;
                 NetDataGetter getter;
                 try 
                 {

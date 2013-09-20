@@ -110,7 +110,7 @@ public class HotActivity extends Activity
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_HOT);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_HOT);
                 NetDataGetter getter;
                 try 
                 {

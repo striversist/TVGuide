@@ -72,7 +72,7 @@ public class FeedbackActivity extends Activity
                 List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                 pairs.add(new BasicNameValuePair("feedback", mFeedbackText.getText().toString()));
                 
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_FEEDBACK);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_FEEDBACK);
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);

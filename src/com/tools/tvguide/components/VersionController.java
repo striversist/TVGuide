@@ -55,7 +55,7 @@ public class VersionController
         {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
-            String xmlData = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_UPDATE)).getStringData();
+            String xmlData = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_UPDATE)).getStringData();
             if(xmlData == null)
             {
                 return false;

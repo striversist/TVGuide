@@ -42,7 +42,7 @@ public class LoginManager
             {
                 try 
                 {
-                    NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
+                    NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_LOGIN));
                     getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
                     getter.getStringData();     // Just send the request
                     if (AppEngine.getInstance().getUpdateManager().getGUID() == null)   // First use

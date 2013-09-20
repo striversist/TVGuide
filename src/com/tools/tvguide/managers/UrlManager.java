@@ -1,6 +1,11 @@
 package com.tools.tvguide.managers;
 
 import java.net.UnknownHostException;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
 import android.os.Handler;
@@ -42,8 +47,10 @@ public class UrlManager
     private static final String PATH_REPORT               = "/public/report.php";
     
     private Context mContext;
-    
-    private Handler initHandler;
+    private Handler initHandler                           = new Handler();
+    private ReentrantLock mLock                           = new ReentrantLock();
+    private Condition mCondition;
+    private boolean mHasInit                              = false;
     public interface OnInitCompleteCallback
     {
         void OnInitComplete(int result);
@@ -52,7 +59,8 @@ public class UrlManager
     public UrlManager(Context context)
     {
         mContext = context;
-        initHandler = new Handler();
+        mCondition = mLock.newCondition();
+        
         if (ENABLE_TEST)
         {
             mHostIP = "192.168.1.102";
@@ -82,6 +90,7 @@ public class UrlManager
                     }
                 });
             }
+            mHasInit = true;
             return;
         }
         
@@ -93,6 +102,10 @@ public class UrlManager
                 try 
                 {
                     mHostIP = AppEngine.getInstance().getDnsManager().getIPAddress(mHostName);
+                    mLock.lock();
+                    mCondition.signalAll();
+                    mLock.unlock();
+                    mHasInit = true;
                     if (callback != null)
                     {
                         initHandler.post(new Runnable() 
@@ -110,6 +123,28 @@ public class UrlManager
                 }
             }
         }.start();
+    }
+    
+    public String tryToGetDnsedUrl(int type)
+    {
+        if (mHostIP != null || mHasInit)
+            return getUrl(type);
+        
+        // 等待HostIP解析完毕
+        try 
+        {
+            mLock.lock();
+            mCondition.await(20000, TimeUnit.MILLISECONDS);
+        }
+        catch (InterruptedException e) 
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            mLock.unlock();
+        }
+        return getUrl(type);
     }
     
     public String getUrl(int type)

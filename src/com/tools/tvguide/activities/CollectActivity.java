@@ -218,7 +218,7 @@ public class CollectActivity extends Activity
             public void run()
             {
                 assert(mChannelList != null);
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -281,7 +281,7 @@ public class CollectActivity extends Activity
             @Override
             public void run() 
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_REPORT) + "?type=collect";
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_REPORT) + "?type=collect";
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);

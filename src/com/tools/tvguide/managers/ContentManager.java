@@ -53,7 +53,7 @@ public class ContentManager
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_CATEGORIES) + "?type=" + type;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CATEGORIES) + "?type=" + type;
                 NetDataGetter getter;
                 try 
                 {
@@ -104,7 +104,7 @@ public class ContentManager
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_CHANNELS) + "?category=" + categoryId;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHANNELS) + "?category=" + categoryId;
                 NetDataGetter getter;
                 try 
                 {
@@ -148,7 +148,7 @@ public class ContentManager
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day;
                 NetDataGetter getter;
                 try 
                 {
@@ -205,7 +205,7 @@ public class ContentManager
                 idArray += "]";
                 pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
                 
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -247,7 +247,7 @@ public class ContentManager
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_ON_PLAYING_PROGRAM) + "?channel=" + channelId;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_ON_PLAYING_PROGRAM) + "?channel=" + channelId;
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
