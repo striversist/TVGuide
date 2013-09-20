@@ -3,10 +3,10 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
         <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <LinearLayout style="@style/ll_more_menu">
+            <LinearLayout style="@style/more_menu_subfield">
                 <Button android:id="@+id/more_alarms" android:tag="2" android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
-            <LinearLayout style="@style/ll_more_menu">
+            <LinearLayout style="@style/more_menu_subfield">
                 <FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
                     <Button android:id="@+id/more_check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" android:onClick="onClick" />
                     <TextView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
@@ -16,7 +16,7 @@
                 <Button android:id="@+id/more_feedback" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" android:onClick="onClick" />
                 <Button android:id="@+id/more_about" android:tag="5" android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>
-            <LinearLayout style="@style/ll_more_menu">
+            <LinearLayout style="@style/more_menu_subfield">
                 <Button android:id="@+id/more_clear_cache" android:tag="7" android:text="@string/clear_cache" android:drawableLeft="@drawable/more_menu_clearcache" style="@style/menu_list_item" android:onClick="onClick" />
                 <Button android:id="@+id/more_quit" android:tag="8" android:text="@string/quit" android:drawableLeft="@drawable/more_menu_quit" style="@style/menu_list_item" android:onClick="onClick" />
             </LinearLayout>

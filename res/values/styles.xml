@@ -33,7 +33,7 @@
         <item name="android:button">@null</item>
         <item name="android:singleLine">true</item>
     </style>
-    <style name="ll_more_menu">
+    <style name="more_menu_subfield">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
