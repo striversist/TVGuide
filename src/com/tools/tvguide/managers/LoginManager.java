@@ -45,7 +45,15 @@ public class LoginManager
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
                     getter.setHeader("UA", ua);
-                    getter.getStringData();
+                    getter.getStringData();     // Just send the request
+                    if (AppEngine.getInstance().getUpdateManager().getGUID() == null)   // First use
+                    {
+                        String guid = getter.getFirstHeader("GUID");
+                        if (guid != null)
+                        {
+                            AppEngine.getInstance().getUpdateManager().setGUID(guid);
+                        }
+                    }
                 } 
                 catch (MalformedURLException e) 
                 {

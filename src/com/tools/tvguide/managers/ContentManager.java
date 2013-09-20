@@ -75,11 +75,6 @@ public class ContentManager
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
-                    String guid = getter.getFirstHeader("GUID");
-                    if (guid != null)
-                    {
-                        AppEngine.getInstance().getUpdateManager().setGUID(guid);
-                    }
                     AppEngine.getInstance().getCacheManager().saveCatgegoriesByType(type, result);
                 }
                 catch (MalformedURLException e) 
