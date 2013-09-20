@@ -7,6 +7,7 @@ import java.util.List;
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.BootManager;
 import com.tools.tvguide.managers.ContentManager;
 
 import android.app.Activity;
@@ -29,6 +30,7 @@ public class HomeActivity extends Activity
     private List<HashMap<String, Object>> mItemList;
     private List<HashMap<String, String>> mCategoryList;
     private MyProgressDialog mProgressDialog;
+    private boolean mHasUpdated = false;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -71,6 +73,15 @@ public class HomeActivity extends Activity
         
         update();
     }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        // 发现之前获取失败，则重新获取
+        if (mHasUpdated && (mCategoryList == null || mCategoryList.size() == 0))
+            update();
+    }
 
     private void update()
     {
@@ -87,7 +98,24 @@ public class HomeActivity extends Activity
         if (isSyncLoad == true)
             uiHandler.sendEmptyMessage(0);
         else 
-            mProgressDialog.show();
+        {
+            if (AppEngine.getInstance().getBootManager().isSplashShowing())
+            {
+                AppEngine.getInstance().getBootManager().addOnSplashFinishedCallback(new BootManager.OnSplashFinishedCallback() 
+                {
+                    @Override
+                    public void OnSplashFinished() 
+                    {
+                        if (mCategoryList == null || mCategoryList.size() == 0)
+                            mProgressDialog.show();
+                    }
+                });
+            }
+            else 
+            {
+                mProgressDialog.show();
+            }
+        }
     }
     
     private Handler uiHandler = new Handler()
@@ -108,6 +136,7 @@ public class HomeActivity extends Activity
                 }
                 mListViewAdapter.notifyDataSetChanged();
             }
+            mHasUpdated = true;
         }
     };
 }

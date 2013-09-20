@@ -37,6 +37,7 @@ public class HotActivity extends Activity
     private LayoutInflater mInflater;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
+    private boolean mHasUpdated = false;
     
     class PartAdapter extends BaseAdapter 
     {
@@ -94,7 +95,7 @@ public class HotActivity extends Activity
     {
         super.onResume();
         // 发现之前获取失败，则重新获取
-        if (mItemList.size() == 0)
+        if (mHasUpdated && mItemList.size() == 0)
             updateResult();
     }
 
@@ -168,6 +169,7 @@ public class HotActivity extends Activity
                 mItemList.add(mItemDataList.get(i));
             }
             mListViewAdapter.notifyDataSetChanged();
+            mHasUpdated = true;
         }
     };
     
