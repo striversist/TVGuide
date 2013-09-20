@@ -62,7 +62,7 @@ public class UrlManager
         else
         {
             mHostIP = null;
-            BASE_PATH = "/TV";
+            BASE_PATH = "/projects/TV";
             PORT = 9999;
         }
     }
