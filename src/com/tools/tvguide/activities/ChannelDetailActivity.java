@@ -76,6 +76,7 @@ public class ChannelDetailActivity extends Activity
                 if (((String)(mItemList.get(position).get("program"))).equals(onPlayingProgram) 
                         && (mCurrentSelectedDay == Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
                 {
+                    textView.setText(onPlayingProgram + "  (正在播放)");
                     textView.setTextColor(Color.RED);
                 }
                 else
