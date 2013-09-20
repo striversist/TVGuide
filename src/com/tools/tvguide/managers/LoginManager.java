@@ -35,7 +35,6 @@ public class LoginManager
     
     public void login()
     {
-        final String ua = getUserAgent();
         new Thread()
         {
             @Override
@@ -44,7 +43,7 @@ public class LoginManager
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGIN));
-                    getter.setHeader("UA", ua);
+                    getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
                     getter.getStringData();     // Just send the request
                     if (AppEngine.getInstance().getUpdateManager().getGUID() == null)   // First use
                     {
@@ -61,15 +60,6 @@ public class LoginManager
                 }
             }
         }.start();
-    }
-
-    // This API should be called in UI main thread
-    private String getUserAgent() 
-    {
-        WebView webView = new WebView(mContext);
-        webView.layout(0, 0, 0, 0);
-        WebSettings settings = webView.getSettings();
-        return settings.getUserAgentString();
     }
 
     public void startKeepAliveProcess()

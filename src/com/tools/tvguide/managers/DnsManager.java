@@ -20,7 +20,7 @@ public class DnsManager
     {
         mContext = context;
     }
-    
+        
     public String getIPAddress(String hostName) throws UnknownHostException
     {
         InetAddress addr = null;
@@ -56,6 +56,7 @@ public class DnsManager
         try 
         {
             getter = new NetDataGetter(url);
+            getter.setHeader("User-Agent", AppEngine.getInstance().getBootManager().getUserAgent());
             String html = getter.getStringData();
             if (html == null)
                 return null;
@@ -93,6 +94,7 @@ public class DnsManager
         try
         {
             getter = new NetDataGetter(url);
+            getter.setHeader("User-Agent", AppEngine.getInstance().getBootManager().getUserAgent());
             String html = getter.getStringData();
             if (html == null)
                 return null;

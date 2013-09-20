@@ -214,11 +214,13 @@ public class NetDataGetter
         	if(response == null)
         	{
         		Log.e("Error", "Response Null");
+        		client.getConnectionManager().shutdown();
 				return null;
         	}
         	if(response.getStatusLine().getStatusCode() != 200)
         	{
         		Log.e("Error", "Status code = %d" + response.getStatusLine().getStatusCode());
+        		client.getConnectionManager().shutdown();
         		return null;
         	}
         	
@@ -227,6 +229,7 @@ public class NetDataGetter
         	if(entity == null)
         	{
         		Log.e("Error", "Status code = %d" + response.getStatusLine().getStatusCode());
+        		client.getConnectionManager().shutdown();
         		return null;
         	}
         	
@@ -234,6 +237,7 @@ public class NetDataGetter
 			if(recvData == null)
 			{
 				Log.e("Error", "Receive Null");
+				client.getConnectionManager().shutdown();
 				return null;
 			}
 			client.getConnectionManager().shutdown();
@@ -242,24 +246,28 @@ public class NetDataGetter
 		{
 			Log.e("Exception", "Set name pair failed!");
 			e1.printStackTrace();
+			client.getConnectionManager().shutdown();
 			return null;
 		}
 		catch (ClientProtocolException e)
 		{
 			Log.e("Exception", "Exec post protocol failed!");
 			e.printStackTrace();
+			client.getConnectionManager().shutdown();
 			return null;
 		}
 		catch (IOException e)
 		{
 			Log.e("Exception", "Exec post IO failed!");
 			e.printStackTrace();
+			client.getConnectionManager().shutdown();
 			return null;
 		}
 		catch (ParseException e)
 		{
 			Log.e("Error", "Entity parse failed");
 			e.printStackTrace();
+			client.getConnectionManager().shutdown();
 			return null;
 		}
 

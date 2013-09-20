@@ -6,6 +6,8 @@ import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 public class BootManager 
@@ -16,11 +18,13 @@ public class BootManager
     private SharedPreferences   mPreference;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
     private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
+    private String              mUA;
     
     public BootManager(Context context)
     {
         mContext = context;
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mUA = getUserAgentInternal();
     }
     
     public void start()
@@ -42,6 +46,20 @@ public class BootManager
         AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
         if (isFirstStart())
             new ShortcutInstaller(mContext).createShortCut();
+    }
+    
+    public String getUserAgent()
+    {
+        return mUA;
+    }
+    
+    // This API should be called in UI main thread
+    private String getUserAgentInternal()
+    {
+        WebView webView = new WebView(mContext);
+        webView.layout(0, 0, 0, 0);
+        WebSettings settings = webView.getSettings();
+        return settings.getUserAgentString();
     }
     
     public boolean isFirstStart()
