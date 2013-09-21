@@ -61,13 +61,11 @@ public class UrlManager
         
         if (ENABLE_TEST)
         {
-            mHostIP = "192.168.1.102";
             BASE_PATH = "/projects/TV";
             PORT = 80;
         }
         else
         {
-            mHostIP = null;
             BASE_PATH = "/projects/TV";
             PORT = 52719;
         }
@@ -100,6 +98,9 @@ public class UrlManager
                 try 
                 {
                     mHostIP = AppEngine.getInstance().getDnsManager().getIPAddress(mHostName);
+                    if (ENABLE_TEST)
+                        mHostIP = "192.168.1.102";
+                    
                     mLock.lock();
                     mCondition.signalAll();
                     mLock.unlock();
