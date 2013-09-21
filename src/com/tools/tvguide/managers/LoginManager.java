@@ -2,16 +2,16 @@ package com.tools.tvguide.managers;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URLEncoder;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 
 public class LoginManager 
 {
@@ -42,10 +42,12 @@ public class LoginManager
             {
                 try 
                 {
-                    NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_LOGIN));
+                    String loginUrl = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_LOGIN);
+                    loginUrl = addUrlGetParam(loginUrl, "UIP", AppEngine.getInstance().getDnsManager().getDeviceIpAddress(), true);
+                    loginUrl = addUrlGetParam(loginUrl, "UL", AppEngine.getInstance().getDnsManager().getDeviceLocation(), false);
+
+                    NetDataGetter getter = new DefaultNetDataGetter(loginUrl);
                     getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
-                    getter.setHeader("UIP", AppEngine.getInstance().getDnsManager().getDeviceIpAddress());
-                    getter.setHeader("UL", AppEngine.getInstance().getDnsManager().getDeviceLocation());
                     getter.getStringData();     // Just send the request
                     if (AppEngine.getInstance().getUpdateManager().getGUID() == null)   // First use
                     {
@@ -64,6 +66,33 @@ public class LoginManager
         }.start();
     }
 
+    private String addUrlGetParam(String url, String paramName, String paramValue, boolean isFirstParam)
+    {
+        if (url == null || paramName == null)
+            return url;
+     
+        String newUrl = url;
+        if (paramValue == null)
+            paramValue = "";
+        
+        if (isFirstParam)
+            newUrl += "?";
+        else
+            newUrl += "&";
+        
+        try 
+        {
+            newUrl += paramName + "=" + URLEncoder.encode(paramValue, "UTF-8");
+        } 
+        catch (UnsupportedEncodingException e) 
+        {
+            newUrl = url;
+            e.printStackTrace();
+        }
+        
+        return newUrl;
+    }
+    
     public void startKeepAliveProcess()
     {
         int keepAliveInterval = KEEP_ALIVE_INTERVAL;
