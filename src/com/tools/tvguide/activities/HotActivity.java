@@ -62,7 +62,8 @@ public class HotActivity extends Activity
         @Override
         public boolean isEnabled(int position) 
         {
-            return mItemList.get(position).isClickable();
+//            return mItemList.get(position).isClickable();
+            return false;
         }
 
         @Override
