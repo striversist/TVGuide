@@ -15,6 +15,8 @@ public class DnsManager
 {
     private Context mContext;
     private String  mIpAddress;
+    private String  mDeviceIpAddress;
+    private String  mDeviceLocation;
     
     public DnsManager(Context context)
     {
@@ -48,6 +50,16 @@ public class DnsManager
         return ipAddress;
     }
     
+    public String getDeviceIpAddress()
+    {
+        return mDeviceIpAddress;
+    }
+    
+    public String getDeviceLocation()
+    {
+        return mDeviceLocation;
+    }
+    
     private String getIPFrom_chinaz(final String hostName)
     {
         String ipAddress = null;
@@ -60,20 +72,32 @@ public class DnsManager
             String html = getter.getStringData();
             if (html == null)
                 return null;
-            // 匹配查询结果
-            Pattern resultPattern = Pattern.compile("查询结果\\[1\\](.+)</");
+
+            // 匹配HostName对应的IP地址
+            Pattern resultPattern = Pattern.compile("查询结果\\[1\\](.+)</");       // (.+)为贪婪匹配
             Matcher resultMatcher = resultPattern.matcher(html);
-            
             if (resultMatcher.find())
             {
                 String result = resultMatcher.group();
-                // 匹配IP地址
-                Pattern ipPattern = Pattern.compile("((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|[1-9])");
-                Matcher ipMatcher = ipPattern.matcher(result);
-                if (ipMatcher.find()) 
-                {
-                    ipAddress = ipMatcher.group();
-                }
+                ipAddress = getMatchedIP(result);
+            }
+            
+            // 匹配当前设备的IP地址
+            Pattern userIpPattern = Pattern.compile("您的IP(.*?)</");             // (.*?) 为非贪婪匹配
+            Matcher userIpMatcher = userIpPattern.matcher(html);
+            if (userIpMatcher.find())
+            {
+                String result = userIpMatcher.group();
+                mDeviceIpAddress = getMatchedIP(result);
+            }
+            
+            // 匹配当前设备所在的地理位置
+            Pattern userLocatioPattern = Pattern.compile("来自(.*?)</");          // (.*?) 为非贪婪匹配
+            Matcher userLocationMatcher = userLocatioPattern.matcher(html);
+            if (userLocationMatcher.find())
+            {
+                String result = userLocationMatcher.group(1);
+                mDeviceLocation = getMatchedChinese(result);
             }
         }
         catch (MalformedURLException e) 
@@ -98,19 +122,39 @@ public class DnsManager
             String html = getter.getStringData();
             if (html == null)
                 return null;
-            // 匹配查询结果
-            Pattern resultPattern = Pattern.compile("查询的 IP：(.+)");
+
+            // 匹配HostName对应的IP地址
+            Pattern resultPattern = Pattern.compile("查询的 IP：(.+)");             // (.+)为贪婪匹配
             Matcher resultMatcher = resultPattern.matcher(html);
-            
             if (resultMatcher.find())
             {
                 String result = resultMatcher.group();
-                // 匹配IP地址
-                Pattern ipPattern = Pattern.compile("((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|[1-9])");
-                Matcher ipMatcher = ipPattern.matcher(result);
-                if (ipMatcher.find()) 
+                ipAddress = getMatchedIP(result);
+            }
+            
+            // 获取当前位置信息
+            url = UrlManager.URL_IPCN + "/getip.php?action=getip&ip_url=&from=web";
+            getter = new NetDataGetter(url);
+            getter.setHeader("User-Agent", AppEngine.getInstance().getBootManager().getUserAgent());
+            html = getter.getStringData();
+            if (html != null)
+            {
+                // 匹配当前设备的IP地址
+                Pattern userIpPattern = Pattern.compile("当前(.*?)</");               // (.*?) 为非贪婪匹配
+                Matcher userIpMatcher = userIpPattern.matcher(html);
+                if (userIpMatcher.find())
                 {
-                    ipAddress = ipMatcher.group();
+                    String result = userIpMatcher.group();
+                    mDeviceIpAddress = getMatchedIP(result);
+                }
+                
+                // 匹配当前设备所在的地理位置
+                Pattern userLocatioPattern = Pattern.compile("来自(.*?)</");          // (.*?) 为非贪婪匹配
+                Matcher userLocationMatcher = userLocatioPattern.matcher(html);
+                if (userLocationMatcher.find())
+                {
+                    String result = userLocationMatcher.group(1);
+                    mDeviceLocation = getMatchedChinese(result);
                 }
             }
         }
@@ -122,5 +166,32 @@ public class DnsManager
         if (!Utility.isIPAddress(ipAddress))
             return null;
         return ipAddress;
+    }
+    
+    /*
+     * 用正则表达式匹配IP地址
+     */
+    private String getMatchedIP(String text)
+    {
+        String ip = "";
+        Pattern ipPattern = Pattern.compile("((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]\\d|[1-9])");
+        Matcher ipMatcher = ipPattern.matcher(text);
+        if (ipMatcher.find()) 
+        {
+            ip = ipMatcher.group();
+        }
+        return ip;
+    }
+    
+    private String getMatchedChinese(String text)
+    {
+        String chinese = "";
+        Pattern chinesePattern = Pattern.compile("[\\u4e00-\\u9fa5].+");
+        Matcher chineseMatcher = chinesePattern.matcher(text);
+        if (chineseMatcher.find())
+        {
+            chinese = chineseMatcher.group();
+        }
+        return chinese;
     }
 }

@@ -44,6 +44,8 @@ public class LoginManager
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_LOGIN));
                     getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
+                    getter.setHeader("UIP", AppEngine.getInstance().getDnsManager().getDeviceIpAddress());
+                    getter.setHeader("UL", AppEngine.getInstance().getDnsManager().getDeviceLocation());
                     getter.getStringData();     // Just send the request
                     if (AppEngine.getInstance().getUpdateManager().getGUID() == null)   // First use
                     {
@@ -53,7 +55,7 @@ public class LoginManager
                             AppEngine.getInstance().getUpdateManager().setGUID(guid);
                         }
                     }
-                } 
+                }
                 catch (MalformedURLException e) 
                 {
                     e.printStackTrace();
