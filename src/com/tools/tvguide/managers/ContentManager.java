@@ -185,6 +185,58 @@ public class ContentManager
         return false;
     }
     
+    public boolean loadProgramsByChannel2(final String channelId, final int day, final List<HashMap<String, String>> programs, 
+                final List<HashMap<String, String>> onPlayingProgram, final LoadListener listener)
+    {
+        mUpdateHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day + "&onplaying=1";
+                NetDataGetter getter;
+                try 
+                {
+                    getter = new DefaultNetDataGetter(url);
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    if (jsonRoot != null)
+                    {
+                        JSONArray resultArray = jsonRoot.getJSONArray("result");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("time", resultArray.getJSONObject(i).getString("time"));
+                                map.put("title", resultArray.getJSONObject(i).getString("title"));
+                                programs.add(map);
+                            }
+                        }
+                        JSONObject jsonOnPlayingProgram = jsonRoot.getJSONObject("onplaying");
+                        if (jsonOnPlayingProgram != null)
+                        {
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put("time", jsonOnPlayingProgram.getString("time"));
+                            map.put("title", jsonOnPlayingProgram.getString("title"));
+                            onPlayingProgram.add(map);
+                        }
+                    }
+                    listener.onLoadFinish(LoadListener.SUCCESS);
+                }
+                catch (MalformedURLException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+                catch (JSONException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+            }
+        });
+        return false;
+    }
+    
     public boolean loadOnPlayingPrograms(final List<String> idList, final List<HashMap<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()

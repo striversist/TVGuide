@@ -52,7 +52,6 @@ public class ChannelDetailActivity extends Activity
     private MyProgressDialog mProgressDialog;
     private String SEPERATOR                                = ": ";
     private final int MSG_REFRESH_PROGRAM_LIST              = 0;
-    private final int MSG_REFRESH_ON_PLAYING_PROGRAM        = 1;
     
     class MySimpleAdapter extends SimpleAdapter
     {
@@ -125,7 +124,6 @@ public class ChannelDetailActivity extends Activity
         initViews();
         createAndSetListViewAdapter();
         updateProgramList();
-        updateOnplayingProgram();
         
         mListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -305,7 +303,8 @@ public class ChannelDetailActivity extends Activity
     private void updateProgramList()
     {
         mProgramList.clear();
-        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, new ContentManager.LoadListener() 
+        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel2(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, 
+                                mOnPlayingProgram, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
@@ -315,19 +314,6 @@ public class ChannelDetailActivity extends Activity
         });
         if (isSyncLoad == false)
             mProgressDialog.show();
-    }
-    
-    private void updateOnplayingProgram()
-    {
-        mOnPlayingProgram.clear();
-        AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
-        {    
-            @Override
-            public void onLoadFinish(int status) 
-            {
-                uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM);
-            }
-        });
     }
 
     @Override
@@ -428,10 +414,7 @@ public class ChannelDetailActivity extends Activity
                             item.put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
                         mItemList.add(item);
                     }
-                    mListViewAdapter.notifyDataSetChanged();
-                    break;
-                case MSG_REFRESH_ON_PLAYING_PROGRAM:
-                    mListViewAdapter.notifyDataSetChanged();
+                    
                     String onPlayingProgram = "";
                     if (mOnPlayingProgram.size() > 0)
                     {
@@ -444,6 +427,7 @@ public class ChannelDetailActivity extends Activity
                             mListView.setSelection(i);
                         }
                     }
+                    mListViewAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
