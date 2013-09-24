@@ -279,6 +279,7 @@ public class SearchActivity extends Activity
             mListViewAdapter.notifyDataSetChanged();
             if (mItemDataList.isEmpty())
                 Toast.makeText(SearchActivity.this, getResources().getString(R.string.no_found_tips), Toast.LENGTH_SHORT).show();
+            mSearchEditText.requestFocus();
         }
     };
     
