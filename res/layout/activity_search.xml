@@ -20,9 +20,13 @@
 		        android:onClick="search" />
     </LinearLayout>
     
-    <ListView android:id="@+id/search_list_view"
-            android:layout_width="match_parent" android:layout_height="wrap_content" 
-            android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
-            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+    <LinearLayout android:id="@+id/content_layout" 
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+	    <ListView android:id="@+id/search_list_view"
+	            android:layout_width="match_parent" android:layout_height="wrap_content" 
+	            android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
+	            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+    </LinearLayout>
     
 </LinearLayout>

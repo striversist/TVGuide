@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,9 @@ public class SearchActivity extends Activity
     private ArrayList<IListItem> mItemList;
     private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
+    private LinearLayout mContentLayout;
+    private LinearLayout mNoSearchResultLayout;
+    private LinearLayout.LayoutParams mCenterLayoutParams;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
     
@@ -99,6 +103,9 @@ public class SearchActivity extends Activity
         mProgressDialog = new MyProgressDialog(this);
         mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
+        mContentLayout = (LinearLayout)findViewById(R.id.content_layout);
+        mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.no_search_result, null); 
+        mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         createUpdateThreadAndHandler();
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
@@ -277,9 +284,17 @@ public class SearchActivity extends Activity
                 mItemList.add(mItemDataList.get(i));
             }
             mListViewAdapter.notifyDataSetChanged();
-            if (mItemDataList.isEmpty())
-                Toast.makeText(SearchActivity.this, getResources().getString(R.string.no_found_tips), Toast.LENGTH_SHORT).show();
             mSearchEditText.requestFocus();
+            if (mItemDataList.isEmpty())
+            {
+                mContentLayout.removeAllViews();
+                mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
+            }
+            else
+            {
+                mContentLayout.removeAllViews();
+                mContentLayout.addView(mListView);
+            }
         }
     };
     
