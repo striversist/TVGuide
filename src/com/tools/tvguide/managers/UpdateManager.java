@@ -9,9 +9,6 @@ import java.io.IOException;
 import com.tools.tvguide.components.VersionController;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.Toast;
 
 public class UpdateManager 
 {
@@ -56,19 +53,6 @@ public class UpdateManager
     public String getGUID()
     {
         return mGuid;
-    }
-    
-    public void checkUpdate()
-    {
-        checkUpdate(new IOCompleteCallback() 
-        {    
-            @Override
-            public void OnIOComplete(int result) 
-            {
-                uiHandler.sendEmptyMessage(result);
-                mChecked = true;
-            }
-        });
     }
     
     public boolean checkUpdate(final IOCompleteCallback callback)
@@ -139,21 +123,4 @@ public class UpdateManager
             e.printStackTrace();
         }
     }
-    
-    private Handler uiHandler = new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            super.handleMessage(msg);
-            switch(msg.what)
-            {
-                case IOCompleteCallback.NEED_UPDATE:
-                    mIsNeedUpdate = true;
-                    Toast.makeText(mContext, "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
-                    break;
-                case IOCompleteCallback.NO_NEED_UPDATE:
-                    break;
-            }
-        }
-    };
 }

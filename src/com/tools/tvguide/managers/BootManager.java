@@ -5,10 +5,13 @@ import java.util.List;
 
 import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.SplashDialog;
+import com.tools.tvguide.managers.UpdateManager.IOCompleteCallback;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ public class BootManager
         void OnSplashFinished();
     }
     
+    // 因为BootManager中有对UI的操作，所以BootManager必须放在UI线程中创建，一般应放在MainActivity中创建
     public BootManager(Context context)
     {
         mContext = context;
@@ -50,7 +54,13 @@ public class BootManager
             @Override
             public void OnInitComplete(int result)
             {
-                AppEngine.getInstance().getUpdateManager().checkUpdate();
+                AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
+                {
+                    public void OnIOComplete(int result) 
+                    {
+                        uiHandler.sendEmptyMessage(result);
+                    }
+                });
                 AppEngine.getInstance().getLoginManager().login();
             }
         });
@@ -129,4 +139,20 @@ public class BootManager
         if (!Utility.isNetworkAvailable())
             Toast.makeText(mContext, "注意：当前网络不可用！", Toast.LENGTH_LONG).show();
     }
+    
+    private Handler uiHandler = new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            switch(msg.what)
+            {
+                case IOCompleteCallback.NEED_UPDATE:
+                    Toast.makeText(mContext, "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
+                    break;
+                case IOCompleteCallback.NO_NEED_UPDATE:
+                    break;
+            }
+        }
+    };
 }
