@@ -36,7 +36,7 @@ public class UrlManager
     private static final String PATH_CHANNELS             = "/public/json/channels.php";
     private static final String PATH_ON_PLAYING_PROGRAM   = "/public/json/onplaying_program.php";
     private static final String PATH_ON_PLAYING_PROGRAMS  = "/public/json/onplaying_programs.php";
-    private static final String PATH_CHOOSE               = "/public/json/choose.php";
+    private static final String PATH_CHOOSE               = "/public/json/programs.php";
     private static final String PATH_SEARCH               = "/public/json/search.php";
     private static final String PATH_HOT                  = "/public/json/hot.php";
     private static final String PATH_UPDATE               = "/public/update/update.php";
