@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.tools.tvguide.utils.CallAlarmReceiver;
 
@@ -19,7 +20,7 @@ import android.content.Intent;
 public class AlarmHelper
 {
     private Context mContext;
-    private HashMap<String, HashMap<String, String>> mRecords;
+    private LinkedHashMap<String, HashMap<String, String>> mRecords;
     private final String SEPERATOR = "#";
     private boolean mSettingChanged = false;
     private String FILE_ALARM_HELPER = "alarm_settings.txt";
@@ -43,7 +44,7 @@ public class AlarmHelper
         info.put("time", Long.toString(triggerAtMillis));
         mRecords.put(key, info);
         
-        // 指定闹钟设置的时间到时，要运行的CallAlarm.class  
+        // 鎸囧畾闂归挓璁剧疆鐨勬椂闂村埌鏃讹紝瑕佽繍琛岀殑CallAlarm.class  
         Intent intent = new Intent(mContext, CallAlarmReceiver.class);
         intent.putExtra("channel_id", channelId);
         intent.putExtra("channel_name", channelName);
@@ -130,7 +131,7 @@ public class AlarmHelper
             Object obj = ois.readObject();
             if (obj instanceof HashMap<?, ?>)
             {
-                mRecords =  (HashMap<String, HashMap<String, String>>) obj;
+                mRecords =  (LinkedHashMap<String, HashMap<String, String>>) obj;
             }
             else 
             {
@@ -162,7 +163,7 @@ public class AlarmHelper
         
         if (loadSuccess == false)
         {
-            mRecords = new HashMap<String, HashMap<String, String>>();
+            mRecords = new LinkedHashMap<String, HashMap<String, String>>();
         }
     }
 }

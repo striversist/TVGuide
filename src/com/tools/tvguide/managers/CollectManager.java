@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import android.content.Context;
 
@@ -17,7 +18,7 @@ public class CollectManager
     
     private Context mContext;
     private boolean mSettingChanged = false;
-    private HashMap<String, HashMap<String, Object>> mCollectChannels;
+    private LinkedHashMap<String, HashMap<String, Object>> mCollectChannels;
     private String FILE_COLLECT_CHANNELS = "collect_channels.txt";
     
     public CollectManager(Context context)
@@ -83,7 +84,7 @@ public class CollectManager
             Object obj = ois.readObject();
             if (obj instanceof HashMap<?, ?>)
             {
-                mCollectChannels =  (HashMap<String, HashMap<String, Object>>) obj;
+                mCollectChannels =  (LinkedHashMap<String, HashMap<String, Object>>) obj;
             }
             else 
             {
@@ -115,7 +116,7 @@ public class CollectManager
         
         if (loadSuccess == false)
         {
-            mCollectChannels = new HashMap<String, HashMap<String,Object>>();
+            mCollectChannels = new LinkedHashMap<String, HashMap<String,Object>>();
         }
     }
 }
