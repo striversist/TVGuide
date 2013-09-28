@@ -29,7 +29,7 @@ public class CategorylistActivity extends Activity
     private String mCategoryName;
     private ListView mCategoryListView;
     private SimpleAdapter mListViewAdapter;
-    private ArrayList<HashMap<String, Object>> mItemList;
+    private List<HashMap<String, Object>> mItemList;
     private TextView mTitleTextView;
     private List<HashMap<String, String>> mCategoryList;
     private MyProgressDialog mProgressDialog;
@@ -61,10 +61,10 @@ public class CategorylistActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
-                if (mCategoryList != null)
+                if (mItemList != null)
                 {
-                    String categoryId = mCategoryList.get(position).get("id");
-                    String categoryName = mCategoryList.get(position).get("name");
+                    String categoryId = (String) mItemList.get(position).get("id");
+                    String categoryName = (String) mItemList.get(position).get("name");
                     Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
                     intent.putExtra("categoryId", categoryId);
                     intent.putExtra("categoryName", categoryName);
@@ -100,6 +100,18 @@ public class CategorylistActivity extends Activity
             mProgressDialog.show();
     }
     
+    private boolean shouldBeFirst(String categoryName)
+    {
+        String userLocaion = AppEngine.getInstance().getDnsManager().getDeviceLocation();
+        if (mCategoryList == null || userLocaion == null)
+            return false;
+        
+        if (userLocaion.contains(categoryName))
+            return true;
+        
+        return false;
+    }
+    
     private Handler uiHandler = new Handler()
     {
         public void handleMessage(Message msg)
@@ -112,8 +124,12 @@ public class CategorylistActivity extends Activity
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
                     HashMap<String, Object> item = new HashMap<String, Object>();
+                    item.put("id", mCategoryList.get(i).get("id"));
                     item.put("name", mCategoryList.get(i).get("name"));
-                    mItemList.add(item);
+                    if (shouldBeFirst(mCategoryList.get(i).get("name")))
+                        mItemList.add(0, item);
+                    else
+                        mItemList.add(item);
                 }
                 mListViewAdapter.notifyDataSetChanged();
             }
