@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
@@ -237,7 +238,7 @@ public class NetDataGetter
         	}
         	
         	InputStream is = entity.getContent();
-        	if (entity.getContentEncoding().getValue().contains("gzip"))
+        	if (entity.getContentEncoding().getValue().toLowerCase(Locale.ENGLISH).contains("gzip"))
         	{
         	    is = new GZIPInputStream(is);
         	}
