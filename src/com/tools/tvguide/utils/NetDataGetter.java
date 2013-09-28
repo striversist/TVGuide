@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -194,6 +195,7 @@ public class NetDataGetter
                     String value = entry.getValue();
                     post.setHeader(key, value);
                 }
+                post.addHeader("Accept-Encoding", "gzip");
                 response = client.execute(post);
             }
             // GET
@@ -208,6 +210,7 @@ public class NetDataGetter
                     String value = entry.getValue();
                     get.setHeader(key, value);
                 }
+                get.addHeader("Accept-Encoding", "gzip");
                 response = client.execute(get);
             }
         	
@@ -233,7 +236,20 @@ public class NetDataGetter
         		return null;
         	}
         	
-        	recvData = EntityUtils.toString(entity);
+        	InputStream is = entity.getContent();
+        	if (entity.getContentEncoding().getValue().contains("gzip"))
+        	{
+        	    is = new GZIPInputStream(is);
+        	}
+        	String line;
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            while ((line = reader.readLine()) != null)
+            {
+                sb.append(line + "\n");
+            }
+            
+            recvData = sb.toString();
 			if(recvData == null)
 			{
 				Log.e("Error", "Receive Null");
