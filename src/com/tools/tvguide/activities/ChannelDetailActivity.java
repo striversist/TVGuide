@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.MyProgressDialog;
@@ -50,8 +52,11 @@ public class ChannelDetailActivity extends Activity
     private String mChannelName;
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
     private MyProgressDialog mProgressDialog;
+    private Timer mTimer;
+    private final int TIMER_SCHEDULE_PERIOD                 = 5 * 60 * 1000;  // 5 minute
     private String SEPERATOR                                = ": ";
     private final int MSG_REFRESH_PROGRAM_LIST              = 0;
+    private final int MSG_REFRESH_ON_PLAYING_PROGRAM        = 1;
     
     class MySimpleAdapter extends SimpleAdapter
     {
@@ -124,6 +129,15 @@ public class ChannelDetailActivity extends Activity
         initViews();
         createAndSetListViewAdapter();
         updateProgramList();
+        mTimer = new Timer(true);
+        mTimer.schedule(new TimerTask() 
+        {
+            @Override
+            public void run() 
+            {
+                updateOnplayingProgram();
+            }
+        }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
         
         mListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -264,6 +278,13 @@ public class ChannelDetailActivity extends Activity
     }
     
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        mTimer.cancel();
+    }
+    
+    @Override
     public void onNewIntent (Intent intent)
     {
         setIntent(intent);
@@ -314,6 +335,19 @@ public class ChannelDetailActivity extends Activity
         });
         if (isSyncLoad == false)
             mProgressDialog.show();
+    }
+    
+    private void updateOnplayingProgram()
+    {
+        mOnPlayingProgram.clear();
+        AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
+        {    
+            @Override
+            public void onLoadFinish(int status) 
+            {
+                uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM);
+            }
+        });
     }
 
     @Override
@@ -414,7 +448,8 @@ public class ChannelDetailActivity extends Activity
                             item.put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
                         mItemList.add(item);
                     }
-                    
+                    // Note: NO "break;" HERE!!
+                case MSG_REFRESH_ON_PLAYING_PROGRAM:
                     String onPlayingProgram = "";
                     if (mOnPlayingProgram.size() > 0)
                     {
