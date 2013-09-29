@@ -10,6 +10,6 @@
         android:gravity="center_vertical"
         android:paddingLeft="20dip"
         android:textColor="#ff000000"
-        android:textSize="16.0dip"
+        android:textSize="18.0dip"
         />
 </LinearLayout>
