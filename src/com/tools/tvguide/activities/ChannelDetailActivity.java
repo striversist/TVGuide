@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -288,6 +289,22 @@ public class ChannelDetailActivity extends Activity
     public void onNewIntent (Intent intent)
     {
         setIntent(intent);
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        
+        // 检测屏幕的方向：纵向或横向  
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            // 当前为横屏， 在此处添加额外的处理代码 
+        }
+        else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            // 当前为竖屏， 在此处添加额外的处理代码  
+        }
     }
     
     public void initViews()

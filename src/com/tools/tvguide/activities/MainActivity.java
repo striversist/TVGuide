@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RadioGroup;
@@ -124,7 +125,7 @@ public class MainActivity extends TabActivity
         super.onDestroy();
         AppEngine.getInstance().prepareBeforeExit();
     };
-        
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) 
     {
@@ -142,5 +143,21 @@ public class MainActivity extends TabActivity
             return true;
         }
         return super.dispatchKeyEvent(event);
-    }    
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        
+        // 检测屏幕的方向：纵向或横向  
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            // 当前为横屏， 在此处添加额外的处理代码 
+        }
+        else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            // 当前为竖屏， 在此处添加额外的处理代码  
+        }
+    }
 }
