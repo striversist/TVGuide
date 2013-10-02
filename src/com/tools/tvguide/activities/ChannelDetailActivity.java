@@ -275,7 +275,7 @@ public class ChannelDetailActivity extends Activity
             }
         });
         
-        Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_LONG).show();
+        Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
     }
     
     @Override
