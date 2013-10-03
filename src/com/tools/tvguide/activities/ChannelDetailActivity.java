@@ -70,16 +70,18 @@ public class ChannelDetailActivity extends Activity
         public View getView(int position, View convertView, ViewGroup parent) 
         {
             String onPlayingProgram = "";
+            int onPlayingDay = 1;
             if (mOnPlayingProgram.size() > 0)
             {
                 onPlayingProgram = mOnPlayingProgram.get(0).get("time") + SEPERATOR + mOnPlayingProgram.get(0).get("title");
+                onPlayingDay = Integer.valueOf(mOnPlayingProgram.get(0).get("day")).intValue();
             }
             View view = super.getView(position, convertView, parent);
             if (view instanceof RelativeLayout)
             {
                 TextView textView = (TextView) view.findViewById(R.id.detail_item_program);
                 if (((String)(mItemList.get(position).get("program"))).equals(onPlayingProgram) 
-                        && (mCurrentSelectedDay == Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
+                        && (getHostDay(mCurrentSelectedDay) == onPlayingDay))
                 {
                     textView.setText(onPlayingProgram + "  (正在播放)");
                     textView.setTextColor(Color.RED);

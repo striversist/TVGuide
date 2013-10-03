@@ -217,6 +217,7 @@ public class ContentManager
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("time", jsonOnPlayingProgram.getString("time"));
                             map.put("title", jsonOnPlayingProgram.getString("title"));
+                            map.put("day", jsonOnPlayingProgram.getString("day"));
                             onPlayingProgram.add(map);
                         }
                     }
@@ -272,6 +273,7 @@ public class ContentManager
                                 HashMap<String, String> map = new HashMap<String, String>();
                                 map.put("id", resultArray.getJSONObject(i).getString("id"));
                                 map.put("title", resultArray.getJSONObject(i).getString("title"));
+                                map.put("day", resultArray.getJSONObject(i).getString("day"));
                                 result.add(map);
                             }
                         }
@@ -309,6 +311,7 @@ public class ContentManager
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put("time", jsonRoot.getString("time"));
                         map.put("title", jsonRoot.getString("title"));
+                        map.put("day", jsonRoot.getString("day"));
                         result.add(map);
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
