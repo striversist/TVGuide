@@ -238,7 +238,7 @@ public class NetDataGetter
         	}
         	
         	InputStream is = entity.getContent();
-        	if (entity.getContentEncoding().getValue().toLowerCase(Locale.ENGLISH).contains("gzip"))
+        	if (entity.getContentEncoding() != null && entity.getContentEncoding().getValue().toLowerCase(Locale.ENGLISH).contains("gzip"))
         	{
         	    is = new GZIPInputStream(is);
         	}
