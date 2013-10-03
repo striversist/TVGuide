@@ -33,11 +33,14 @@ public class CacheManager
     @SuppressWarnings("unchecked")
     public boolean loadCategoriesByType(final String type, final List<HashMap<String, String>> result)
     {
-        mCategories = (HashMap<String, List<HashMap<String, String>>>) loadObjectFromFile(FILE_CACHED_CATEGORIES);
         if (mCategories == null)
         {
-            mCategories = new HashMap<String, List<HashMap<String,String>>>();
-            return false;
+            mCategories = (HashMap<String, List<HashMap<String, String>>>) loadObjectFromFile(FILE_CACHED_CATEGORIES);
+            if (mCategories == null)
+            {
+                mCategories = new HashMap<String, List<HashMap<String,String>>>();
+                return false;
+            }
         }
         
         List<HashMap<String, String>> categories = mCategories.get(type);
@@ -64,11 +67,14 @@ public class CacheManager
     @SuppressWarnings("unchecked")
     public boolean loadChannelsByCategory(final String categoryId, final List<HashMap<String, String>> result)
     {
-        mChannels = (HashMap<String, List<HashMap<String, String>>>) loadObjectFromFile(FILE_CACHED_CHANNELS);
         if (mChannels == null)
         {
-            mChannels = new HashMap<String, List<HashMap<String,String>>>();
-            return false;
+            mChannels = (HashMap<String, List<HashMap<String, String>>>) loadObjectFromFile(FILE_CACHED_CHANNELS);
+            if (mChannels == null)
+            {
+                mChannels = new HashMap<String, List<HashMap<String,String>>>();
+                return false;
+            }
         }
         
         List<HashMap<String, String>> channels = mChannels.get(categoryId);
@@ -91,6 +97,8 @@ public class CacheManager
     
     public void clear()
     {
+        mCategories.clear();
+        mChannels.clear();
         File file1 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CATEGORIES);
         File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
         deleteFile(file1);
