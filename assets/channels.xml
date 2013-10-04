@@ -138,13 +138,13 @@
         <logo>ningxiast.gif</logo>
     </channel>
     <channel id="qinghaist">
-        <logo>qinghaist.gif</logo>
+        <logo>qinghai.gif</logo>
     </channel>
     <channel id="shandongst">
         <logo>shandongst.gif</logo>
     </channel>
     <channel id="shanxi2st">
-        <logo>shanxi2st.gif</logo>
+        <logo>shanxi2.gif</logo>
     </channel>
     <channel id="shanxist">
         <logo>shanxist.gif</logo>
@@ -840,7 +840,7 @@
 		<logo>hainan.gif</logo>
 	</channel>
 	<channel id="hainanqingshaowenyu">
-		<logo>haikou.gif</logo>
+		<logo>hainan.gif</logo>
 	</channel>
 	<channel id="haikouxinwenzonghe">
 		<logo>haikou.gif</logo>
@@ -850,6 +850,542 @@
 	</channel>
 	<channel id="haikoujingji">
 		<logo>haikou.gif</logo>
+	</channel>
+	<!-- =================  安徽  ================= -->
+	<channel id="anhuikejiao">
+		<logo>anhuist.gif</logo>
+	</channel>
+	<channel id="anhuijingjishenghuo">
+		<logo>anhuist.gif</logo>
+	</channel>
+	<channel id="anhuiyingshi">
+		<logo>anhuist.gif</logo>
+	</channel>
+	<channel id="anhuizongyi">
+		<logo>anhuist.gif</logo>
+	</channel>
+	<channel id="anhuigonggong">
+		<logo>anhuist.gif</logo>
+	</channel>
+	<channel id="anhuiguoji">
+		<logo>anhuist.gif</logo>
+	</channel>
+	<channel id="hefeixinwen">
+		<logo>hefei.gif</logo>
+	</channel>
+	<channel id="hefeishenghuo">
+		<logo>hefei.gif</logo>
+	</channel>
+	<channel id="hefeifazhi">
+		<logo>hefei.gif</logo>
+	</channel>
+	<channel id="hefeicaijing">
+		<logo>hefei.gif</logo>
+	</channel>
+	<channel id="hefeiyingyuan">
+		<logo>hefei.gif</logo>
+	</channel>
+	<channel id="hefeidianshiju">
+		<logo>hefei.gif</logo>
+	</channel>
+	<channel id="hefeixiuxian">
+		<logo>hefei.gif</logo>
+	</channel>
+	<!-- =================  江西  ================= -->
+	<channel id="jiangxidushi">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxijingshi">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxiyingshi">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxigonggong">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxishaoerjiating">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxidianshizhinan">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxihongsejingdian">
+		<logo>jiangxist.gif</logo>
+	</channel>
+	<channel id="jiangxijiaoyu">
+		<logo>jiangxijiaoyu.gif</logo>
+	</channel>
+	<channel id="nanchang1">
+		<logo>nanchang.gif</logo>
+	</channel>
+	<channel id="nanchang2">
+		<logo>nanchang.gif</logo>
+	</channel>
+	<channel id="nanchang3">
+		<logo>nanchang.gif</logo>
+	</channel>
+	<channel id="nanchang4">
+		<logo>nanchang.gif</logo>
+	</channel>
+	<channel id="nanchangshuzidianshi">
+		<logo>nanchang.gif</logo>
+	</channel>
+	<!-- =================  陕西  ================= -->
+	<channel id="shanxi2xinwen">
+		<logo>shanxi2.gif</logo>
+	</channel>
+	<channel id="shanxi2dushi">
+		<logo>shanxi2.gif</logo>
+	</channel>
+	<channel id="shanxi2jiating">
+		<logo>shanxi2.gif</logo>
+	</channel>
+	<channel id="shanxi2yingshi">
+		<logo>shanxi2.gif</logo>
+	</channel>
+	<channel id="shanxi2gonggong">
+		<logo>shanxi2.gif</logo>
+	</channel>
+	<channel id="shanxi2tiyu">
+		<logo>shanxi2.gif</logo>
+	</channel>
+	<channel id="xianbaihedushi">
+		<logo>xian.gif</logo>
+	</channel>
+	<channel id="xianxinwenzonghe">
+		<logo>xian.gif</logo>
+	</channel>
+	<channel id="xianshangwuzixun">
+		<logo>xian.gif</logo>
+	</channel>
+	<channel id="xianwenhuayingshi">
+		<logo>xian.gif</logo>
+	</channel>
+	<channel id="xianjiankangkuaile">
+		<logo>xian.gif</logo>
+	</channel>
+	<channel id="xianyinyuezongyi">
+		<logo>xian.gif</logo>
+	</channel>
+	<!-- =================  山西  ================= -->
+	<channel id="shanxijingjiziyun">
+		<logo>shanxist.gif</logo>
+	</channel>
+	<channel id="shanxikejiao">
+		<logo>shanxist.gif</logo>
+	</channel>
+	<channel id="shanxiyingshi">
+		<logo>shanxist.gif</logo>
+	</channel>
+	<channel id="shanxigonggong">
+		<logo>shanxist.gif</logo>
+	</channel>
+	<channel id="shanxishaoer">
+		<logo>shanxist.gif</logo>
+	</channel>
+	<channel id="taiyuanxinwen">
+		<logo>taiyuan.gif</logo>
+	</channel>
+	<channel id="taiyuanbaixing">
+		<logo>taiyuan.gif</logo>
+	</channel>
+	<channel id="taiyuanfazhi">
+		<logo>taiyuan.gif</logo>
+	</channel>
+	<channel id="taiyuanyingshi">
+		<logo>taiyuan.gif</logo>
+	</channel>
+	<channel id="taiyuanwenti">
+		<logo>taiyuan.gif</logo>
+	</channel>
+	<channel id="taiyuanjiaoyu">
+		<logo>taiyuan.gif</logo>
+	</channel>
+	<!-- =================  甘肃  ================= -->
+	<channel id="gansujingji">
+		<logo>gansust.gif</logo>
+	</channel>
+	<channel id="gansushaoer">
+		<logo>gansust.gif</logo>
+	</channel>
+	<channel id="gansugonggong">
+		<logo>gansust.gif</logo>
+	</channel>
+	<channel id="gansudushi">
+		<logo>gansust.gif</logo>
+	</channel>
+	<channel id="gansuwenhuayingshi">
+		<logo>gansust.gif</logo>
+	</channel>
+	<channel id="lanzhouxinwenzonghe">
+		<logo>lanzhou.gif</logo>
+	</channel>
+	<channel id="lanzhouzongyitiyu">
+		<logo>lanzhou.gif</logo>
+	</channel>
+	<channel id="lanzhoushenghuojingji">
+		<logo>lanzhou.gif</logo>
+	</channel>
+	<channel id="lanzhougonggong">
+		<logo>lanzhou.gif</logo>
+	</channel>
+	<channel id="lanzhouqingcailanzhou">
+		<logo>lanzhou.gif</logo>
+	</channel>
+	<!-- =================  宁夏  ================= -->
+	<channel id="ningxiagonggong">
+		<logo>ningxiast.gif</logo>
+	</channel>
+	<channel id="ningxiajingji">
+		<logo>ningxiast.gif</logo>
+	</channel>
+	<channel id="ningxiayingshi">
+		<logo>ningxiast.gif</logo>
+	</channel>
+	<channel id="ningxiashaoer">
+		<logo>ningxiast.gif</logo>
+	</channel>
+	<channel id="ningxiajingpindianbo">
+		<logo>ningxiast.gif</logo>
+	</channel>
+	<channel id="yinchuanwenti">
+		<logo>yinchuan.gif</logo>
+	</channel>
+	<channel id="yinchuanshenghuo">
+		<logo>yinchuan.gif</logo>
+	</channel>
+	<channel id="yinchuangonggong">
+		<logo>yinchuan.gif</logo>
+	</channel>
+	<!-- =================  青海  ================= -->
+	<channel id="qinghaijingjishenghuo">
+		<logo>qinghai.gif</logo>
+	</channel>
+	<channel id="qinghaiyingshizongyi">
+		<logo>qinghai.gif</logo>
+	</channel>
+	<channel id="qinghaizonghe">
+		<logo>qinghai.gif</logo>
+	</channel>
+	<channel id="xiningxinwenzonghe">
+		<logo>xining.gif</logo>
+	</channel>
+	<channel id="xiningshenghuo">
+		<logo>xining.gif</logo>
+	</channel>
+	<channel id="xiningwenhuaxianfeng">
+		<logo>xining.gif</logo>
+	</channel>
+	<!-- ================= 贵州 ================= -->
+	<channel id="guizhougonggong">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoudianshiju">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhouyule">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoufazhi">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoujiankangkejiao">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoutianyuanweiqi">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhousheying">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoujiapianshangxi">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoujingxuanjuchang">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoushishangyingyuan">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhoujingdianyingyuan">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guizhouhanjujuchang">
+		<logo>guizhoust.gif</logo>
+	</channel>
+	<channel id="guiyangxinwenzonghe">
+		<logo>guiyang.gif</logo>
+	</channel>
+	<channel id="guiyangjingjishenghuo">
+		<logo>guiyang.gif</logo>
+	</channel>
+	<channel id="guiyangdushi">
+		<logo>guiyang.gif</logo>
+	</channel>
+	<channel id="guiyangfazhi">
+		<logo>guiyang.gif</logo>
+	</channel>
+	<!-- ================= 云南 ================= -->
+	<channel id="yunnandushi">
+		<logo>yunnanst.gif</logo>
+	</channel>
+	<channel id="yunnanyule">
+		<logo>yunnanst.gif</logo>
+	</channel>
+	<channel id="yunnanshenghuo">
+		<logo>yunnanst.gif</logo>
+	</channel>
+	<channel id="yunnanyingshi">
+		<logo>yunnanst.gif</logo>
+	</channel>
+	<channel id="yunnangonggong">
+		<logo>yunnanst.gif</logo>
+	</channel>
+	<channel id="yunnanshaoer">
+		<logo>yunnanst.gif</logo>
+	</channel>
+	<channel id="kunmingzonghe">
+		<logo>kunming.gif</logo>
+	</channel>
+	<channel id="kunmingshenghuo">
+		<logo>kunming.gif</logo>
+	</channel>
+	<channel id="kunmingwenyu">
+		<logo>kunming.gif</logo>
+	</channel>
+	<channel id="kunmingjingji">
+		<logo>kunming.gif</logo>
+	</channel>
+	<channel id="kunmingyingshi">
+		<logo>kunming.gif</logo>
+	</channel>
+	<channel id="kunminggonggong">
+		<logo>kunming.gif</logo>
+	</channel>
+	<!-- =================  新疆  ================= -->
+	<channel id="xinjiangweiyuzonghe">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjianghasakeyu">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjianghanyuzongyi">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjiangweiyuzongyi">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjianghanyudianying">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjianghanyujingjishenghuo">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjianghayuzongyi">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjiangweiyujingjishenghuo">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjiangtiyujiankang">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjiangfazhixinxi">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjiangshaoer">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="xinjiangjiaoyu">
+		<logo>xinjiangst.gif</logo>
+	</channel>
+	<channel id="wulumuqixinwen">
+		<logo>wulumuqi.gif</logo>
+	</channel>
+	<channel id="wulumuqiyingshi">
+		<logo>wulumuqi.gif</logo>
+	</channel>
+	<channel id="wulumuqidushi">
+		<logo>wulumuqi.gif</logo>
+	</channel>
+	<channel id="wulumuqilvyou">
+		<logo>wulumuqi.gif</logo>
+	</channel>
+	<channel id="wulumuqinvxing">
+		<logo>wulumuqi.gif</logo>
+	</channel>
+	<channel id="wulumuqiweiyu">
+		<logo>wulumuqi.gif</logo>
+	</channel>
+	<!-- =================  辽宁  ================= -->
+	<channel id="liaoningdushi">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoningyingshiyule">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoningjiaoyuqingshao">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoningshenghuo">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoninggonggong">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoningbeifang">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoningtiyu">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="liaoningjingji">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="qingcailiaoning">
+		<logo>liaoningst.gif</logo>
+	</channel>
+	<channel id="shenyangxinwen">
+		<logo>shenyang.gif</logo>
+	</channel>
+	<channel id="shenyanggonggong">
+		<logo>shenyang.gif</logo>
+	</channel>
+	<channel id="shenyangjingji">
+		<logo>shenyang.gif</logo>
+	</channel>
+	<channel id="dalianxinwenzonghe">
+		<logo>dalian.gif</logo>
+	</channel>
+	<channel id="dalianshenghuo">
+		<logo>dalian.gif</logo>
+	</channel>
+	<channel id="dalianfazhi">
+		<logo>dalian.gif</logo>
+	</channel>
+	<channel id="dalianwenti">
+		<logo>dalian.gif</logo>
+	</channel>
+	<channel id="dalianyingshi">
+		<logo>dalian.gif</logo>
+	</channel>
+	<channel id="dalianshaoer">
+		<logo>dalian.gif</logo>
+	</channel>
+	<!-- =================  吉林  ================= -->
+	<channel id="jilindushi">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="jilinshenghuo">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="jilinyingshi">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="jilinxiangcun">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="jilingonggong">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="jilinfazhi">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="jilinjiaoyu">
+		<logo>jilinst.jpg</logo>
+	</channel>
+	<channel id="changchunzonghe">
+		<logo>changchun.gif</logo>
+	</channel>
+	<channel id="changchunyule">
+		<logo>changchun.gif</logo>
+	</channel>
+	<channel id="changchunshimin">
+		<logo>changchun.gif</logo>
+	</channel>
+	<channel id="changchunshangye">
+		<logo>changchun.gif</logo>
+	</channel>
+	<channel id="changchunxinzhi">
+		<logo>changchun.gif</logo>
+	</channel>
+	<!-- =================  黑龙江  ================= -->
+	<channel id="heilongjiangyingshi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangwenyi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangdushi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangxinwen">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjianggonggong">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangdiqi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangshoujidianshi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangkaoshi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="heilongjiangdaoshi">
+		<logo>heilongjiangst.gif</logo>
+	</channel>
+	<channel id="haerbinxinwenzonghe">
+		<logo>haerbin.gif</logo>
+	</channel>
+	<channel id="haerbindushizixun">
+		<logo>haerbin.gif</logo>
+	</channel>
+	<channel id="haerbinshenghuo">
+		<logo>haerbin.gif</logo>
+	</channel>
+	<channel id="haerbinyule">
+		<logo>haerbin.gif</logo>
+	</channel>
+	<channel id="haerbinyingshi">
+		<logo>haerbin.gif</logo>
+	</channel>
+	<!-- =================  内蒙古  ================= -->
+	<channel id="neimengguxinwenzonghe">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimenggushehuijingji">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimengguwentixiuxian">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimengguyingshiyule">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimenggushaoer">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimenggumengyust">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimenggushenghuo">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="neimenggumengyuwenhua">
+		<logo>neimenggust.gif</logo>
+	</channel>
+	<channel id="huhehaotexinwen">
+		<logo>huhehaote.gif</logo>
+	</channel>
+	<channel id="huhehaotedushi">
+		<logo>huhehaote.gif</logo>
+	</channel>
+	<channel id="huhehaoteyingshi">
+		<logo>huhehaote.gif</logo>
 	</channel>
 </channels>
 
