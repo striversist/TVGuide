@@ -64,7 +64,6 @@ public class BootManager
                 AppEngine.getInstance().getLoginManager().login();
             }
         });
-        AppEngine.getInstance().getLoginManager().startKeepAliveProcess();
         if (isFirstStart())
             new ShortcutInstaller(mContext).createShortCut();
     }
