@@ -46,7 +46,7 @@ public class NetDataGetter
 	//ProgressListener mProgressListener = null;
 	List<BasicNameValuePair> mPairs = null;
 	//String mRecvDataAsync = null;
-	private final int CONNECTION_TIMEOUT_WIFI = 6000;
+	private final int CONNECTION_TIMEOUT_WIFI = 10000;
 	private final int CONNECTION_TIMEOUT_GPRS = 10000;
 	private final int SOCKET_TIMEOUT_WIFI = 10000;
 	private final int SOCKET_TIMEOUT_GPRS = 20000;
