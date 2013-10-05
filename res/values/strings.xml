@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">电视节目预告</string>
+    <string name="app_name">搜台</string>
     <string name="menu_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="category_home">首页</string>
