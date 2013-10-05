@@ -456,6 +456,8 @@ public class ChannelDetailActivity extends Activity
                 case MSG_REFRESH_PROGRAM_LIST:
                     mProgressDialog.dismiss();
                     mItemList.clear();
+                    if (mProgramList.size() == 0)
+                        Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.server_is_busy), Toast.LENGTH_LONG).show();
                     for (int i=0; i<mProgramList.size(); ++i)
                     {
                         HashMap<String, Object> item = new HashMap<String, Object>();

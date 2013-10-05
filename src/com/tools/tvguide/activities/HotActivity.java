@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HotActivity extends Activity 
 {
@@ -165,6 +166,8 @@ public class HotActivity extends Activity
             super.handleMessage(msg);
             mProgressDialog.dismiss();
             mItemList.clear();
+            if (mItemDataList.size() == 0)
+                Toast.makeText(HotActivity.this, getResources().getString(R.string.server_is_busy), Toast.LENGTH_LONG).show();
             for (int i=0; i<mItemDataList.size(); ++i)
             {
                 mItemList.add(mItemDataList.get(i));
