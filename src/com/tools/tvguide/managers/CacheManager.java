@@ -97,8 +97,10 @@ public class CacheManager
     
     public void clear()
     {
-        mCategories.clear();
-        mChannels.clear();
+        if (mCategories != null)
+            mCategories.clear();
+        if (mChannels != null)
+            mChannels.clear();
         File file1 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CATEGORIES);
         File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
         deleteFile(file1);
