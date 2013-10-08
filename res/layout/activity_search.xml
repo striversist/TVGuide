@@ -12,7 +12,8 @@
 			    android:layout_weight="1"
 			    android:hint="@string/search_hint"
 			    android:singleLine="true"
-			    android:inputType="text" />
+			    android:inputType="text"
+			    android:imeOptions="actionSearch" />
 	    <Button android:id="@+id/search_button"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
