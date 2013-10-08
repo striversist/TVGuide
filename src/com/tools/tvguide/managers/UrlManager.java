@@ -27,7 +27,7 @@ public class UrlManager
     public static final int URL_REPORT                  = 11;
         
     private static final boolean ENABLE_TEST            = false;
-    private String  mHostName                           = "striversist.oicp.net";
+    private String  mHostName                           = "bigeyecow.oicp.net";
     private String  mHostIP;
     private String  BASE_PATH;
     private int     PORT;
