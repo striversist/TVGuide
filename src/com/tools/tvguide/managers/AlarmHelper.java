@@ -7,8 +7,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import com.tools.tvguide.utils.CallAlarmReceiver;
 
@@ -16,9 +19,11 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class AlarmHelper
 {
+    public static final String TAG = "AlarmHelper";
     private Context mContext;
     private LinkedHashMap<String, HashMap<String, String>> mRecords;
     private final String SEPERATOR = "#";
@@ -33,6 +38,9 @@ public class AlarmHelper
     
     public void addAlarm(String channelId, String channelName, String program, long triggerAtMillis)
     {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(triggerAtMillis);
+//        Log.d(TAG, "addAlarm: channel=" + channelName + ", program=" + program + ", triggerTime=" + calendar.getTime().toString());
         String key = makeKey(channelId, channelName, program);
         if (isAlarmSet(channelId, channelName, program))
             removeAlarm(channelId, channelName, program);
@@ -41,6 +49,12 @@ public class AlarmHelper
         info.put("channel_id", channelId);
         info.put("channel_name", channelName);
         info.put("program", program);
+        if (hasConflictWithOthers(triggerAtMillis))
+        {
+            triggerAtMillis += key.hashCode() % 30000;
+            calendar.setTimeInMillis(triggerAtMillis);
+//            Log.d(TAG, "addAlarm: hash conflict, ajust=" + (key.hashCode()%30000) + ", to" + calendar.getTime().toString());
+        }
         info.put("time", Long.toString(triggerAtMillis));
         mRecords.put(key, info);
         
@@ -93,6 +107,23 @@ public class AlarmHelper
     private String makeKey(String channelId, String channelName, String program)
     {
         return channelId + SEPERATOR + channelName + SEPERATOR + program;
+    }
+    
+    private boolean hasConflictWithOthers(long triggerAtMillis)
+    {
+        Iterator<Entry<String, HashMap<String, String>>> iter = mRecords.entrySet().iterator();
+        while (iter.hasNext())
+        {
+            Entry<String, HashMap<String, String>> entry = iter.next();
+            HashMap<String, String> info = entry.getValue();
+            if (info.get("time") != null)
+            {
+                long triggerTime = Long.valueOf(info.get("time")).longValue();
+                if (triggerTime == triggerAtMillis)
+                    return true;
+            }
+        }
+        return false;
     }
     
     public void shutDown()
