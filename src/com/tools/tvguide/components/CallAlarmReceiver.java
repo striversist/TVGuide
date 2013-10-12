@@ -1,4 +1,4 @@
-package com.tools.tvguide.utils;
+package com.tools.tvguide.components;
 
 import com.tools.tvguide.activities.AlarmAlertActivity;
 

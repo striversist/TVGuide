@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import com.tools.tvguide.utils.CallAlarmReceiver;
+import com.tools.tvguide.components.CallAlarmReceiver;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
