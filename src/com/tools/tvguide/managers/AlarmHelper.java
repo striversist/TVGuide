@@ -49,7 +49,8 @@ public class AlarmHelper
         intent.putExtra("channel_id", channelId);
         intent.putExtra("channel_name", channelName);
         intent.putExtra("program", program);
-        PendingIntent sender = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        PendingIntent sender = PendingIntent.getBroadcast(mContext, key.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, sender);
         mSettingChanged = true;
@@ -61,12 +62,15 @@ public class AlarmHelper
         mRecords.remove(key);
         
         Intent intent = new Intent(mContext, CallAlarmReceiver.class);
-        intent.putExtra("channel", channelName);
+        intent.putExtra("channel_id", channelId);
+        intent.putExtra("channel_name", channelName);
         intent.putExtra("program", program);
-        PendingIntent sender = PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        PendingIntent sender = PendingIntent.getBroadcast(mContext, key.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         am.cancel(sender);
         mSettingChanged = true;
+        saveAlarmSettings();        // removeAlarm 可能会在主程序未启动时调用到，所以不能依靠shutDown()中来存储
     }
     
     public HashMap<String, HashMap<String, String>> getAllRecords()

@@ -32,6 +32,8 @@ public class AlarmAlertActivity extends Activity
                     public void onClick(DialogInterface dialog, int which) 
                     {
                         localMediaPlayer.stop();
+                        if (AppEngine.getInstance().getContext() == null)
+                            AppEngine.getInstance().setContext(AlarmAlertActivity.this);    // 需要设置，否则会有空指针的异常
                         AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program);
                         AlarmAlertActivity.this.finish();
                     }
