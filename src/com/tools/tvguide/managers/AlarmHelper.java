@@ -58,9 +58,9 @@ public class AlarmHelper
         info.put("program", program);
         if (hasConflictWithOthers(triggerAtMillis))
         {
-            triggerAtMillis += key.hashCode() % 30000;
+            triggerAtMillis += key.hashCode() % 20000;
             calendar.setTimeInMillis(triggerAtMillis);
-//            Log.d(TAG, "addAlarm: hash conflict, ajust=" + (key.hashCode()%30000) + ", to" + calendar.getTime().toString());
+//            Log.d(TAG, "addAlarm: hash conflict, ajust=" + (key.hashCode()%20000) + ", to" + calendar.getTime().toString());
         }
         info.put("time", Long.toString(triggerAtMillis));
         mRecords.put(key, info);

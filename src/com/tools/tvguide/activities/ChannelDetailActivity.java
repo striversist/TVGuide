@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -205,7 +206,7 @@ public class ChannelDetailActivity extends Activity
                 if (alarmTime > 0)
                 {
                     long distance = calendar.getTimeInMillis() - alarmTime;
-                    int aheadSetMinute = (int)(distance / 1000 / 60);
+                    int aheadSetMinute = new BigDecimal((double)distance / 1000 / 60).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();     // 四舍五入取整
                     switch (aheadSetMinute)
                     {
                         case 1:
