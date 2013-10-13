@@ -58,9 +58,18 @@ public class AlarmHelper
         info.put("program", program);
         if (hasConflictWithOthers(triggerAtMillis))
         {
-            triggerAtMillis += key.hashCode() % 20000;
+            long threshold = 5;
+            long tuning = key.hashCode() % 20000;
+            if (Math.abs(tuning) < threshold)
+            {
+                if (tuning >= 0)
+                    tuning += threshold;
+                else
+                    tuning += threshold * -1;
+            }
+            triggerAtMillis += tuning;
             calendar.setTimeInMillis(triggerAtMillis);
-//            Log.d(TAG, "addAlarm: hash conflict, ajust=" + (key.hashCode()%20000) + ", to" + calendar.getTime().toString());
+//            Log.d(TAG, "addAlarm: has conflict, ajust=" + tuning + ", to" + calendar.getTime().toString());
         }
         info.put("time", Long.toString(triggerAtMillis));
         mRecords.put(key, info);
@@ -113,7 +122,6 @@ public class AlarmHelper
     
     public void resetAllAlarms()
     {
-//        Log.d(TAG, "resetAllAlarms");
         checkInitialized();
         LinkedHashMap<String, HashMap<String, String>> tmpMap = new LinkedHashMap<String, HashMap<String,String>>(mRecords);
         Iterator<Entry<String, HashMap<String, String>>> iter = tmpMap.entrySet().iterator();

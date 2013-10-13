@@ -14,6 +14,7 @@ public class CallAlarmReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) 
     {
+//        Log.d(TAG, "onReceive: action=" + intent.getAction());
         String action = intent.getAction();
         if (action != null && action.equals(Intent.ACTION_BOOT_COMPLETED)) 
         {

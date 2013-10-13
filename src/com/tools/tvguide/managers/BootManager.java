@@ -131,6 +131,15 @@ public class BootManager
         mOnSplashFinishedCallbackList = null;
         mSplashDialog = null;
         mIsSplashShowing = false;
+        
+        new Handler().postDelayed(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                AppEngine.getInstance().getAlarmHelper().resetAllAlarms();
+            }
+        }, 1000);
     }
     
     private void checkNetwork()
