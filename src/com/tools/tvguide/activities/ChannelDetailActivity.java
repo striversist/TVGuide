@@ -201,7 +201,7 @@ public class ChannelDetailActivity extends Activity
                 
                 long alarmTime = AppEngine.getInstance().getAlarmHelper().getAlarmTimeAtMillis(mChannelId, mChannelName, program);
                 int choice = -1;
-                // Hash already set the alarm clock
+                // Has already set the alarm clock
                 if (alarmTime > 0)
                 {
                     long distance = calendar.getTimeInMillis() - alarmTime;

@@ -32,8 +32,15 @@ public class AlarmHelper
     
     public AlarmHelper(Context context)
     {
+        assert(context != null);
         mContext = context;
         loadAlarmSettings();
+    }
+    
+    private void checkInitialized() 
+    {
+        if (mRecords == null)
+            throw new IllegalStateException("mRecords is null");
     }
     
     public void addAlarm(String channelId, String channelName, String program, long triggerAtMillis)
@@ -102,6 +109,24 @@ public class AlarmHelper
     public boolean isAlarmSet(String channelId, String channelName, String program)
     {
         return mRecords.containsKey(makeKey(channelId, channelName, program));
+    }
+    
+    public void resetAllAlarms()
+    {
+//        Log.d(TAG, "resetAllAlarms");
+        checkInitialized();
+        LinkedHashMap<String, HashMap<String, String>> tmpMap = new LinkedHashMap<String, HashMap<String,String>>(mRecords);
+        Iterator<Entry<String, HashMap<String, String>>> iter = tmpMap.entrySet().iterator();
+        while (iter.hasNext())
+        {
+            Entry<String, HashMap<String, String>> entry = iter.next();
+            HashMap<String, String> info = entry.getValue();
+            String channelId = info.get("channel_id");
+            String channelName = info.get("channel_name");
+            String program = info.get("program");
+            long triggerAtMillis = Long.valueOf(info.get("time")).longValue();
+            addAlarm(channelId, channelName, program, triggerAtMillis);
+        }
     }
     
     private String makeKey(String channelId, String channelName, String program)
