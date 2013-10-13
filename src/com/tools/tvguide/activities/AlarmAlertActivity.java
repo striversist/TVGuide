@@ -53,8 +53,23 @@ public class AlarmAlertActivity extends Activity
         dialog.show();
     }
     
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        resetAllAlarms();
+    }
+    
     public Uri getDefaultRingtoneUri(int paramInt)
     {
         return RingtoneManager.getActualDefaultRingtoneUri(this, paramInt);
+    }
+    
+    // 重新计算闹铃时间
+    private void resetAllAlarms()
+    {
+        if (AppEngine.getInstance().getContext() == null)
+            AppEngine.getInstance().setContext(AlarmAlertActivity.this);
+        AppEngine.getInstance().getAlarmHelper().resetAllAlarms();
     }
 }
