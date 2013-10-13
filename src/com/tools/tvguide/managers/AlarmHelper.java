@@ -58,14 +58,14 @@ public class AlarmHelper
         info.put("program", program);
         if (hasConflictWithOthers(triggerAtMillis))
         {
-            long threshold = 5;
+            long thresholdAtMillis = 5000;
             long tuning = key.hashCode() % 20000;
-            if (Math.abs(tuning) < threshold)
+            if (Math.abs(tuning) < thresholdAtMillis)
             {
                 if (tuning >= 0)
-                    tuning += threshold;
+                    tuning += thresholdAtMillis;
                 else
-                    tuning += threshold * -1;
+                    tuning += thresholdAtMillis * -1;
             }
             triggerAtMillis += tuning;
             calendar.setTimeInMillis(triggerAtMillis);
@@ -80,6 +80,7 @@ public class AlarmHelper
         intent.putExtra("channel_name", channelName);
         intent.putExtra("program", program);
         
+//        Log.d(TAG, "addAlarm: alarm id = " + key.hashCode());
         PendingIntent sender = PendingIntent.getBroadcast(mContext, key.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, sender);
@@ -122,6 +123,7 @@ public class AlarmHelper
     
     public void resetAllAlarms()
     {
+//        Log.d(TAG, "resetAllAlarms");
         checkInitialized();
         LinkedHashMap<String, HashMap<String, String>> tmpMap = new LinkedHashMap<String, HashMap<String,String>>(mRecords);
         Iterator<Entry<String, HashMap<String, String>>> iter = tmpMap.entrySet().iterator();
