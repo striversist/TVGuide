@@ -34,7 +34,7 @@ public class MainActivity extends TabActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
-        Log.e(TAG, "onCreate this = " + this);
+//        Log.d(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
         
         AppEngine.getInstance().setContext(this);
@@ -124,6 +124,7 @@ public class MainActivity extends TabActivity
     {
         super.onDestroy();
         AppEngine.getInstance().prepareBeforeExit();
+        doOnDestroy();
     };
 
     @Override
@@ -159,5 +160,10 @@ public class MainActivity extends TabActivity
         {
             // 当前为竖屏， 在此处添加额外的处理代码  
         }
+    }
+    
+    public void doOnDestroy()
+    {
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
