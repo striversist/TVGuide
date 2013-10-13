@@ -103,9 +103,10 @@ public class SearchActivity extends Activity
         mProgressDialog = new MyProgressDialog(this);
         mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
-        mContentLayout = (LinearLayout)findViewById(R.id.content_layout);
-        mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.no_search_result, null); 
+        mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
+        mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
         createUpdateThreadAndHandler();
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 

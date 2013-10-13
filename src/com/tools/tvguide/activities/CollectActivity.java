@@ -30,14 +30,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter.ViewBinder;
 
@@ -53,6 +56,10 @@ public class CollectActivity extends Activity
     private List<Pair<String, String>> mOnPlayingProgramList;           // List of "id"-"title" pair
     private final int MSG_REFRESH_ON_PLAYING_PROGRAM_LIST   = 1;
     private ArrayList<String> mReportList;
+    private LayoutInflater mInflater;
+    private LinearLayout mContentLayout;
+    private LinearLayout mNoCollectLayout;
+    private LinearLayout.LayoutParams mCenterLayoutParams;
     
     private class Channel
     {
@@ -134,6 +141,11 @@ public class CollectActivity extends Activity
         mChannelList = new ArrayList<CollectActivity.Channel>();
         mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
         mReportList = new ArrayList<String>();
+        mInflater = LayoutInflater.from(this);
+        mContentLayout = (LinearLayout)findViewById(R.id.collect_content_layout);
+        mNoCollectLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+        mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        ((TextView) mNoCollectLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.promote_collect_tips));
         
         mChannelListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -160,6 +172,17 @@ public class CollectActivity extends Activity
         super.onResume();
         updateChannelListView();
         updateOnPlayingProgramList();
+        
+        if (mItemList.isEmpty())
+        {
+            mContentLayout.removeAllViews();
+            mContentLayout.addView(mNoCollectLayout, mCenterLayoutParams);
+        }
+        else
+        {
+            mContentLayout.removeAllViews();
+            mContentLayout.addView(mChannelListView);
+        }
     };
 
     private void createAndSetListViewAdapter()
