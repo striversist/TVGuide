@@ -57,4 +57,18 @@
         <item name="android:layout_height">@dimen/sum_nav_row_height</item>
         <item name="android:singleLine">true</item>
     </style>
+    <style name="style_tab_divider">
+        <item name="android:background">@drawable/abs__list_divider_holo_light</item>
+        <item name="android:layout_width">0.5sp</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginTop">10.0sp</item>
+        <item name="android:layout_marginBottom">10.0sp</item>
+    </style>
+    <style name="style_tab_text">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:button">@null</item>
+    </style>
 </resources>

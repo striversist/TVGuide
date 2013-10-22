@@ -51,6 +51,7 @@ public class SearchActivity extends Activity
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mNoSearchResultLayout;
+    private LinearLayout mClassifyResult;
     private LinearLayout.LayoutParams mCenterLayoutParams;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
@@ -105,6 +106,7 @@ public class SearchActivity extends Activity
         mInflater = LayoutInflater.from(this);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
+        mClassifyResult = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
         createUpdateThreadAndHandler();
@@ -293,8 +295,10 @@ public class SearchActivity extends Activity
             }
             else
             {
+//                mContentLayout.removeAllViews();
+//                mContentLayout.addView(mListView);
                 mContentLayout.removeAllViews();
-                mContentLayout.addView(mListView);
+                mContentLayout.addView(mClassifyResult, mCenterLayoutParams);
             }
         }
     };

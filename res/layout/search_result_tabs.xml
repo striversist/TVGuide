@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="42.0sp"
+        android:background="@drawable/abs__ab_solid_light_holo"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RadioGroup 
+            android:id="@+id/result_group"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:background="@null" >
+            
+	        <RadioButton
+	            android:checked="true"
+	            android:id="@+id/result_channels"
+	            style="@style/style_tab_text"
+	            android:layout_width="0.0sp"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1.0"
+	            android:background="@drawable/result_tab_selector"
+	            android:text="@string/channels" />
+	
+	        <ImageView
+	            android:id="@+id/view1"
+	            style="@style/style_tab_divider" />
+	
+	        <RadioButton
+	            android:id="@+id/result_programs"
+	            style="@style/style_tab_text"
+	            android:layout_width="0.0sp"
+	            android:layout_height="fill_parent"
+	            android:layout_weight="1.0"
+	            android:background="@drawable/result_tab_selector"
+	            android:text="@string/programs" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/result_viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0sp"
+        android:layout_weight="1.0" />
+
+</LinearLayout>
