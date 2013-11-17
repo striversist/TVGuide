@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
@@ -21,6 +22,7 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -51,7 +53,7 @@ public class SearchActivity extends Activity
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mNoSearchResultLayout;
-    private LinearLayout mClassifyResult;
+    private LinearLayout mClassifyResultLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
@@ -106,7 +108,7 @@ public class SearchActivity extends Activity
         mInflater = LayoutInflater.from(this);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
-        mClassifyResult = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
+        mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
         createUpdateThreadAndHandler();
@@ -297,8 +299,19 @@ public class SearchActivity extends Activity
             {
 //                mContentLayout.removeAllViews();
 //                mContentLayout.addView(mListView);
+                
+                ViewPager viewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
+                ResultPageAdapter adapter = new ResultPageAdapter();
+                View layout1 = mInflater.inflate(R.layout.category_list1, null);
+                View layout2 = mInflater.inflate(R.layout.category_list2, null);
+                adapter.addView(layout1);
+//                adapter.addView(layout2);
+                adapter.addView(mListView);
+                viewPager.setAdapter(adapter);
+                viewPager.setCurrentItem(0);
+                
                 mContentLayout.removeAllViews();
-                mContentLayout.addView(mClassifyResult, mCenterLayoutParams);
+                mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
             }
         }
     };
