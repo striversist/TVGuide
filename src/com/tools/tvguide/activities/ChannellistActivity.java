@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
@@ -36,7 +37,6 @@ public class ChannellistActivity extends Activity
     private List<HashMap<String, String>> mChannelList;                     // Key: id, name
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
-    private SimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
     private MyProgressDialog mProgressDialog;
     private final String XML_ELEMENT_LOGO = "logo";
@@ -55,7 +55,6 @@ public class ChannellistActivity extends Activity
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
         mProgressDialog = new MyProgressDialog(this);
-        createAndSetListViewAdapter();
         
         mCategoryId = getIntent().getStringExtra("categoryId");
         mCategoryName = getIntent().getStringExtra("categoryName");
@@ -85,31 +84,6 @@ public class ChannellistActivity extends Activity
         {
             // The same effect with press back key
             finish();
-        }
-    }
-    
-    private void createAndSetListViewAdapter()
-    {
-        mListViewAdapter = new SimpleAdapter(ChannellistActivity.this, mItemList, R.layout.channellist_item,
-                new String[]{"image", "name", "program"}, 
-                new int[]{R.id.itemImage, R.id.itemChannel, R.id.itemProgram});
-        mListViewAdapter.setViewBinder(new MyViewBinder());
-        mChannelListView.setAdapter(mListViewAdapter);
-    }
-    
-    public class MyViewBinder implements ViewBinder
-    {
-        public boolean setViewValue(View view, Object data,
-                String textRepresentation)
-        {
-            if((view instanceof ImageView) && (data instanceof Bitmap))
-            {
-                ImageView iv = (ImageView)view;
-                Bitmap bm = (Bitmap)data;
-                iv.setImageBitmap(bm);
-                return true;
-            }
-            return false;
         }
     }
        
@@ -171,7 +145,7 @@ public class ChannellistActivity extends Activity
                             item.put("name", mChannelList.get(i).get("name"));
                             mItemList.add(item);
                         }
-                        mListViewAdapter.notifyDataSetChanged();
+                        mChannelListView.setAdapter(new ChannellistAdapter(ChannellistActivity.this, mItemList));
                         updateOnPlayingProgramList();
                     }
                     break;
@@ -188,7 +162,7 @@ public class ChannellistActivity extends Activity
                                 }
                             }
                         }
-                        mListViewAdapter.notifyDataSetChanged();
+                        mChannelListView.setAdapter(new ChannellistAdapter(ChannellistActivity.this, mItemList));
                     }
                     break;
                 default:
