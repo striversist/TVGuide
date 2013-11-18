@@ -9,6 +9,11 @@ import org.json.JSONObject;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.adapters.ResultProgramAdapter;
+import com.tools.tvguide.adapters.ResultProgramAdapter.Item;
+import com.tools.tvguide.adapters.ResultProgramAdapter.IListItem;
+import com.tools.tvguide.adapters.ResultProgramAdapter.LabelItem;
+import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
@@ -21,20 +26,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -46,9 +45,7 @@ public class SearchActivity extends Activity
     private EditText mSearchEditText;
     private boolean mIsSelectAll = false;
     private ListView mListView;
-    private BaseAdapter mListViewAdapter;
     private String mKeyword;
-    private ArrayList<IListItem> mItemList;
     private ArrayList<IListItem> mItemDataList;
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
@@ -58,40 +55,6 @@ public class SearchActivity extends Activity
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
     
-    class PartAdapter extends BaseAdapter 
-    {
-        @Override
-        public int getCount() 
-        {
-            return mItemList.size();
-        }
-
-        @Override
-        public Object getItem(int position) 
-        {
-            return mItemList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) 
-        {
-            return position;
-        }
-        
-        @Override
-        public boolean isEnabled(int position) 
-        {
-//            return mItemList.get(position).isClickable();
-            return false;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) 
-        {
-            return mItemList.get(position).getView(SearchActivity.this, convertView, mInflater);
-        }
-    }
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -100,11 +63,8 @@ public class SearchActivity extends Activity
         
         mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
         mListView = (ListView)findViewById(R.id.search_list_view);
-        mItemList = new ArrayList<IListItem>();
         mItemDataList = new ArrayList<IListItem>();
-        mListViewAdapter = new PartAdapter();
         mProgressDialog = new MyProgressDialog(this);
-        mListView.setAdapter(mListViewAdapter);
         mInflater = LayoutInflater.from(this);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
@@ -175,18 +135,6 @@ public class SearchActivity extends Activity
                 // TODO Auto-generated method stub
             }
         });
-        
-        // For test
-//        LabelItem label = new LabelItem("CCTV-1");
-//        mItemList.add(label);
-//        Item item = new Item();
-//        item.id = "cctv1";
-//        item.name = "CCTV-1";
-//        item.time = "00:26";
-//        item.title = "新闻联播";
-//        ContentItem contentItem = new ContentItem(item);
-//        mItemList.add(contentItem);
-//        mListViewAdapter.notifyDataSetChanged();
     }
 
     private void createUpdateThreadAndHandler()
@@ -283,12 +231,7 @@ public class SearchActivity extends Activity
         {
             mProgressDialog.dismiss();
             super.handleMessage(msg);
-            mItemList.clear();
-            for (int i=0; i<mItemDataList.size(); ++i)
-            {
-                mItemList.add(mItemDataList.get(i));
-            }
-            mListViewAdapter.notifyDataSetChanged();
+            mListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemDataList));
             mSearchEditText.requestFocus();
             if (mItemDataList.isEmpty())
             {
@@ -316,86 +259,5 @@ public class SearchActivity extends Activity
         }
     };
     
-    interface IListItem
-    {
-        public int getLayout();
-        public boolean isClickable();
-        public View getView(Context context, View convertView, LayoutInflater inflater);
-    }
-
-    class LabelItem implements IListItem 
-    {
-        private String mLabel;
-        public LabelItem(String label)
-        {
-            mLabel = label;
-        }
-        
-        @Override
-        public int getLayout() 
-        {
-            return R.layout.search_list_label_item;
-        }
-
-        @Override
-        public boolean isClickable() 
-        {
-            return false;
-        }
-
-        @Override
-        public View getView(Context context, View convertView, LayoutInflater inflater) 
-        {
-            convertView = inflater.inflate(getLayout(), null);
-            TextView title = (TextView) convertView.findViewById(R.id.search_item_label_text_view);
-            title.setText(mLabel);
-            return convertView;
-        }
-    }
-
-    class Item
-    {
-        String id;
-        String name;
-        String time;
-        String title;
-        String key;
-    }
-
-    class ContentItem implements IListItem 
-    {
-        private String SEPERATOR = ": ";
-        private Item mItem;
-        public ContentItem(Item item)
-        {
-            mItem = item;
-        }
-        
-        @Override
-        public int getLayout() 
-        {
-            return R.layout.search_list_content_item;
-        }
-
-        @Override
-        public boolean isClickable() 
-        {
-            return true;
-        }
-
-        @Override
-        public View getView(Context context, View convertView, LayoutInflater inflater) 
-        {
-            convertView = inflater.inflate(getLayout(), null);
-            TextView tv = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
-            SpannableString ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
-            int start = ss.toString().indexOf(mItem.key);
-            if (start != -1)
-            {
-                ss.setSpan(new ForegroundColorSpan(Color.RED), start, start + mItem.key.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            tv.setText(ss);
-            return convertView;
-        }
-    }
+    
 }
