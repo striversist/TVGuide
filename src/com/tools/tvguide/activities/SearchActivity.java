@@ -2,12 +2,14 @@ package com.tools.tvguide.activities;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter.Item;
@@ -20,6 +22,8 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
+import com.tools.tvguide.utils.Utility;
+import com.tools.tvguide.utils.XmlParser;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,9 +48,11 @@ public class SearchActivity extends Activity
 {
     private EditText mSearchEditText;
     private boolean mIsSelectAll = false;
-    private ListView mListView;
+    private ListView mProgramListView;
+    private ListView mChannelListView;
     private String mKeyword;
-    private ArrayList<IListItem> mItemDataList;
+    private ArrayList<IListItem> mItemProgramList;
+    private ArrayList<HashMap<String, Object>> mItemChannelList; 
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mNoSearchResultLayout;
@@ -61,11 +67,13 @@ public class SearchActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         
-        mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
-        mListView = (ListView)findViewById(R.id.search_list_view);
-        mItemDataList = new ArrayList<IListItem>();
-        mProgressDialog = new MyProgressDialog(this);
         mInflater = LayoutInflater.from(this);
+        mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
+        mProgramListView = (ListView)findViewById(R.id.search_list_view);
+        mChannelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+        mItemProgramList = new ArrayList<IListItem>();
+        mItemChannelList = new ArrayList<HashMap<String,Object>>();
+        mProgressDialog = new MyProgressDialog(this);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
         mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
@@ -166,33 +174,55 @@ public class SearchActivity extends Activity
                 {
                     getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
-                    mItemDataList.clear();
+                    mItemProgramList.clear();
+                    mItemChannelList.clear();
                     if (jsonRoot != null)
                     {
-                        JSONArray resultArray = jsonRoot.getJSONArray("result");
+                        JSONArray resultArray;
+                        // Get result_channels
+                        resultArray = jsonRoot.getJSONArray("result_channels");
                         if (resultArray != null)
                         {
-                            
+                            HashMap<String, HashMap<String, Object>> xmlChannelInfo = XmlParser.parseChannelInfo(SearchActivity.this);
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                String id = resultArray.getJSONObject(i).getString("id");
+                                String name = resultArray.getJSONObject(i).getString("name");
+                                HashMap<String, Object> item = new HashMap<String, Object>();
+                                item.put("id", id);
+                                item.put("name", name);
+                                if (xmlChannelInfo.get(id) != null)
+                                {
+                                    item.put("image", Utility.getImage(SearchActivity.this, (String) xmlChannelInfo.get(id).get("logo")));
+                                }
+                                mItemChannelList.add(item);
+                            }
+                        }
+                        
+                        // Get result_programs
+                        resultArray = jsonRoot.getJSONArray("result_programs");
+                        if (resultArray != null)
+                        {
                             for (int i=0; i<resultArray.length(); ++i)
                             {
                                 String id = resultArray.getJSONObject(i).getString("id");
                                 String name = resultArray.getJSONObject(i).getString("name");
                                 JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
                                 
-                                mItemDataList.add(new LabelItem(name));
+                                mItemProgramList.add(new LabelItem(name));
                                 if (programsArray != null)
                                 {
                                     for (int j=0; j<programsArray.length(); ++j)
                                     {
                                         String time = programsArray.getJSONObject(j).getString("time");
-                                        String title = programsArray.getJSONObject(j).getString("title");                               
+                                        String title = programsArray.getJSONObject(j).getString("title");    
                                         Item item = new Item();
                                         item.id = id;
                                         item.name = name;
                                         item.time = time;
                                         item.title = title;
                                         item.key = mKeyword;
-                                        mItemDataList.add(new ContentItem(item));
+                                        mItemProgramList.add(new ContentItem(item));
                                     }
                                 }
                             }
@@ -231,9 +261,10 @@ public class SearchActivity extends Activity
         {
             mProgressDialog.dismiss();
             super.handleMessage(msg);
-            mListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemDataList));
+            mProgramListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemProgramList));
+            mChannelListView.setAdapter(new ChannellistAdapter(SearchActivity.this, mItemChannelList));
             mSearchEditText.requestFocus();
-            if (mItemDataList.isEmpty())
+            if (mItemProgramList.isEmpty())
             {
                 mContentLayout.removeAllViews();
                 mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
@@ -241,15 +272,17 @@ public class SearchActivity extends Activity
             else
             {
 //                mContentLayout.removeAllViews();
-//                mContentLayout.addView(mListView);
+//                mContentLayout.addView(mProgramListView);
                 
                 ViewPager viewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
                 ResultPageAdapter adapter = new ResultPageAdapter();
-                View layout1 = mInflater.inflate(R.layout.category_list1, null);
-                View layout2 = mInflater.inflate(R.layout.category_list2, null);
-                adapter.addView(layout1);
+//                View layout1 = mInflater.inflate(R.layout.category_list1, null);
+//                View layout2 = mInflater.inflate(R.layout.category_list2, null);
+//                adapter.addView(layout1);
 //                adapter.addView(layout2);
-                adapter.addView(mListView);
+                
+                adapter.addView(mChannelListView);
+                adapter.addView(mProgramListView);
                 viewPager.setAdapter(adapter);
                 viewPager.setCurrentItem(0);
                 
