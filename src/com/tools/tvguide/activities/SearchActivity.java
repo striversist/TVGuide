@@ -271,15 +271,8 @@ public class SearchActivity extends Activity
             }
             else
             {
-//                mContentLayout.removeAllViews();
-//                mContentLayout.addView(mProgramListView);
-                
                 ViewPager viewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
                 ResultPageAdapter adapter = new ResultPageAdapter();
-//                View layout1 = mInflater.inflate(R.layout.category_list1, null);
-//                View layout2 = mInflater.inflate(R.layout.category_list2, null);
-//                adapter.addView(layout1);
-//                adapter.addView(layout2);
                 
                 adapter.addView(mChannelListView);
                 adapter.addView(mProgramListView);
