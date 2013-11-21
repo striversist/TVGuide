@@ -3,6 +3,7 @@ package com.tools.tvguide.activities;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -51,8 +53,9 @@ public class SearchActivity extends Activity
     private ListView mProgramListView;
     private ListView mChannelListView;
     private String mKeyword;
-    private ArrayList<IListItem> mItemProgramList;
-    private ArrayList<HashMap<String, Object>> mItemChannelList; 
+    private List<IListItem> mItemProgramList;
+    private List<HashMap<String, Object>> mItemChannelList; 
+    private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mNoSearchResultLayout;
@@ -60,6 +63,7 @@ public class SearchActivity extends Activity
     private LinearLayout.LayoutParams mCenterLayoutParams;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
+    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST}
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -73,6 +77,7 @@ public class SearchActivity extends Activity
         mChannelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
         mItemProgramList = new ArrayList<IListItem>();
         mItemChannelList = new ArrayList<HashMap<String,Object>>();
+        mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
@@ -228,7 +233,7 @@ public class SearchActivity extends Activity
                             }
                         }
                     }
-                    uiHandler.sendEmptyMessage(0);
+                    uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_RESULT.ordinal());
                 }
                 catch (MalformedURLException e) 
                 {
@@ -241,6 +246,24 @@ public class SearchActivity extends Activity
             }
         });
         mProgressDialog.show();
+    }
+    
+    private void updateOnPlayingProgramList()
+    {
+        mOnPlayingProgramList.clear();
+        List<String> idList = new ArrayList<String>();
+        for (int i=0; i<mItemChannelList.size(); ++i)
+        {
+            idList.add((String) mItemChannelList.get(i).get("id"));
+        }
+        AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
+        {    
+            @Override
+            public void onLoadFinish(int status) 
+            {
+                uiHandler.sendEmptyMessage(SelfMessage.MSG_REFRESH_ON_PLAYING_PROGRAM_LIST.ordinal());
+            }
+        });
     }
     
     private void showInputKeyboard()
@@ -259,29 +282,64 @@ public class SearchActivity extends Activity
     {
         public void handleMessage(Message msg)
         {
-            mProgressDialog.dismiss();
             super.handleMessage(msg);
-            mProgramListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemProgramList));
-            mChannelListView.setAdapter(new ChannellistAdapter(SearchActivity.this, mItemChannelList));
-            mSearchEditText.requestFocus();
-            if (mItemProgramList.isEmpty())
+            SelfMessage selfMsg = SelfMessage.values()[msg.what];
+            switch (selfMsg) 
             {
-                mContentLayout.removeAllViews();
-                mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
-            }
-            else
-            {
-                ViewPager viewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
-                ResultPageAdapter adapter = new ResultPageAdapter();
-                
-                adapter.addView(mChannelListView);
-                adapter.addView(mProgramListView);
-                viewPager.setAdapter(adapter);
-                viewPager.setCurrentItem(0);
-                
-                mContentLayout.removeAllViews();
-                mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
-            }
+			    case MSG_SHOW_RESULT:
+					mProgressDialog.dismiss();
+		            mProgramListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemProgramList));
+		            mChannelListView.setAdapter(new ChannellistAdapter(SearchActivity.this, mItemChannelList));
+		            mSearchEditText.requestFocus();
+		            if (mItemProgramList.isEmpty())
+		            {
+		                mContentLayout.removeAllViews();
+		                mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
+		            }
+		            else
+		            {
+//		                mContentLayout.removeAllViews();
+//		                mContentLayout.addView(mProgramListView);
+		                
+		                ViewPager viewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
+		                ResultPageAdapter adapter = new ResultPageAdapter();
+//		                View layout1 = mInflater.inflate(R.layout.category_list1, null);
+//		                View layout2 = mInflater.inflate(R.layout.category_list2, null);
+//		                adapter.addView(layout1);
+//		                adapter.addView(layout2);
+		                
+		                adapter.addView(mChannelListView);
+		                adapter.addView(mProgramListView);
+		                viewPager.setAdapter(adapter);
+		                viewPager.setCurrentItem(0);
+		                
+		                mContentLayout.removeAllViews();
+		                mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
+		                
+		                if (!mItemChannelList.isEmpty())
+		                	updateOnPlayingProgramList();
+		            }
+					break;
+				
+				case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
+					if (mOnPlayingProgramList != null)
+                    {
+                        for (int i=0; i<mItemChannelList.size(); ++i)
+                        {
+                            for (int j=0; j<mOnPlayingProgramList.size(); ++j)
+                            {
+                                if (mItemChannelList.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
+                                {
+                                	mItemChannelList.get(i).put("program", "正在播出：" + mOnPlayingProgramList.get(j).get("title"));
+                                }
+                            }
+                        }
+                        mChannelListView.setAdapter(new ChannellistAdapter(SearchActivity.this, mItemChannelList));
+                    }
+					break;
+				default:
+					break;
+			}
         }
     };
     
