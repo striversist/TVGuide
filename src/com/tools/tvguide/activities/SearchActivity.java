@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
@@ -41,6 +42,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -48,6 +50,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class SearchActivity extends Activity 
 {
@@ -96,7 +99,8 @@ public class SearchActivity extends Activity
         mResultPagerAdapter = new ResultPageAdapter();
         
         // NOTE：Should follow the TAB INDEX order at the beginning of the class
-        mResultPagerAdapter.addView((ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list));
+        ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+        mResultPagerAdapter.addView(channelListView);
         mResultPagerAdapter.addView((ListView)findViewById(R.id.search_list_view));
         mViewPager.setAdapter(mResultPagerAdapter);
         
@@ -187,6 +191,20 @@ public class SearchActivity extends Activity
             public void onPageScrollStateChanged(int state) 
             {
                 // TODO Auto-generated method stub
+            }
+        });
+        
+        channelListView.setOnItemClickListener(new OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+            {
+                String channelId = (String) mItemChannelDataList.get(position).get("id");
+                String channelName = (String) mItemChannelDataList.get(position).get("name");
+                Intent intent = new Intent(SearchActivity.this, ChannelDetailActivity.class);
+                intent.putExtra("id", channelId);
+                intent.putExtra("name", channelName);
+                startActivity(intent);
             }
         });
     }
