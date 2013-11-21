@@ -17,6 +17,11 @@ public class ResultPageAdapter extends PagerAdapter
     {
         mViewLists.add(view);
     }
+    
+    public View getView(int position)
+    {
+        return mViewLists.get(position);
+    }
         
     @Override
     public void destroyItem(View arg0, int arg1, Object arg2) 

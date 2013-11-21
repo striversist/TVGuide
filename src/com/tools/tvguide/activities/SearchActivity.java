@@ -53,25 +53,25 @@ public class SearchActivity extends Activity
 {
     private EditText mSearchEditText;
     private boolean mIsSelectAll = false;
-    private ListView mProgramListView;
-    private ListView mChannelListView;
     private String mKeyword;
-    private List<IListItem> mItemProgramList;
-    private List<HashMap<String, Object>> mItemChannelList; 
+    private List<IListItem> mItemProgramDataList;
+    private List<HashMap<String, Object>> mItemChannelDataList; 
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mNoSearchResultLayout;
     private LinearLayout mClassifyResultLayout;
-    private int mResultProgramsNum;
     private LinearLayout.LayoutParams mCenterLayoutParams;
+    private int mResultProgramsNum;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
-    private RadioGroup mRadioTabs;
     private ViewPager mViewPager;
+    private ResultPageAdapter mResultPagerAdapter;
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
     private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST}
+    private final int TAB_INDEX_CHANNELS = 0;
+    private final int TAB_INDEX_PROGRAMS = 1;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -81,10 +81,8 @@ public class SearchActivity extends Activity
         
         mInflater = LayoutInflater.from(this);
         mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
-        mProgramListView = (ListView)findViewById(R.id.search_list_view);
-        mChannelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
-        mItemProgramList = new ArrayList<IListItem>();
-        mItemChannelList = new ArrayList<HashMap<String,Object>>();
+        mItemProgramDataList = new ArrayList<IListItem>();
+        mItemChannelDataList = new ArrayList<HashMap<String,Object>>();
         mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
@@ -94,8 +92,13 @@ public class SearchActivity extends Activity
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
         mOriginChannelsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_channels)).getText().toString();
         mOriginProgramsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs)).getText().toString();
-        mRadioTabs = (RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs);
         mViewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
+        mResultPagerAdapter = new ResultPageAdapter();
+        
+        // NOTE：Should follow the TAB INDEX order at the beginning of the class
+        mResultPagerAdapter.addView((ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list));
+        mResultPagerAdapter.addView((ListView)findViewById(R.id.search_list_view));
+        mViewPager.setAdapter(mResultPagerAdapter);
         
         createUpdateThreadAndHandler();
         
@@ -167,10 +170,11 @@ public class SearchActivity extends Activity
             @Override
             public void onPageSelected(int position) 
             {
-                if (position == 0)
-                    mRadioTabs.check(R.id.result_channels);
-                else if (position == 1)
-                    mRadioTabs.check(R.id.result_programs);
+                RadioGroup radioTabs = (RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs);
+                if (position == TAB_INDEX_CHANNELS)
+                    radioTabs.check(R.id.result_channels);
+                else if (position == TAB_INDEX_PROGRAMS)
+                    radioTabs.check(R.id.result_programs);
             }
             
             @Override
@@ -192,10 +196,10 @@ public class SearchActivity extends Activity
         switch(view.getId())
         {
             case R.id.result_channels:
-                mViewPager.setCurrentItem(0);
+                mViewPager.setCurrentItem(TAB_INDEX_CHANNELS);
                 break;
             case R.id.result_programs:
-                mViewPager.setCurrentItem(1);
+                mViewPager.setCurrentItem(TAB_INDEX_PROGRAMS);
                 break;
         }
     }
@@ -229,8 +233,8 @@ public class SearchActivity extends Activity
                 {
                     getter = new DefaultNetDataGetter(url);
                     JSONObject jsonRoot = getter.getJSONsObject();
-                    mItemProgramList.clear();
-                    mItemChannelList.clear();
+                    mItemProgramDataList.clear();
+                    mItemChannelDataList.clear();
                     mResultProgramsNum = 0;
                     if (jsonRoot != null)
                     {
@@ -251,7 +255,7 @@ public class SearchActivity extends Activity
                                 {
                                     item.put("image", Utility.getImage(SearchActivity.this, (String) xmlChannelInfo.get(id).get("logo")));
                                 }
-                                mItemChannelList.add(item);
+                                mItemChannelDataList.add(item);
                             }
                         }
                         
@@ -265,7 +269,7 @@ public class SearchActivity extends Activity
                                 String name = resultArray.getJSONObject(i).getString("name");
                                 JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
                                 
-                                mItemProgramList.add(new LabelItem(name));
+                                mItemProgramDataList.add(new LabelItem(name));
                                 if (programsArray != null)
                                 {
                                     for (int j=0; j<programsArray.length(); ++j)
@@ -278,7 +282,7 @@ public class SearchActivity extends Activity
                                         item.time = time;
                                         item.title = title;
                                         item.key = mKeyword;
-                                        mItemProgramList.add(new ContentItem(item));
+                                        mItemProgramDataList.add(new ContentItem(item));
                                     }
                                     mResultProgramsNum += programsArray.length();
                                 }
@@ -304,9 +308,9 @@ public class SearchActivity extends Activity
     {
         mOnPlayingProgramList.clear();
         List<String> idList = new ArrayList<String>();
-        for (int i=0; i<mItemChannelList.size(); ++i)
+        for (int i=0; i<mItemChannelDataList.size(); ++i)
         {
-            idList.add((String) mItemChannelList.get(i).get("id"));
+            idList.add((String) mItemChannelDataList.get(i).get("id"));
         }
         AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
         {    
@@ -340,10 +344,16 @@ public class SearchActivity extends Activity
             {
 			    case MSG_SHOW_RESULT:
 					mProgressDialog.dismiss();
-		            mProgramListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemProgramList));
-		            mChannelListView.setAdapter(new ChannellistAdapter(SearchActivity.this, mItemChannelList));
+					// 数据拷贝，防止Crash: "Make sure the content of your adapter is not modified from a background thread, but only from the UI thread"
+					List<HashMap<String, Object>> itemChannelList = new ArrayList<HashMap<String,Object>>();
+					itemChannelList.addAll(mItemChannelDataList);
+					List<IListItem> itemProgramList = new ArrayList<ResultProgramAdapter.IListItem>();
+					itemProgramList.addAll(mItemProgramDataList);
+					
+					((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList));
+					((ListView)mResultPagerAdapter.getView(TAB_INDEX_PROGRAMS)).setAdapter(new ResultProgramAdapter(SearchActivity.this, itemProgramList));
 		            mSearchEditText.requestFocus();
-		            if (mItemProgramList.isEmpty())
+		            if (itemProgramList.isEmpty())
 		            {
 		                mContentLayout.removeAllViews();
 		                mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
@@ -352,29 +362,24 @@ public class SearchActivity extends Activity
 		            {
 		                RadioButton channelsBtn = (RadioButton) mClassifyResultLayout.findViewById(R.id.result_channels);
 	                    RadioButton programsBtn = (RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs);
-	                    channelsBtn.setText(String.format(mOriginChannelsFormatString, mItemChannelList.size()));
+	                    channelsBtn.setText(String.format(mOriginChannelsFormatString, mItemChannelDataList.size()));
 	                    programsBtn.setText(String.format(mOriginProgramsFormatString, mResultProgramsNum));
-	                    
-		                ResultPageAdapter adapter = new ResultPageAdapter();
-		                adapter.addView(mChannelListView);
-		                adapter.addView(mProgramListView);
-		                mViewPager.setAdapter(adapter);
 		                
-		                if (!mItemChannelList.isEmpty())
+		                if (!itemChannelList.isEmpty())
 		                {
 	                        mViewPager.setCurrentItem(0);
-	                        mRadioTabs.check(R.id.result_channels);
+	                        ((RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs)).check(R.id.result_channels);
 		                }
 		                else 
 		                {
 		                    mViewPager.setCurrentItem(1);
-		                    mRadioTabs.check(R.id.result_programs);
+		                    ((RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs)).check(R.id.result_programs);
                         }
 		                
 		                mContentLayout.removeAllViews();
 		                mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
 		                
-		                if (!mItemChannelList.isEmpty())
+		                if (!itemChannelList.isEmpty())
 		                	updateOnPlayingProgramList();
 		            }
 					break;
@@ -382,17 +387,19 @@ public class SearchActivity extends Activity
 				case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
 					if (mOnPlayingProgramList != null)
                     {
-                        for (int i=0; i<mItemChannelList.size(); ++i)
+					    List<HashMap<String, Object>> itemChannelList1 = new ArrayList<HashMap<String,Object>>();
+					    itemChannelList1.addAll(mItemChannelDataList);
+                        for (int i=0; i<itemChannelList1.size(); ++i)
                         {
                             for (int j=0; j<mOnPlayingProgramList.size(); ++j)
                             {
-                                if (mItemChannelList.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
+                                if (itemChannelList1.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
                                 {
-                                	mItemChannelList.get(i).put("program", "正在播出：" + mOnPlayingProgramList.get(j).get("title"));
+                                    itemChannelList1.get(i).put("program", "正在播出：" + mOnPlayingProgramList.get(j).get("title"));
                                 }
                             }
                         }
-                        mChannelListView.setAdapter(new ChannellistAdapter(SearchActivity.this, mItemChannelList));
+                        ((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList1));
                     }
 					break;
 				default:
