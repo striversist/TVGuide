@@ -11,7 +11,7 @@
         android:orientation="horizontal" >
 
         <RadioGroup 
-            android:id="@+id/result_group"
+            android:id="@+id/result_tabs"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="horizontal"
@@ -25,7 +25,8 @@
 	            android:layout_height="fill_parent"
 	            android:layout_weight="1.0"
 	            android:background="@drawable/result_tab_selector"
-	            android:text="@string/channels" />
+	            android:text="@string/channels"
+	            android:onClick="onClick" />
 	
 	        <ImageView
 	            android:id="@+id/view1"
@@ -38,7 +39,8 @@
 	            android:layout_height="fill_parent"
 	            android:layout_weight="1.0"
 	            android:background="@drawable/result_tab_selector"
-	            android:text="@string/programs" />
+	            android:text="@string/programs"
+	            android:onClick="onClick" />
         </RadioGroup>
     </LinearLayout>
 

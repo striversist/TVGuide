@@ -33,6 +33,7 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -43,6 +44,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,9 +63,14 @@ public class SearchActivity extends Activity
     private LinearLayout mContentLayout;
     private LinearLayout mNoSearchResultLayout;
     private LinearLayout mClassifyResultLayout;
+    private int mResultProgramsNum;
     private LinearLayout.LayoutParams mCenterLayoutParams;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
+    private RadioGroup mRadioTabs;
+    private ViewPager mViewPager;
+    private String mOriginChannelsFormatString;
+    private String mOriginProgramsFormatString;
     private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST}
     
     @Override
@@ -84,6 +92,11 @@ public class SearchActivity extends Activity
         mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
+        mOriginChannelsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_channels)).getText().toString();
+        mOriginProgramsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs)).getText().toString();
+        mRadioTabs = (RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs);
+        mViewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
+        
         createUpdateThreadAndHandler();
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
@@ -148,6 +161,43 @@ public class SearchActivity extends Activity
                 // TODO Auto-generated method stub
             }
         });
+        
+        mViewPager.setOnPageChangeListener(new OnPageChangeListener() 
+        {
+            @Override
+            public void onPageSelected(int position) 
+            {
+                if (position == 0)
+                    mRadioTabs.check(R.id.result_channels);
+                else if (position == 1)
+                    mRadioTabs.check(R.id.result_programs);
+            }
+            
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) 
+            {
+                // TODO Auto-generated method stub
+            }
+            
+            @Override
+            public void onPageScrollStateChanged(int state) 
+            {
+                // TODO Auto-generated method stub
+            }
+        });
+    }
+    
+    public void onClick(View view)
+    {
+        switch(view.getId())
+        {
+            case R.id.result_channels:
+                mViewPager.setCurrentItem(0);
+                break;
+            case R.id.result_programs:
+                mViewPager.setCurrentItem(1);
+                break;
+        }
     }
 
     private void createUpdateThreadAndHandler()
@@ -181,6 +231,7 @@ public class SearchActivity extends Activity
                     JSONObject jsonRoot = getter.getJSONsObject();
                     mItemProgramList.clear();
                     mItemChannelList.clear();
+                    mResultProgramsNum = 0;
                     if (jsonRoot != null)
                     {
                         JSONArray resultArray;
@@ -229,6 +280,7 @@ public class SearchActivity extends Activity
                                         item.key = mKeyword;
                                         mItemProgramList.add(new ContentItem(item));
                                     }
+                                    mResultProgramsNum += programsArray.length();
                                 }
                             }
                         }
@@ -298,20 +350,26 @@ public class SearchActivity extends Activity
 		            }
 		            else
 		            {
-//		                mContentLayout.removeAllViews();
-//		                mContentLayout.addView(mProgramListView);
-		                
-		                ViewPager viewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
+		                RadioButton channelsBtn = (RadioButton) mClassifyResultLayout.findViewById(R.id.result_channels);
+	                    RadioButton programsBtn = (RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs);
+	                    channelsBtn.setText(String.format(mOriginChannelsFormatString, mItemChannelList.size()));
+	                    programsBtn.setText(String.format(mOriginProgramsFormatString, mResultProgramsNum));
+	                    
 		                ResultPageAdapter adapter = new ResultPageAdapter();
-//		                View layout1 = mInflater.inflate(R.layout.category_list1, null);
-//		                View layout2 = mInflater.inflate(R.layout.category_list2, null);
-//		                adapter.addView(layout1);
-//		                adapter.addView(layout2);
-		                
 		                adapter.addView(mChannelListView);
 		                adapter.addView(mProgramListView);
-		                viewPager.setAdapter(adapter);
-		                viewPager.setCurrentItem(0);
+		                mViewPager.setAdapter(adapter);
+		                
+		                if (!mItemChannelList.isEmpty())
+		                {
+	                        mViewPager.setCurrentItem(0);
+	                        mRadioTabs.check(R.id.result_channels);
+		                }
+		                else 
+		                {
+		                    mViewPager.setCurrentItem(1);
+		                    mRadioTabs.check(R.id.result_programs);
+                        }
 		                
 		                mContentLayout.removeAllViews();
 		                mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
