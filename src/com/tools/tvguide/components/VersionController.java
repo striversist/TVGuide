@@ -22,6 +22,8 @@ import com.tools.tvguide.utils.MyApplication;
 import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 
@@ -34,6 +36,7 @@ public class VersionController
 	private String mLatestVersionName;
 	private String mUrl = null;
 	private int mLatestChannelVersion = 1;
+	private String mAppChannelName;
 	
 	public VersionController(Context context)
 	{
@@ -42,6 +45,8 @@ public class VersionController
 	    {
             mCurrentVersionCode = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionCode;
             mCurrentVersionName = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName;
+            ApplicationInfo appInfo = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
+            mAppChannelName = appInfo.metaData.getString("APP_CHANNEL");
         }
 	    catch (NameNotFoundException e) 
         {
@@ -106,6 +111,11 @@ public class VersionController
 	public int getLatestChannelVersion()
 	{
 	    return mLatestChannelVersion;
+	}
+	
+	public String getAppChannelName()
+	{
+	    return mAppChannelName;
 	}
 	
 	private class Version extends DefaultHandler

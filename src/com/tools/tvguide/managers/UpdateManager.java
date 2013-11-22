@@ -105,6 +105,11 @@ public class UpdateManager
         return mVersionController.getLatestChannelVersion();
     }
     
+    public String getAppChannelName()
+    {
+        return mVersionController.getAppChannelName();
+    }
+    
     private void load()
     {
         try

@@ -45,6 +45,7 @@ public class LoginManager
                     String loginUrl = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_LOGIN);
                     loginUrl = addUrlGetParam(loginUrl, "UIP", AppEngine.getInstance().getDnsManager().getDeviceIpAddress(), true);
                     loginUrl = addUrlGetParam(loginUrl, "UL", AppEngine.getInstance().getDnsManager().getDeviceLocation(), false);
+                    loginUrl = addUrlGetParam(loginUrl, "APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName(), false);
 
                     NetDataGetter getter = new DefaultNetDataGetter(loginUrl);
                     getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
