@@ -371,7 +371,7 @@ public class SearchActivity extends Activity
 					((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList));
 					((ListView)mResultPagerAdapter.getView(TAB_INDEX_PROGRAMS)).setAdapter(new ResultProgramAdapter(SearchActivity.this, itemProgramList));
 		            mSearchEditText.requestFocus();
-		            if (itemProgramList.isEmpty())
+		            if (itemChannelList.isEmpty() && itemProgramList.isEmpty())
 		            {
 		                mContentLayout.removeAllViews();
 		                mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
