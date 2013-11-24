@@ -1,25 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical" android:background="@color/ltgray" android:layout_width="fill_parent" android:layout_height="fill_parent"
+<LinearLayout android:orientation="vertical" android:background="@color/light_dark_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
   xmlns:android="http://schemas.android.com/apk/res/android">
     <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
         <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <LinearLayout style="@style/more_menu_subfield">
-                <Button android:id="@+id/more_alarms" android:tag="2" android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/menu_list_item" android:onClick="onClick" />
+            
+            <LinearLayout
+                android:id="@+id/more_alarms"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:layout_marginTop="25.0dip"
+                android:background="@drawable/one_layout_select"
+                android:onClick="onClick" >
+                <TextView android:text="@string/about" android:drawableLeft="@drawable/more_menu_alarms" style="@style/style_layout_textview" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
             </LinearLayout>
-            <LinearLayout style="@style/more_menu_subfield">
-                <FrameLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
-                    <Button android:id="@+id/more_check_new_ver" android:tag="3" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/menu_list_item" android:onClick="onClick" />
-                    <TextView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
+            
+            <LinearLayout
+                android:id="@+id/more_check_new_ver"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/top_layout_select"
+                android:onClick="onClick" >
+                <TextView android:id="@+id/more_version_check" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/style_layout_textview" />
+                <TextView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
                               android:background="@drawable/more_update_new" android:visibility="invisible" android:layout_width="24.0dip" 
-                              android:layout_height="24.0dip" android:layout_marginLeft="80.0dip" android:layout_marginTop="-8.0dip" />
-                </FrameLayout>
-                <Button android:id="@+id/more_feedback" android:tag="4" android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/menu_list_item" android:onClick="onClick" />
-                <Button android:id="@+id/more_about" android:tag="5" android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/menu_list_item" android:onClick="onClick" />
+                              android:layout_height="24.0dip" android:layout_marginRight="20.0dip" android:layout_marginTop="-8.0dip" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
             </LinearLayout>
-            <LinearLayout style="@style/more_menu_subfield">
-                <Button android:id="@+id/more_clear_cache" android:tag="7" android:text="@string/clear_cache" android:drawableLeft="@drawable/more_menu_clearcache" style="@style/menu_list_item" android:onClick="onClick" />
-                <Button android:id="@+id/more_quit" android:tag="8" android:text="@string/quit" android:drawableLeft="@drawable/more_menu_quit" style="@style/menu_list_item" android:onClick="onClick" />
+            <LinearLayout
+                android:id="@+id/more_feedback"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/mid_layout_select"
+                android:onClick="onClick" >
+                <TextView android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/style_layout_textview" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/more_about"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/bottom_layout_select"
+                android:onClick="onClick" >
+                <TextView android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/style_layout_textview" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/more_clear_cache"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:layout_marginTop="15dip"
+                android:background="@drawable/top_layout_select"
+                android:onClick="onClick" >
+                <TextView android:text="@string/clear_cache" android:drawableLeft="@drawable/more_menu_clearcache" style="@style/style_layout_textview" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/more_quit"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/bottom_layout_select"
+                android:onClick="onClick" >
+                <TextView android:text="@string/quit" android:drawableLeft="@drawable/more_menu_quit" style="@style/style_layout_textview" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+            </LinearLayout>
+            
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

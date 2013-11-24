@@ -32,10 +32,10 @@ public class MoreActivity extends Activity
         setContentView(R.layout.activity_more);
         createDialogs();
         
-        Button checkBtn = (Button)findViewById(R.id.more_check_new_ver);
-        String versionFormat = checkBtn.getText().toString();
+        TextView checkTextView = (TextView)findViewById(R.id.more_version_check);
+        String versionFormat = checkTextView.getText().toString();
         String finalVersion = String.format(versionFormat, AppEngine.getInstance().getUpdateManager().currentVersionName());
-        checkBtn.setText(finalVersion);
+        checkTextView.setText(finalVersion);
         
         mUpdateNewIcon = (TextView)findViewById(R.id.more_update_new_icon);
     }
