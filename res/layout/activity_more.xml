@@ -14,7 +14,7 @@
                 android:layout_marginTop="25.0dip"
                 android:background="@drawable/one_layout_select"
                 android:onClick="onClick" >
-                <TextView android:text="@string/about" android:drawableLeft="@drawable/more_menu_alarms" style="@style/style_layout_textview" />
+                <TextView android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/style_layout_textview" />
                 <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
             </LinearLayout>
             
