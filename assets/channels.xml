@@ -249,7 +249,7 @@
 	<channel id="aoshihd">
 		<logo>aoshi.gif</logo>
 	</channel>
-	<!-- ================= 地方台 ================= -->
+	<!-- ================= 各省频道 ================= -->
 	<!-- =================  北京  ================= -->
 	<channel id="btv2">
 		<logo>beijingst.gif</logo>
@@ -1387,17 +1387,128 @@
 	<channel id="huhehaoteyingshi">
 		<logo>huhehaote.gif</logo>
 	</channel>
+	<!-- ================= 港澳台 ================= -->
+	<!-- ================= 香港 ================= -->
+	<channel id="bengangtai">
+		<logo>bengangtai.gif</logo>
+	</channel>
+	<channel id="yazhoutai">
+		<logo>bengangtai.gif</logo>
+	</channel>
+	<channel id="guojitai">
+		<logo>bengangtai.gif</logo>
+	</channel>
+	<channel id="TVBfeicui">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBmingzhu">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVB8">
+		<logo>TVB8.gif</logo>
+	</channel>
+	<channel id="TVBxinghe">
+		<logo>TVBxinghe.jpg</logo>
+	</channel>
+	<channel id="TVBwuxianbaoju1">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBwuxianjingdian">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBhudongxinwen">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBwuxianshenghuo">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBwuxianertong">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBwuxianbaoju2">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBdianying">
+		<logo>tvb.gif</logo>
+	</channel>
+	<channel id="TVBtiyu">
+		<logo>tvb.gif</logo>
+	</channel>
+	<!-- ================= 澳门 ================= -->
+	<channel id="aomendianshitai">
+		<logo>aomen.gif</logo>
+	</channel>
+	<channel id="aomenmacau">
+		<logo>aomen.gif</logo>
+	</channel>
+	<channel id="aoshitiyu">
+		<logo>aomen.gif</logo>
+	</channel>
+	<channel id="aoshishenghuo">
+		<logo>aomen.gif</logo>
+	</channel>
+	<channel id="aomenweixing">
+		<logo>aomen.gif</logo>
+	</channel>
+	<channel id="aomenlianhuast">
+		<logo>aomenlianhua.jpg</logo>
+	</channel>
+	<channel id="aoyast">
+		<logo>aoyast.gif</logo>
+	</channel>
+	<!-- ================= 台湾 ================= -->
+	<channel id="weishidianying">
+		<logo>weishidianying.gif</logo>
+	</channel>
+	<channel id="weishizhongwen">
+		<logo>weshizhongwen.gif</logo>
+	</channel>
+	<channel id="weishihejiahuan">
+		<logo>star.gif</logo>
+	</channel>
+	<channel id="weishiyinyue">
+		<logo>star.gif</logo>
+	</channel>
+	<channel id="taishicaijing">
+		<logo>ttv.gif</logo>
+	</channel>
+	<channel id="taishizonghe">
+		<logo>ttv.gif</logo>
+	</channel>
+	<channel id="taiwanst">
+		<logo>ttv.gif</logo>
+	</channel>
+	<channel id="gongshizhu">
+		<logo>taiwangongshi.gif</logo>
+	</channel>
+	<channel id="gongshidimo">
+		<logo>taiwangongshi.gif</logo>
+	</channel>
+	<channel id="sanliduhui">
+		<logo>sanli.gif</logo>
+	</channel>
+	<channel id="sanlixinwen">
+		<logo>sanli.gif</logo>
+	</channel>
+	<channel id="sanlitaiwan">
+		<logo>sanli.gif</logo>
+	</channel>
+	<channel id="sanlicaijing">
+		<logo>sanli.gif</logo>
+	</channel>
+	<channel id="sanliguoji">
+		<logo>sanli.gif</logo>
+	</channel>
+	<channel id="badadiyi">
+		<logo>bada.gif</logo>
+	</channel>
+	<channel id="badazonghe">
+		<logo>bada.gif</logo>
+	</channel>
+	<channel id="badaxiju">
+		<logo>bada.gif</logo>
+	</channel>
+	<channel id="badayuleK">
+		<logo>bada.gif</logo>
+	</channel>
 </channels>
-
-
-
-
-
-
-
-
-
-
-
-
-
