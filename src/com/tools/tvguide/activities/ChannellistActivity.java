@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.youmi.android.diy.banner.DiyAdSize;
+import net.youmi.android.diy.banner.DiyBanner;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.components.MyProgressDialog;
@@ -23,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -76,6 +80,16 @@ public class ChannellistActivity extends Activity
                 startActivity(intent);
             }
         });
+        
+        new Handler().postDelayed(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                // Mini广告
+                ((RelativeLayout)findViewById(R.id.adLayout)).addView(new DiyBanner(ChannellistActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
+            }
+        }, 500);
     }
 
     public void back(View view)

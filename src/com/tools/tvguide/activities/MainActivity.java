@@ -1,5 +1,9 @@
 package com.tools.tvguide.activities;
 
+import net.youmi.android.AdManager;
+import net.youmi.android.diy.banner.DiyAdSize;
+import net.youmi.android.diy.banner.DiyBanner;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
@@ -13,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -56,6 +61,19 @@ public class MainActivity extends TabActivity
                 config();
             }
         }, delayTime);
+        
+        // 初始化应用的发布ID和密钥，以及设置测试模式
+        AdManager.getInstance(this).init("18d3cb43223cb656", "ca026a5093fb2378", false); 
+        
+        new Handler().postDelayed(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                // Mini广告
+                ((RelativeLayout)findViewById(R.id.adLayout)).addView(new DiyBanner(MainActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
+            }
+        }, delayTime * 2);
     }
     
     private void config()
