@@ -99,7 +99,7 @@ public class UrlManager
                 {
                     mHostIP = AppEngine.getInstance().getDnsManager().getIPAddress(mHostName);
                     if (ENABLE_TEST)
-                        mHostIP = "192.168.1.102";
+                        mHostIP = "192.168.1.100";
                     
                     mLock.lock();
                     mCondition.signalAll();
