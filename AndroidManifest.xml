@@ -34,13 +34,6 @@
 	    <meta-data
 	        android:name="APP_CHANNEL"
 	        android:value="APP市场" />
-	    <!-- Mobwin所需要的Activity -->
-        <activity android:name="com.tencent.exmobwin.banner.MobWINBrowserActivity" >
-        </activity>
-        <activity
-            android:name="com.tencent.exmobwin.banner.DialogActivity"
-            android:theme="@android:style/Theme.Dialog" >
-        </activity>
 	    
         <activity
             android:name="com.tools.tvguide.activities.MainActivity"

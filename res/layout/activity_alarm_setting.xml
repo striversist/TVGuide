@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="#fff5f7fa"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:ns="http://mobwin.android.com/apk/res/com.tools.tvguide" >
+  xmlns:android="http://schemas.android.com/apk/res/android" >
     <RelativeLayout android:gravity="center_vertical" android:id="@+id/shake_title_bar" android:background="@drawable/title_bar" android:layout_width="fill_parent" android:layout_height="45.0dip">
         <Button android:textSize="14.0sp" android:textColor="#ffffffff" android:background="@drawable/title_btn_back" android:layout_width="70.0dip" android:layout_height="wrap_content" android:text="@string/back" android:layout_centerVertical="true" android:onClick="back" />
         <TextView android:textSize="20.0sp" android:textColor="#ffffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/alarm_setting" android:layout_centerInParent="true" />
@@ -9,15 +8,5 @@
     <RelativeLayout android:gravity="center_vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
 	    <ListView android:id="@+id/alarm_setting_list_view" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="2.0dip"
 	            android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
-	    <com.tencent.exmobwin.banner.TAdView
-            xmlns:mobwin="http://mobwin.android.com/apk/res/com.tools.tvguide"
-            android:id="@+id/adview"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            mobwin:textColor="#ffff3333"
-            mobwin:titleColor="#ff00aa00"
-            ns:backAlpha="180" >
-        </com.tencent.exmobwin.banner.TAdView>
     </RelativeLayout>
 </LinearLayout>
