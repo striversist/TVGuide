@@ -145,8 +145,6 @@ public class NetDataGetter
 			return null;
 		}
 		
-		Utility.emulateNetworkDelay();
-		
 		return input;
 	}
 	
