@@ -1,5 +1,6 @@
 package com.tools.tvguide.adapters;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
@@ -47,8 +48,7 @@ public class ResultProgramAdapter extends BaseAdapter
     @Override
     public boolean isEnabled(int position) 
     {
-//        return mItemList.get(position).isClickable();
-        return false;
+        return mItemList.get(position).isClickable();
     }
 
     @Override
@@ -62,14 +62,19 @@ public class ResultProgramAdapter extends BaseAdapter
         public int getLayout();
         public boolean isClickable();
         public View getView(Context context, View convertView, LayoutInflater inflater);
+        public void setExtraInfo(HashMap<String, ?> extraInfo);
+        public HashMap<String, ?> getExtraInfo();
     }
 
     public static class LabelItem implements IListItem 
     {
         private String mLabel;
+        private boolean mIsClickable;
+        private HashMap<String, ?> mExtraInfo;
         public LabelItem(String label)
         {
             mLabel = label;
+            mIsClickable = false;
         }
         
         @Override
@@ -81,7 +86,7 @@ public class ResultProgramAdapter extends BaseAdapter
         @Override
         public boolean isClickable() 
         {
-            return false;
+            return mIsClickable;
         }
 
         @Override
@@ -91,6 +96,23 @@ public class ResultProgramAdapter extends BaseAdapter
             TextView title = (TextView) convertView.findViewById(R.id.search_item_label_text_view);
             title.setText(mLabel);
             return convertView;
+        }
+        
+        @Override
+        public HashMap<String, ?> getExtraInfo() 
+        {
+            return mExtraInfo;
+        }
+
+        @Override
+        public void setExtraInfo(HashMap<String, ?> extraInfo) 
+        {
+            mExtraInfo = extraInfo;
+        }
+        
+        public void setClickable(boolean clickable)
+        {
+            mIsClickable = clickable;
         }
     }
 
@@ -107,9 +129,12 @@ public class ResultProgramAdapter extends BaseAdapter
     {
         private String SEPERATOR = ": ";
         private Item mItem;
+        private boolean mIsClickable;
+        private HashMap<String, ?> mExtraInfo;
         public ContentItem(Item item)
         {
             mItem = item;
+            mIsClickable = false;
         }
         
         @Override
@@ -121,7 +146,7 @@ public class ResultProgramAdapter extends BaseAdapter
         @Override
         public boolean isClickable() 
         {
-            return true;
+            return mIsClickable;
         }
 
         @Override
@@ -145,6 +170,23 @@ public class ResultProgramAdapter extends BaseAdapter
             }
             tv.setText(ss);
             return convertView;
+        }
+        
+        @Override
+        public HashMap<String, ?> getExtraInfo() 
+        {
+            return mExtraInfo;
+        }
+
+        @Override
+        public void setExtraInfo(HashMap<String, ?> extraInfo) 
+        {
+            mExtraInfo = extraInfo;
+        }
+        
+        public void setClickable(boolean clickable)
+        {
+            mIsClickable = clickable;
         }
     }
 }

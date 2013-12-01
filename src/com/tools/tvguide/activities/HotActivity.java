@@ -2,6 +2,7 @@ package com.tools.tvguide.activities;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -23,6 +24,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -45,6 +49,22 @@ public class HotActivity extends Activity
         mItemList = new ArrayList<ResultProgramAdapter.IListItem>();
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
         mProgressDialog = new MyProgressDialog(this);
+        
+        mListView.setOnItemClickListener(new OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+            {
+                if (mItemList == null)
+                    return;
+                HashMap<String, HashMap<String, String>> programInfo = (HashMap<String, HashMap<String, String>>) mItemList.get(position).getExtraInfo();
+                if (programInfo == null)
+                    return;
+                
+                String name = programInfo.get("programInfo").get("name");
+                String link = programInfo.get("programInfo").get("link");
+            }
+        });
         
         createUpdateThreadAndHandler();
         updateResult();
@@ -80,7 +100,12 @@ public class HotActivity extends Activity
                         String title = entryList.get(i).programList.get(j).get("name");
                         ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
                         item.title = title;
-                        mItemDataList.add(new ResultProgramAdapter.ContentItem(item));
+                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item);
+                        contentItem.setClickable(true);
+                        HashMap<String, HashMap<String, String>> extraInfo = new HashMap<String, HashMap<String, String>>();
+                        extraInfo.put("programInfo", entryList.get(i).programList.get(j));
+                        contentItem.setExtraInfo(extraInfo);
+                        mItemDataList.add(contentItem);
                     }
                 }
                 uiHandler.sendEmptyMessage(0);
