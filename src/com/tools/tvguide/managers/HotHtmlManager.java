@@ -54,7 +54,7 @@ public class HotHtmlManager
             String protocol = new URL(url).getProtocol();
             String host = new URL(url).getHost();
             
-            Document doc = Jsoup.connect("http://m.tvsou.com/juqing.asp").get();
+            Document doc = Jsoup.connect(url).get();
             Elements channels = doc.select("div[class=rb_tv]");
             for (int i=0; i<channels.size(); ++i)
             {
