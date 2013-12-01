@@ -13,6 +13,7 @@ public class UrlManager
     public static final String TAG                      = "UrlManager";
     public static final String URL_CHINAZ_IP            = "http://ip.chinaz.com";
     public static final String URL_IPCN                 = "http://www.ip.cn";
+    public static final String URL_PUB_HOT              = "http://m.tvsou.com/juqing.asp";
     
     public static final int URL_CATEGORIES              = 1;
     public static final int URL_CHANNELS                = 2;
@@ -99,7 +100,7 @@ public class UrlManager
                 {
                     mHostIP = AppEngine.getInstance().getDnsManager().getIPAddress(mHostName);
                     if (ENABLE_TEST)
-                        mHostIP = "192.168.1.100";
+                        mHostIP = "192.168.1.101";
                     
                     mLock.lock();
                     mCondition.signalAll();
@@ -177,7 +178,7 @@ public class UrlManager
                 url += PATH_SEARCH;
                 break;
             case URL_HOT:
-                url += PATH_HOT;
+                url = URL_PUB_HOT;
                 break;
             case URL_UPDATE:
                 url += PATH_UPDATE;

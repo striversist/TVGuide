@@ -17,6 +17,7 @@ public class AppEngine
     private DnsManager                              mDnsManager;
     private UpdateManager                           mUpdateManager;
     private BootManager                             mBootManager;
+    private HotHtmlManager                          mHotHtmlManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -108,6 +109,13 @@ public class AppEngine
         if (mBootManager == null)
             mBootManager = new BootManager(mContext);
         return mBootManager;
+    }
+    
+    public HotHtmlManager getHotHtmlManager()
+    {
+        if (mHotHtmlManager == null)
+            mHotHtmlManager = new HotHtmlManager(mContext);
+        return mHotHtmlManager;
     }
     
     public void prepareBeforeExit()

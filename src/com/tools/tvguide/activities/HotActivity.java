@@ -2,6 +2,7 @@ package com.tools.tvguide.activities;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.HotHtmlManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -68,48 +71,19 @@ public class HotActivity extends Activity
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_HOT);
-                NetDataGetter getter;
-                try 
+                List<HotHtmlManager.HotEntry> entryList = AppEngine.getInstance().getHotHtmlManager().getEntryList();
+                for (int i=0; i<entryList.size(); ++i)
                 {
-                    getter = new DefaultNetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    mItemDataList.clear();
-                    if (jsonRoot != null)
+                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName));
+                    for (int j=0; j<entryList.get(i).programList.size(); ++j)
                     {
-                        JSONArray resultArray = jsonRoot.getJSONArray("hot");
-                        if (resultArray != null)
-                        {
-                            
-                            for (int i=0; i<resultArray.length(); ++i)
-                            {
-                                String channelName = resultArray.getJSONObject(i).getString("name");
-                                JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
-                                
-                                mItemDataList.add(new ResultProgramAdapter.LabelItem(channelName));
-                                if (programsArray != null)
-                                {
-                                    for (int j=0; j<programsArray.length(); ++j)
-                                    {
-                                        String title = programsArray.get(j).toString();
-                                        ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
-                                        item.title = title;
-                                        mItemDataList.add(new ResultProgramAdapter.ContentItem(item));
-                                    }
-                                }
-                            }
-                        }
+                        String title = entryList.get(i).programList.get(j).get("name");
+                        ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
+                        item.title = title;
+                        mItemDataList.add(new ResultProgramAdapter.ContentItem(item));
                     }
-                    uiHandler.sendEmptyMessage(0);
                 }
-                catch (MalformedURLException e) 
-                {
-                    e.printStackTrace();
-                }
-                catch (JSONException e) 
-                {
-                    e.printStackTrace();
-                }
+                uiHandler.sendEmptyMessage(0);
             }
         });
     }
