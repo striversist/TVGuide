@@ -72,5 +72,8 @@
     <string name="content_introduce">内容介绍</string>
     <string name="plot_introduce">分集剧情介绍</string>
     <string name="loading_string">加载中...</string>
+    <string name="actor_list">演员表</string>
+    <string name="plot_sumary">剧情简介</string>
+    <string name="playtime">播出时间</string>
     
 </resources>

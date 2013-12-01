@@ -15,18 +15,58 @@
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
-        <TextView android:textSize="15.0sp" android:textColor="@color/darkgray" android:id="@+id/program_detail_hint_tv" android:background="@color/light_bg" android:paddingLeft="8.0sp" android:paddingTop="5.0sp" android:paddingRight="8.0sp" android:paddingBottom="5.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/content_introduce" />
-        <ScrollView android:id="@+id/scrollView1" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
-                <TextView android:textSize="15.0sp" android:textColor="@color/darkgray" android:id="@+id/program_detail_tv" android:paddingLeft="8.0sp" android:paddingTop="15.0sp" android:paddingRight="8.0sp" android:paddingBottom="3.0sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:lineSpacingExtra="5.0sp" />
-                <Button android:textSize="17.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/program_plot_btn" android:background="@drawable/big_button_select" android:paddingTop="7.0sp" android:paddingBottom="7.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="8.0sp" android:layout_marginRight="8.0sp" android:layout_marginBottom="25.0sp" android:text="@string/plot_introduce" />
-            </LinearLayout>
-        </ScrollView>
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="36.0sp"
+	        android:background="@drawable/abs__ab_solid_light_holo"
+	        android:gravity="center_vertical"
+	        android:orientation="horizontal" >
+	
+	        <RadioGroup 
+	            android:id="@+id/program_tabs"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:orientation="horizontal"
+	            android:background="@null" >
+	            
+	            <RadioButton
+	                android:checked="true"
+	                android:id="@+id/program_tab_actors"
+	                style="@style/style_tab_text"
+	                android:layout_width="0.0sp"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1.0"
+	                android:background="@drawable/result_tab_selector"
+	                android:text="@string/actor_list"
+	                android:onClick="onClickTabs" />
+	            <ImageView style="@style/style_tab_divider" />
+	            <RadioButton
+	                android:id="@+id/program_tab_summary"
+	                style="@style/style_tab_text"
+	                android:layout_width="0.0sp"
+	                android:layout_height="fill_parent"
+	                android:layout_weight="1.0"
+	                android:background="@drawable/result_tab_selector"
+	                android:text="@string/plot_sumary"
+	                android:onClick="onClickTabs" />
+	            <ImageView style="@style/style_tab_divider" />
+	            <RadioButton
+                    android:id="@+id/program_tab_playtimes"
+                    style="@style/style_tab_text"
+                    android:layout_width="0.0sp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/result_tab_selector"
+                    android:text="@string/playtime"
+                    android:onClick="onClickTabs" />
+	            
+	        </RadioGroup>
+	    </LinearLayout>
+	
+	    <android.support.v4.view.ViewPager
+	        android:id="@+id/program_view_pager"
+	        android:layout_width="fill_parent"
+	        android:layout_height="0.0sp"
+	        android:layout_weight="1.0" />
     </LinearLayout>
-    <LinearLayout android:gravity="center_vertical" android:id="@+id/program_loading_ll" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true">
-        <ProgressBar android:id="@+id/program_loading_pb" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <TextView android:textSize="14.0sp" android:textColor="@color/black" android:id="@+id/program_loading_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/loading_string" />
-    </LinearLayout>
-    <ImageView android:id="@+id/image_failure" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/image_failureface" android:layout_centerInParent="true" />
-    <RelativeLayout android:id="@+id/program_adview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true" />
 </RelativeLayout>
