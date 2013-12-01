@@ -129,11 +129,19 @@ public class ResultProgramAdapter extends BaseAdapter
         {
             convertView = inflater.inflate(getLayout(), null);
             TextView tv = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
-            SpannableString ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
-            int start = ss.toString().indexOf(mItem.key);
-            if (start != -1)
+            SpannableString ss;
+            if (mItem.time != null)
+                ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
+            else
+                ss = new SpannableString(mItem.title);
+            
+            if (mItem.key != null)
             {
-                ss.setSpan(new ForegroundColorSpan(Color.RED), start, start + mItem.key.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                int start = ss.toString().indexOf(mItem.key);
+                if (start != -1)
+                {
+                    ss.setSpan(new ForegroundColorSpan(Color.RED), start, start + mItem.key.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
             tv.setText(ss);
             return convertView;
