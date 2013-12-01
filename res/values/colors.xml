@@ -12,4 +12,6 @@
     <color name="bg">#fff5f7fa</color>
     <color name="ltgray">#ffcccccc</color>
     <color name="light_dark_bg">#ffe7e7e7</color>
+    <color name="darkgray">#ff4f4f4f</color>
+    <color name="light_bg">#ffefefef</color>
 </resources>

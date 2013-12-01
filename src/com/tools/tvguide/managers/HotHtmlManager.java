@@ -182,7 +182,7 @@ public class HotHtmlManager
                             for (int i=0; i<actorLines.length; ++i)
                             {
                                 String actor = Html2Text(actorLines[i]);
-                                actors += actor;
+                                actors += actor + "\n";
                             }
                         }
                     }

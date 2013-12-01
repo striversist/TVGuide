@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.tools.tvguide.ProgramActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.components.DefaultNetDataGetter;
@@ -23,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -63,6 +65,10 @@ public class HotActivity extends Activity
                 
                 String name = programInfo.get("programInfo").get("name");
                 String link = programInfo.get("programInfo").get("link");
+                Intent intent = new Intent(HotActivity.this, ProgramActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("link", link);
+                startActivity(intent);
             }
         });
         

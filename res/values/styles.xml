@@ -89,4 +89,11 @@
         <item name="android:singleLine">true</item>
         <item name="android:layout_weight">1.0</item>
     </style>
+    <style name="style_top_textview">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">@color/darkgray</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">8.0sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
 </resources>

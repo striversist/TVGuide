@@ -68,5 +68,9 @@
     <string name="promote_collect_tips">把喜爱的节目收藏在这儿吧！</string>
     <string name="channels">频道(%1$s)</string>
     <string name="programs">节目(%1$s)</string>
+    <string name="title_activity_program">ProgramActivity</string>
+    <string name="content_introduce">内容介绍</string>
+    <string name="plot_introduce">分集剧情介绍</string>
+    <string name="loading_string">加载中...</string>
     
 </resources>
