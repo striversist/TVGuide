@@ -11,7 +11,7 @@
             <ScrollView android:layout_width="fill_parent" android:layout_height="132.0sp" android:layout_marginLeft="10.0sp">
                 <LinearLayout android:orientation="vertical" android:paddingLeft="5.0sp" android:paddingRight="5.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" >
                     <TextView android:id="@+id/program_profile" android:layout_width="fill_parent" android:layout_height="fill_parent" 
-                              android:textColor="@color/darkgray" android:textSize="16sp" android:lineSpacingExtra="3dp" />
+                              android:textColor="@color/darkgray" android:textSize="15sp" android:lineSpacingExtra="3dp" />
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

@@ -1,6 +1,7 @@
 package com.tools.tvguide;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,11 +15,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.Html;
+import android.R.integer;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -38,9 +44,10 @@ public class ProgramActivity extends Activity
     private ImageView mProgramImageView;
     private ViewPager mViewPager;
     private ResultPageAdapter mProgramPageAdapter;
-    private TextView mActorsTextView;
-    private TextView mSummaryTextView;
+    private LinearLayout mActorsLayout;
+    private LinearLayout mSummaryLayout;
     private TextView mPlayTimesTextView;
+    private LayoutInflater mInflater;
     
     private final int MSG_PROFILE_LOADED = 1;
     private final int MSG_SUMMARY_LOADED = 2;
@@ -57,17 +64,19 @@ public class ProgramActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
+        
+        mInflater = LayoutInflater.from(this);
         mProgramNameTextView = (TextView) findViewById(R.id.program_name);
         mProgramProfileTextView = (TextView) findViewById(R.id.program_profile);
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
         mViewPager = (ViewPager) findViewById(R.id.program_view_pager);
         
         mProgramPageAdapter = new ResultPageAdapter();
-        mActorsTextView = new TextView(this);
-        mSummaryTextView = new TextView(this);
+        mActorsLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
+        mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
         mPlayTimesTextView = new TextView(this);
-        mProgramPageAdapter.addView(mActorsTextView);
-        mProgramPageAdapter.addView(mSummaryTextView);
+        mProgramPageAdapter.addView(mActorsLayout);
+        mProgramPageAdapter.addView(mSummaryLayout);
         mProgramPageAdapter.addView(mPlayTimesTextView);
         mViewPager.setAdapter(mProgramPageAdapter);
         
@@ -134,9 +143,11 @@ public class ProgramActivity extends Activity
         AppEngine.getInstance().getHotHtmlManager().getProgramDetailAsync(smRequestId, mLink, new ProgramDetailCallback()
         {
             @Override
-            public void onSummaryLoaded(int requestId, String summary) 
+            public void onSummaryLoaded(int requestId, List<String> paragraphs) 
             {
-                mSummary = summary;
+                mSummary = "";
+                for (int i=0; i<paragraphs.size(); ++i)
+                    mSummary += "　　" + paragraphs.get(i) + "\n";
                 uiHandler.sendEmptyMessage(MSG_SUMMARY_LOADED);
             }
             
@@ -207,10 +218,10 @@ public class ProgramActivity extends Activity
                     mProgramImageView.setImageBitmap(mPicture);
                     break;
                 case MSG_SUMMARY_LOADED:
-                    mSummaryTextView.setText(mSummary);
+                    ((TextView) mSummaryLayout.findViewById(R.id.program_tab_simpletext)).setText(mSummary);
                     break;
                 case MSG_ACTORS_LOADED:
-                    mActorsTextView.setText(mActors);
+                    ((TextView) mActorsLayout.findViewById(R.id.program_tab_simpletext)).setText(mActors);
                     break;
                 case MSG_PLAYTIMES_LOADED:
                     break;

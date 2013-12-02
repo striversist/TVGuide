@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal" android:background="@color/light_dark_bg" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+	<ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="10.0sp">
+	    <TextView android:id="@+id/program_tab_simpletext" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	              android:layout_marginTop="18sp"
+	              android:textColor="@color/darkgray" android:textSize="16sp" android:lineSpacingExtra="5dp" />
+	</ScrollView>
+</LinearLayout>

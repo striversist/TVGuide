@@ -31,7 +31,7 @@ public class HotHtmlManager
     public interface ProgramDetailCallback
     {
         void onProfileLoaded(int requestId, String profile);
-        void onSummaryLoaded(int requestId, String summary);
+        void onSummaryLoaded(int requestId, List<String> paragraphs);
         void onPicureLinkParsed(int requestId, String picLink);
         void onActorsLoaded(int requestId, String actors);
         void onPlayTimesLoaded(int requestId, HashMap<String, List<String>> playTimes);
@@ -138,7 +138,7 @@ public class HotHtmlManager
                     callback.onProfileLoaded(requestId, profile);
 
                     // -------------- 获取剧情概要 --------------
-                    String plotSummary = "";
+                    List<String> paragraphs = new ArrayList<String>();
                     boolean found = false;
                     String[] lines = summary.split("\n");
                     for (int i=0; i<lines.length; ++i)
@@ -151,14 +151,12 @@ public class HotHtmlManager
                         }
                         if (found)
                         {
-                            String text = Html2Text(line);
-                            if (text.trim().length() == 0)      // 很可能是空行
-                                text = "\n\n";
-                                
-                            plotSummary += text;
+                            String text = Html2Text(line).trim();
+                            if (text.length() > 0)
+                                paragraphs.add(text.trim());
                         }
                     }
-                    callback.onSummaryLoaded(requestId, plotSummary);
+                    callback.onSummaryLoaded(requestId, paragraphs);
                     
                     // -------------- 获取图片链接 --------------
                     Elements tv_info_img = doc.select("div[class=tv_info] img");
@@ -181,8 +179,9 @@ public class HotHtmlManager
                             String[] actorLines = tv_info2.first().toString().split("\n");
                             for (int i=0; i<actorLines.length; ++i)
                             {
-                                String actor = Html2Text(actorLines[i]);
-                                actors += actor + "\n";
+                                String actor = Html2Text(actorLines[i]).trim();
+                                if (actor.length() > 0)
+                                    actors += actor + "\n";
                             }
                         }
                     }
@@ -239,9 +238,12 @@ public class HotHtmlManager
         Matcher resultMatcher = resultPattern.matcher(summary);
         if (resultMatcher.find())
         {
-            profile += resultMatcher.group() + "\n";
+            profile += resultMatcher.group();
         }
-        return profile;
+        if (profile.length() > 0)
+            return profile.trim() + "\n";
+        else
+            return profile;
     }
     
     /**
