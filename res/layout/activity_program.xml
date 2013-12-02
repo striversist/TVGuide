@@ -5,7 +5,7 @@
         <TextView android:id="@+id/program_name" android:layout_width="0.0sp" android:layout_height="wrap_content" android:layout_weight="1.0" style="@style/style_top_textview" />
         <ImageView style="@style/style_tab_divider" />
     </LinearLayout>
-    <LinearLayout android:orientation="vertical" android:id="@+id/program_content_ll" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_above="@+id/program_adview" android:layout_below="@+id/program_top_ll">
+    <LinearLayout android:orientation="vertical" android:id="@+id/program_content_ll" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@+id/program_top_ll">
         <LinearLayout android:orientation="horizontal" android:id="@+id/program_sub_rl" android:paddingTop="5.0sp" android:paddingBottom="5.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content">
             <ImageView android:id="@+id/program_image" android:layout_width="100.0sp" android:layout_height="132.0sp" android:layout_marginLeft="5.0sp" />
             <ScrollView android:layout_width="fill_parent" android:layout_height="132.0sp" android:layout_marginLeft="10.0sp">
