@@ -1,0 +1,13 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_dark_bg" >
+   
+    <ListView android:id="@+id/program_tab_playtimes_listview"
+            android:layout_width="match_parent" android:layout_height="wrap_content" 
+            android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
+            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+    
+</LinearLayout>

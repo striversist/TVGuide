@@ -3,9 +3,16 @@ package com.tools.tvguide;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
+import com.tools.tvguide.activities.HotActivity;
 import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.adapters.ResultProgramAdapter;
+import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
+import com.tools.tvguide.adapters.ResultProgramAdapter.IListItem;
+import com.tools.tvguide.adapters.ResultProgramAdapter.LabelItem;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -16,7 +23,7 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
-import android.R.integer;
+import android.text.Spanned;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,7 +53,7 @@ public class ProgramActivity extends Activity
     private ResultPageAdapter mProgramPageAdapter;
     private LinearLayout mActorsLayout;
     private LinearLayout mSummaryLayout;
-    private TextView mPlayTimesTextView;
+    private LinearLayout mPlayTimesLayout;
     private LayoutInflater mInflater;
     
     private final int MSG_PROFILE_LOADED = 1;
@@ -66,6 +73,7 @@ public class ProgramActivity extends Activity
         setContentView(R.layout.activity_program);
         
         mInflater = LayoutInflater.from(this);
+        mPlayTimes = new HashMap<String, List<String>>();
         mProgramNameTextView = (TextView) findViewById(R.id.program_name);
         mProgramProfileTextView = (TextView) findViewById(R.id.program_profile);
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
@@ -74,10 +82,10 @@ public class ProgramActivity extends Activity
         mProgramPageAdapter = new ResultPageAdapter();
         mActorsLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
         mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
-        mPlayTimesTextView = new TextView(this);
+        mPlayTimesLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_playtimes, null);
         mProgramPageAdapter.addView(mActorsLayout);
         mProgramPageAdapter.addView(mSummaryLayout);
-        mProgramPageAdapter.addView(mPlayTimesTextView);
+        mProgramPageAdapter.addView(mPlayTimesLayout);
         mViewPager.setAdapter(mProgramPageAdapter);
         
         mViewPager.setOnPageChangeListener(new OnPageChangeListener() 
@@ -224,6 +232,23 @@ public class ProgramActivity extends Activity
                     ((TextView) mActorsLayout.findViewById(R.id.program_tab_simpletext)).setText(mActors);
                     break;
                 case MSG_PLAYTIMES_LOADED:
+                    List<IListItem> dataList = new ArrayList<IListItem>();
+                    Iterator<Entry<String, List<String>>> iter = mPlayTimes.entrySet().iterator();
+                    while (iter.hasNext())
+                    {
+                        Entry<String, List<String>> entry = iter.next();
+                        String channelName = entry.getKey();
+                        List<String> playTimes = entry.getValue();
+                        
+                        dataList.add(new LabelItem(channelName));
+                        for (int i=0; i<playTimes.size(); ++i)
+                        {
+                            ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
+                            item.title = playTimes.get(i);
+                            dataList.add(new ContentItem(item));
+                        }
+                    }
+                    ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new ResultProgramAdapter(ProgramActivity.this, dataList));
                     break;
             }
         }
