@@ -69,4 +69,10 @@
 	        android:layout_height="0.0sp"
 	        android:layout_weight="1.0" />
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/adLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+    </RelativeLayout>
 </RelativeLayout>

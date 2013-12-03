@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.youmi.android.banner.AdSize;
+import net.youmi.android.banner.AdView;
+
+import com.tools.tvguide.activities.AlarmSettingActivity;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
@@ -27,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -116,6 +121,10 @@ public class ProgramActivity extends Activity
         
         mProgramNameTextView.setText(mName);
         update();
+        
+//        RelativeLayout adLayout = (RelativeLayout) findViewById(R.id.adLayout);
+//        AdView adView = new AdView(ProgramActivity.this, AdSize.FIT_SCREEN);
+//        adLayout.addView(adView);
     }
  
     @Override
