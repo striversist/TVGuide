@@ -7,12 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.tools.tvguide.activities.HotActivity;
 import com.tools.tvguide.adapters.ResultPageAdapter;
-import com.tools.tvguide.adapters.ResultProgramAdapter;
-import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
-import com.tools.tvguide.adapters.ResultProgramAdapter.IListItem;
-import com.tools.tvguide.adapters.ResultProgramAdapter.LabelItem;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -22,8 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.Html;
-import android.text.Spanned;
+import android.text.SpannableString;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -33,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class ProgramActivity extends Activity 
@@ -231,24 +226,36 @@ public class ProgramActivity extends Activity
                 case MSG_ACTORS_LOADED:
                     ((TextView) mActorsLayout.findViewById(R.id.program_tab_simpletext)).setText(mActors);
                     break;
-                case MSG_PLAYTIMES_LOADED:
-                    List<IListItem> dataList = new ArrayList<IListItem>();
+                case MSG_PLAYTIMES_LOADED:                    
                     Iterator<Entry<String, List<String>>> iter = mPlayTimes.entrySet().iterator();
+                    List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
                     while (iter.hasNext())
                     {
                         Entry<String, List<String>> entry = iter.next();
                         String channelName = entry.getKey();
                         List<String> playTimes = entry.getValue();
                         
-                        dataList.add(new LabelItem(channelName));
+                        // Channel
+                        HashMap<String, String> itemChannel = new HashMap<String, String>();
+                        itemChannel.put("name", channelName);
+                        data.add(itemChannel);
+                        
+                        // Program play times
                         for (int i=0; i<playTimes.size(); ++i)
                         {
-                            ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
-                            item.title = playTimes.get(i);
-                            dataList.add(new ContentItem(item));
+                            HashMap<String, String> itemProgram = new HashMap<String, String>();
+                            itemProgram.put("name", ("　" + playTimes.get(i)));
+                            data.add(itemProgram);
                         }
+                        
+                        // Space line
+                        HashMap<String, String> space = new HashMap<String, String>();
+                        space.put("name", " ");
+                        data.add(space);
                     }
-                    ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new ResultProgramAdapter(ProgramActivity.this, dataList));
+                    ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new SimpleAdapter(ProgramActivity.this, 
+                            data, R.layout.program_tab_playtimes_item, new String[]{"name"}, new int[]{R.id.playtimes_item_text}));
+                    
                     break;
             }
         }
