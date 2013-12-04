@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
 
-import com.tools.tvguide.activities.AlarmSettingActivity;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
@@ -21,7 +20,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.SpannableString;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -55,6 +53,7 @@ public class ProgramActivity extends Activity
     private LinearLayout mSummaryLayout;
     private LinearLayout mPlayTimesLayout;
     private LayoutInflater mInflater;
+    private RadioGroup mTabsGroup;
     
     private final int MSG_PROFILE_LOADED = 1;
     private final int MSG_SUMMARY_LOADED = 2;
@@ -78,14 +77,19 @@ public class ProgramActivity extends Activity
         mProgramProfileTextView = (TextView) findViewById(R.id.program_profile);
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
         mViewPager = (ViewPager) findViewById(R.id.program_view_pager);
+        mTabsGroup = (RadioGroup) findViewById(R.id.program_tabs);
         
         mProgramPageAdapter = new ResultPageAdapter();
         mActorsLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
         mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
         mPlayTimesLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_playtimes, null);
-        mProgramPageAdapter.addView(mActorsLayout);
-        mProgramPageAdapter.addView(mSummaryLayout);
-        mProgramPageAdapter.addView(mPlayTimesLayout);
+        
+        for (int i=0; i<mTabsGroup.getChildCount(); ++i)
+        {
+            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
+            mProgramPageAdapter.addView(loadingLayout);
+        }
         mViewPager.setAdapter(mProgramPageAdapter);
         
         mViewPager.setOnPageChangeListener(new OnPageChangeListener() 
@@ -93,13 +97,12 @@ public class ProgramActivity extends Activity
             @Override
             public void onPageSelected(int position) 
             {
-                RadioGroup radioTabs = (RadioGroup) findViewById(R.id.program_tabs);
                 if (position == TAB_INDEX_ACTORS)
-                    radioTabs.check(R.id.program_tab_actors);
+                    mTabsGroup.check(R.id.program_tab_actors);
                 else if (position == TAB_INDEX_SUMMARY)
-                    radioTabs.check(R.id.program_tab_summary);
+                    mTabsGroup.check(R.id.program_tab_summary);
                 else if (position == TAB_INDEX_PLAYTIMES)
-                    radioTabs.check(R.id.program_tab_playtimes);
+                    mTabsGroup.check(R.id.program_tab_playtimes);
             }
             
             @Override
@@ -225,15 +228,28 @@ public class ProgramActivity extends Activity
             {
                 case MSG_PROFILE_LOADED:
                     mProgramProfileTextView.setText(mProfile);
+                    if (mProfile.length() > 0)
+                    {
+                        ((ScrollView) findViewById(R.id.program_profile_scroll_view)).setVisibility(View.VISIBLE);
+                        ((LinearLayout) findViewById(R.id.program_profile_loading_ll)).setVisibility(View.GONE);
+                    }
+                    else 
+                    {
+                        ((TextView) findViewById(R.id.program_profile_loading_tv)).setText(getResources().getString(R.string.no_data));
+                    }
                     break;
                 case MSG_PICTURE_LOADED:
                     mProgramImageView.setImageBitmap(mPicture);
                     break;
                 case MSG_SUMMARY_LOADED:
                     ((TextView) mSummaryLayout.findViewById(R.id.program_tab_simpletext)).setText(mSummary);
+                    mProgramPageAdapter.setView(TAB_INDEX_SUMMARY, mSummaryLayout);
+                    mViewPager.setAdapter(mProgramPageAdapter);
                     break;
                 case MSG_ACTORS_LOADED:
                     ((TextView) mActorsLayout.findViewById(R.id.program_tab_simpletext)).setText(mActors);
+                    mProgramPageAdapter.setView(TAB_INDEX_ACTORS, mActorsLayout);
+                    mViewPager.setAdapter(mProgramPageAdapter);
                     break;
                 case MSG_PLAYTIMES_LOADED:                    
                     Iterator<Entry<String, List<String>>> iter = mPlayTimes.entrySet().iterator();
@@ -264,7 +280,8 @@ public class ProgramActivity extends Activity
                     }
                     ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new SimpleAdapter(ProgramActivity.this, 
                             data, R.layout.program_tab_playtimes_item, new String[]{"name"}, new int[]{R.id.playtimes_item_text}));
-                    
+                    mProgramPageAdapter.setView(TAB_INDEX_PLAYTIMES, mPlayTimesLayout);
+                    mViewPager.setAdapter(mProgramPageAdapter);
                     break;
             }
         }

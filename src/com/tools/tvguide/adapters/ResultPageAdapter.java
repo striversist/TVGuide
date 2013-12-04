@@ -18,6 +18,11 @@ public class ResultPageAdapter extends PagerAdapter
         mViewLists.add(view);
     }
     
+    public void setView(int index, View view)
+    {
+        mViewLists.set(index, view);
+    }
+    
     public View getView(int position)
     {
         return mViewLists.get(position);
