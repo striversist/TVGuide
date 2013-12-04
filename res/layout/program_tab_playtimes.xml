@@ -7,6 +7,7 @@
    
     <ListView android:id="@+id/program_tab_playtimes_listview"
             android:layout_width="match_parent" android:layout_height="wrap_content" 
+            android:layout_marginLeft="10.0sp" android:layout_marginTop="18sp"
             android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
             android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
     

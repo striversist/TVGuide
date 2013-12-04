@@ -124,4 +124,33 @@ public class Utility
         }
         return false;
     }
+	
+	public static String trimChineseSpace(String origin)
+	{
+		if (origin == null)
+			return null;
+		if (origin.equals(""))
+			return origin;
+		
+		final String space = "　";
+		int start = 0;
+		int end = 0;
+		for (int i=0; i<origin.length(); ++i)
+		{
+			if (space.equals(String.valueOf(origin.charAt(i))))
+				continue;
+			start = i;
+			break;
+		}
+		
+		for (int i=origin.length()-1; i>0; --i)
+		{
+			if (space.equals(String.valueOf(origin.charAt(i))))
+				continue;
+			end = i;
+			break;
+		}
+		
+		return origin.substring(start, end + 1);
+	}
 }

@@ -14,6 +14,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.tools.tvguide.utils.Utility;
+
 import android.content.Context;
 
 public class HotHtmlManager 
@@ -151,7 +153,7 @@ public class HotHtmlManager
                         }
                         if (found)
                         {
-                            String text = Html2Text(line).trim();
+                            String text = Utility.trimChineseSpace(Html2Text(line).trim());
                             if (text.length() > 0)
                                 paragraphs.add(text.trim());
                         }
@@ -179,7 +181,7 @@ public class HotHtmlManager
                             String[] actorLines = tv_info2.first().toString().split("\n");
                             for (int i=0; i<actorLines.length; ++i)
                             {
-                                String actor = Html2Text(actorLines[i]).trim();
+                                String actor = Utility.trimChineseSpace(Html2Text(actorLines[i]).trim());
                                 if (actor.length() > 0)
                                     actors += actor + "\n";
                             }
