@@ -91,13 +91,13 @@ public class HotActivity extends Activity
                 List<HotHtmlManager.HotEntry> entryList = AppEngine.getInstance().getHotHtmlManager().getEntryList();
                 for (int i=0; i<entryList.size(); ++i)
                 {
-                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName, R.layout.search_list_label_item, R.id.search_item_label_text_view));
+                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName, R.layout.hot_channel_item, R.id.hot_channel_name_tv));
                     for (int j=0; j<entryList.get(i).programList.size(); ++j)
                     {
                         String title = entryList.get(i).programList.get(j).get("name");
                         ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
                         item.title = title;
-                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.search_list_content_item, R.id.search_item_content_text_view);
+                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
                         contentItem.setClickable(true);
                         HashMap<String, HashMap<String, String>> extraInfo = new HashMap<String, HashMap<String, String>>();
                         extraInfo.put("programInfo", entryList.get(i).programList.get(j));
