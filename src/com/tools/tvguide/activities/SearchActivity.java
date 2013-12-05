@@ -287,7 +287,7 @@ public class SearchActivity extends Activity
                                 String name = resultArray.getJSONObject(i).getString("name");
                                 JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
                                 
-                                mItemProgramDataList.add(new LabelItem(name));
+                                mItemProgramDataList.add(new LabelItem(name, R.layout.search_list_label_item, R.id.search_item_label_text_view));
                                 if (programsArray != null)
                                 {
                                     for (int j=0; j<programsArray.length(); ++j)
@@ -300,7 +300,7 @@ public class SearchActivity extends Activity
                                         item.time = time;
                                         item.title = title;
                                         item.key = mKeyword;
-                                        mItemProgramDataList.add(new ContentItem(item));
+                                        mItemProgramDataList.add(new ContentItem(item, R.layout.search_list_content_item, R.id.search_item_content_text_view));
                                     }
                                     mResultProgramsNum += programsArray.length();
                                 }

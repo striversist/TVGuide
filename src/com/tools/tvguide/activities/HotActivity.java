@@ -1,23 +1,15 @@
 package com.tools.tvguide.activities;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.tools.tvguide.ProgramActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
-import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager;
-import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
 import android.os.Bundle;
@@ -25,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -100,13 +91,13 @@ public class HotActivity extends Activity
                 List<HotHtmlManager.HotEntry> entryList = AppEngine.getInstance().getHotHtmlManager().getEntryList();
                 for (int i=0; i<entryList.size(); ++i)
                 {
-                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName));
+                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName, R.layout.search_list_label_item, R.id.search_item_label_text_view));
                     for (int j=0; j<entryList.get(i).programList.size(); ++j)
                     {
                         String title = entryList.get(i).programList.get(j).get("name");
                         ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
                         item.title = title;
-                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item);
+                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.search_list_content_item, R.id.search_item_content_text_view);
                         contentItem.setClickable(true);
                         HashMap<String, HashMap<String, String>> extraInfo = new HashMap<String, HashMap<String, String>>();
                         extraInfo.put("programInfo", entryList.get(i).programList.get(j));

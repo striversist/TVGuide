@@ -3,8 +3,6 @@ package com.tools.tvguide.adapters;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tools.tvguide.R;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
@@ -71,16 +69,20 @@ public class ResultProgramAdapter extends BaseAdapter
         private String mLabel;
         private boolean mIsClickable;
         private HashMap<String, ?> mExtraInfo;
-        public LabelItem(String label)
+        private int mLayout;
+        private int mItemId;
+        public LabelItem(String label, int layout, int id)
         {
             mLabel = label;
             mIsClickable = false;
+            mLayout = layout;
+            mItemId = id;
         }
         
         @Override
         public int getLayout() 
         {
-            return R.layout.search_list_label_item;
+            return mLayout;
         }
 
         @Override
@@ -93,7 +95,7 @@ public class ResultProgramAdapter extends BaseAdapter
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
             convertView = inflater.inflate(getLayout(), null);
-            TextView title = (TextView) convertView.findViewById(R.id.search_item_label_text_view);
+            TextView title = (TextView) convertView.findViewById(mItemId);
             title.setText(mLabel);
             return convertView;
         }
@@ -131,16 +133,20 @@ public class ResultProgramAdapter extends BaseAdapter
         private Item mItem;
         private boolean mIsClickable;
         private HashMap<String, ?> mExtraInfo;
-        public ContentItem(Item item)
+        private int mLayout;
+        private int mItemId;
+        public ContentItem(Item item, int layout, int id)
         {
             mItem = item;
             mIsClickable = false;
+            mLayout = layout;
+            mItemId = id;
         }
         
         @Override
         public int getLayout() 
         {
-            return R.layout.search_list_content_item;
+            return mLayout;
         }
 
         @Override
@@ -153,7 +159,7 @@ public class ResultProgramAdapter extends BaseAdapter
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
             convertView = inflater.inflate(getLayout(), null);
-            TextView tv = (TextView) convertView.findViewById(R.id.search_item_content_text_view);
+            TextView tv = (TextView) convertView.findViewById(mItemId);
             SpannableString ss;
             if (mItem.time != null)
                 ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
