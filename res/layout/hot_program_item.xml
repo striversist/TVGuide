@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:orientation="vertical" android:background="@drawable/list_item_select" android:paddingLeft="25.0sp" android:paddingTop="4.0sp" android:paddingRight="5.0sp" android:paddingBottom="4.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView android:textSize="16.0sp" android:textColor="@color/light_blue" android:id="@+id/hot_program_name_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0sp" android:text="TextView" android:lineSpacingExtra="3dp" />
+    <TextView android:textSize="18.0sp" android:textColor="@color/light_blue" android:id="@+id/hot_program_name_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0sp" android:text="TextView" android:lineSpacingExtra="4dp" />
     <ImageView android:id="@+id/hot_program_tag_iv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/abs__spinner_ab_disabled_holo_light" android:layout_alignBottom="@id/hot_program_name_tv" android:layout_alignParentRight="true" />
 </RelativeLayout>

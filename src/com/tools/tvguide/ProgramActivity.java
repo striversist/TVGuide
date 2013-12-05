@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.youmi.android.banner.AdSize;
-import net.youmi.android.banner.AdView;
+import net.youmi.android.diy.banner.DiyAdSize;
+import net.youmi.android.diy.banner.DiyBanner;
 
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -125,9 +126,15 @@ public class ProgramActivity extends Activity
         mProgramNameTextView.setText(mName);
         update();
         
-//        RelativeLayout adLayout = (RelativeLayout) findViewById(R.id.adLayout);
-//        AdView adView = new AdView(ProgramActivity.this, AdSize.FIT_SCREEN);
-//        adLayout.addView(adView);
+        new Handler().postDelayed(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                // Mini广告
+                ((RelativeLayout)findViewById(R.id.adLayout)).addView(new DiyBanner(ProgramActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
+            }
+        }, 500);
     }
  
     @Override
