@@ -53,6 +53,7 @@ public class ProgramActivity extends Activity
     private LinearLayout mActorsLayout;
     private LinearLayout mSummaryLayout;
     private LinearLayout mPlayTimesLayout;
+    private LinearLayout.LayoutParams mCenterLayoutParams;
     private LayoutInflater mInflater;
     private RadioGroup mTabsGroup;
     
@@ -84,6 +85,7 @@ public class ProgramActivity extends Activity
         mActorsLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
         mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
         mPlayTimesLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_playtimes, null);
+        mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         
         for (int i=0; i<mTabsGroup.getChildCount(); ++i)
         {
@@ -250,13 +252,13 @@ public class ProgramActivity extends Activity
                     break;
                 case MSG_SUMMARY_LOADED:
                     ((TextView) mSummaryLayout.findViewById(R.id.program_tab_simpletext)).setText(mSummary);
-                    mProgramPageAdapter.setView(TAB_INDEX_SUMMARY, mSummaryLayout);
-                    mViewPager.setAdapter(mProgramPageAdapter);
+                    ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_SUMMARY)).removeAllViews();
+                    ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_SUMMARY)).addView(mSummaryLayout, mCenterLayoutParams);
                     break;
                 case MSG_ACTORS_LOADED:
                     ((TextView) mActorsLayout.findViewById(R.id.program_tab_simpletext)).setText(mActors);
-                    mProgramPageAdapter.setView(TAB_INDEX_ACTORS, mActorsLayout);
-                    mViewPager.setAdapter(mProgramPageAdapter);
+                    ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_ACTORS)).removeAllViews();
+                    ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_ACTORS)).addView(mActorsLayout, mCenterLayoutParams);
                     break;
                 case MSG_PLAYTIMES_LOADED:                    
                     Iterator<Entry<String, List<String>>> iter = mPlayTimes.entrySet().iterator();
@@ -287,8 +289,8 @@ public class ProgramActivity extends Activity
                     }
                     ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new SimpleAdapter(ProgramActivity.this, 
                             data, R.layout.program_tab_playtimes_item, new String[]{"name"}, new int[]{R.id.playtimes_item_text}));
-                    mProgramPageAdapter.setView(TAB_INDEX_PLAYTIMES, mPlayTimesLayout);
-                    mViewPager.setAdapter(mProgramPageAdapter);
+                    ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_PLAYTIMES)).removeAllViews();
+                    ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_PLAYTIMES)).addView(mPlayTimesLayout, mCenterLayoutParams);
                     break;
             }
         }
