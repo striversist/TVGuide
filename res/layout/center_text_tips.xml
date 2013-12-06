@@ -9,6 +9,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:gravity="center"
+        android:textColor="@color/darkgray"
         android:textSize="20.0dip" />
     
 </LinearLayout>
