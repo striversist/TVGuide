@@ -4,7 +4,7 @@
     <LinearLayout android:orientation="vertical" android:background="#ff000000" android:layout_width="fill_parent" android:layout_height="fill_parent">
         <RelativeLayout android:background="@drawable/phonetitlebar_bg" android:paddingBottom="0.0dip" android:layout_width="fill_parent" android:layout_height="32dip">
             <RelativeLayout
-	            android:id="@+id/adLayout"
+	            android:id="@+id/main_adLayout"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content" >
             </RelativeLayout>

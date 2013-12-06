@@ -71,7 +71,7 @@ public class MainActivity extends TabActivity
             public void run() 
             {
                 // Mini广告
-                ((RelativeLayout)findViewById(R.id.adLayout)).addView(new DiyBanner(MainActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
+                ((RelativeLayout)findViewById(R.id.main_adLayout)).addView(new DiyBanner(MainActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
                 AdManager.getInstance(MainActivity.this).setEnableDebugLog(false);
             }
         }, delayTime * 2);
