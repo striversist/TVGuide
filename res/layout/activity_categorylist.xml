@@ -5,10 +5,10 @@
         <Button android:textSize="14.0sp" android:textColor="#ffffffff" android:background="@drawable/title_btn_back" android:layout_width="70.0dip" android:layout_height="wrap_content" android:text="@string/back" android:layout_centerVertical="true" android:onClick="back" />
         <TextView android:textSize="20.0sp" android:textColor="#ffffffff" android:id="@+id/categorylist_text_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:layout_centerInParent="true" />
     </RelativeLayout>
-    <RelativeLayout android:gravity="center_vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
 	    <ListView android:id="@+id/categorylist_listview" android:layout_width="fill_parent" android:layout_height="wrap_content" 
 	            android:padding="2.0dip" android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
-	            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+	            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" android:layout_alignParentTop="true" android:layout_above="@id/adLayout" />
 	    <RelativeLayout
             android:id="@+id/adLayout"
             android:layout_width="match_parent"
