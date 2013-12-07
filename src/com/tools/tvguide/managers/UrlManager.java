@@ -1,5 +1,7 @@
 package com.tools.tvguide.managers;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -28,8 +30,8 @@ public class UrlManager
     public static final int URL_REPORT                  = 11;
         
     private static final boolean ENABLE_TEST            = false;
-    private String  mHostName                           = "bigeyecow.oicp.net";
-    private String  mHostIP;
+    private String  mProxyHostName                      = "bigeyecow.oicp.net";
+    private String  mProxyHostIP;
     private String  BASE_PATH;
     private int     PORT;
     
@@ -74,7 +76,7 @@ public class UrlManager
     
     public void init(final OnInitCompleteCallback callback)
     {
-        if (mHostIP != null)
+        if (mProxyHostIP != null)
         {
             if (callback != null)
             {
@@ -98,9 +100,9 @@ public class UrlManager
             {
                 try 
                 {
-                    mHostIP = AppEngine.getInstance().getDnsManager().getIPAddress(mHostName);
+                    mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
                     if (ENABLE_TEST)
-                        mHostIP = "192.168.1.101";
+                        mProxyHostIP = "192.168.1.101";
                     
                     mLock.lock();
                     mCondition.signalAll();
@@ -117,6 +119,7 @@ public class UrlManager
                             }
                         });
                     }
+                    AppEngine.getInstance().getDnsManager().preloadFrequentlyUsedDns();
                 } 
                 catch (UnknownHostException e) 
                 {
@@ -127,7 +130,7 @@ public class UrlManager
     
     public String tryToGetDnsedUrl(int type)
     {
-        if (mHostIP != null || mHasInit)
+        if (mProxyHostIP != null || mHasInit)
             return getUrl(type);
         
         // 等待HostIP解析完毕
@@ -150,10 +153,10 @@ public class UrlManager
     public String getUrl(int type)
     {
         String url = "http://";
-        if (mHostIP != null)
-            url += mHostIP;
+        if (mProxyHostIP != null)
+            url += mProxyHostIP;
         else
-            url += mHostName;
+            url += mProxyHostName;
         
         url += ":" + PORT;
         url += BASE_PATH;
@@ -201,9 +204,9 @@ public class UrlManager
     
     public String getHost()
     {
-        if (mHostIP != null)
-            return mHostIP;
-        return mHostName;
+        if (mProxyHostIP != null)
+            return mProxyHostIP;
+        return mProxyHostName;
     }
     
     public int getPort()
@@ -211,12 +214,25 @@ public class UrlManager
         return PORT;
     }
     
-    public String tryToReplaceHostNameToIP(String url)
+    public static String tryToReplaceHostNameWithIP(String url)
     {
         if (url == null)
             return null;
-        if (mHostIP == null)
-            return url;
-        return url.replace(mHostName, mHostIP);
+        
+        try 
+        {
+            String hostName = new URL(url).getHost();
+            String ipAddress = AppEngine.getInstance().getDnsManager().getIpAddress(hostName);
+            if (ipAddress != null)
+                return url.replace(hostName, ipAddress);
+        } 
+        catch (MalformedURLException e) 
+        {
+        } 
+        catch (UnknownHostException e) 
+        {
+        }
+        
+        return url;
     }
 }

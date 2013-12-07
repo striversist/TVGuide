@@ -3,6 +3,9 @@ package com.tools.tvguide.managers;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,39 +17,83 @@ import android.content.Context;
 public class DnsManager 
 {
     private Context mContext;
-    private String  mIpAddress;
     private String  mDeviceIpAddress;
     private String  mDeviceLocation;
+    
+    /** DNS缓冲总数量  **/
+    private static final int     DNS_CAPACITY    = 200;
+    
+    /** DNS内存缓存,减少查询数据库的次数 **/
+    private Hashtable<String,String> mDnsCacheTable = new Hashtable<String,String>(DNS_CAPACITY);
     
     public DnsManager(Context context)
     {
         mContext = context;
     }
-        
-    public String getIPAddress(String hostName) throws UnknownHostException
+    
+    public void preloadFrequentlyUsedDns()
     {
-        InetAddress addr = null;
-        if (mIpAddress != null)
-            return mIpAddress;
+        List<String> hostList = new ArrayList<String>();
+        hostList.add("m.tvsou.com");
+        
+        for (int i=0; i<hostList.size(); ++i)
+        {
+            if (mDnsCacheTable.contains(hostList.get(i)))
+                continue;
+            
+            try 
+            {
+                String ipAddress = getIpAddress(hostList.get(i));
+                if (ipAddress != null)
+                    mDnsCacheTable.put(hostList.get(i), ipAddress);
+            } 
+            catch (UnknownHostException e) 
+            {
+                continue;
+            }
+        }
+    }
+    
+    public String getProxyIPAddress(String hostName) throws UnknownHostException
+    {
+        if (hostName == null)
+            return null;
+        
+        if (mDnsCacheTable.containsKey(hostName))
+            return mDnsCacheTable.get(hostName);
         
         String ipAddress;
         ipAddress= getIPFrom_chinaz(hostName);
         if (ipAddress != null)
         {
-            mIpAddress = ipAddress;
+            mDnsCacheTable.put(hostName, ipAddress);
             return ipAddress;
         }
         
         ipAddress= getIPFrom_IPCN(hostName);
         if (ipAddress != null)
         {
-            mIpAddress = ipAddress;
+            mDnsCacheTable.put(hostName, ipAddress);
             return ipAddress;
         }
         
-        addr = InetAddress.getByName (hostName);
+        InetAddress addr = InetAddress.getByName(hostName);
         ipAddress = addr.getHostAddress();
-        mIpAddress = ipAddress;
+        mDnsCacheTable.put(hostName, ipAddress);
+        return ipAddress;
+    }
+    
+    public String getIpAddress(String hostName) throws UnknownHostException
+    {
+        if (hostName == null)
+            return null;
+        
+        if (mDnsCacheTable.containsKey(hostName))
+            return mDnsCacheTable.get(hostName);
+        
+        InetAddress addr = InetAddress.getByName(hostName);
+        String ipAddress = addr.getHostAddress();
+        mDnsCacheTable.put(hostName, ipAddress);
         return ipAddress;
     }
     
@@ -59,7 +106,7 @@ public class DnsManager
     {
         return mDeviceLocation;
     }
-    
+       
     private String getIPFrom_chinaz(final String hostName)
     {
         String ipAddress = null;
