@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Pair;
 
 public class CacheManager 
 {
@@ -21,10 +20,12 @@ public class CacheManager
     private HashMap<String, List<HashMap<String, String>>> mChannels;
     private final String FILE_CACHED_CATEGORIES = "categories.txt";
     private final String FILE_CACHED_CHANNELS   = "channels.txt";
+    private HashMap<String, String> mMemoryCache;
         
     public CacheManager(Context context)
     {
         mContext = context;
+        mMemoryCache = new HashMap<String, String>();
     }
     
     /*
@@ -105,6 +106,17 @@ public class CacheManager
         File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
         deleteFile(file1);
         deleteFile(file2);
+        mMemoryCache.clear();
+    }
+    
+    public String get(String key)
+    {
+        return mMemoryCache.get(key);
+    }
+    
+    public void set(String key, String value)
+    {
+        mMemoryCache.put(key, value);
     }
     
     private void deleteFile(File file)

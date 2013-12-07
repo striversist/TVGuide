@@ -56,7 +56,7 @@ public class HotHtmlManager
             String protocol = new URL(url).getProtocol();
             String host = new URL(url).getHost();
             
-            Document doc = Jsoup.connect(url).get();
+            Document doc = getDocument(url);
             Elements channels = doc.select("div[class=rb_tv]");
             for (int i=0; i<channels.size(); ++i)
             {
@@ -121,7 +121,7 @@ public class HotHtmlManager
                 {
                     String protocol = new URL(programLink).getProtocol();
                     String host = new URL(programLink).getHost();
-                    Document doc = Jsoup.connect(programLink).get();
+                    Document doc = getDocument(programLink);
                     Elements outline = doc.select("div[class=tv_info2]");
                     Elements classifyLinks = doc.select("div[class=slide_02_dot slide_list_dot color-blue] a");
                     
@@ -174,7 +174,7 @@ public class HotHtmlManager
                     if (classifyLinks.size() > 0)
                     {
                         String actorLink = protocol + "://" + host + "/" + classifyLinks.get(0).attr("href");
-                        Document actorDoc = Jsoup.connect(actorLink).get();
+                        Document actorDoc = getDocument(actorLink);
                         Elements tv_info2 = actorDoc.select("div[class=tv_info2]");
                         if (tv_info2.size() > 0)
                         {
@@ -194,7 +194,7 @@ public class HotHtmlManager
                     if (classifyLinks.size() > 3)
                     {
                         String playTimeLink = protocol + "://" + host + "/" + classifyLinks.get(3).attr("href");
-                        Document playTimeDoc = Jsoup.connect(playTimeLink).get();
+                        Document playTimeDoc = getDocument(playTimeLink);
                         Elements tv_info2 = playTimeDoc.select("div[class=tv_info2]");
                         if (tv_info2.size() > 0)
                         {
@@ -246,6 +246,23 @@ public class HotHtmlManager
             return profile.trim() + "\n";
         else
             return profile;
+    }
+    
+    private Document getDocument(String url) throws IOException
+    {
+        CacheManager cacheManager = AppEngine.getInstance().getCacheManager();
+        String html = cacheManager.get(url);
+        Document doc;
+        if (html == null)
+        {
+            doc = Jsoup.connect(url).get();
+            cacheManager.set(url, doc.html());
+        }
+        else
+        {
+            doc = Jsoup.parse(html);
+        }
+        return doc;
     }
     
     /**
