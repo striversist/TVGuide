@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tools.tvguide.ProgramActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.components.MyProgressDialog;

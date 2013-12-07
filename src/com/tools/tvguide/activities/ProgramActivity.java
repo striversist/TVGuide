@@ -1,4 +1,4 @@
-package com.tools.tvguide;
+package com.tools.tvguide.activities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import net.youmi.android.diy.banner.DiyAdSize;
 import net.youmi.android.diy.banner.DiyBanner;
 
+import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
