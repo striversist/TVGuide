@@ -22,6 +22,7 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class ProgramActivity extends Activity
     private String mActors;
     private Bitmap mPicture;
     private HashMap<String, List<String>> mPlayTimes;
+    private List<HashMap<String, String>> mEpisodes;
     
     private TextView mProgramNameTextView;
     private TextView mProgramProfileTextView;
@@ -162,6 +164,23 @@ public class ProgramActivity extends Activity
         }
     }
     
+    public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.episode_iv:
+                if (mEpisodes != null)
+                {
+                    Intent intent = new Intent(ProgramActivity.this, EpisodeActivity.class);
+                    ArrayList<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
+                    episodes.addAll(mEpisodes);
+                    intent.putExtra("episodes", episodes);
+                    startActivity(intent);
+                }
+            break;
+        }
+    }
+    
     private void update()
     {
         smRequestId++;
@@ -210,6 +229,12 @@ public class ProgramActivity extends Activity
             {
                 mActors = actors;
                 uiHandler.sendEmptyMessage(MSG_ACTORS_LOADED);
+            }
+
+            @Override
+            public void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodes) 
+            {
+                mEpisodes = episodes;
             }
         });
     }

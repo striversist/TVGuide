@@ -37,6 +37,12 @@ public class HotHtmlManager
         void onPicureLinkParsed(int requestId, String picLink);
         void onActorsLoaded(int requestId, String actors);
         void onPlayTimesLoaded(int requestId, HashMap<String, List<String>> playTimes);
+        void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodes);
+    }
+    
+    public interface EpisodeDetailCallback
+    {
+        void onEpisodeLoaded(int requestId, List<HashMap<String, String>> episodes);
     }
     
     public HotHtmlManager(Context context)
@@ -169,6 +175,22 @@ public class HotHtmlManager
                     }
                     callback.onPicureLinkParsed(requestId, picLink);
                     
+                    // -------------- 获取分集信息 --------------
+                    List<HashMap<String, String>> episodeList = new ArrayList<HashMap<String,String>>();
+                    Elements tv_info_a = doc.select("div[class=tv_info] a");
+                    for (int i=0; i<tv_info_a.size(); ++i)
+                    {
+                        String href = tv_info_a.get(i).attr("href");
+                        if (href.contains("CurrentPage"))
+                        {
+                            HashMap<String, String> item = new HashMap<String, String>();
+                            item.put("name", tv_info_a.get(i).text());
+                            item.put("link", protocol + "://" + host + "/" + href);
+                            episodeList.add(item);
+                        }
+                    }
+                    callback.onEpisodesLoaded(requestId, episodeList);
+                    
                     // -------------- 获取演员表 --------------
                     String actors = "";
                     if (classifyLinks.size() > 0)
@@ -225,6 +247,74 @@ public class HotHtmlManager
                     }
                     callback.onPlayTimesLoaded(requestId, playTimes);
                 }
+                catch (IOException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    
+    public void getEpisodesAsync(final int requestId, final String link, final EpisodeDetailCallback callback)
+    {
+        assert(callback != null);
+        new Thread(new Runnable() 
+        {            
+            @Override
+            public void run() 
+            {
+                try 
+                {
+                    List<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
+                    Document doc = Jsoup.connect(link).get();
+                    Elements content = doc.select("div[class=tv_info2]");
+                    
+                    if (content.size() > 0)
+                    {
+                        String html = content.first().toString();
+                        Elements titleElements = content.first().select("strong");
+                        List<String> titleList = new ArrayList<String>();
+                        List<String> plotList = new ArrayList<String>();
+                        for (int i=0; i<titleElements.size(); ++i)
+                        {
+                            titleList.add(titleElements.get(i).text());
+                        }
+                        
+                        String[] lines = html.split("\n");
+                        for (int i=0; i<lines.length; ++i)
+                        {
+                            String line = Html2Text(lines[i]).trim();
+                            if (line.length() == 0)
+                                continue;
+                            
+                            if (titleList.indexOf(line) != -1)        // 找到第X集
+                            {
+                                for (int j=i+1; j<lines.length; ++j)  // 寻找与该集对应的剧情
+                                {
+                                    String detailString = Utility.trimChineseSpace(Html2Text(lines[j]).trim());
+                                    if (detailString.length() > 0)
+                                    {
+                                        plotList.add(detailString);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // 只有两者相等才有意义
+                        if (titleList.size() == plotList.size())
+                        {
+                            for (int i=0; i<titleList.size(); ++i)
+                            {
+                                HashMap<String, String> episode = new HashMap<String, String>();
+                                episode.put("title", titleList.get(i));
+                                episode.put("plot", plotList.get(i));
+                                episodes.add(episode);
+                            }
+                        }
+                    }
+                    callback.onEpisodeLoaded(requestId, episodes);
+                } 
                 catch (IOException e) 
                 {
                     e.printStackTrace();
