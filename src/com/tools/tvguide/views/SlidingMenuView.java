@@ -2,15 +2,10 @@ package com.tools.tvguide.views;
 
 import com.tools.tvguide.R;
 import android.content.Context;
-import android.content.res.Resources;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.TranslateAnimation;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -27,7 +22,6 @@ public class SlidingMenuView extends RelativeLayout implements View.OnClickListe
     private OnSlidingMenuSelectListener mSelectListener;
     private LinearLayout mSlidingMainLL;
     private ArrayList<TextView> mSlidingTVList;
-    private int mOffset = 0;
 
     public static abstract interface OnSlidingMenuSelectListener 
     {
@@ -149,8 +143,16 @@ public class SlidingMenuView extends RelativeLayout implements View.OnClickListe
         mImgTransBg.startAnimation(localTranslateAnimation);
         int[] arrayOfInt = new int[2];
         paramTextView.getLocationOnScreen(arrayOfInt);
-        if (arrayOfInt[0] - mOffset < 0)
-            mHoriScroll.smoothScrollTo(paramTextView.getLeft(), 0);
+        if (j > i)      // Move from left to right
+        {
+            if (Math.abs(arrayOfInt[0] - getWidth()) < paramTextView.getWidth() / 2 || arrayOfInt[0] > getWidth())
+                mHoriScroll.smoothScrollBy(arrayOfInt[0] + paramTextView.getWidth() - getWidth(), 0);
+        }
+        else            // Move from right to left
+        {
+            if (arrayOfInt[0] < 0)
+                mHoriScroll.smoothScrollBy(paramTextView.getWidth() * -1, 0);
+        }
         
         mCurTextView.setTextColor(getResources().getColor(R.color.gray));
         paramTextView.setTextColor(getResources().getColor(R.color.dark_blue));
