@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+<RelativeLayout android:orientation="vertical" android:background="@color/light_dark_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
   xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@+id/episode_top_ll" android:background="@drawable/abs__cab_background_top_holo_light" android:layout_width="fill_parent" android:layout_height="42.0dip" android:layout_alignParentTop="true">
-        <TextView android:id="@+id/episode_name_tv" android:layout_width="0.0sp" android:layout_height="wrap_content" android:layout_weight="1.0" style="@style/style_top_textview" />
-        <ImageView android:id="@+id/episode_discuss_iv" android:background="@drawable/common_button_select" android:paddingLeft="14.0sp" android:paddingRight="14.0sp" android:clickable="true" android:layout_width="wrap_content" android:layout_height="fill_parent" android:src="@drawable/ic_compose" />
+        <TextView android:id="@+id/episode_program_name_tv" android:layout_width="0.0sp" android:layout_height="wrap_content" android:layout_weight="1.0" style="@style/style_top_textview" />
     </LinearLayout>
-    <com.hm.tvguide.view.SlidingMenuView android:id="@+id/episode_slidingmenu" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/episode_top_ll" />
+    <com.tools.tvguide.views.SlidingMenuView android:id="@+id/episode_slidingmenu" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/episode_top_ll" />
     <android.support.v4.view.ViewPager android:id="@+id/episode_viewpager" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_below="@id/episode_slidingmenu" />
 </RelativeLayout>

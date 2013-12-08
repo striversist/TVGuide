@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <HorizontalScrollView android:id="@+id/sliding_h_scrollview" android:background="@drawable/abs__ab_solid_light_holo" android:paddingLeft="5.0sp" android:paddingRight="5.0sp" android:scrollbars="none" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="42.0sp" android:layout_alignParentLeft="true">
+        <FrameLayout android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="fill_parent">
+            <ImageView android:layout_gravity="center_vertical" android:id="@+id/sliding_bg_iv" android:background="@drawable/channel_scroll_bar_selected" android:layout_width="62.0dip" android:layout_height="34sp" />
+            <LinearLayout android:gravity="center" android:layout_gravity="center_vertical" android:orientation="horizontal" android:id="@+id/sliding_main_ll" android:layout_width="wrap_content" android:layout_height="35.0sp" />
+        </FrameLayout>
+    </HorizontalScrollView>
+</RelativeLayout>

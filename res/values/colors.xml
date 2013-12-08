@@ -15,4 +15,6 @@
     <color name="darkgray">#ff4f4f4f</color>
     <color name="light_bg">#ffefefef</color>
     <color name="light_blue">#ff0099db</color>
+    <color name="dark_blue">#ff0572a1</color>
+    <color name="gray">#ff808080</color>
 </resources>

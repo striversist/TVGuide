@@ -169,12 +169,13 @@ public class ProgramActivity extends Activity
         switch (view.getId())
         {
             case R.id.episode_iv:
-                if (mEpisodes != null)
+                if (mEpisodes != null && mEpisodes.size() > 0)
                 {
                     Intent intent = new Intent(ProgramActivity.this, EpisodeActivity.class);
                     ArrayList<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
                     episodes.addAll(mEpisodes);
                     intent.putExtra("episodes", episodes);
+                    intent.putExtra("program_name", mName);
                     startActivity(intent);
                 }
             break;

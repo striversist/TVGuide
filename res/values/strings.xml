@@ -77,5 +77,6 @@
     <string name="playtime">播出时间</string>
     <string name="no_data">暂无数据</string>
     <string name="title_activity_episode">EpisodeActivity</string>
+    <string name="plot_detail">（分集剧情）</string>
 
 </resources>
