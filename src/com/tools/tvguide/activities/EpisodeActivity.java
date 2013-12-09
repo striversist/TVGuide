@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,13 +24,13 @@ import android.content.Intent;
 
 public class EpisodeActivity extends Activity implements OnSlidingMenuSelectListener
 {
-    private static int smRequestId = 0;
     private List<HashMap<String, String>> mEpisodes;
     private SlidingMenuView mSlidingMenuView;
     private TextView mProgramNameTV;
     private LayoutInflater mInflater;
     private ViewPager mViewPager;
     private ResultPageAdapter mPageAdapter;
+    private enum SelfMessage {MSG_SHOW_PLOTS}
     
     @SuppressWarnings("unchecked")
     @Override
@@ -65,7 +66,8 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
             {
                 if (position >= mSlidingMenuView.getMenuCount())
                     return;
-                mSlidingMenuView.setSelectIndex(position);
+                if (position != mSlidingMenuView.getSelectIndex())
+                    mSlidingMenuView.setSelectIndex(position);
             }
             
             @Override
@@ -81,7 +83,8 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         
         mSlidingMenuView.setOnSlidingMenuSelectListener(this);
         
-        update();
+        initSlidingMenu();
+        update(0);
     }
 
     @Override
@@ -95,9 +98,10 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     {
         String url = (String)paramObject;
         mViewPager.setCurrentItem(index);
+        update(index);
     }
     
-    private void update()
+    private void initSlidingMenu()
     {
         for (int i=0; i<mEpisodes.size(); ++i)
         {
@@ -105,14 +109,21 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
             String link = mEpisodes.get(i).get("link");
             mSlidingMenuView.addMenu(name, link);
         }
+    }
+    
+    private void update(int index)
+    {
+        if (index < 0 || index >= mEpisodes.size())
+            return;
         
-        smRequestId++;
-        String firstLink = mEpisodes.get(0).get("link");
-        AppEngine.getInstance().getHotHtmlManager().getEpisodesAsync(smRequestId, firstLink, new EpisodeDetailCallback() 
+        String link = mEpisodes.get(index).get("link");
+        AppEngine.getInstance().getHotHtmlManager().getEpisodesAsync(index, link, new EpisodeDetailCallback() 
         {
             @Override
             public void onEpisodeLoaded(int requestId, List<HashMap<String, String>> episodes) 
             {
+                Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodes);
+                uiHandler.sendMessage(msg);
             }
         });
     }
@@ -122,8 +133,24 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            switch (msg.what)
+            SelfMessage selfMsg = SelfMessage.values()[msg.what];
+            switch (selfMsg)
             {
+                case MSG_SHOW_PLOTS:
+                    int index = msg.arg1;
+                    List<HashMap<String, String>> episodes = (List<HashMap<String, String>>) msg.obj;
+                    LinearLayout layout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
+                    
+                    String plots = "";
+                    for (int i=0; i<episodes.size(); ++i)
+                    {
+                        plots += "<strong><big>" + episodes.get(i).get("title") + "</big></strong><br/>";
+                        plots += "　　" + episodes.get(i).get("plot") + "<br/><br/>";
+                    }
+                    ((TextView) layout.findViewById(R.id.program_tab_simpletext)).setText(Html.fromHtml(plots));
+                    ((LinearLayout) mPageAdapter.getView(index)).removeAllViews();
+                    ((LinearLayout) mPageAdapter.getView(index)).addView(layout);
+                    break;
             }
         }
     };
