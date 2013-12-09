@@ -51,6 +51,7 @@ public class ProgramActivity extends Activity
     private TextView mProgramNameTextView;
     private TextView mProgramProfileTextView;
     private ImageView mProgramImageView;
+    private ImageView mPlotsImageView;
     private ViewPager mViewPager;
     private ResultPageAdapter mProgramPageAdapter;
     private LinearLayout mActorsLayout;
@@ -65,6 +66,7 @@ public class ProgramActivity extends Activity
     private final int MSG_PICTURE_LOADED = 3;
     private final int MSG_ACTORS_LOADED = 4;
     private final int MSG_PLAYTIMES_LOADED = 5;
+    private final int MSG_HAS_DETAIL_PLOTS = 6;
     
     private final int TAB_INDEX_ACTORS = 0;
     private final int TAB_INDEX_SUMMARY = 1;
@@ -81,6 +83,7 @@ public class ProgramActivity extends Activity
         mProgramNameTextView = (TextView) findViewById(R.id.program_name);
         mProgramProfileTextView = (TextView) findViewById(R.id.program_profile);
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
+        mPlotsImageView = (ImageView) findViewById(R.id.episode_iv);
         mViewPager = (ViewPager) findViewById(R.id.program_view_pager);
         mTabsGroup = (RadioGroup) findViewById(R.id.program_tabs);
         
@@ -129,6 +132,7 @@ public class ProgramActivity extends Activity
             return;
         
         mProgramNameTextView.setText(mName);
+        mPlotsImageView.setVisibility(View.INVISIBLE);
         update();
         
         new Handler().postDelayed(new Runnable() 
@@ -236,6 +240,8 @@ public class ProgramActivity extends Activity
             public void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodes) 
             {
                 mEpisodes = episodes;
+                if (mEpisodes != null && mEpisodes.size() > 0)
+                    uiHandler.sendEmptyMessage(MSG_HAS_DETAIL_PLOTS);
             }
         });
     }
@@ -318,6 +324,9 @@ public class ProgramActivity extends Activity
                             data, R.layout.program_tab_playtimes_item, new String[]{"name"}, new int[]{R.id.playtimes_item_text}));
                     ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_PLAYTIMES)).removeAllViews();
                     ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_PLAYTIMES)).addView(mPlayTimesLayout, mCenterLayoutParams);
+                    break;
+                case MSG_HAS_DETAIL_PLOTS:
+                    mPlotsImageView.setVisibility(View.VISIBLE);
                     break;
             }
         }
