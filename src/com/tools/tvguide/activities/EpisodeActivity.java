@@ -79,6 +79,8 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
             }
         });
         
+        mSlidingMenuView.setOnSlidingMenuSelectListener(this);
+        
         update();
     }
 
