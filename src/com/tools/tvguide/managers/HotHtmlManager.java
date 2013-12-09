@@ -266,7 +266,7 @@ public class HotHtmlManager
                 try 
                 {
                     List<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
-                    Document doc = Jsoup.connect(link).get();
+                    Document doc = getDocument(link);
                     Elements content = doc.select("div[class=tv_info2]");
                     
                     if (content.size() > 0)
