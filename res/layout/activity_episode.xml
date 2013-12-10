@@ -5,5 +5,12 @@
         <TextView android:id="@+id/episode_program_name_tv" android:layout_width="0.0sp" android:layout_height="wrap_content" android:layout_weight="1.0" style="@style/style_top_textview" />
     </LinearLayout>
     <com.tools.tvguide.views.SlidingMenuView android:id="@+id/episode_slidingmenu" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/episode_top_ll" />
-    <android.support.v4.view.ViewPager android:id="@+id/episode_viewpager" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_below="@id/episode_slidingmenu" />
+    <android.support.v4.view.ViewPager android:id="@+id/episode_viewpager" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+            android:layout_below="@id/episode_slidingmenu" android:layout_above="@id/adLayout" />
+    <RelativeLayout
+        android:id="@+id/adLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+    </RelativeLayout>
 </RelativeLayout>
