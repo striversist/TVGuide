@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal" android:background="@color/light_dark_bg" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+	        <TextView android:id="@+id/program_tab_simpletext" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	                  android:layout_marginTop="18sp" android:layout_marginLeft="10dip"
+	                  android:textColor="@color/darkgray" android:textSize="16sp" android:lineSpacingExtra="5dp" />
+	        <Button android:textSize="17.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/more_plot_btn" 
+	                android:background="@drawable/big_button_select" android:paddingTop="7.0sp" android:paddingBottom="7.0sp" 
+	                android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="15.0sp" 
+	                android:layout_marginRight="15.0sp" android:layout_marginBottom="25.0sp" android:text="@string/plot_introduce"
+	                android:visibility="invisible" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

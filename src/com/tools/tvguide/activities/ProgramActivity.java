@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -89,7 +90,7 @@ public class ProgramActivity extends Activity
         
         mProgramPageAdapter = new ResultPageAdapter();
         mActorsLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
-        mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
+        mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_summary, null);
         mPlayTimesLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_playtimes, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         
@@ -173,16 +174,21 @@ public class ProgramActivity extends Activity
         switch (view.getId())
         {
             case R.id.episode_iv:
-                if (mEpisodes != null && mEpisodes.size() > 0)
-                {
-                    Intent intent = new Intent(ProgramActivity.this, EpisodeActivity.class);
-                    ArrayList<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
-                    episodes.addAll(mEpisodes);
-                    intent.putExtra("episodes", episodes);
-                    intent.putExtra("program_name", mName);
-                    startActivity(intent);
-                }
+                startEpisodeActivity();
             break;
+        }
+    }
+    
+    private void startEpisodeActivity()
+    {
+        if (mEpisodes != null && mEpisodes.size() > 0)
+        {
+            Intent intent = new Intent(ProgramActivity.this, EpisodeActivity.class);
+            ArrayList<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
+            episodes.addAll(mEpisodes);
+            intent.putExtra("episodes", episodes);
+            intent.putExtra("program_name", mName);
+            startActivity(intent);
         }
     }
     
@@ -327,6 +333,15 @@ public class ProgramActivity extends Activity
                     break;
                 case MSG_HAS_DETAIL_PLOTS:
                     mPlotsImageView.setVisibility(View.VISIBLE);
+                    ((Button) mSummaryLayout.findViewById(R.id.more_plot_btn)).setVisibility(View.VISIBLE);
+                    ((Button) mSummaryLayout.findViewById(R.id.more_plot_btn)).setOnClickListener(new View.OnClickListener() 
+                    {                        
+                        @Override
+                        public void onClick(View view) 
+                        {
+                            startEpisodeActivity();
+                        }
+                    });
                     break;
             }
         }
