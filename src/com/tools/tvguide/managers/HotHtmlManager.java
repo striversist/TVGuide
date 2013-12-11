@@ -345,7 +345,7 @@ public class HotHtmlManager
         Document doc;
         if (html == null)
         {
-            doc = Jsoup.connect(url).get();
+            doc = Jsoup.connect(url).timeout(10000).get();
             cacheManager.set(url, doc.html());
         }
         else
