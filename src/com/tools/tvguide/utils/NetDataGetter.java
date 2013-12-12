@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -33,12 +31,10 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-import android.util.Pair;
 
 public class NetDataGetter
 {
@@ -150,10 +146,15 @@ public class NetDataGetter
 	
 	public String getStringData()
 	{
-		return getStringData(null);
+		return getStringData(null, null);
 	}
 	
-	public String getStringData(List<BasicNameValuePair> pairs)
+	public String getStringData(String charset)
+	{
+	    return getStringData(null, charset);
+	}
+	
+	public String getStringData(List<BasicNameValuePair> pairs, String charset)
 	{
 		if (mUrl == null)
 		{
@@ -242,7 +243,11 @@ public class NetDataGetter
         	}
         	String line;
             StringBuilder sb = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            BufferedReader reader;
+            if (charset != null && !charset.equals(""))
+                reader = new BufferedReader(new InputStreamReader(is, charset));
+            else
+                reader = new BufferedReader(new InputStreamReader(is));
             while ((line = reader.readLine()) != null)
             {
                 sb.append(line + "\n");
@@ -365,7 +370,7 @@ public class NetDataGetter
 	public JSONObject getJSONsObject(List<BasicNameValuePair> pairs)
 	{
 		JSONObject jsonObject = null;
-		String recvData = getStringData(pairs);
+		String recvData = getStringData(pairs, null);
 		if(recvData == null)
 		{
 			Log.e("getJSONsData", "recvData is null");

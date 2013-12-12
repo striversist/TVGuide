@@ -14,6 +14,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
@@ -345,7 +347,9 @@ public class HotHtmlManager
         Document doc;
         if (html == null)
         {
-            doc = Jsoup.connect(url).timeout(10000).get();
+            NetDataGetter getter = new DefaultNetDataGetter(url);
+            html = getter.getStringData("GBK");
+            doc = Jsoup.parse(html);
             cacheManager.set(url, doc.html());
         }
         else
