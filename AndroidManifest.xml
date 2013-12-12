@@ -33,12 +33,12 @@
         <!-- 发布渠道(可选) -->
         <meta-data
             android:name="APP_CHANNEL"
-            android:value="应用宝" />
+            android:value="APP市场" />
 
         <!-- 有米渠道号(可选配置) 渠道号不能带空格，类型为整数 -->
         <meta-data
             android:name="YOUMI_CHANNEL"
-            android:value="10360" >
+            android:value="0" >
         </meta-data>
         <!-- /有米渠道号(可选配置) -->
 
