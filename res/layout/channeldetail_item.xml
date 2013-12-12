@@ -6,7 +6,7 @@
     <TextView android:id="@+id/detail_item_program"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent" 
-        android:textSize="16.0dip" 
+        android:textSize="18.0dip" 
         android:textColor="#ff333333" 
         android:paddingLeft="10.0dip" 
         android:paddingTop="12.0dip" 
