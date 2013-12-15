@@ -129,7 +129,7 @@ public class ResultProgramAdapter extends BaseAdapter
 
     public static class ContentItem implements IListItem 
     {
-        private String SEPERATOR = ": ";
+        private String SEPERATOR = ":　";
         private Item mItem;
         private boolean mIsClickable;
         private HashMap<String, ?> mExtraInfo;

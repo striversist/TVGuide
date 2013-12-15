@@ -78,5 +78,9 @@
     <string name="no_data">暂无数据</string>
     <string name="title_activity_episode">EpisodeActivity</string>
     <string name="plot_detail">（分集剧情）</string>
+    <string name="full_day">全天节目</string>
+    <string name="morning">凌晨上午节目</string>
+    <string name="midday">中午下午节目</string>
+    <string name="evening">晚间节目</string>
 
 </resources>
