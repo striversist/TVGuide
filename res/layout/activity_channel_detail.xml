@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical" android:background="@color/white" android:layout_width="fill_parent" android:layout_height="fill_parent"
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="@color/light_bg"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout android:gravity="center_vertical" android:id="@+id/shake_title_bar" android:background="@drawable/title_bar" android:layout_width="fill_parent" android:layout_height="45.0dip">
-        <Button android:textSize="14.0sp" android:textColor="#ffffffff" android:background="@drawable/title_btn_back" android:layout_width="70.0dip" android:layout_height="wrap_content" android:text="@string/back" android:layout_centerVertical="true" android:onClick="back" />
-        <TextView android:textSize="20.0sp" android:textColor="#ffffffff" android:id="@+id/title" android:text="@string/sample_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true" />
-        <Button android:textColor="#ffffffff" android:id="@+id/collectBtn" android:background="@drawable/title_btn_right" android:layout_width="60.0dip" android:layout_height="wrap_content" android:layout_marginRight="16.0dip" android:text="@string/collect" android:layout_alignParentTop="true" android:layout_alignParentRight="true" android:onClick="collectChannel" />
+    <RelativeLayout android:id="@+id/channeldetail_top_rl" android:background="@drawable/abs__cab_background_top_holo_light" android:paddingLeft="10.0sp" android:layout_width="fill_parent" android:layout_height="42.0dip" android:layout_alignParentTop="true">
+        <TextView android:id="@+id/channeldetail_channel_name_tv" android:textSize="16.0sp" android:gravity="center_vertical" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/loading_string" />
+        <TextView android:id="@+id/channeldetail_date_tv" android:textSize="15.0sp" android:gravity="center_vertical" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginLeft="10.0sp" android:layout_toRightOf="@id/channeldetail_channel_name_tv" />
+        <ImageView android:id="@+id/channeldetail_date_hit_tv" android:layout_toLeftOf="@+id/channeldetail_date_iv" style="@style/style_tab_divider" />
+        <ImageView android:visibility="gone" android:id="@+id/channeldetail_date_iv" android:background="@drawable/common_button_select" android:paddingLeft="15.0sp" android:paddingRight="15.0sp" android:clickable="true" android:layout_width="wrap_content" android:layout_height="fill_parent" android:src="@drawable/btn_history" android:layout_alignParentRight="true" android:layout_centerVertical="true" />
     </RelativeLayout>
-    <LinearLayout android:gravity="center" android:orientation="horizontal" android:id="@+id/zhou" android:layout_width="fill_parent" android:layout_height="40.0dip" android:layout_margin="2.0dip" android:layout_marginTop="3.0dip">
-        <Button android:textColor="@color/white" android:id="@+id/Mon" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Mon" android:onClick="selectDay" />
-        <Button android:textColor="@color/white" android:id="@+id/Tue" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Tue" android:onClick="selectDay" />
-        <Button android:textColor="@color/white" android:id="@+id/Wed" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Wed" android:onClick="selectDay" />
-        <Button android:textColor="@color/white" android:id="@+id/Thu" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Thu" android:onClick="selectDay" />
-        <Button android:textColor="@color/white" android:id="@+id/Fri" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Fri" android:onClick="selectDay" />
-        <Button android:textColor="@color/white" android:id="@+id/Sat" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Sat" android:onClick="selectDay" />
-        <Button android:textColor="@color/white" android:id="@+id/Sun" android:background="@drawable/text_bg" android:layout_width="40.0dip" android:layout_height="22.0dip" android:layout_marginRight="5.0dip" android:text="@string/Sun" android:onClick="selectDay" />
+    <ListView android:id="@+id/channeldetail_listview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/channeldetail_top_rl" />
+    <ListView android:id="@+id/channeldetail_date_listview" android:background="@drawable/button_toptabs_mid_normal" android:layout_width="130.0sp" android:layout_height="wrap_content" android:layout_marginRight="3.0sp" android:layout_marginBottom="3.0sp" android:layout_below="@id/channeldetail_top_rl" android:layout_alignParentRight="true" />
+    <LinearLayout android:gravity="center_vertical" android:id="@+id/channeldetail_loading_ll" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true">
+        <ProgressBar android:visibility="gone" android:id="@+id/channeldetail_loading_pb" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:textSize="14.0sp" android:textColor="@color/black" android:id="@+id/channeldetail_loading_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/loading_string" />
     </LinearLayout>
-    <LinearLayout android:orientation="vertical" android:background="@drawable/shape_bottom_corner_no_top_line" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="10.0dip">
-        <ListView android:id="@+id/detail_listview" android:fadingEdge="none" android:padding="2.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
-    </LinearLayout>
-</LinearLayout>
+    <ImageView android:id="@+id/image_failure" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/image_failureface" android:layout_centerInParent="true" />
+</RelativeLayout>
