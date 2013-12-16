@@ -11,7 +11,9 @@ import java.util.Locale;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
+import com.tools.tvguide.adapters.DateAdapter.DateData;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
@@ -19,11 +21,12 @@ import com.tools.tvguide.managers.ContentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.R.array;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,10 +36,11 @@ public class ChannelDetailActivity extends Activity
     private static final String TAG = "ChannelDetailActivity";
     private String mChannelName;
     private String mChannelId;
-    private TextView mChannelNameTV;
-    private TextView mDateTV;
-    private ListView mProgramLV;
-    private ListView mDateChosenLV;
+    private TextView mChannelNameTextView;
+    private TextView mDateTextView;
+    private ListView mProgramListView;
+    private ListView mDateChosenListView;
+    private DateAdapter mDateAdapter;
     
     private List<HashMap<String, String>> mProgramList;             // Key: time, title
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
@@ -108,12 +112,64 @@ public class ChannelDetailActivity extends Activity
     
     public void initViews()
     {
-        mChannelNameTV = (TextView) findViewById(R.id.channeldetail_channel_name_tv);
-        mDateTV = (TextView) findViewById(R.id.channeldetail_date_tv);
-        mProgramLV = (ListView) findViewById(R.id.channeldetail_program_listview);
-        mDateChosenLV = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
+        mChannelNameTextView = (TextView) findViewById(R.id.channeldetail_channel_name_tv);
+        mDateTextView = (TextView) findViewById(R.id.channeldetail_date_tv);
+        mProgramListView = (ListView) findViewById(R.id.channeldetail_program_listview);
+        mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
         
-        mChannelNameTV.setText(mChannelName);
+        mChannelNameTextView.setText(mChannelName);
+        List<DateData> dateList = new ArrayList<DateAdapter.DateData>();
+        dateList.add(new DateData(getResources().getString(R.id.Mon)));
+        dateList.add(new DateData(getResources().getString(R.id.Tue)));
+        dateList.add(new DateData(getResources().getString(R.id.Wed)));
+        dateList.add(new DateData(getResources().getString(R.id.Thu)));
+        dateList.add(new DateData(getResources().getString(R.id.Fri)));
+        dateList.add(new DateData(getResources().getString(R.id.Sat)));
+        dateList.add(new DateData(getResources().getString(R.id.Sun)));
+        mDateAdapter = new DateAdapter(this, dateList);
+        mDateChosenListView.setAdapter(mDateAdapter);
+    }
+    
+    public void onClick(View view)
+    {
+        switch (view.getId()) 
+        {
+            case R.id.channeldetail_date_iv:
+                toggleDateListView();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private void toggleDateListView()
+    {
+        if (mDateChosenListView.getVisibility() == View.GONE)
+            unfoldDateListView();
+        else
+            foldDateListView();
+    }
+    
+    private void foldDateListView()
+    {
+        if (mDateChosenListView.getVisibility() == View.VISIBLE)
+        {
+            Animation pushRightOut = AnimationUtils.loadAnimation(this, R.anim.push_right_out);
+            pushRightOut.setFillAfter(true);
+            mDateChosenListView.startAnimation(pushRightOut);
+            mDateChosenListView.setVisibility(View.GONE);
+        }
+    }
+    
+    private void unfoldDateListView()
+    {
+        if (mDateChosenListView.getVisibility() == View.GONE)
+        {
+            Animation pushRightIn = AnimationUtils.loadAnimation(this, R.anim.push_right_in);
+            pushRightIn.setFillAfter(true);
+            mDateChosenListView.startAnimation(pushRightIn);
+            mDateChosenListView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void updateProgramList()
@@ -226,7 +282,7 @@ public class ChannelDetailActivity extends Activity
                         mItemDataList.add(contentItem);
                     }
                     addTimeLable();
-                    mProgramLV.setAdapter(new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList));
+                    mProgramListView.setAdapter(new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList));
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
                     break;
