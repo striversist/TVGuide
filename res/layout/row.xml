@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:orientation="horizontal" android:background="@drawable/list_item_select" android:layout_width="fill_parent" android:layout_height="45.0dip"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView android:id="@+id/row_title" android:textAppearance="@android:style/TextAppearance.Medium" android:textSize="15.0sp" android:textColor="@color/darkgray" android:gravity="center_vertical" android:paddingLeft="15.0sp" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="Medium Text" />
+    <TextView android:id="@+id/row_title" android:textAppearance="@android:style/TextAppearance.Medium" android:textSize="16.0sp" android:textColor="@color/darkgray" android:gravity="center_vertical" android:paddingLeft="18.0sp" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="Medium Text" />
     <ImageView android:id="@+id/row_icon" android:background="@drawable/indicator" android:layout_width="wrap_content" android:layout_height="wrap_content" />
 </RelativeLayout>

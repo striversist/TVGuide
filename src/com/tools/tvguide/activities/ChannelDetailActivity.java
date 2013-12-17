@@ -27,6 +27,9 @@ import android.content.res.Configuration;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,7 +77,7 @@ public class ChannelDetailActivity extends Activity
         mProgramList = new ArrayList<HashMap<String,String>>();
         mOnPlayingProgram = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
-        mCurrentSelectedDay = 1;
+        mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
      
         initViews();
@@ -119,15 +122,39 @@ public class ChannelDetailActivity extends Activity
         
         mChannelNameTextView.setText(mChannelName);
         List<DateData> dateList = new ArrayList<DateAdapter.DateData>();
-        dateList.add(new DateData(getResources().getString(R.id.Mon)));
-        dateList.add(new DateData(getResources().getString(R.id.Tue)));
-        dateList.add(new DateData(getResources().getString(R.id.Wed)));
-        dateList.add(new DateData(getResources().getString(R.id.Thu)));
-        dateList.add(new DateData(getResources().getString(R.id.Fri)));
-        dateList.add(new DateData(getResources().getString(R.id.Sat)));
-        dateList.add(new DateData(getResources().getString(R.id.Sun)));
+        dateList.add(new DateData(getResources().getString(R.string.Mon)));
+        dateList.add(new DateData(getResources().getString(R.string.Tue)));
+        dateList.add(new DateData(getResources().getString(R.string.Wed)));
+        dateList.add(new DateData(getResources().getString(R.string.Thu)));
+        dateList.add(new DateData(getResources().getString(R.string.Fri)));
+        dateList.add(new DateData(getResources().getString(R.string.Sat)));
+        dateList.add(new DateData(getResources().getString(R.string.Sun)));
         mDateAdapter = new DateAdapter(this, dateList);
         mDateChosenListView.setAdapter(mDateAdapter);
+        mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
+        mDateChosenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) 
+            {
+                mDateAdapter.setCurrentIndex(position);
+                mCurrentSelectedDay = position + 1;
+                updateProgramList();
+            }
+        });
+        mProgramListView.setOnScrollListener(new OnScrollListener() 
+        {            
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) 
+            {
+                foldDateListView();
+            }
+            
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) 
+            {
+            }
+        });
     }
     
     public void onClick(View view)
@@ -174,7 +201,8 @@ public class ChannelDetailActivity extends Activity
 
     private void updateProgramList()
     {
-        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel2(mChannelId, getHostDay(mCurrentSelectedDay), mProgramList, 
+        mProgramList.clear();
+        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel2(mChannelId, mCurrentSelectedDay, mProgramList, 
                                 mOnPlayingProgram, new ContentManager.LoadListener() 
         {
             @Override
@@ -227,7 +255,7 @@ public class ChannelDetailActivity extends Activity
     /*
      * Trasfer the day to the server host day: Monday~Sunday -> 1~7
      */
-    private int getHostDay(int day)
+    private int getProxyDay(int day)
     {
         assert(day >=1 && day <=7);
         int hostDay = 0;
