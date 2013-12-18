@@ -86,7 +86,7 @@ public class ChannelDetailActivity extends Activity
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
-        mOnPlayingIndex = 0;
+        mOnPlayingIndex = -1;
      
         initViews();
         
@@ -313,7 +313,8 @@ public class ChannelDetailActivity extends Activity
                         item.time = time;
                         item.title = title;
                         ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
-                        if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title")))
+                        if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title"))
+                            && mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
                         {
                             mOnPlayingIndex = i;
                             contentItem.setItemView(new ResultProgramAdapter.IItemView() 
@@ -336,7 +337,8 @@ public class ChannelDetailActivity extends Activity
                     }
                     addTimeLable();
                     mProgramListView.setAdapter(new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList));
-                    mProgramListView.setSelection(mOnPlayingIndex);
+                    if (mOnPlayingIndex != -1)                        
+                        mProgramListView.setSelection(mOnPlayingIndex);
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
                     break;
