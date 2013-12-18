@@ -22,8 +22,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -44,6 +50,7 @@ public class ChannelDetailActivity extends Activity
     private ListView mProgramListView;
     private ListView mDateChosenListView;
     private DateAdapter mDateAdapter;
+    private int mOnPlayingIndex;
     
     private List<HashMap<String, String>> mProgramList;             // Key: time, title
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
@@ -79,6 +86,7 @@ public class ChannelDetailActivity extends Activity
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
+        mOnPlayingIndex = 0;
      
         initViews();
         
@@ -305,11 +313,30 @@ public class ChannelDetailActivity extends Activity
                         item.time = time;
                         item.title = title;
                         ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
+                        if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title")))
+                        {
+                            mOnPlayingIndex = i;
+                            contentItem.setItemView(new ResultProgramAdapter.IItemView() 
+                            {    
+                                @Override
+                                public View getView(Context context, View convertView, LayoutInflater inflater) 
+                                {
+                                    convertView = inflater.inflate(R.layout.hot_program_item, null);
+                                    TextView tv = (TextView) convertView.findViewById(R.id.hot_program_name_tv);
+                                    SpannableString ss = new SpannableString(mOnPlayingProgram.get(0).get("time") + ":　" 
+                                                              + mOnPlayingProgram.get(0).get("title") + "  (正在播放)");
+                                    ss.setSpan(new ForegroundColorSpan(Color.RED), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    tv.setText(ss);
+                                    return convertView;
+                                }
+                            });
+                        }
                         contentItem.setClickable(true);
                         mItemDataList.add(contentItem);
                     }
                     addTimeLable();
                     mProgramListView.setAdapter(new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList));
+                    mProgramListView.setSelection(mOnPlayingIndex);
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
                     break;
@@ -337,6 +364,7 @@ public class ChannelDetailActivity extends Activity
         int hasMorning = 0;
         int hasMidday = 0;
         int hasEvening = 0;
+        int onPlayingAddon = 0;
         
         for (int i=0; i<mProgramList.size()-1; ++i)
         {
@@ -347,18 +375,26 @@ public class ChannelDetailActivity extends Activity
             {
                 mItemDataList.add(i, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.morning), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
                 hasMorning = 1;
+                if (mOnPlayingIndex >= i)
+                    onPlayingAddon++;
             }
-            if (compareTime(time1, midday) < 0 && compareTime(time2, midday) >= 0 && compareTime(time2, evening) < 0)
+            else if (compareTime(time1, midday) < 0 && compareTime(time2, midday) >= 0 && compareTime(time2, evening) < 0)
             {
                 mItemDataList.add(i + 1 + hasMorning, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.midday), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
                 hasMidday = 1;
+                if (mOnPlayingIndex >= i)
+                    onPlayingAddon++;
             }
             else if (compareTime(time1, evening) < 0 && compareTime(time2, evening) >= 0)
             {
                 mItemDataList.add(i + 1 + hasMorning + hasMidday, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.evening), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
                 hasEvening = 1;
+                if (mOnPlayingIndex >= i)
+                    onPlayingAddon++;
             }
         }
+        
+        mOnPlayingIndex += onPlayingAddon;
     }
     
     private int compareTime(String time1, String time2)

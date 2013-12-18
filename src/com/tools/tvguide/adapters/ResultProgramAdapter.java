@@ -60,8 +60,14 @@ public class ResultProgramAdapter extends BaseAdapter
         public int getLayout();
         public boolean isClickable();
         public View getView(Context context, View convertView, LayoutInflater inflater);
+        public void setItemView(IItemView itemView);
         public void setExtraInfo(HashMap<String, ?> extraInfo);
         public HashMap<String, ?> getExtraInfo();
+    }
+    
+    public interface IItemView
+    {
+        public View getView(Context context, View convertView, LayoutInflater inflater);
     }
 
     public static class LabelItem implements IListItem 
@@ -71,6 +77,7 @@ public class ResultProgramAdapter extends BaseAdapter
         private HashMap<String, ?> mExtraInfo;
         private int mLayout;
         private int mItemId;
+        private IItemView mItemView;
         public LabelItem(String label, int layout, int id)
         {
             mLabel = label;
@@ -94,6 +101,9 @@ public class ResultProgramAdapter extends BaseAdapter
         @Override
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
+            if (mItemView != null)
+                return mItemView.getView(context, convertView, inflater);
+            
             convertView = inflater.inflate(getLayout(), null);
             TextView title = (TextView) convertView.findViewById(mItemId);
             title.setText(mLabel);
@@ -116,6 +126,12 @@ public class ResultProgramAdapter extends BaseAdapter
         {
             mIsClickable = clickable;
         }
+
+        @Override
+        public void setItemView(IItemView itemView) 
+        {
+            mItemView = itemView;
+        }
     }
 
     public static class Item
@@ -135,6 +151,7 @@ public class ResultProgramAdapter extends BaseAdapter
         private HashMap<String, ?> mExtraInfo;
         private int mLayout;
         private int mItemId;
+        private IItemView mItemView;
         public ContentItem(Item item, int layout, int id)
         {
             mItem = item;
@@ -158,6 +175,9 @@ public class ResultProgramAdapter extends BaseAdapter
         @Override
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
+            if (mItemView != null)
+                return mItemView.getView(context, convertView, inflater);
+
             convertView = inflater.inflate(getLayout(), null);
             TextView tv = (TextView) convertView.findViewById(mItemId);
             SpannableString ss;
@@ -193,6 +213,12 @@ public class ResultProgramAdapter extends BaseAdapter
         public void setClickable(boolean clickable)
         {
             mIsClickable = clickable;
+        }
+
+        @Override
+        public void setItemView(IItemView itemView) 
+        {
+            mItemView = itemView;
         }
     }
 }
