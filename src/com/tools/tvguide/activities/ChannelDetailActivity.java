@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +23,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -36,9 +40,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChannelDetailActivity extends Activity 
 {
@@ -48,6 +55,7 @@ public class ChannelDetailActivity extends Activity
     private TextView mChannelNameTextView;
     private TextView mDateTextView;
     private ListView mProgramListView;
+    private BaseAdapter mProgramListViewAdapter;
     private ListView mDateChosenListView;
     private DateAdapter mDateAdapter;
     private int mOnPlayingIndex;
@@ -59,6 +67,7 @@ public class ChannelDetailActivity extends Activity
     private List<ResultProgramAdapter.IListItem> mItemDataList;
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
+    private final int DAY_IN_MS = 60 * 60 * 24 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -163,6 +172,146 @@ public class ChannelDetailActivity extends Activity
             {
             }
         });
+        
+        mProgramListView.setOnItemClickListener(new OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) 
+            {
+                foldDateListView();
+                
+                final String time = (String) mItemDataList.get(position).getExtraInfo().get("time");
+                final String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
+                final String program = time + ":　" + title;
+                
+                String hour = time.split(":")[0];
+                String minute = time.split(":")[1];
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
+                calendar.set(Calendar.MINUTE, Integer.parseInt(minute));
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                long adjust = (mCurrentSelectedDay - getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))) * DAY_IN_MS;
+                calendar.setTimeInMillis(calendar.getTimeInMillis() + adjust);
+                
+                // 因为周日算一周的第一天，所以这里要做特殊处理。如果使用API setFirstDayOfWeek, 则在月初时会设置到上月的末尾，故不用该API
+                if (mCurrentSelectedDay == Calendar.SUNDAY)
+                {
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + 60*60*24*1000);       // 周六再增加一天时间
+                }
+                
+                // 如果今天是周日，则calendar的处理都是针对下一周的时间，所以这里要做特殊处理：减去一周的时间
+                if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                {
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() - 60*60*24*7*1000);
+                }
+                
+                // Choose earlier than now time
+                if (calendar.getTimeInMillis() < System.currentTimeMillis())
+                {
+                    AlertDialog dialog = new AlertDialog.Builder(ChannelDetailActivity.this)
+                        .setTitle(getResources().getString(R.string.tips))
+                        .setMessage(getResources().getString(R.string.alarm_tips_cannot_set))
+                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) 
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                    dialog.show();
+                    return;
+                }
+                
+                List<String> alarmList = new ArrayList<String>();
+                alarmList.add(getResources().getString(R.string.m1_alarm));
+                alarmList.add(getResources().getString(R.string.m5_alarm));
+                alarmList.add(getResources().getString(R.string.m10_alarm));
+                String alarmTimeString[] = (String[]) alarmList.toArray(new String[0]);
+                
+                long alarmTime = AppEngine.getInstance().getAlarmHelper().getAlarmTimeAtMillis(mChannelId, mChannelName, program);
+                int choice = -1;
+                // Has already set the alarm clock
+                if (alarmTime > 0)
+                {
+                    long distance = calendar.getTimeInMillis() - alarmTime;
+                    int aheadSetMinute = new BigDecimal((double)distance / 1000 / 60).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();     // 四舍五入取整
+                    switch (aheadSetMinute)
+                    {
+                        case 1:
+                            choice = 0;
+                            break;
+                        case 5:
+                            choice = 1;
+                            break;
+                        case 10:
+                            choice = 2;
+                            break;
+                    }
+                }
+                
+                Dialog alertDialog = new AlertDialog.Builder(ChannelDetailActivity.this)
+                        .setTitle(getResources().getString(R.string.alarm_tips))
+                        .setSingleChoiceItems(alarmTimeString, choice, new DialogInterface.OnClickListener() 
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) 
+                            {
+                                int aheadMinute = 0;
+                                switch (which)
+                                {
+                                    case 0:
+                                        aheadMinute = 1;
+                                        break;
+                                    case 1:
+                                        aheadMinute = 5;
+                                        break;
+                                    case 2:
+                                        aheadMinute = 10;
+                                        break;
+                                }
+                                
+                                // Try to remove the alarm first
+                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
+                                
+                                // Set alarm clock
+                                long alarmTimeInMillis = calendar.getTimeInMillis() - aheadMinute * 60 * 1000;
+                                AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelId, mChannelName, program, alarmTimeInMillis);
+                                if (alarmTimeInMillis < System.currentTimeMillis())   // The clock will sounds right now
+                                {
+//                                    mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
+                                }
+                                else 
+                                {
+//                                    mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.clock));
+                                    Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_set), Toast.LENGTH_SHORT).show();
+                                }
+                                mProgramListViewAdapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.cancel_alarm), new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) 
+                            {
+                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
+//                                mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
+                                Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_cancel), Toast.LENGTH_SHORT).show();
+                                mProgramListViewAdapter.notifyDataSetChanged();
+                            }
+                            
+                        })
+                        .create();
+                alertDialog.show();
+            }
+        });
+        
+        Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
     }
     
     public void onClick(View view)
@@ -313,6 +462,12 @@ public class ChannelDetailActivity extends Activity
                         item.time = time;
                         item.title = title;
                         ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
+                        
+                        HashMap<String, String> extraInfo = new HashMap<String, String>();
+                        extraInfo.put("time", time);
+                        extraInfo.put("title", title);
+                        contentItem.setExtraInfo(extraInfo);
+                        
                         if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title"))
                             && mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
                         {
@@ -336,7 +491,8 @@ public class ChannelDetailActivity extends Activity
                         mItemDataList.add(contentItem);
                     }
                     addTimeLable();
-                    mProgramListView.setAdapter(new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList));
+                    mProgramListViewAdapter = new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList);
+                    mProgramListView.setAdapter(mProgramListViewAdapter);
                     if (mOnPlayingIndex != -1)                        
                         mProgramListView.setSelection(mOnPlayingIndex);
                     break;
