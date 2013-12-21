@@ -15,6 +15,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.DateAdapter.DateData;
+import com.tools.tvguide.adapters.ResultProgramAdapter.IItemView;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
@@ -43,6 +44,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -182,7 +184,7 @@ public class ChannelDetailActivity extends Activity
                 
                 final String time = (String) mItemDataList.get(position).getExtraInfo().get("time");
                 final String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
-                final String program = time + ":　" + title;
+                final String program = getProgramString(time, title);
                 
                 String hour = time.split(":")[0];
                 String minute = time.split(":")[1];
@@ -283,14 +285,13 @@ public class ChannelDetailActivity extends Activity
                                 AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelId, mChannelName, program, alarmTimeInMillis);
                                 if (alarmTimeInMillis < System.currentTimeMillis())   // The clock will sounds right now
                                 {
-//                                    mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
+                                    updateItem(position, false, false);
                                 }
                                 else 
                                 {
-//                                    mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.clock));
+                                    updateItem(position, true, false);
                                     Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_set), Toast.LENGTH_SHORT).show();
                                 }
-                                mProgramListViewAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
                             }
                         })
@@ -300,7 +301,7 @@ public class ChannelDetailActivity extends Activity
                             public void onClick(DialogInterface dialog, int which) 
                             {
                                 AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
-//                                mItemList.get(position).put("arrow", BitmapFactory.decodeResource(getResources(), R.drawable.icon_arrow_2));
+                                updateItem(position, false, false);
                                 Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_cancel), Toast.LENGTH_SHORT).show();
                                 mProgramListViewAdapter.notifyDataSetChanged();
                             }
@@ -403,45 +404,6 @@ public class ChannelDetailActivity extends Activity
 
     }
     
-    public void selectDay(View view)
-    {
-
-    }
-    
-    /*
-     * Trasfer the day to the server host day: Monday~Sunday -> 1~7
-     */
-    private int getProxyDay(int day)
-    {
-        assert(day >=1 && day <=7);
-        int hostDay = 0;
-        switch (day)
-        {
-            case Calendar.MONDAY:
-                hostDay = 1;
-                break;
-            case Calendar.TUESDAY:
-                hostDay = 2;
-                break;
-            case Calendar.WEDNESDAY:
-                hostDay = 3;
-                break;
-            case Calendar.THURSDAY:
-                hostDay = 4;
-                break;
-            case Calendar.FRIDAY:
-                hostDay = 5;
-                break;
-            case Calendar.SATURDAY:
-                hostDay = 6;
-                break;
-            case Calendar.SUNDAY:
-                hostDay = 7;
-                break;
-        }
-        return hostDay;
-    }
-    
     private Handler uiHandler = new Handler()
     {
         public void handleMessage(Message msg)
@@ -455,8 +417,8 @@ public class ChannelDetailActivity extends Activity
                     mProgressDialog.dismiss();
                     for (int i=0; i<mProgramList.size(); ++i)
                     {
-                        String time = mProgramList.get(i).get("time");
-                        String title = mProgramList.get(i).get("title");
+                        final String time = mProgramList.get(i).get("time");
+                        final String title = mProgramList.get(i).get("title");
                         
                         ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
                         item.time = time;
@@ -467,23 +429,17 @@ public class ChannelDetailActivity extends Activity
                         extraInfo.put("time", time);
                         extraInfo.put("title", title);
                         contentItem.setExtraInfo(extraInfo);
-                        
+                                                
                         if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title"))
                             && mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
                         {
                             mOnPlayingIndex = i;
-                            contentItem.setItemView(new ResultProgramAdapter.IItemView() 
+                            contentItem.setItemView(new ResultProgramAdapter.IItemView()
                             {    
                                 @Override
                                 public View getView(Context context, View convertView, LayoutInflater inflater) 
                                 {
-                                    convertView = inflater.inflate(R.layout.hot_program_item, null);
-                                    TextView tv = (TextView) convertView.findViewById(R.id.hot_program_name_tv);
-                                    SpannableString ss = new SpannableString(mOnPlayingProgram.get(0).get("time") + ":　" 
-                                                              + mOnPlayingProgram.get(0).get("title") + "  (正在播放)");
-                                    ss.setSpan(new ForegroundColorSpan(Color.RED), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                    tv.setText(ss);
-                                    return convertView;
+                                    return getContentItemView(context, convertView, inflater, mOnPlayingIndex, false, true);
                                 }
                             });
                         }
@@ -495,6 +451,18 @@ public class ChannelDetailActivity extends Activity
                     mProgramListView.setAdapter(mProgramListViewAdapter);
                     if (mOnPlayingIndex != -1)                        
                         mProgramListView.setSelection(mOnPlayingIndex);
+                    
+                    for (int i=0; i<mItemDataList.size(); ++i)
+                    {
+                        if (mItemDataList.get(i).getExtraInfo() == null)
+                            continue;
+                        
+                        String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
+                        String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
+                        String program = getProgramString(time, title);
+                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program))
+                            updateItem(i, true, false);
+                    }
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
                     break;
@@ -555,6 +523,40 @@ public class ChannelDetailActivity extends Activity
         mOnPlayingIndex += onPlayingAddon;
     }
     
+    /*
+     * Trasfer the day to the server host day: Monday~Sunday -> 1~7
+     */
+    private int getProxyDay(int day)
+    {
+        assert(day >=1 && day <=7);
+        int hostDay = 0;
+        switch (day)
+        {
+            case Calendar.MONDAY:
+                hostDay = 1;
+                break;
+            case Calendar.TUESDAY:
+                hostDay = 2;
+                break;
+            case Calendar.WEDNESDAY:
+                hostDay = 3;
+                break;
+            case Calendar.THURSDAY:
+                hostDay = 4;
+                break;
+            case Calendar.FRIDAY:
+                hostDay = 5;
+                break;
+            case Calendar.SATURDAY:
+                hostDay = 6;
+                break;
+            case Calendar.SUNDAY:
+                hostDay = 7;
+                break;
+        }
+        return hostDay;
+    }
+    
     private int compareTime(String time1, String time2)
     {
         assert(time1 != null && time2 != null);
@@ -578,5 +580,60 @@ public class ChannelDetailActivity extends Activity
         }
         
         return 0;
+    }
+       
+    private void updateItem(final int position, final boolean hasAlarm, final boolean onplaying)
+    {
+        if (mItemDataList == null || mProgramListViewAdapter == null)
+            return;
+        
+        mItemDataList.get(position).setItemView(new IItemView() 
+        {                                        
+            @Override
+            public View getView(Context context, View convertView, LayoutInflater inflater) 
+            {
+                return getContentItemView(context, convertView, inflater, position, hasAlarm, onplaying);
+            }
+        });
+        mProgramListViewAdapter.notifyDataSetChanged();
+    }
+    
+    private String getProgramString(String time, String title)
+    {
+        return time + ":　" + title;
+    }
+    
+    private View getContentItemView(Context context, View convertView, LayoutInflater inflater, int position, boolean hasAlarm, boolean onplaying)
+    {
+        assert (inflater != null);
+        convertView = inflater.inflate(R.layout.detail_program_item, null);
+        TextView programNameTextView = (TextView) convertView.findViewById(R.id.detail_program_name_tv);
+        ImageView indicator = (ImageView) convertView.findViewById(R.id.detail_program_indicator_iv);
+        ImageView alarmIcon = (ImageView) convertView.findViewById(R.id.detail_alarm_icon_iv);
+        
+        if (onplaying)
+        {
+            SpannableString ss = new SpannableString(getProgramString(mOnPlayingProgram.get(0).get("time"), mOnPlayingProgram.get(0).get("title")) + "  (正在播放)");
+            ss.setSpan(new ForegroundColorSpan(Color.RED), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            programNameTextView.setText(ss);
+        }
+        else 
+        {
+            String time = (String) mItemDataList.get(position).getExtraInfo().get("time");
+            String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
+            programNameTextView.setText(getProgramString(time, title));
+        }
+        if (hasAlarm)
+        {
+            indicator.setVisibility(View.GONE);
+            alarmIcon.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            indicator.setVisibility(View.VISIBLE);
+            alarmIcon.setVisibility(View.GONE);
+        }
+        
+        return convertView;
     }
 }
