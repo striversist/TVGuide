@@ -235,7 +235,7 @@ public class ChannelDetailActivity extends Activity
                 alarmList.add(getResources().getString(R.string.m10_alarm));
                 String alarmTimeString[] = (String[]) alarmList.toArray(new String[0]);
                 
-                long alarmTime = AppEngine.getInstance().getAlarmHelper().getAlarmTimeAtMillis(mChannelId, mChannelName, program);
+                long alarmTime = AppEngine.getInstance().getAlarmHelper().getAlarmTimeAtMillis(mChannelId, mChannelName, program, mCurrentSelectedDay);
                 int choice = -1;
                 // Has already set the alarm clock
                 if (alarmTime > 0)
@@ -278,11 +278,11 @@ public class ChannelDetailActivity extends Activity
                                 }
                                 
                                 // Try to remove the alarm first
-                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
+                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program, mCurrentSelectedDay);
                                 
                                 // Set alarm clock
                                 long alarmTimeInMillis = calendar.getTimeInMillis() - aheadMinute * 60 * 1000;
-                                AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelId, mChannelName, program, alarmTimeInMillis);
+                                AppEngine.getInstance().getAlarmHelper().addAlarm(mChannelId, mChannelName, program, mCurrentSelectedDay, alarmTimeInMillis);
                                 if (alarmTimeInMillis < System.currentTimeMillis())   // The clock will sounds right now
                                 {
                                     updateItem(position, false, false);
@@ -300,7 +300,7 @@ public class ChannelDetailActivity extends Activity
                             @Override
                             public void onClick(DialogInterface dialog, int which) 
                             {
-                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program);
+                                AppEngine.getInstance().getAlarmHelper().removeAlarm(mChannelId, mChannelName, program, mCurrentSelectedDay);
                                 updateItem(position, false, false);
                                 Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_cancel), Toast.LENGTH_SHORT).show();
                                 mProgramListViewAdapter.notifyDataSetChanged();
@@ -452,6 +452,7 @@ public class ChannelDetailActivity extends Activity
                     if (mOnPlayingIndex != -1)                        
                         mProgramListView.setSelection(mOnPlayingIndex);
                     
+                    // 显示闹钟图标
                     for (int i=0; i<mItemDataList.size(); ++i)
                     {
                         if (mItemDataList.get(i).getExtraInfo() == null)
@@ -460,7 +461,7 @@ public class ChannelDetailActivity extends Activity
                         String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
                         String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
                         String program = getProgramString(time, title);
-                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program))
+                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program, mCurrentSelectedDay))
                             updateItem(i, true, false);
                     }
                     break;

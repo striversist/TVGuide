@@ -3,6 +3,7 @@ package com.tools.tvguide.activities;
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ public class AlarmAlertActivity extends Activity
         final String channelId = getIntent().getStringExtra("channel_id");
         final String channelName = getIntent().getStringExtra("channel_name");
         final String program = getIntent().getStringExtra("program");
+        final String day = getIntent().getStringExtra("day");
         AlertDialog dialog = new AlertDialog.Builder(AlarmAlertActivity.this).setIcon(R.drawable.clock)
                 .setTitle(channelName)
                 .setMessage(program)
@@ -34,7 +36,7 @@ public class AlarmAlertActivity extends Activity
                         localMediaPlayer.stop();
                         if (AppEngine.getInstance().getContext() == null)
                             AppEngine.getInstance().setContext(AlarmAlertActivity.this);    // 需要设置，否则会有空指针的异常
-                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program);
+                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program, Integer.valueOf(day).intValue());
                         AlarmAlertActivity.this.finish();
                     }
                 }).create();

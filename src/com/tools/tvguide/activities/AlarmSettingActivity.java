@@ -65,7 +65,9 @@ public class AlarmSettingActivity extends Activity
                         String channelId = (String) mItemList.get(position).get("id");
                         String channelName = (String) mItemList.get(position).get("name");
                         String program = (String) mItemList.get(position).get("program");
-                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program);
+                        String day = (String) mItemList.get(position).get("day");
+                        
+                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program, Integer.valueOf(day));
                         mItemList.remove(position);
                         mListViewAdapter.notifyDataSetChanged();
                     }
@@ -151,6 +153,7 @@ public class AlarmSettingActivity extends Activity
             String channelId = entry.getValue().get("channel_id");
             String channelName = entry.getValue().get("channel_name");
             String program = entry.getValue().get("program");
+            String day = entry.getValue().get("day");
             
             HashMap<String, Object> item = new HashMap<String, Object>();
             if (mXmlChannelInfo.get(channelId) != null)
@@ -160,6 +163,7 @@ public class AlarmSettingActivity extends Activity
             item.put("id", channelId);
             item.put("name", channelName);
             item.put("program", program);
+            item.put("day", day);
             mItemList.add(item);
         }
         mListViewAdapter.notifyDataSetChanged();

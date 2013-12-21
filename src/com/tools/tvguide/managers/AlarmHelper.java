@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 import com.tools.tvguide.components.CallAlarmReceiver;
 
+import android.R.integer;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -29,6 +30,8 @@ public class AlarmHelper
     private final String SEPERATOR = "#";
     private boolean mSettingChanged = false;
     private String FILE_ALARM_HELPER = "alarm_settings.txt";
+    private final int MIN_DAY = 1;  // 本周一
+    private final int MAX_DAY = 14; // 下周日
     
     public AlarmHelper(Context context)
     {
@@ -43,19 +46,21 @@ public class AlarmHelper
             throw new IllegalStateException("mRecords is null");
     }
     
-    public void addAlarm(String channelId, String channelName, String program, long triggerAtMillis)
+    public void addAlarm(String channelId, String channelName, String program, int day, long triggerAtMillis)
     {
+        assert(day >= MIN_DAY && day <= MAX_DAY);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(triggerAtMillis);
 //        Log.d(TAG, "addAlarm: channel=" + channelName + ", program=" + program + ", triggerTime=" + calendar.getTime().toString());
-        String key = makeKey(channelId, channelName, program);
-        if (isAlarmSet(channelId, channelName, program))
-            removeAlarm(channelId, channelName, program);
+        String key = makeKey(channelId, channelName, program, day);
+        if (isAlarmSet(channelId, channelName, program, day))
+            removeAlarm(channelId, channelName, program, day);
         
         HashMap<String, String> info = new HashMap<String, String>();
         info.put("channel_id", channelId);
         info.put("channel_name", channelName);
         info.put("program", program);
+        info.put("day", String.valueOf(day));
         if (hasConflictWithOthers(triggerAtMillis))
         {
             long thresholdAtMillis = 5000;
@@ -79,6 +84,7 @@ public class AlarmHelper
         intent.putExtra("channel_id", channelId);
         intent.putExtra("channel_name", channelName);
         intent.putExtra("program", program);
+        intent.putExtra("day", String.valueOf(day));
         
 //        Log.d(TAG, "addAlarm: alarm id = " + key.hashCode());
         PendingIntent sender = PendingIntent.getBroadcast(mContext, key.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -87,15 +93,16 @@ public class AlarmHelper
         mSettingChanged = true;
     }
     
-    public void removeAlarm(String channelId, String channelName, String program)
+    public void removeAlarm(String channelId, String channelName, String program, int day)
     {
-        String key = makeKey(channelId, channelName, program);
+        String key = makeKey(channelId, channelName, program, day);
         mRecords.remove(key);
         
         Intent intent = new Intent(mContext, CallAlarmReceiver.class);
         intent.putExtra("channel_id", channelId);
         intent.putExtra("channel_name", channelName);
         intent.putExtra("program", program);
+        intent.putExtra("day", String.valueOf(day));
         
         PendingIntent sender = PendingIntent.getBroadcast(mContext, key.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
@@ -109,16 +116,17 @@ public class AlarmHelper
         return mRecords;
     }
     
-    public long getAlarmTimeAtMillis(String channelId, String channelName, String program)
+    public long getAlarmTimeAtMillis(String channelId, String channelName, String program, int day)
     {
-        if (isAlarmSet(channelId, channelName, program))
-            return Long.valueOf(mRecords.get(makeKey(channelId, channelName, program)).get("time"));
+        if (isAlarmSet(channelId, channelName, program, day))
+            return Long.valueOf(mRecords.get(makeKey(channelId, channelName, program, day)).get("time"));
         return -1;
     }
     
-    public boolean isAlarmSet(String channelId, String channelName, String program)
+    public boolean isAlarmSet(String channelId, String channelName, String program, int day)
     {
-        return mRecords.containsKey(makeKey(channelId, channelName, program));
+        assert (day>= MIN_DAY && day<= MAX_DAY);
+        return mRecords.containsKey(makeKey(channelId, channelName, program, day));
     }
     
     public void resetAllAlarms()
@@ -134,14 +142,15 @@ public class AlarmHelper
             String channelId = info.get("channel_id");
             String channelName = info.get("channel_name");
             String program = info.get("program");
+            String day = info.get("day");
             long triggerAtMillis = Long.valueOf(info.get("time")).longValue();
-            addAlarm(channelId, channelName, program, triggerAtMillis);
+            addAlarm(channelId, channelName, program, Integer.valueOf(day).intValue(), triggerAtMillis);
         }
     }
     
-    private String makeKey(String channelId, String channelName, String program)
+    private String makeKey(String channelId, String channelName, String program, int day)
     {
-        return channelId + SEPERATOR + channelName + SEPERATOR + program;
+        return channelId + SEPERATOR + channelName + SEPERATOR + program + SEPERATOR + String.valueOf(day);
     }
     
     private boolean hasConflictWithOthers(long triggerAtMillis)
