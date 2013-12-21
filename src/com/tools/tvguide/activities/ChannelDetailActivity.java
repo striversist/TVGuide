@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.tools.tvguide.R;
@@ -61,6 +63,7 @@ public class ChannelDetailActivity extends Activity
     private ListView mDateChosenListView;
     private DateAdapter mDateAdapter;
     private int mOnPlayingIndex;
+    private Timer mTimer;
     
     private List<HashMap<String, String>> mProgramList;             // Key: time, title
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
@@ -69,7 +72,8 @@ public class ChannelDetailActivity extends Activity
     private List<ResultProgramAdapter.IListItem> mItemDataList;
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
-    private final int DAY_IN_MS = 60 * 60 * 24 * 1000;
+    private final int DAY_IN_MS = 60 * 60 * 24 * 1000;              // 一天的毫秒数
+    private final int TIMER_SCHEDULE_PERIOD = 5 * 60 * 1000;        // 5 minute
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -102,12 +106,23 @@ public class ChannelDetailActivity extends Activity
         initViews();
         
         updateProgramList();
+        
+        mTimer = new Timer(true);
+        mTimer.schedule(new TimerTask() 
+        {
+            @Override
+            public void run() 
+            {
+                updateOnplayingProgram();
+            }
+        }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
     }
     
     @Override
     public void onDestroy()
     {
         super.onDestroy();
+        mTimer.cancel();
     }
     
     @Override
@@ -359,6 +374,7 @@ public class ChannelDetailActivity extends Activity
     private void updateProgramList()
     {
         mProgramList.clear();
+        mOnPlayingProgram.clear();
         boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel2(mChannelId, mCurrentSelectedDay, mProgramList, 
                                 mOnPlayingProgram, new ContentManager.LoadListener() 
         {
@@ -374,6 +390,7 @@ public class ChannelDetailActivity extends Activity
     
     private void updateOnplayingProgram()
     {
+        mOnPlayingProgram.clear();
         AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
         {    
             @Override
@@ -466,6 +483,24 @@ public class ChannelDetailActivity extends Activity
                     }
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
+                    for (int i=0; i<mItemDataList.size(); ++i)
+                    {
+                        if (mItemDataList.get(i).getExtraInfo() == null)
+                            continue;
+                        
+                        String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
+                        String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
+                        if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title"))
+                            && mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
+                        {
+                            if (mOnPlayingIndex != i)
+                            {
+                                updateItem(mOnPlayingIndex, false, false);
+                                mOnPlayingIndex = i;
+                                updateItem(mOnPlayingIndex, false, true);
+                            }
+                        }
+                    }
                     break;
                 default:
                     break;
