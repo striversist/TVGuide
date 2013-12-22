@@ -224,6 +224,7 @@ public class ChannelDetailActivity extends Activity
                 final String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
                 final String program = getProgramString(time, title);
                 
+                // -------------------- 对calendar的设置及调整 -------------------------
                 String hour = time.split(":")[0];
                 String minute = time.split(":")[1];
                 final Calendar calendar = Calendar.getInstance();
@@ -236,7 +237,7 @@ public class ChannelDetailActivity extends Activity
                 calendar.setTimeInMillis(calendar.getTimeInMillis() + adjust);
                 
                 // 因为周日算一周的第一天，所以这里要做特殊处理。如果使用API setFirstDayOfWeek, 则在月初时会设置到上月的末尾，故不用该API
-                if (mCurrentSelectedDay == Calendar.SUNDAY)
+                if (mCurrentSelectedDay == getProxyDay(Calendar.SUNDAY))
                 {
                     calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
                     calendar.setTimeInMillis(calendar.getTimeInMillis() + 60*60*24*1000);       // 周六再增加一天时间
@@ -248,7 +249,7 @@ public class ChannelDetailActivity extends Activity
                     calendar.setTimeInMillis(calendar.getTimeInMillis() - 60*60*24*7*1000);
                 }
                 
-                // Choose earlier than now time
+                // -------------------- 真正的逻辑-------------------------
                 if (calendar.getTimeInMillis() < System.currentTimeMillis())
                 {
                     AlertDialog dialog = new AlertDialog.Builder(ChannelDetailActivity.this)
