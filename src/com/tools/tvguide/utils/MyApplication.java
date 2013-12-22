@@ -4,17 +4,18 @@ import android.app.Application;
 
 public class MyApplication extends Application
 {
-	public static MyApplication smInstance = null;
+	public static MyApplication sInstance = null;
 	
 	public static MyApplication getInstance()
 	{
-		return smInstance;
+	    assert (sInstance != null);
+		return sInstance;
 	}
 	
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
-		smInstance = this;
+		sInstance = this;
 	}
 }
