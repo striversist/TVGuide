@@ -19,8 +19,11 @@ import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.DateAdapter.DateData;
 import com.tools.tvguide.adapters.ResultProgramAdapter.IItemView;
 import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.views.DetailLeftGuide;
+import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,6 +59,7 @@ public class ChannelDetailActivity extends Activity
     private static final String TAG = "ChannelDetailActivity";
     private String mChannelName;
     private String mChannelId;
+    private List<Channel> mChannelList;
     private TextView mChannelNameTextView;
     private TextView mDateTextView;
     private ListView mProgramListView;
@@ -64,6 +68,7 @@ public class ChannelDetailActivity extends Activity
     private DateAdapter mDateAdapter;
     private int mOnPlayingIndex;
     private Timer mTimer;
+    private DetailLeftGuide mLeftMenu;
     
     private List<HashMap<String, String>> mProgramList;             // Key: time, title
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
@@ -89,13 +94,16 @@ public class ChannelDetailActivity extends Activity
         menu.setShadowDrawable(R.drawable.shadow);
         menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         menu.setFadeDegree(0.35f);
-        menu.setMenu(R.layout.channel_detail_left);
+//        menu.setMenu(R.layout.channel_detail_left);
+        mLeftMenu = new DetailLeftGuide(this);
+        menu.setMenu(mLeftMenu);
         menu.setSecondaryMenu(R.layout.channel_detail_right);
         menu.setSecondaryShadowDrawable(R.drawable.shadowright);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         
         mChannelId = getIntent().getStringExtra("id");
         mChannelName = getIntent().getStringExtra("name");
+        mChannelList = (List<Channel>) getIntent().getSerializableExtra("channel_list");
         mProgramList = new ArrayList<HashMap<String,String>>();
         mOnPlayingProgram = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
@@ -105,6 +113,7 @@ public class ChannelDetailActivity extends Activity
      
         initViews();
         
+        updateTitle();
         updateProgramList();
         
         mTimer = new Timer(true);
@@ -154,7 +163,6 @@ public class ChannelDetailActivity extends Activity
         mProgramListView = (ListView) findViewById(R.id.channeldetail_program_listview);
         mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
         
-        mChannelNameTextView.setText(mChannelName);
         List<DateData> dateList = new ArrayList<DateAdapter.DateData>();
         dateList.add(new DateData(getResources().getString(R.string.Mon)));
         dateList.add(new DateData(getResources().getString(R.string.Tue)));
@@ -166,6 +174,20 @@ public class ChannelDetailActivity extends Activity
         mDateAdapter = new DateAdapter(this, dateList);
         mDateChosenListView.setAdapter(mDateAdapter);
         mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
+        mLeftMenu.setChannelList(mChannelList);
+        
+        mLeftMenu.setOnChannelSelectListener(new OnChannelSelectListener() 
+        {
+            @Override
+            public void onChannelSelect(Channel channel) 
+            {
+                mChannelId = channel.id;
+                mChannelName = channel.name;
+                updateTitle();
+                updateProgramList();
+            }
+        });
+        
         mDateChosenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() 
         {
             @Override
@@ -176,6 +198,7 @@ public class ChannelDetailActivity extends Activity
                 updateProgramList();
             }
         });
+        
         mProgramListView.setOnScrollListener(new OnScrollListener() 
         {            
             @Override
@@ -369,6 +392,11 @@ public class ChannelDetailActivity extends Activity
             mDateChosenListView.startAnimation(pushRightIn);
             mDateChosenListView.setVisibility(View.VISIBLE);
         }
+    }
+    
+    private void updateTitle()
+    {
+        mChannelNameTextView.setText(mChannelName);
     }
 
     private void updateProgramList()

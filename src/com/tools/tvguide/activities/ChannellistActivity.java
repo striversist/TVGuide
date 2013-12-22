@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import net.youmi.android.diy.banner.DiyBanner;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.utils.Utility;
@@ -77,6 +79,16 @@ public class ChannellistActivity extends Activity
                 Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
                 intent.putExtra("id", channelId);
                 intent.putExtra("name", channelName);
+                
+                ArrayList<Channel> channelList = new ArrayList<Channel>();
+                for (int i=0; i<mChannelList.size(); ++i)
+                {
+                    Channel channel = new Channel();
+                    channel.id = mChannelList.get(i).get("id");
+                    channel.name = mChannelList.get(i).get("name");
+                    channelList.add(channel);
+                }
+                intent.putExtra("channel_list", (Serializable) channelList);
                 startActivity(intent);
             }
         });

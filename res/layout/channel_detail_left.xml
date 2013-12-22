@@ -1,14 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/light_bg" >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="left" />
-
-</RelativeLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@color/light_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:id="@+id/detail_left_title_tv" android:gravity="center_vertical" android:background="@drawable/abs__ab_solid_light_holo" 
+            android:paddingLeft="10.0sp" android:textSize="18.0sp" android:textColor="@color/black" android:layout_width="fill_parent" 
+            android:layout_height="48.0sp" android:text="@string/programchannellist" />
+    <ListView android:id="@+id/detail_left_channel_lv" android:layout_width="fill_parent" android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000" />
+</LinearLayout>

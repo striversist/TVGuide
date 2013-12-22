@@ -82,5 +82,6 @@
     <string name="morning">凌晨上午节目</string>
     <string name="midday">中午下午节目</string>
     <string name="evening">晚间节目</string>
+    <string name="programchannellist">频道列表</string>
 
 </resources>
