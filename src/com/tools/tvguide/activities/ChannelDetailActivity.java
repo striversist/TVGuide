@@ -77,7 +77,6 @@ public class ChannelDetailActivity extends Activity
     private List<ResultProgramAdapter.IListItem> mItemDataList;
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
-    private final int DAY_IN_MS = 60 * 60 * 24 * 1000;              // 一天的毫秒数
     private final int TIMER_SCHEDULE_PERIOD = 5 * 60 * 1000;        // 5 minute
 
     @Override
