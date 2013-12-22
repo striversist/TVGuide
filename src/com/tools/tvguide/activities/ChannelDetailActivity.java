@@ -1,6 +1,5 @@
 package com.tools.tvguide.activities;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.views.DetailLeftGuide;
 import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
@@ -31,10 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -71,6 +68,7 @@ public class ChannelDetailActivity extends Activity
     private int mOnPlayingIndex;
     private Timer mTimer;
     private DetailLeftGuide mLeftMenu;
+    private ImageView mFavImageView;
     
     private List<HashMap<String, String>> mProgramList;             // Key: time, title
     private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
@@ -165,6 +163,12 @@ public class ChannelDetailActivity extends Activity
         mDateTextView = (TextView) findViewById(R.id.channeldetail_date_tv);
         mProgramListView = (ListView) findViewById(R.id.channeldetail_program_listview);
         mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
+        mFavImageView = (ImageView) findViewById(R.id.channeldetail_fav_iv);
+        
+        if (AppEngine.getInstance().getCollectManager().isChannelCollected(mChannelId))
+        {
+            mFavImageView.setImageResource(R.drawable.btn_fav_checked);
+        }
         
         List<DateData> dateList = new ArrayList<DateAdapter.DateData>();
         dateList.add(new DateData(getResources().getString(R.string.Mon)));
@@ -177,8 +181,8 @@ public class ChannelDetailActivity extends Activity
         mDateAdapter = new DateAdapter(this, dateList);
         mDateChosenListView.setAdapter(mDateAdapter);
         mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
-        mLeftMenu.setChannelList(mChannelList);
         
+        mLeftMenu.setChannelList(mChannelList);
         mLeftMenu.setOnChannelSelectListener(new OnChannelSelectListener() 
         {
             @Override
@@ -256,6 +260,9 @@ public class ChannelDetailActivity extends Activity
             case R.id.channeldetail_date_iv:
                 toggleDateListView();
                 break;
+            case R.id.channeldetail_fav_iv:
+                toggleFavIcon();
+                break;
             default:
                 break;
         }
@@ -287,6 +294,40 @@ public class ChannelDetailActivity extends Activity
             pushRightIn.setFillAfter(true);
             mDateChosenListView.startAnimation(pushRightIn);
             mDateChosenListView.setVisibility(View.VISIBLE);
+        }
+    }
+    
+    private void toggleFavIcon()
+    {
+        
+        CollectManager manager = AppEngine.getInstance().getCollectManager();
+        if (manager.isChannelCollected(mChannelId))
+        {
+            collectChannel(false);
+            mFavImageView.setImageResource(R.drawable.btn_fav);
+        }
+        else
+        {
+            collectChannel(true);
+            mFavImageView.setImageResource(R.drawable.btn_fav_checked);
+        }
+    }
+    
+    public void collectChannel(boolean doCollect)
+    {
+        CollectManager manager = AppEngine.getInstance().getCollectManager();
+        if (doCollect)
+        {
+            HashMap<String, Object> info = new HashMap<String, Object>();
+            info.put("name", mChannelName);
+            manager.addCollectChannel(mChannelId, info);
+            Toast.makeText(this, R.string.collect_success, Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            if (manager.isChannelCollected(mChannelId))
+                manager.removeCollectChannel(mChannelId);
+            Toast.makeText(this, R.string.cancel_collect, Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -338,11 +379,6 @@ public class ChannelDetailActivity extends Activity
             // The same effect with press back key
             finish();
         }
-    }
-    
-    public void collectChannel(View view)
-    {
-
     }
     
     private Handler uiHandler = new Handler()

@@ -44,6 +44,11 @@ public class CollectManager
         return mCollectChannels;
     }
     
+    public boolean isChannelCollected(String id)
+    {
+        return mCollectChannels.containsKey(id);
+    }
+    
     public void shutDown()
     {
         if (mSettingChanged)
