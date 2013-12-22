@@ -90,7 +90,8 @@ public class ChannelDetailActivity extends Activity
         
         // configure the SlidingMenu
         SlidingMenu menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.LEFT_RIGHT);
+//        menu.setMode(SlidingMenu.LEFT_RIGHT);
+        menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setShadowWidthRes(R.dimen.shadow_width);
         menu.setShadowDrawable(R.drawable.shadow);
@@ -99,8 +100,8 @@ public class ChannelDetailActivity extends Activity
 //        menu.setMenu(R.layout.channel_detail_left);
         mLeftMenu = new DetailLeftGuide(this);
         menu.setMenu(mLeftMenu);
-        menu.setSecondaryMenu(R.layout.channel_detail_right);
-        menu.setSecondaryShadowDrawable(R.drawable.shadowright);
+//        menu.setSecondaryMenu(R.layout.channel_detail_right);
+//        menu.setSecondaryShadowDrawable(R.drawable.shadowright);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         
         mChannelId = getIntent().getStringExtra("id");
@@ -404,6 +405,8 @@ public class ChannelDetailActivity extends Activity
                         if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program, mCurrentSelectedDay))
                             updateItem(i, true, false);
                     }
+                    
+                    foldDateListView();
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
                     for (int i=0; i<mItemDataList.size(); ++i)
