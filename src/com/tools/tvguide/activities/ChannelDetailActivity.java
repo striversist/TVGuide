@@ -104,6 +104,8 @@ public class ChannelDetailActivity extends Activity
         mChannelId = getIntent().getStringExtra("id");
         mChannelName = getIntent().getStringExtra("name");
         mChannelList = (List<Channel>) getIntent().getSerializableExtra("channel_list");
+        if (mChannelList == null)
+        	mChannelList = new ArrayList<Channel>();
         mProgramList = new ArrayList<HashMap<String,String>>();
         mOnPlayingProgram = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
@@ -112,9 +114,7 @@ public class ChannelDetailActivity extends Activity
         mOnPlayingIndex = -1;
      
         initViews();
-        
-        updateTitle();
-        updateProgramList();
+        updateAll();
         
         mTimer = new Timer(true);
         mTimer.schedule(new TimerTask() 
@@ -164,11 +164,6 @@ public class ChannelDetailActivity extends Activity
         mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
         mFavImageView = (ImageView) findViewById(R.id.channeldetail_fav_iv);
         
-        if (AppEngine.getInstance().getCollectManager().isChannelCollected(mChannelId))
-        {
-            mFavImageView.setImageResource(R.drawable.btn_fav_checked);
-        }
-        
         List<DateData> dateList = new ArrayList<DateAdapter.DateData>();
         dateList.add(new DateData(getResources().getString(R.string.Mon)));
         dateList.add(new DateData(getResources().getString(R.string.Tue)));
@@ -189,8 +184,7 @@ public class ChannelDetailActivity extends Activity
             {
                 mChannelId = channel.id;
                 mChannelName = channel.name;
-                updateTitle();
-                updateProgramList();
+                updateAll();
             }
         });
         
@@ -330,9 +324,24 @@ public class ChannelDetailActivity extends Activity
         }
     }
     
+    private void updateAll()
+    {
+    	updateTitle();
+    	updateFavIcon();
+    	updateProgramList();
+    }
+    
     private void updateTitle()
     {
         mChannelNameTextView.setText(mChannelName);
+    }
+    
+    private void updateFavIcon()
+    {
+    	if (AppEngine.getInstance().getCollectManager().isChannelCollected(mChannelId))
+            mFavImageView.setImageResource(R.drawable.btn_fav_checked);
+    	else
+    		mFavImageView.setImageResource(R.drawable.btn_fav);
     }
 
     private void updateProgramList()
@@ -608,7 +617,7 @@ public class ChannelDetailActivity extends Activity
         ImageView indicator = (ImageView) convertView.findViewById(R.id.detail_program_indicator_iv);
         ImageView alarmIcon = (ImageView) convertView.findViewById(R.id.detail_alarm_icon_iv);
         
-        if (onplaying)
+        if (onplaying && mOnPlayingProgram.size() > 0)
         {
             SpannableString ss = new SpannableString(getProgramString(mOnPlayingProgram.get(0).get("time"), mOnPlayingProgram.get(0).get("title")) + "  (正在播放)");
             ss.setSpan(new ForegroundColorSpan(Color.RED), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
