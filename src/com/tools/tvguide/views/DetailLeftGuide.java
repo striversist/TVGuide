@@ -64,6 +64,13 @@ public class DetailLeftGuide extends LinearLayout implements OnItemClickListener
     	mListAdapter.setCurrentIndex(position);
     }
     
+    public void setSelection(int position)
+    {
+    	if (position < 0 || position >= mChannelListView.getCount())
+    		return;
+    	mChannelListView.setSelection(position);
+    }
+    
     public void setOnChannelSelectListener(OnChannelSelectListener listener)
     {
         mListener = listener;

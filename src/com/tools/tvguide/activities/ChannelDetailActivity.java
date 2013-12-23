@@ -180,7 +180,10 @@ public class ChannelDetailActivity extends Activity
         for (int i=0; i<mChannelList.size(); ++i)
         {
         	if (mChannelList.get(i).id.equals(mChannelId))
+        	{
         		mLeftMenu.setCurrentIndex(i);
+        		mLeftMenu.setSelection(i);
+        	}
         }
         mLeftMenu.setOnChannelSelectListener(new OnChannelSelectListener() 
         {
