@@ -177,6 +177,11 @@ public class ChannelDetailActivity extends Activity
         mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
         
         mLeftMenu.setChannelList(mChannelList);
+        for (int i=0; i<mChannelList.size(); ++i)
+        {
+        	if (mChannelList.get(i).id.equals(mChannelId))
+        		mLeftMenu.setCurrentIndex(i);
+        }
         mLeftMenu.setOnChannelSelectListener(new OnChannelSelectListener() 
         {
             @Override
