@@ -22,23 +22,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SimpleAdapter.ViewBinder;
 
 public class ChannellistActivity extends Activity 
 {
     private String mCategoryId;
     private String mCategoryName;
     private ListView mChannelListView;
+    private ChannellistAdapter mListAdapter;
     private TextView mTitltTextView;
     private List<HashMap<String, String>> mChannelList;                     // Key: id, name
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
@@ -60,6 +57,8 @@ public class ChannellistActivity extends Activity
         mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
+        mListAdapter = new ChannellistAdapter(this, mItemList);
+        mChannelListView.setAdapter(mListAdapter);
         mProgressDialog = new MyProgressDialog(this);
         
         mCategoryId = getIntent().getStringExtra("categoryId");
@@ -171,7 +170,7 @@ public class ChannellistActivity extends Activity
                             item.put("name", mChannelList.get(i).get("name"));
                             mItemList.add(item);
                         }
-                        mChannelListView.setAdapter(new ChannellistAdapter(ChannellistActivity.this, mItemList));
+                        mListAdapter.notifyDataSetChanged();
                         updateOnPlayingProgramList();
                     }
                     break;
@@ -188,7 +187,7 @@ public class ChannellistActivity extends Activity
                                 }
                             }
                         }
-                        mChannelListView.setAdapter(new ChannellistAdapter(ChannellistActivity.this, mItemList));
+                        mListAdapter.notifyDataSetChanged();
                     }
                     break;
                 default:
