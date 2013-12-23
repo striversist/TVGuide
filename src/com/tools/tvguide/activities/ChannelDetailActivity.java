@@ -243,7 +243,7 @@ public class ChannelDetailActivity extends Activity
                     @Override
                     public void onAlarmSetted(boolean success) 
                     {
-                        updateItem(position, success, false);
+                        updateItem(position, true, success, false);
                     }
                 });
                 
@@ -432,7 +432,7 @@ public class ChannelDetailActivity extends Activity
                                 @Override
                                 public View getView(Context context, View convertView, LayoutInflater inflater) 
                                 {
-                                    return getContentItemView(context, convertView, inflater, mOnPlayingIndex, false, true);
+                                    return getContentItemView(context, convertView, inflater, mOnPlayingIndex, true, false, true);
                                 }
                             });
                         }
@@ -448,14 +448,17 @@ public class ChannelDetailActivity extends Activity
                     // 显示闹钟图标
                     for (int i=0; i<mItemDataList.size(); ++i)
                     {
-                        if (mItemDataList.get(i).getExtraInfo() == null)
+                        if (mItemDataList.get(i).getExtraInfo() == null)	// Label Item
                             continue;
+                     
+                        if (i < mOnPlayingIndex)
+                    		updateItem(i, false, false, false);
                         
                         String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
                         String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
                         String program = getProgramString(time, title);
                         if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program, mCurrentSelectedDay))
-                            updateItem(i, true, false);
+                            updateItem(i, true, true, false);
                     }
                     
                     foldDateListView();
@@ -473,9 +476,9 @@ public class ChannelDetailActivity extends Activity
                         {
                             if (mOnPlayingIndex != i)
                             {
-                                updateItem(mOnPlayingIndex, false, false);
+                                updateItem(mOnPlayingIndex, true, false, false);
                                 mOnPlayingIndex = i;
-                                updateItem(mOnPlayingIndex, false, true);
+                                updateItem(mOnPlayingIndex, true, false, true);
                             }
                         }
                     }
@@ -596,17 +599,17 @@ public class ChannelDetailActivity extends Activity
         return 0;
     }
        
-    private void updateItem(final int position, final boolean hasAlarm, final boolean onplaying)
+    private void updateItem(final int position, final boolean hasIndicator, final boolean hasAlarm, final boolean onplaying)
     {
         if (mItemDataList == null || mProgramListViewAdapter == null)
             return;
         
         mItemDataList.get(position).setItemView(new IItemView() 
-        {                                        
+        {
             @Override
             public View getView(Context context, View convertView, LayoutInflater inflater) 
             {
-                return getContentItemView(context, convertView, inflater, position, hasAlarm, onplaying);
+                return getContentItemView(context, convertView, inflater, position, hasIndicator, hasAlarm, onplaying);
             }
         });
         mProgramListViewAdapter.notifyDataSetChanged();
@@ -617,7 +620,8 @@ public class ChannelDetailActivity extends Activity
         return time + ":　" + title;
     }
     
-    private View getContentItemView(Context context, View convertView, LayoutInflater inflater, int position, boolean hasAlarm, boolean onplaying)
+    private View getContentItemView(Context context, View convertView, LayoutInflater inflater, int position, 
+    		boolean hasIndicator, boolean hasAlarm, boolean onplaying)
     {
         assert (inflater != null);
         convertView = inflater.inflate(R.layout.detail_program_item, null);
@@ -631,7 +635,7 @@ public class ChannelDetailActivity extends Activity
             ss.setSpan(new ForegroundColorSpan(Color.RED), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             programNameTextView.setText(ss);
         }
-        else 
+        else if (mItemDataList.get(position).getExtraInfo() != null)
         {
             String time = (String) mItemDataList.get(position).getExtraInfo().get("time");
             String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
@@ -644,7 +648,10 @@ public class ChannelDetailActivity extends Activity
         }
         else
         {
-            indicator.setVisibility(View.VISIBLE);
+        	if (hasIndicator)
+        		indicator.setVisibility(View.VISIBLE);
+        	else
+        		indicator.setVisibility(View.GONE);
             alarmIcon.setVisibility(View.GONE);
         }
         
