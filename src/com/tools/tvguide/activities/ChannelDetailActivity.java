@@ -450,10 +450,7 @@ public class ChannelDetailActivity extends Activity
                     {
                         if (mItemDataList.get(i).getExtraInfo() == null)	// Label Item
                             continue;
-                     
-                        if (i < mOnPlayingIndex)
-                    		updateItem(i, false, false, false);
-                        
+                                             
                         String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
                         String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
                         String program = getProgramString(time, title);
