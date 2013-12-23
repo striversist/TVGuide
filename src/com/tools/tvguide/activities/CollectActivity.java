@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -60,14 +61,7 @@ public class CollectActivity extends Activity
     private LinearLayout mContentLayout;
     private LinearLayout mNoCollectLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
-    
-    private class Channel
-    {
-        String id;
-        String name;
-        int position;
-    }
-    
+        
     private class MySimpleAdapter extends SimpleAdapter
     {
         public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) 
@@ -82,23 +76,24 @@ public class CollectActivity extends Activity
             Button rmBtn = (Button)view.findViewById(R.id.collect_item_del_btn);
             if (rmBtn != null)
             {
-                rmBtn.setTag(position);
+            	assert (mChannelList != null);
+                rmBtn.setTag(mChannelList.get(position));
                 rmBtn.setOnClickListener(new OnClickListener() 
                 {
                     @Override
                     public void onClick(View v) 
                     {
-                        int position = Integer.parseInt(v.getTag().toString());
+                    	Channel bindChannel = (Channel) v.getTag();
                         
                         for (int i=0; i<mChannelList.size(); ++i)
                         {
-                            if (mChannelList.get(i).position == position)
+                            if (mChannelList.get(i).id.equals(bindChannel.id))
                             {
                                 AppEngine.getInstance().getCollectManager().removeCollectChannel(mChannelList.get(i).id);
+                                mChannelList.remove(i);
+                                mItemList.remove(i);
                             }
                         }
-                        mChannelList.remove(position);
-                        mItemList.remove(position);
                         mListViewAdapter.notifyDataSetChanged();
                     }
                 });
@@ -138,7 +133,7 @@ public class CollectActivity extends Activity
         
         mChannelListView = (ListView)findViewById(R.id.collect_channel_list_view);
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
-        mChannelList = new ArrayList<CollectActivity.Channel>();
+        mChannelList = new ArrayList<Channel>();
         mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
         mReportList = new ArrayList<String>();
         mInflater = LayoutInflater.from(this);
@@ -224,7 +219,6 @@ public class CollectActivity extends Activity
             }
             item.put("name", name);
             mItemList.add(item);
-            mChannelList.get(i).position = i;
         }
         mListViewAdapter.notifyDataSetChanged();
     }
