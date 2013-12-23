@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,9 +150,19 @@ public class CollectActivity extends Activity
             {
                 String channelId = mChannelList.get(position).id;
                 String channelName = mChannelList.get(position).name;
+                ArrayList<Channel> channelList = new ArrayList<Channel>();
+                for (int i=0; i<mChannelList.size(); ++i)
+                {
+                    Channel channel = new Channel();
+                    channel.id = mChannelList.get(i).id;
+                    channel.name = mChannelList.get(i).name;
+                    channelList.add(channel);
+                }
+                
                 Intent intent = new Intent(CollectActivity.this, ChannelDetailActivity.class);
                 intent.putExtra("id", channelId);
                 intent.putExtra("name", channelName);
+                intent.putExtra("channel_list", (Serializable) channelList);
                 startActivity(intent);
             }
         });
