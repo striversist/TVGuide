@@ -1,5 +1,7 @@
 package com.tools.tvguide.activities;
 
+import java.util.HashMap;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 
@@ -36,6 +38,13 @@ public class AlarmAlertActivity extends Activity
                         localMediaPlayer.stop();
                         if (AppEngine.getInstance().getContext() == null)
                             AppEngine.getInstance().setContext(AlarmAlertActivity.this);    // 需要设置，否则会有空指针的异常
+                        
+                        HashMap<String, Object> info = new HashMap<String, Object>();
+                        info.put("channel_id", channelId);
+                        info.put("channel_name", channelName);
+                        info.put("program", program);
+                        info.put("day", day);
+                        AppEngine.getInstance().getAlarmHelper().notifyAlarmListeners(info);
                         AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program, Integer.valueOf(day).intValue());
                         AlarmAlertActivity.this.finish();
                     }

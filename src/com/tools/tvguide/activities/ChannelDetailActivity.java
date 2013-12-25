@@ -18,6 +18,7 @@ import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AlarmHelper.AlarmListener;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
@@ -43,7 +44,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ChannelDetailActivity extends Activity 
+public class ChannelDetailActivity extends Activity implements AlarmListener 
 {
     private static final String TAG = "ChannelDetailActivity";
     private String mChannelName;
@@ -68,6 +69,7 @@ public class ChannelDetailActivity extends Activity
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
     private final int TIMER_SCHEDULE_PERIOD = 3 * 60 * 1000;        // 3 minute
+    private final String SEP = ":　";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -100,6 +102,7 @@ public class ChannelDetailActivity extends Activity
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
+        AppEngine.getInstance().getAlarmHelper().addAlarmListener(this);
      
         initViews();
         updateAll();
@@ -120,6 +123,7 @@ public class ChannelDetailActivity extends Activity
     {
         super.onDestroy();
         mTimer.cancel();
+        AppEngine.getInstance().getAlarmHelper().removeAlarmListener(this);
     }
     
     @Override
@@ -256,6 +260,17 @@ public class ChannelDetailActivity extends Activity
             default:
                 break;
         }
+    }
+    
+    @Override
+    public void onAlarmed(HashMap<String, Object> info) 
+    {
+        String programString = (String) info.get("program");
+        if (programString == null)
+            return;
+        
+        Program program = convertToProgram(programString);
+        mListViewAdapter.removeAlarmProgram(program);
     }
     
     private void toggleDateListView()
@@ -471,6 +486,19 @@ public class ChannelDetailActivity extends Activity
     
     private String getProgramString(String time, String title)
     {
-        return time + ":　" + title;
+        return time + SEP + title;
+    }
+    
+    private Program convertToProgram(String programString)
+    {
+        String[] parts = programString.split(SEP);
+        if (parts.length == 2)
+        {
+            Program program = new Program();
+            program.time = parts[0];
+            program.title = parts[1];
+            return program;
+        }
+        return null;
     }
 }

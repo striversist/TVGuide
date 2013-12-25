@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.tools.tvguide.components.CallAlarmReceiver;
@@ -29,14 +31,21 @@ public class AlarmHelper
     private LinkedHashMap<String, HashMap<String, String>> mRecords;
     private final String SEPERATOR = "#";
     private boolean mSettingChanged = false;
+    private List<AlarmListener> mListeners;
     private String FILE_ALARM_HELPER = "alarm_settings.txt";
     private final int MIN_DAY = 1;  // 本周一
     private final int MAX_DAY = 14; // 下周日
+    
+    public interface AlarmListener
+    {
+        public void onAlarmed(HashMap<String, Object> info);
+    }
     
     public AlarmHelper(Context context)
     {
         assert(context != null);
         mContext = context;
+        mListeners = new ArrayList<AlarmHelper.AlarmListener>();
         loadAlarmSettings();
     }
     
@@ -109,6 +118,24 @@ public class AlarmHelper
         am.cancel(sender);
         mSettingChanged = true;
         saveAlarmSettings();        // removeAlarm 可能会在主程序未启动时调用到，所以不能依靠shutDown()中来存储
+    }
+    
+    public void notifyAlarmListeners(HashMap<String, Object> info)
+    {
+        for (int i=0; i<mListeners.size(); ++i)
+            mListeners.get(i).onAlarmed(info);
+    }
+    
+    public void addAlarmListener(AlarmListener listener)
+    {
+        assert (listener != null);
+        mListeners.add(listener);
+    }
+    
+    public void removeAlarmListener(AlarmListener listener)
+    {
+        assert (listener != null);
+        mListeners.remove(listener);
     }
     
     public HashMap<String, HashMap<String, String>> getAllRecords()
