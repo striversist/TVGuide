@@ -1,26 +1,23 @@
 package com.tools.tvguide.activities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ChannelDetailListAdapter;
 import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.DateAdapter.DateData;
-import com.tools.tvguide.adapters.ResultProgramAdapter.IItemView;
 import com.tools.tvguide.components.AlarmSettingDialog;
 import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
@@ -31,14 +28,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -46,7 +37,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -62,10 +52,10 @@ public class ChannelDetailActivity extends Activity
     private TextView mChannelNameTextView;
     private TextView mDateTextView;
     private ListView mProgramListView;
-    private BaseAdapter mProgramListViewAdapter;
+    private ChannelDetailListAdapter mListViewAdapter;
+    
     private ListView mDateChosenListView;
     private DateAdapter mDateAdapter;
-    private int mOnPlayingIndex;
     private Timer mTimer;
     private DetailLeftGuide mLeftMenu;
     private ImageView mFavImageView;
@@ -77,7 +67,7 @@ public class ChannelDetailActivity extends Activity
     private List<ResultProgramAdapter.IListItem> mItemDataList;
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
-    private final int TIMER_SCHEDULE_PERIOD = 5 * 60 * 1000;        // 5 minute
+    private final int TIMER_SCHEDULE_PERIOD = 3 * 60 * 1000;        // 3 minute
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -94,7 +84,6 @@ public class ChannelDetailActivity extends Activity
         menu.setShadowDrawable(R.drawable.shadow);
         menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         menu.setFadeDegree(0.35f);
-//        menu.setMenu(R.layout.channel_detail_left);
         mLeftMenu = new DetailLeftGuide(this);
         menu.setMenu(mLeftMenu);
 //        menu.setSecondaryMenu(R.layout.channel_detail_right);
@@ -111,7 +100,6 @@ public class ChannelDetailActivity extends Activity
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
-        mOnPlayingIndex = -1;
      
         initViews();
         updateAll();
@@ -227,23 +215,24 @@ public class ChannelDetailActivity extends Activity
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) 
             {
                 foldDateListView();
+
+                final Program program = mListViewAdapter.getProgram(position);
                 
-                final String time = (String) mItemDataList.get(position).getExtraInfo().get("time");
-                final String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
-                final String program = getProgramString(time, title);
-                
-                String hour = time.split(":")[0];
-                String minute = time.split(":")[1];
+                String hour = program.time.split(":")[0];
+                String minute = program.time.split(":")[1];
                 
                 AlarmSettingDialog alarmSettingDialog = new AlarmSettingDialog(ChannelDetailActivity.this, mCurrentSelectedDay, Integer.parseInt(hour),
-                                Integer.parseInt(minute), mChannelId, mChannelName, program);
+                                Integer.parseInt(minute), mChannelId, mChannelName, getProgramString(program.time, program.title));
                 
                 alarmSettingDialog.setAlarmSettingListener(new OnAlarmSettingListener() 
                 {
                     @Override
                     public void onAlarmSetted(boolean success) 
                     {
-                        updateItem(position, true, success, false);
+                        if (success)
+                            mListViewAdapter.addAlarmProgram(program);
+                        else
+                            mListViewAdapter.removeAlarmProgram(program);
                     }
                 });
                 
@@ -408,76 +397,35 @@ public class ChannelDetailActivity extends Activity
                 case MSG_UPDATE_PROGRAMS:
                     mItemDataList.clear();
                     mProgressDialog.dismiss();
+                    List<Program> programList = new ArrayList<Program>();
                     for (int i=0; i<mProgramList.size(); ++i)
                     {
-                        final String time = mProgramList.get(i).get("time");
-                        final String title = mProgramList.get(i).get("title");
-                        
-                        ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
-                        item.time = time;
-                        item.title = title;
-                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
-                        
-                        HashMap<String, String> extraInfo = new HashMap<String, String>();
-                        extraInfo.put("time", time);
-                        extraInfo.put("title", title);
-                        contentItem.setExtraInfo(extraInfo);
-                                                
-                        if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title"))
-                            && mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
-                        {
-                            mOnPlayingIndex = i;
-                            contentItem.setItemView(new ResultProgramAdapter.IItemView()
-                            {    
-                                @Override
-                                public View getView(Context context, View convertView, LayoutInflater inflater) 
-                                {
-                                    return getContentItemView(context, convertView, inflater, mOnPlayingIndex, true, false, true);
-                                }
-                            });
-                        }
-                        contentItem.setClickable(true);
-                        mItemDataList.add(contentItem);
+                        Program program = new Program();
+                        program.time = mProgramList.get(i).get("time");
+                        program.title = mProgramList.get(i).get("title");
+                        programList.add(program);
                     }
-                    addTimeLable();
-                    mProgramListViewAdapter = new ResultProgramAdapter(ChannelDetailActivity.this, mItemDataList);
-                    mProgramListView.setAdapter(mProgramListViewAdapter);
-                    if (mOnPlayingIndex != -1)                        
-                        mProgramListView.setSelection(mOnPlayingIndex);
+                    mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
+                    mProgramListView.setAdapter(mListViewAdapter);
                     
-                    // 显示闹钟图标
-                    for (int i=0; i<mItemDataList.size(); ++i)
+                    if (mOnPlayingProgram.size() > 0)
                     {
-                        if (mItemDataList.get(i).getExtraInfo() == null)	// Label Item
-                            continue;
-                                             
-                        String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
-                        String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
-                        String program = getProgramString(time, title);
-                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, program, mCurrentSelectedDay))
-                            updateItem(i, true, true, false);
+                        Program onplayingProgram = new Program();
+                        onplayingProgram.time = mOnPlayingProgram.get(0).get("time");
+                        onplayingProgram.title = mOnPlayingProgram.get(0).get("title");
+                        int position = mListViewAdapter.setOnplayingProgram(onplayingProgram);
+                        mProgramListView.setSelection(position);
                     }
                     
                     foldDateListView();
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
-                    for (int i=0; i<mItemDataList.size(); ++i)
+                    if (mOnPlayingProgram.size() > 0)
                     {
-                        if (mItemDataList.get(i).getExtraInfo() == null)
-                            continue;
-                        
-                        String time = (String) mItemDataList.get(i).getExtraInfo().get("time");
-                        String title = (String) mItemDataList.get(i).getExtraInfo().get("title");
-                        if (time.equals(mOnPlayingProgram.get(0).get("time")) && title.equals(mOnPlayingProgram.get(0).get("title"))
-                            && mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)))
-                        {
-                            if (mOnPlayingIndex != i)
-                            {
-                                updateItem(mOnPlayingIndex, true, false, false);
-                                mOnPlayingIndex = i;
-                                updateItem(mOnPlayingIndex, true, false, true);
-                            }
-                        }
+                        Program onplayingProgram = new Program();
+                        onplayingProgram.time = mOnPlayingProgram.get(0).get("time");
+                        onplayingProgram.title = mOnPlayingProgram.get(0).get("title");
+                        mListViewAdapter.setOnplayingProgram(onplayingProgram);
                     }
                     break;
                 default:
@@ -486,56 +434,6 @@ public class ChannelDetailActivity extends Activity
             
         }
     };
-    
-    private void addTimeLable()
-    {
-        if (mProgramList.size() == 0)
-            return;
-        
-        if (mProgramList.size() == 1)
-        {
-            mItemDataList.add(0, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.full_day), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
-            return;
-        }
-        
-        final String morning = "00:00";
-        final String midday = "12:00";
-        final String evening = "18:00";
-        int hasMorning = 0;
-        int hasMidday = 0;
-        int hasEvening = 0;
-        int onPlayingAddon = 0;
-        
-        for (int i=0; i<mProgramList.size()-1; ++i)
-        {
-            String time1 = mProgramList.get(i).get("time");
-            String time2 = mProgramList.get(i+1).get("time");
-            
-            if (i == 0 && compareTime(time1, midday) < 0)
-            {
-                mItemDataList.add(i, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.morning), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
-                hasMorning = 1;
-                if (mOnPlayingIndex >= i)
-                    onPlayingAddon++;
-            }
-            else if (compareTime(time1, midday) < 0 && compareTime(time2, midday) >= 0 && compareTime(time2, evening) < 0)
-            {
-                mItemDataList.add(i + 1 + hasMorning, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.midday), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
-                hasMidday = 1;
-                if (mOnPlayingIndex >= i)
-                    onPlayingAddon++;
-            }
-            else if (compareTime(time1, evening) < 0 && compareTime(time2, evening) >= 0)
-            {
-                mItemDataList.add(i + 1 + hasMorning + hasMidday, new ResultProgramAdapter.LabelItem(getResources().getString(R.string.evening), R.layout.hot_channel_item, R.id.hot_channel_name_tv));
-                hasEvening = 1;
-                if (mOnPlayingIndex >= i)
-                    onPlayingAddon++;
-            }
-        }
-        
-        mOnPlayingIndex += onPlayingAddon;
-    }
     
     /*
      * Trasfer the day to the server host day: Monday~Sunday -> 1~7
@@ -571,87 +469,8 @@ public class ChannelDetailActivity extends Activity
         return hostDay;
     }
     
-    private int compareTime(String time1, String time2)
-    {
-        assert(time1 != null && time2 != null);
-        
-        try 
-        {
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            Date date1 = df.parse(time1);
-            Date date2 = df.parse(time2);
-            
-            if (date1.getTime() > date2.getTime())
-                return 1;
-            else if (date1.getTime() < date2.getTime())
-                return -1;
-            else
-                return 0;
-        } 
-        catch (ParseException e) 
-        {
-            e.printStackTrace();
-        }
-        
-        return 0;
-    }
-       
-    private void updateItem(final int position, final boolean hasIndicator, final boolean hasAlarm, final boolean onplaying)
-    {
-        if (mItemDataList == null || mProgramListViewAdapter == null)
-            return;
-        
-        mItemDataList.get(position).setItemView(new IItemView() 
-        {
-            @Override
-            public View getView(Context context, View convertView, LayoutInflater inflater) 
-            {
-                return getContentItemView(context, convertView, inflater, position, hasIndicator, hasAlarm, onplaying);
-            }
-        });
-        mProgramListViewAdapter.notifyDataSetChanged();
-    }
-    
     private String getProgramString(String time, String title)
     {
         return time + ":　" + title;
-    }
-    
-    private View getContentItemView(Context context, View convertView, LayoutInflater inflater, int position, 
-    		boolean hasIndicator, boolean hasAlarm, boolean onplaying)
-    {
-        assert (inflater != null);
-        convertView = inflater.inflate(R.layout.detail_program_item, null);
-        TextView programNameTextView = (TextView) convertView.findViewById(R.id.detail_program_name_tv);
-        ImageView indicator = (ImageView) convertView.findViewById(R.id.detail_program_indicator_iv);
-        ImageView alarmIcon = (ImageView) convertView.findViewById(R.id.detail_alarm_icon_iv);
-        
-        if (onplaying && mOnPlayingProgram.size() > 0)
-        {
-            SpannableString ss = new SpannableString(getProgramString(mOnPlayingProgram.get(0).get("time"), mOnPlayingProgram.get(0).get("title")) + "  (正在播放)");
-            ss.setSpan(new ForegroundColorSpan(Color.RED), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            programNameTextView.setText(ss);
-        }
-        else if (mItemDataList.get(position).getExtraInfo() != null)
-        {
-            String time = (String) mItemDataList.get(position).getExtraInfo().get("time");
-            String title = (String) mItemDataList.get(position).getExtraInfo().get("title");
-            programNameTextView.setText(getProgramString(time, title));
-        }
-        if (hasAlarm)
-        {
-            indicator.setVisibility(View.GONE);
-            alarmIcon.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-        	if (hasIndicator)
-        		indicator.setVisibility(View.VISIBLE);
-        	else
-        		indicator.setVisibility(View.GONE);
-            alarmIcon.setVisibility(View.GONE);
-        }
-        
-        return convertView;
     }
 }
