@@ -20,7 +20,7 @@ public class BootManager
 {
     private Context             mContext;
     private SplashDialog        mSplashDialog;
-    private boolean             mShowSplash                                 = true;
+    private boolean             mShowSplash                                 = !EnvironmentManager.isDevelopMode;
     private SharedPreferences   mPreference;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
     private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";

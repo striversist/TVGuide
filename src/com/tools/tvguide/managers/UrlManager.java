@@ -29,7 +29,7 @@ public class UrlManager
     public static final int URL_LOGIN                   = 10;
     public static final int URL_REPORT                  = 11;
         
-    private static final boolean ENABLE_TEST            = false;
+    private static final boolean ENABLE_TEST            = EnvironmentManager.isDevelopMode;
     private String  mProxyHostName                      = "bigeyecow.oicp.net";
     private String  mProxyHostIP;
     private String  BASE_PATH;
