@@ -326,7 +326,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             HashMap<String, Object> info = new HashMap<String, Object>();
             info.put("name", mChannelName);
             manager.addCollectChannel(mChannelId, info);
-            Toast.makeText(this, R.string.collect_success, Toast.LENGTH_SHORT).show();
+            String format = getResources().getString(R.string.collect_channel_success);
+            String tips = String.format(format, mChannelName);
+            Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
         }
         else
         {
