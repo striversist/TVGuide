@@ -338,6 +338,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     
     private void updateAll()
     {
+    	mCurrentSelectedDay = getDayOfToday();
+    	mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
+    	
     	updateTitle();
     	updateFavIcon();
     	updateProgramList();
@@ -452,7 +455,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     
     private boolean isTodayChosen()
     {
-    	return mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+    	return mCurrentSelectedDay == getDayOfToday();
+    }
+    
+    private int getDayOfToday()
+    {
+    	return getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
     }
     
     /*
