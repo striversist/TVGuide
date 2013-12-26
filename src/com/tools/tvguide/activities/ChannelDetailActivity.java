@@ -423,7 +423,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
                     mProgramListView.setAdapter(mListViewAdapter);
                     
-                    if (mOnPlayingProgram.size() > 0)
+                    if (isTodayChosen() && mOnPlayingProgram.size() > 0)
                     {
                         Program onplayingProgram = new Program();
                         onplayingProgram.time = mOnPlayingProgram.get(0).get("time");
@@ -435,7 +435,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     foldDateListView();
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
-                    if (mOnPlayingProgram.size() > 0)
+                    if (isTodayChosen() && mOnPlayingProgram.size() > 0)
                     {
                         Program onplayingProgram = new Program();
                         onplayingProgram.time = mOnPlayingProgram.get(0).get("time");
@@ -449,6 +449,11 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             
         }
     };
+    
+    private boolean isTodayChosen()
+    {
+    	return mCurrentSelectedDay == getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+    }
     
     /*
      * Trasfer the day to the server host day: Monday~Sunday -> 1~7

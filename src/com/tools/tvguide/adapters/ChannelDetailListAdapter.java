@@ -37,6 +37,7 @@ public class ChannelDetailListAdapter extends BaseAdapter
         mContext = context;
         mItemList = new ArrayList<IListItem>();
         mAlarmProgramList = new ArrayList<Program>();
+        mOnplayingProgram = new Program();
 
         final String midday = "12:00";
         final String evening = "18:00";
