@@ -238,6 +238,66 @@ public class ContentManager
         return false;
     }
     
+    public boolean loadProgramsByChannelV3(final String channelId, final int day, final List<HashMap<String, String>> programs, 
+            final HashMap<String, Object> extra, final LoadListener listener)
+    {
+        mUpdateHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day + "&onplaying=1";
+                NetDataGetter getter;
+                try 
+                {
+                    getter = new DefaultNetDataGetter(url);
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    if (jsonRoot != null)
+                    {
+                        JSONArray resultArray = jsonRoot.getJSONArray("result");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("time", resultArray.getJSONObject(i).getString("time"));
+                                map.put("title", resultArray.getJSONObject(i).getString("title"));
+                                programs.add(map);
+                            }
+                        }
+                        
+                        JSONObject jsonOnPlayingProgram = jsonRoot.getJSONObject("onplaying");
+                        if (extra != null && jsonOnPlayingProgram != null)
+                        {
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put("time", jsonOnPlayingProgram.getString("time"));
+                            map.put("title", jsonOnPlayingProgram.getString("title"));
+                            map.put("day", jsonOnPlayingProgram.getString("day"));
+                            extra.put("onplaying", map);
+                        }
+                        
+                        String days = jsonRoot.getString("days");
+                        if (extra != null && days != null)
+                        {
+                            extra.put("days", Integer.parseInt(days));
+                        }
+                    }
+                    listener.onLoadFinish(LoadListener.SUCCESS);
+                }
+                catch (MalformedURLException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+                catch (JSONException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+            }
+        });
+        return false;
+    }
+    
     public boolean loadOnPlayingPrograms(final List<String> idList, final List<HashMap<String, String>> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
@@ -295,7 +355,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadOnPlayingProgramByChannel(final String channelId, final List<HashMap<String, String>> result, final LoadListener listener)
+    public boolean loadOnPlayingProgramByChannel(final String channelId, final HashMap<String, String> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -308,11 +368,9 @@ public class ContentManager
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
-                        HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("time", jsonRoot.getString("time"));
-                        map.put("title", jsonRoot.getString("title"));
-                        map.put("day", jsonRoot.getString("day"));
-                        result.add(map);
+                        result.put("time", jsonRoot.getString("time"));
+                        result.put("title", jsonRoot.getString("title"));
+                        result.put("day", jsonRoot.getString("day"));
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
                 }

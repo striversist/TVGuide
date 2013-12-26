@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="weekdays">
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+        <item>周日</item>
+        <item>下周一</item>
+        <item>下周二</item>
+        <item>下周三</item>
+        <item>下周四</item>
+        <item>下周五</item>
+        <item>下周六</item>
+        <item>下周日</item>
+    </string-array> 
+</resources> 

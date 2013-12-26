@@ -62,7 +62,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     private ImageView mFavImageView;
     
     private List<HashMap<String, String>> mProgramList;             // Key: time, title
-    private List<HashMap<String, String>> mOnPlayingProgram;        // Key: time, title
+    private HashMap<String, String> mOnPlayingProgram;              // Key: time, title
     private MyProgressDialog mProgressDialog;
     private int mCurrentSelectedDay;
     private List<ResultProgramAdapter.IListItem> mItemDataList;
@@ -98,7 +98,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         if (mChannelList == null)
         	mChannelList = new ArrayList<Channel>();
         mProgramList = new ArrayList<HashMap<String,String>>();
-        mOnPlayingProgram = new ArrayList<HashMap<String,String>>();
+        mOnPlayingProgram = new HashMap<String, String>();
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
@@ -156,15 +156,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
         mFavImageView = (ImageView) findViewById(R.id.channeldetail_fav_iv);
         
-        List<DateData> dateList = new ArrayList<DateAdapter.DateData>();
-        dateList.add(new DateData(getResources().getString(R.string.Mon)));
-        dateList.add(new DateData(getResources().getString(R.string.Tue)));
-        dateList.add(new DateData(getResources().getString(R.string.Wed)));
-        dateList.add(new DateData(getResources().getString(R.string.Thu)));
-        dateList.add(new DateData(getResources().getString(R.string.Fri)));
-        dateList.add(new DateData(getResources().getString(R.string.Sat)));
-        dateList.add(new DateData(getResources().getString(R.string.Sun)));
-        mDateAdapter = new DateAdapter(this, dateList);
+        mDateAdapter = new DateAdapter(this, 7);
         mDateChosenListView.setAdapter(mDateAdapter);
         mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
         
@@ -365,12 +357,15 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     {
         mProgramList.clear();
         mOnPlayingProgram.clear();
-        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannel2(mChannelId, mCurrentSelectedDay, mProgramList, 
-                                mOnPlayingProgram, new ContentManager.LoadListener() 
+        final HashMap<String, Object> extraInfo = new HashMap<String, Object>();
+        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannelV3(mChannelId, mCurrentSelectedDay, mProgramList, 
+                                extraInfo, new ContentManager.LoadListener() 
         {
             @Override
             public void onLoadFinish(int status) 
             {
+                if (extraInfo.containsKey("onplaying"))
+                    mOnPlayingProgram = (HashMap<String, String>) extraInfo.get("onplaying");
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
             }
         });
@@ -431,8 +426,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     if (isTodayChosen() && mOnPlayingProgram.size() > 0)
                     {
                         Program onplayingProgram = new Program();
-                        onplayingProgram.time = mOnPlayingProgram.get(0).get("time");
-                        onplayingProgram.title = mOnPlayingProgram.get(0).get("title");
+                        onplayingProgram.time = mOnPlayingProgram.get("time");
+                        onplayingProgram.title = mOnPlayingProgram.get("title");
                         int position = mListViewAdapter.setOnplayingProgram(onplayingProgram);
                         mProgramListView.setSelection(position);
                     }
@@ -443,8 +438,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     if (isTodayChosen() && mOnPlayingProgram.size() > 0)
                     {
                         Program onplayingProgram = new Program();
-                        onplayingProgram.time = mOnPlayingProgram.get(0).get("time");
-                        onplayingProgram.title = mOnPlayingProgram.get(0).get("title");
+                        onplayingProgram.time = mOnPlayingProgram.get("time");
+                        onplayingProgram.title = mOnPlayingProgram.get("title");
                         mListViewAdapter.setOnplayingProgram(onplayingProgram);
                     }
                     break;

@@ -1,5 +1,6 @@
 package com.tools.tvguide.adapters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tools.tvguide.R;
@@ -27,11 +28,19 @@ public class DateAdapter extends BaseAdapter
     private List<DateData> mDataList;
     private int mCurIndex;
     
-    public DateAdapter(Context context, List<DateData> list)
+    public DateAdapter(Context context, int maxDays)
     {
+        assert (maxDays >=1 && maxDays <= 14);
         mContext = context;
-        mDataList = list;
         mCurIndex = 0;
+        mDataList = new ArrayList<DateAdapter.DateData>();
+        
+        String[] weekdays = mContext.getResources().getStringArray(R.array.weekdays);
+        for (int i=0; i<maxDays; ++i)
+        {
+            DateData data = new DateData(weekdays[i]);
+            mDataList.add(data);
+        }
     }
     
     public void setCurrentIndex(int position)
