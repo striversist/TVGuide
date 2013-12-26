@@ -5,5 +5,5 @@
             android:paddingLeft="10.0sp" android:textSize="18.0sp" android:textColor="@color/black" android:layout_width="fill_parent" 
             android:layout_height="48.0sp" android:text="@string/programchannellist" />
     <ListView android:id="@+id/detail_left_channel_lv" android:layout_width="fill_parent" android:layout_height="wrap_content"
-            android:cacheColorHint="#00000000" />
+            android:cacheColorHint="#00000000" android:divider="@color/gray" android:dividerHeight="0.5dip" />
 </LinearLayout>
