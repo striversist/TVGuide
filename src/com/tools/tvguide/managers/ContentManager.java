@@ -278,7 +278,7 @@ public class ContentManager
                         String days = jsonRoot.getString("days");
                         if (extra != null && days != null)
                         {
-                            extra.put("days", Integer.parseInt(days));
+                            extra.put("days", days);
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);

@@ -46,8 +46,10 @@ public class DateAdapter extends BaseAdapter
     public void resetMaxDays(int maxDays)
     {
     	assert (maxDays >=1 && maxDays <= 14);
-    	mDataList.clear();
+    	if (maxDays == mDataList.size())
+    	    return;
     	
+    	mDataList.clear();
     	String[] weekdays = mContext.getResources().getStringArray(R.array.weekdays);
         for (int i=0; i<maxDays; ++i)
         {

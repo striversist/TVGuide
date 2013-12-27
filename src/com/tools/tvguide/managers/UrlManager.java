@@ -102,7 +102,7 @@ public class UrlManager
                 {
                     mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
                     if (ENABLE_TEST)
-                        mProxyHostIP = "192.168.1.101";
+                        mProxyHostIP = "192.168.1.100";
                     
                     mLock.lock();
                     mCondition.signalAll();
