@@ -19,6 +19,7 @@ import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AlarmHelper.AlarmListener;
+import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
@@ -69,6 +70,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
     private final int TIMER_SCHEDULE_PERIOD = 3 * 60 * 1000;        // 3 minute
+    private final int DEFAULT_MAX_DAYS = 7;
     private final String SEP = ":　";
 
     @Override
@@ -156,7 +158,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
         mFavImageView = (ImageView) findViewById(R.id.channeldetail_fav_iv);
         
-        mDateAdapter = new DateAdapter(this, 7);
+        mDateAdapter = new DateAdapter(this, DEFAULT_MAX_DAYS);
         mDateChosenListView.setAdapter(mDateAdapter);
         mDateAdapter.setCurrentIndex(mCurrentSelectedDay - 1);
         
@@ -364,9 +366,14 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public void onLoadFinish(int status) 
             {
-                if (extraInfo.containsKey("onplaying"))
-                    mOnPlayingProgram = (HashMap<String, String>) extraInfo.get("onplaying");
-                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+            	if (status == LoadListener.SUCCESS)
+            	{
+	                if (extraInfo.containsKey("onplaying"))
+	                    mOnPlayingProgram = (HashMap<String, String>) extraInfo.get("onplaying");
+	                if (extraInfo.containsKey("days"))
+	                	mDateAdapter.resetMaxDays(Integer.parseInt((String) extraInfo.get("days")));
+	                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+            	}
             }
         });
         if (isSyncLoad == false)

@@ -43,6 +43,20 @@ public class DateAdapter extends BaseAdapter
         }
     }
     
+    public void resetMaxDays(int maxDays)
+    {
+    	assert (maxDays >=1 && maxDays <= 14);
+    	mDataList.clear();
+    	
+    	String[] weekdays = mContext.getResources().getStringArray(R.array.weekdays);
+        for (int i=0; i<maxDays; ++i)
+        {
+            DateData data = new DateData(weekdays[i]);
+            mDataList.add(data);
+        }
+        notifyDataSetChanged();
+    }
+    
     public void setCurrentIndex(int position)
     {
         assert(position >= 0);
