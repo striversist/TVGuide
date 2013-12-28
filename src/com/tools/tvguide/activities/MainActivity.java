@@ -43,7 +43,6 @@ public class MainActivity extends TabActivity
         super.onCreate(savedInstanceState);
         
         AppEngine.getInstance().setContext(this);
-        AppEngine.getInstance().setApplicationContext(getApplicationContext());
         AppEngine.getInstance().getBootManager().start();
         
         // 延缓MainActivity组件的初始化（显示），否则在闪屏之前背景会闪出一下，影响体验

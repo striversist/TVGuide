@@ -8,6 +8,8 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URLEncoder;
 
+import org.acra.ErrorReporter;
+
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.NetDataGetter;
 
@@ -57,6 +59,7 @@ public class LoginManager
                         if (guid != null)
                         {
                             AppEngine.getInstance().getUpdateManager().setGUID(guid);
+                            ErrorReporter.getInstance().putCustomData("GUID", guid);
                         }
                     }
                 }

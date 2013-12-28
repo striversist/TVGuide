@@ -51,70 +51,70 @@ public class AppEngine
     public CollectManager getCollectManager()
     {
         if (mUserSettingManager == null)
-            mUserSettingManager = new CollectManager(mContext);
+            mUserSettingManager = new CollectManager(mApplicationContext);
         return mUserSettingManager;
     }
     
     public LoginManager getLoginManager()
     {
         if (mLoginManager == null)
-            mLoginManager = new LoginManager(mContext);
+            mLoginManager = new LoginManager(mApplicationContext);
         return mLoginManager;
     }
     
     public ContentManager getContentManager()
     {
         if (mContentManager == null)
-            mContentManager = new ContentManager(mContext);
+            mContentManager = new ContentManager(mApplicationContext);
         return mContentManager;
     }
     
     public CacheManager getCacheManager()
     {
         if (mCacheManager == null)
-            mCacheManager = new CacheManager(mContext);
+            mCacheManager = new CacheManager(mApplicationContext);
         return mCacheManager;
     }
     
     public AlarmHelper getAlarmHelper()
     {
         if (mAlarmHelper == null)
-            mAlarmHelper = new AlarmHelper(mContext);
+            mAlarmHelper = new AlarmHelper(mApplicationContext);
         return mAlarmHelper;
     }
     
     public UrlManager getUrlManager()
     {
         if (mUrlManager == null)
-            mUrlManager = new UrlManager(mContext);
+            mUrlManager = new UrlManager(mApplicationContext);
         return mUrlManager;
     }
     
     public DnsManager getDnsManager()
     {
         if (mDnsManager == null)
-            mDnsManager = new DnsManager(mContext);
+            mDnsManager = new DnsManager(mApplicationContext);
         return mDnsManager;
     }
     
     public UpdateManager getUpdateManager()
     {
         if (mUpdateManager == null)
-            mUpdateManager = new UpdateManager(mContext);
+            mUpdateManager = new UpdateManager(mApplicationContext);
         return mUpdateManager;
     }
     
     public BootManager getBootManager()
     {
         if (mBootManager == null)
-            mBootManager = new BootManager(mContext);
+            mBootManager = new BootManager(mApplicationContext);
         return mBootManager;
     }
     
     public HotHtmlManager getHotHtmlManager()
     {
         if (mHotHtmlManager == null)
-            mHotHtmlManager = new HotHtmlManager(mContext);
+            mHotHtmlManager = new HotHtmlManager(mApplicationContext);
         return mHotHtmlManager;
     }
     
