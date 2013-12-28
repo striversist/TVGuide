@@ -24,11 +24,11 @@ import android.app.Application;
           , ReportField.ANDROID_VERSION
           , ReportField.PACKAGE_NAME
           , ReportField.REPORT_ID
-          , ReportField.BUILD
+//          , ReportField.BUILD
           , ReportField.PHONE_MODEL
           , ReportField.STACK_TRACE
           , ReportField.CUSTOM_DATA
-//		  , ReportField.LOGCAT
+//	      , ReportField.LOGCAT
 		  },
 	forceCloseDialogAfterToast = false, // optional, default false
 	resToastText = R.string.crash_toast_text)
