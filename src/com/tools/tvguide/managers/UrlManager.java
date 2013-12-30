@@ -16,6 +16,7 @@ public class UrlManager
     public static final String URL_CHINAZ_IP            = "http://ip.chinaz.com";
     public static final String URL_IPCN                 = "http://www.ip.cn";
     public static final String URL_PUB_HOT              = "http://m.tvsou.com/juqing.asp";
+    public static final String DEV_IP                   = "192.168.1.100";
     
     public static final int URL_CATEGORIES              = 1;
     public static final int URL_CHANNELS                = 2;
@@ -102,7 +103,7 @@ public class UrlManager
                 {
                     mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
                     if (ENABLE_TEST)
-                        mProxyHostIP = "192.168.1.100";
+                        mProxyHostIP = DEV_IP;
                     
                     mLock.lock();
                     mCondition.signalAll();
@@ -223,6 +224,8 @@ public class UrlManager
         {
             String hostName = new URL(url).getHost();
             String ipAddress = AppEngine.getInstance().getDnsManager().getIpAddress(hostName);
+            if (ENABLE_TEST)
+                ipAddress = DEV_IP;
             if (ipAddress != null)
                 return url.replace(hostName, ipAddress);
         } 

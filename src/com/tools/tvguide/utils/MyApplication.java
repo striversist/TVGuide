@@ -2,6 +2,8 @@ package com.tools.tvguide.utils;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.EnvironmentManager;
+import com.tools.tvguide.managers.UrlManager;
 
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
@@ -13,7 +15,7 @@ import android.app.Application;
 
 @ReportsCrashes(
     formKey = "",
-    formUri = "http://192.168.1.100:5984/acra-myapp/_design/acra-storage/_update/report",
+    formUri = "http://bigeyecow.oicp.net:59840/acra-tvguide/_design/acra-storage/_update/report",
     reportType = org.acra.sender.HttpSender.Type.JSON,
     httpMethod = org.acra.sender.HttpSender.Method.PUT,
     formUriBasicAuthLogin = "reporter",
@@ -50,8 +52,16 @@ public class MyApplication extends Application
 		sInstance = this;
 		
 		ACRA.init(this);
-		
 		AppEngine.getInstance().setApplicationContext(getApplicationContext());
+
+		String port;
+		if (EnvironmentManager.isDevelopMode)
+		    port = "5984";
+		else
+		    port = "59840";
+		String url = "http://bigeyecow.oicp.net:" + port + "/acra-tvguide/_design/acra-storage/_update/report";
+		ACRA.getConfig().setFormUri(UrlManager.tryToReplaceHostNameWithIP(url));
+		
 		if (AppEngine.getInstance().getUpdateManager().getGUID() != null)
 		    ErrorReporter.getInstance().putCustomData("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
 	}
