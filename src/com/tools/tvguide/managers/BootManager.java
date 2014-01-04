@@ -121,10 +121,7 @@ public class BootManager
     }
     
     public void onSplashFinished()
-    {
-        if (isFirstStart())
-            mPreference.edit().putBoolean(KEY_FIRST_START_FLAG, false).commit();
-        
+    {        
         for (int i=0; i<mOnSplashFinishedCallbackList.size(); ++i)
             mOnSplashFinishedCallbackList.get(i).OnSplashFinished();
         
@@ -140,6 +137,12 @@ public class BootManager
                 AppEngine.getInstance().getAlarmHelper().resetAllAlarms();
             }
         }, 1000);
+    }
+    
+    public void shutDown()
+    {
+        if (isFirstStart())
+            mPreference.edit().putBoolean(KEY_FIRST_START_FLAG, false).commit();
     }
     
     private void checkNetwork()

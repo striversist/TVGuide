@@ -32,6 +32,10 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -48,6 +52,7 @@ import android.widget.Toast;
 public class ChannelDetailActivity extends Activity implements AlarmListener 
 {
     private static final String TAG = "ChannelDetailActivity";
+    private static boolean sHasShownFirstStartTips = false;
     private String mChannelName;
     private String mChannelId;
     private List<Channel> mChannelList;
@@ -392,6 +397,18 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             }
         });
     }
+    
+    private void showFirstStartTips()
+    {
+        String tips = "试试向右滑动";
+        Toast tryToast = Toast.makeText(this, tips, Toast.LENGTH_LONG);
+        tryToast.setGravity(Gravity.NO_GRAVITY, 0, 0);
+        SpannableString ss = new SpannableString(tips);
+        ss.setSpan(new RelativeSizeSpan((float) 1.5), 0, tips.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        tryToast.setText(ss);
+        tryToast.show();
+        sHasShownFirstStartTips = true;
+    }
 
     @Override
     public void onBackPressed() 
@@ -440,6 +457,11 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     }
                     
                     foldDateListView();
+                    
+                    if (AppEngine.getInstance().getBootManager().isFirstStart() && sHasShownFirstStartTips == false)
+                    {
+                        showFirstStartTips();
+                    }
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
                     if (isTodayChosen() && mOnPlayingProgram.size() > 0)

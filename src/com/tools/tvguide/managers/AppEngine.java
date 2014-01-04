@@ -120,6 +120,9 @@ public class AppEngine
     
     public void prepareBeforeExit()
     {
+        if (mBootManager != null)
+            mBootManager.shutDown();
+        
         if (mUserSettingManager != null)
             mUserSettingManager.shutDown();
         
