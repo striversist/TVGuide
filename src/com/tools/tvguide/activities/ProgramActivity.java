@@ -293,6 +293,7 @@ public class ProgramActivity extends Activity
                     ((TextView) mSummaryLayout.findViewById(R.id.program_tab_simpletext)).setText(mSummary);
                     ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_SUMMARY)).removeAllViews();
                     ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_SUMMARY)).addView(mSummaryLayout, mCenterLayoutParams);
+                    mViewPager.setCurrentItem(TAB_INDEX_SUMMARY);
                     break;
                 case MSG_ACTORS_LOADED:
                     ((TextView) mActorsLayout.findViewById(R.id.program_tab_simpletext)).setText(mActors);
