@@ -62,7 +62,19 @@ public class MyApplication extends Application
 		String url = "http://bigeyecow.oicp.net:" + port + "/acra-tvguide/_design/acra-storage/_update/report";
 		ACRA.getConfig().setFormUri(UrlManager.tryToReplaceHostNameWithIP(url));
 		
+		// 自定义上报数据
+		// GUID
 		if (AppEngine.getInstance().getUpdateManager().getGUID() != null)
 		    ErrorReporter.getInstance().putCustomData("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
+		
+		// 网络状态
+		if (Utility.isWifi(MyApplication.getInstance()))
+		    ErrorReporter.getInstance().putCustomData("NETWORK", "WIFI");
+		else
+		    ErrorReporter.getInstance().putCustomData("NETWORK", "non-WIFI");
+		
+		// 渠道
+		ErrorReporter.getInstance().putCustomData("APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName());
+		
 	}
 }
