@@ -174,7 +174,10 @@ public class AlarmHelper
             String day = info.get("day");
             long triggerAtMillis = Long.valueOf(info.get("time")).longValue();
             if (day == null)
+            {
+                removeAlarm(channelId, channelName, program, 0);
                 day = String.valueOf(tryToGetWeekdayByMillis(triggerAtMillis));  // 为兼容之前的版本，算出当前的weekday
+            }
             addAlarm(channelId, channelName, program, Integer.valueOf(day).intValue(), triggerAtMillis);
         }
     }
@@ -191,6 +194,8 @@ public class AlarmHelper
     
     private String makeKey(String channelId, String channelName, String program, int day)
     {
+        if (day == 0)   // 为兼容之前的版本
+            return channelId + SEPERATOR + channelName + SEPERATOR + program;
         return channelId + SEPERATOR + channelName + SEPERATOR + program + SEPERATOR + String.valueOf(day);
     }
     
