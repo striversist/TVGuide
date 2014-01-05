@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.acra.ACRA;
+
 import android.content.Context;
 import android.os.Handler;
 
@@ -17,6 +19,10 @@ public class UrlManager
     public static final String URL_IPCN                 = "http://www.ip.cn";
     public static final String URL_PUB_HOT              = "http://m.tvsou.com/juqing.asp";
     public static final String DEV_IP                   = "192.168.1.100";
+    public static final String REAL_HOST                = "bigeyecow.oicp.net";
+    
+    public static final String ACRA_PROXY_REAL          = "http://" + REAL_HOST + ":59840/acra-tvguide/_design/acra-storage/_update/report";
+    public static final String ACRA_PROXY_DEV           = "http://" + DEV_IP + ":5984/acra-tvguide/_design/acra-storage/_update/report";
     
     public static final int URL_CATEGORIES              = 1;
     public static final int URL_CHANNELS                = 2;
@@ -31,7 +37,7 @@ public class UrlManager
     public static final int URL_REPORT                  = 11;
         
     private static final boolean ENABLE_TEST            = EnvironmentManager.isDevelopMode;
-    private String  mProxyHostName                      = "bigeyecow.oicp.net";
+    private String  mProxyHostName                      = REAL_HOST;
     private String  mProxyHostIP;
     private String  BASE_PATH;
     private int     PORT;
@@ -104,6 +110,7 @@ public class UrlManager
                     mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
                     if (ENABLE_TEST)
                         mProxyHostIP = DEV_IP;
+                    ACRA.getConfig().setFormUri(tryToReplaceHostNameWithIP(ACRA.getConfig().formUri()));
                     
                     mLock.lock();
                     mCondition.signalAll();

@@ -54,13 +54,16 @@ public class MyApplication extends Application
 		ACRA.init(this);
 		AppEngine.getInstance().setApplicationContext(getApplicationContext());
 
-		String port;
+		String url;
 		if (EnvironmentManager.isDevelopMode)
-		    port = "5984";
+		{
+		    url = UrlManager.ACRA_PROXY_DEV;
+		}
 		else
-		    port = "59840";
-		String url = "http://bigeyecow.oicp.net:" + port + "/acra-tvguide/_design/acra-storage/_update/report";
-		ACRA.getConfig().setFormUri(UrlManager.tryToReplaceHostNameWithIP(url));
+		{
+		    url = UrlManager.ACRA_PROXY_REAL;
+		}
+		ACRA.getConfig().setFormUri(url);
 		
 		// 自定义上报数据
 		// GUID
