@@ -8,6 +8,7 @@ import java.util.List;
 import com.tools.tvguide.R;
 import com.tools.tvguide.activities.ChannelDetailActivity;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.utils.Utility;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -51,11 +52,11 @@ public class AlarmSettingDialog
         mCalendar.set(Calendar.MINUTE, mMin);
         mCalendar.set(Calendar.SECOND, 0);
         mCalendar.set(Calendar.MILLISECOND, 0);
-        long adjust = (mDay - getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))) * DAY_IN_MS;
+        long adjust = (mDay - Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))) * DAY_IN_MS;
         mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + adjust);
         
         // 因为周日算一周的第一天，所以这里要做特殊处理。如果使用API setFirstDayOfWeek, 则在月初时会设置到上月的末尾，故不用该API
-        if (mDay == getProxyDay(Calendar.SUNDAY))
+        if (mDay == Utility.getProxyDay(Calendar.SUNDAY))
         {
             mCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
             mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + 60*60*24*1000);       // 周六再增加一天时间
@@ -175,39 +176,5 @@ public class AlarmSettingDialog
                 })
                 .create();
         alertDialog.show();
-    }
-
-    /*
-     * Trasfer the day to the server host day: Monday~Sunday -> 1~7
-     */
-    private int getProxyDay(int day)
-    {
-        assert(day >=1 && day <=7);
-        int hostDay = 0;
-        switch (day)
-        {
-            case Calendar.MONDAY:
-                hostDay = 1;
-                break;
-            case Calendar.TUESDAY:
-                hostDay = 2;
-                break;
-            case Calendar.WEDNESDAY:
-                hostDay = 3;
-                break;
-            case Calendar.THURSDAY:
-                hostDay = 4;
-                break;
-            case Calendar.FRIDAY:
-                hostDay = 5;
-                break;
-            case Calendar.SATURDAY:
-                hostDay = 6;
-                break;
-            case Calendar.SUNDAY:
-                hostDay = 7;
-                break;
-        }
-        return hostDay;
     }
 }

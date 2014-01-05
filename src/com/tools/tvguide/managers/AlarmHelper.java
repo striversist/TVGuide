@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.tools.tvguide.components.CallAlarmReceiver;
+import com.tools.tvguide.utils.Utility;
 
 import android.R.integer;
 import android.app.AlarmManager;
@@ -83,7 +85,7 @@ public class AlarmHelper
             }
             triggerAtMillis += tuning;
             calendar.setTimeInMillis(triggerAtMillis);
-//            Log.d(TAG, "addAlarm: has conflict, ajust=" + tuning + ", to" + calendar.getTime().toString());
+//            Log.d(TAG, "addAlarm: has conflict, adjust=" + tuning + ", to" + calendar.getTime().toString());
         }
         info.put("time", Long.toString(triggerAtMillis));
         mRecords.put(key, info);
@@ -171,8 +173,20 @@ public class AlarmHelper
             String program = info.get("program");
             String day = info.get("day");
             long triggerAtMillis = Long.valueOf(info.get("time")).longValue();
+            if (day == null)
+                day = String.valueOf(tryToGetWeekdayByMillis(triggerAtMillis));  // 为兼容之前的版本，算出当前的weekday
             addAlarm(channelId, channelName, program, Integer.valueOf(day).intValue(), triggerAtMillis);
         }
+    }
+    
+    private int tryToGetWeekdayByMillis(long triggerAtMillis)
+    {
+        long durationMs = triggerAtMillis - Utility.getMillisSinceWeekBegin();
+        if (durationMs < 0) // Error
+            return MIN_DAY;
+        
+        int value = new BigDecimal((double)durationMs / 1000 / 3600 / 24).setScale(0, BigDecimal.ROUND_UP).intValue();
+        return value;
     }
     
     private String makeKey(String channelId, String channelName, String program, int day)

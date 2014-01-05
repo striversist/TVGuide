@@ -2,6 +2,7 @@ package com.tools.tvguide.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import com.tools.tvguide.R;
 
@@ -153,4 +154,53 @@ public class Utility
 		
 		return origin.substring(start, end + 1);
 	}
+	
+	/*
+     * Transfer the day to the server host day: Monday~Sunday -> 1~7
+     */
+    public static int getProxyDay(int day)
+    {
+        assert(day >=1 && day <=7);
+        int hostDay = 0;
+        switch (day)
+        {
+            case Calendar.MONDAY:
+                hostDay = 1;
+                break;
+            case Calendar.TUESDAY:
+                hostDay = 2;
+                break;
+            case Calendar.WEDNESDAY:
+                hostDay = 3;
+                break;
+            case Calendar.THURSDAY:
+                hostDay = 4;
+                break;
+            case Calendar.FRIDAY:
+                hostDay = 5;
+                break;
+            case Calendar.SATURDAY:
+                hostDay = 6;
+                break;
+            case Calendar.SUNDAY:
+                hostDay = 7;
+                break;
+        }
+        return hostDay;
+    }
+    
+    public static long getMillisSinceWeekBegin()
+    {
+        int nowWeekday = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        int nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        int nowSecond = Calendar.getInstance().get(Calendar.SECOND);
+        int nowMilliSecond = Calendar.getInstance().get(Calendar.MILLISECOND);
+        
+        long now = System.currentTimeMillis();
+        long daysMs = (nowWeekday - 1) * 3600 * 24 * 1000;
+        long leftMs = (nowHour * 3600 + nowMinute * 60 + nowSecond) * 1000 + nowMilliSecond;
+        
+        return (now - daysMs - leftMs);
+    }
 }

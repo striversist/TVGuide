@@ -23,6 +23,7 @@ import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.DetailLeftGuide;
 import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
 
@@ -107,7 +108,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mProgramList = new ArrayList<HashMap<String,String>>();
         mOnPlayingProgram = new HashMap<String, String>();
         mProgressDialog = new MyProgressDialog(this);
-        mCurrentSelectedDay = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        mCurrentSelectedDay = Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
         AppEngine.getInstance().getAlarmHelper().addAlarmListener(this);
      
@@ -486,41 +487,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     
     private int getDayOfToday()
     {
-    	return getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
-    }
-    
-    /*
-     * Trasfer the day to the server host day: Monday~Sunday -> 1~7
-     */
-    private int getProxyDay(int day)
-    {
-        assert(day >=1 && day <=7);
-        int hostDay = 0;
-        switch (day)
-        {
-            case Calendar.MONDAY:
-                hostDay = 1;
-                break;
-            case Calendar.TUESDAY:
-                hostDay = 2;
-                break;
-            case Calendar.WEDNESDAY:
-                hostDay = 3;
-                break;
-            case Calendar.THURSDAY:
-                hostDay = 4;
-                break;
-            case Calendar.FRIDAY:
-                hostDay = 5;
-                break;
-            case Calendar.SATURDAY:
-                hostDay = 6;
-                break;
-            case Calendar.SUNDAY:
-                hostDay = 7;
-                break;
-        }
-        return hostDay;
+    	return Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
     }
     
     private String getProgramString(String time, String title)

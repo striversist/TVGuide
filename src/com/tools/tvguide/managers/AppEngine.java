@@ -106,8 +106,9 @@ public class AppEngine
     
     public BootManager getBootManager()
     {
+        assert (mContext != null);
         if (mBootManager == null)
-            mBootManager = new BootManager(mApplicationContext);
+            mBootManager = new BootManager(mContext);
         return mBootManager;
     }
     
