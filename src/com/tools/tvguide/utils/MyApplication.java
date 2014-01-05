@@ -77,7 +77,7 @@ public class MyApplication extends Application
 		    ErrorReporter.getInstance().putCustomData("NETWORK", "non-WIFI");
 		
 		// 渠道
-		ErrorReporter.getInstance().putCustomData("APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName());
-		
+		if (AppEngine.getInstance().getUpdateManager().getAppChannelName() != null)
+		    ErrorReporter.getInstance().putCustomData("APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName());
 	}
 }
