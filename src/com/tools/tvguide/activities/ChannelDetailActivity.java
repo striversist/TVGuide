@@ -12,7 +12,6 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannelDetailListAdapter;
 import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
-import com.tools.tvguide.adapters.DateAdapter.DateData;
 import com.tools.tvguide.components.AlarmSettingDialog;
 import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
@@ -448,6 +447,15 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
                     mProgramListView.setAdapter(mListViewAdapter);
                     
+                    // 标注已经设定过闹钟的节目
+                    for (int i=0; i<programList.size(); ++i)
+                    {
+                        Program program = programList.get(i);
+                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, getProgramString(program.time, program.title), mCurrentSelectedDay))
+                            mListViewAdapter.addAlarmProgram(program);
+                    }
+                    
+                    // 标注正在播放的节目
                     if (isTodayChosen() && mOnPlayingProgram.size() > 0)
                     {
                         Program onplayingProgram = new Program();
