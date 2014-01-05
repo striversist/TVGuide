@@ -55,17 +55,17 @@ public class AlarmSettingDialog
         long adjust = (mDay - Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))) * DAY_IN_MS;
         mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + adjust);
         
-        // 因为周日算一周的第一天，所以这里要做特殊处理。如果使用API setFirstDayOfWeek, 则在月初时会设置到上月的末尾，故不用该API
-        if (mDay == Utility.getProxyDay(Calendar.SUNDAY))
+        // 如果选择周日或下周日期，这里要做特殊处理：周日的millis + 增加的天数 * DAY_IN_MS
+        if (mDay >= Utility.getProxyDay(Calendar.SUNDAY))
         {
             mCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + 60*60*24*1000);       // 周六再增加一天时间
+            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() + DAY_IN_MS * (mDay - Utility.getProxyDay(Calendar.SATURDAY)));
         }
         
         // 如果今天是周日，则calendar的处理都是针对下一周的时间，所以这里要做特殊处理：减去一周的时间
         if (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
         {
-            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() - 60*60*24*7*1000);
+            mCalendar.setTimeInMillis(mCalendar.getTimeInMillis() - DAY_IN_MS * 7);
         }
     }
     
@@ -76,6 +76,7 @@ public class AlarmSettingDialog
     
     public void show()
     {
+        // 不能给已经播出的节目设定闹钟
         if (mCalendar.getTimeInMillis() < System.currentTimeMillis())
         {
             AlertDialog dialog = new AlertDialog.Builder(mContext)
