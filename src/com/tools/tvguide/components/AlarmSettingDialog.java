@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.tools.tvguide.R;
-import com.tools.tvguide.activities.ChannelDetailActivity;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.utils.Utility;
 
