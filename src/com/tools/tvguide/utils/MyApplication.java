@@ -15,7 +15,7 @@ import android.app.Application;
 
 @ReportsCrashes(
     formKey = "",
-    formUri = "http://bigeyecow.oicp.net:59840/acra-tvguide/_design/acra-storage/_update/report",
+    formUri = UrlManager.ACRA_PROXY_REAL,
     reportType = org.acra.sender.HttpSender.Type.JSON,
     httpMethod = org.acra.sender.HttpSender.Method.PUT,
     formUriBasicAuthLogin = "reporter",
