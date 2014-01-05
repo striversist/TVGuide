@@ -71,6 +71,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     private HashMap<String, String> mOnPlayingProgram;              // Key: time, title
     private MyProgressDialog mProgressDialog;
     private int mCurrentSelectedDay;
+    private int mMaxDays;
     private List<ResultProgramAdapter.IListItem> mItemDataList;
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
@@ -108,6 +109,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mOnPlayingProgram = new HashMap<String, String>();
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        mMaxDays = DEFAULT_MAX_DAYS;
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
         AppEngine.getInstance().getAlarmHelper().addAlarmListener(this);
      
@@ -376,7 +378,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
 	                if (extraInfo.containsKey("onplaying"))
 	                    mOnPlayingProgram = (HashMap<String, String>) extraInfo.get("onplaying");
 	                if (extraInfo.containsKey("days"))
-	                	mDateAdapter.resetMaxDays(Integer.parseInt((String) extraInfo.get("days")));
+	                    mMaxDays = Integer.parseInt((String) extraInfo.get("days")); 
 	                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
             	}
             }
@@ -446,6 +448,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     }
                     mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
                     mProgramListView.setAdapter(mListViewAdapter);
+                    if (mMaxDays != mDateAdapter.maxDays())
+                        mDateAdapter.resetMaxDays(mMaxDays);
                     
                     // 标注已经设定过闹钟的节目
                     for (int i=0; i<programList.size(); ++i)

@@ -43,6 +43,12 @@ public class DateAdapter extends BaseAdapter
         }
     }
     
+    public int maxDays()
+    {
+        assert (mDataList != null);
+        return mDataList.size();
+    }
+    
     public void resetMaxDays(int maxDays)
     {
     	assert (maxDays >=1 && maxDays <= 14);
