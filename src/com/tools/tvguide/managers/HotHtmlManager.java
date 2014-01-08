@@ -348,7 +348,14 @@ public class HotHtmlManager
         if (html == null)
         {
             NetDataGetter getter = new DefaultNetDataGetter(url);
-            html = getter.getStringData("GBK");
+            for (int i=0; i<2; ++i)
+            {
+                html = getter.getStringData("GBK");
+                if (html != null)
+                    break;
+            }
+            if (html == null)
+                throw new IOException("Failed to get html from network");
             doc = Jsoup.parse(html);
             cacheManager.set(url, doc.html());
         }
