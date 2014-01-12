@@ -471,7 +471,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     
                     foldDateListView();
                     
-                    if (AppEngine.getInstance().getBootManager().isFirstStart() && sHasShownFirstStartTips == false)
+                    if (AppEngine.getInstance().getContext() != null    // Crash上报这里进入BootManager会crash，不知原因，故先做保护
+                        && AppEngine.getInstance().getBootManager().isFirstStart() && sHasShownFirstStartTips == false)
                     {
                         showFirstStartTips();
                     }

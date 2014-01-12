@@ -36,6 +36,7 @@ public class BootManager
     // 因为BootManager中有对UI的操作，所以BootManager必须放在UI线程中创建，一般应放在MainActivity中创建
     public BootManager(Context context)
     {
+        assert (context != null);
         mContext = context;
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mUA = getUserAgentInternal();
