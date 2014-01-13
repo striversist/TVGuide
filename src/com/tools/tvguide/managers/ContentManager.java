@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
@@ -92,12 +93,20 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadChannelsByCategory(final String categoryId, final List<HashMap<String, String>> result, final LoadListener listener)
+    public boolean loadChannelsByCategory(final String categoryId, final List<Channel> result, final LoadListener listener)
     {
         boolean loadFromCache = false;
-        loadFromCache = AppEngine.getInstance().getCacheManager().loadChannelsByCategory(categoryId, result);
+        final List<HashMap<String, String>> channelMapList = new ArrayList<HashMap<String,String>>();
+        loadFromCache = AppEngine.getInstance().getCacheManager().loadChannelsByCategory(categoryId, channelMapList);
         if (loadFromCache == true)
         {
+            for (int i=0; i<channelMapList.size(); ++i)
+            {
+                Channel channel = new Channel();
+                channel.id = channelMapList.get(i).get("id");
+                channel.name = channelMapList.get(i).get("name");
+                result.add(channel);
+            }
             return true;    // sync loaded
         }
         mUpdateHandler.post(new Runnable()
@@ -117,15 +126,23 @@ public class ContentManager
                         {
                             for (int i=0; i<channelListArray.length(); ++i)
                             {
-                                HashMap<String, String> map = new HashMap<String, String>();
-                                map.put("id", channelListArray.getJSONObject(i).getString("id"));
-                                map.put("name", channelListArray.getJSONObject(i).getString("name"));
-                                result.add(map);
+                                HashMap<String, String> map = new HashMap<String, String>();    // 为了存储
+                                Channel channel = new Channel();                                // 返回数据
+                                String id = channelListArray.getJSONObject(i).getString("id");
+                                String name = channelListArray.getJSONObject(i).getString("name");
+                                
+                                map.put("id", id);
+                                map.put("name", name);
+                                channel.id = id;
+                                channel.name = name;
+                                
+                                channelMapList.add(map);
+                                result.add(channel);
                             }
                         }
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
-                    AppEngine.getInstance().getCacheManager().saveChannelsByCategory(categoryId, result);
+                    AppEngine.getInstance().getCacheManager().saveChannelsByCategory(categoryId, channelMapList);
                 }
                 catch (MalformedURLException e) 
                 {

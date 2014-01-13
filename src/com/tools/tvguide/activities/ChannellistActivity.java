@@ -37,7 +37,7 @@ public class ChannellistActivity extends Activity
     private ListView mChannelListView;
     private ChannellistAdapter mListAdapter;
     private TextView mTitltTextView;
-    private List<HashMap<String, String>> mChannelList;                     // Key: id, name
+    private List<Channel> mChannelList;
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
     private ArrayList<HashMap<String, Object>> mItemList;
@@ -53,7 +53,7 @@ public class ChannellistActivity extends Activity
         setContentView(R.layout.activity_channellist);
         mChannelListView = (ListView)findViewById(R.id.channel_list);
         mTitltTextView = (TextView)findViewById(R.id.channellist_text_title);
-        mChannelList = new ArrayList<HashMap<String,String>>();
+        mChannelList = new ArrayList<Channel>();
         mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
@@ -73,8 +73,8 @@ public class ChannellistActivity extends Activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
-                String channelId = mChannelList.get(position).get("id");
-                String channelName = mChannelList.get(position).get("name");
+                String channelId = mChannelList.get(position).id;
+                String channelName = mChannelList.get(position).name;
                 Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
                 intent.putExtra("id", channelId);
                 intent.putExtra("name", channelName);
@@ -83,8 +83,8 @@ public class ChannellistActivity extends Activity
                 for (int i=0; i<mChannelList.size(); ++i)
                 {
                     Channel channel = new Channel();
-                    channel.id = mChannelList.get(i).get("id");
-                    channel.name = mChannelList.get(i).get("name");
+                    channel.id = mChannelList.get(i).id;
+                    channel.name = mChannelList.get(i).name;
                     channelList.add(channel);
                 }
                 intent.putExtra("channel_list", (Serializable) channelList);
@@ -135,7 +135,7 @@ public class ChannellistActivity extends Activity
         List<String> idList = new ArrayList<String>();
         for (int i=0; i<mChannelList.size(); ++i)
         {
-            idList.add(mChannelList.get(i).get("id"));
+            idList.add(mChannelList.get(i).id);
         }
         AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
         {    
@@ -162,12 +162,12 @@ public class ChannellistActivity extends Activity
                         for(int i=0; i<mChannelList.size(); ++i)
                         {
                             HashMap<String, Object> item = new HashMap<String, Object>();
-                            item.put("id", mChannelList.get(i).get("id"));
-                            if (mXmlChannelInfo.get(mChannelList.get(i).get("id")) != null)
+                            item.put("id", mChannelList.get(i).id);
+                            if (mXmlChannelInfo.get(mChannelList.get(i).id) != null)
                             {
-                                item.put("image", Utility.getImage(ChannellistActivity.this, (String) mXmlChannelInfo.get(mChannelList.get(i).get("id")).get(XML_ELEMENT_LOGO)));                        
+                                item.put("image", Utility.getImage(ChannellistActivity.this, (String) mXmlChannelInfo.get(mChannelList.get(i).id).get(XML_ELEMENT_LOGO)));                        
                             }
-                            item.put("name", mChannelList.get(i).get("name"));
+                            item.put("name", mChannelList.get(i).name);
                             mItemList.add(item);
                         }
                         mListAdapter.notifyDataSetChanged();
