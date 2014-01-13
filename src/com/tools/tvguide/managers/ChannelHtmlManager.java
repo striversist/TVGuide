@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.utils.HtmlUtils;
 
 import android.content.Context;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class ChannelHtmlManager
             {
                 try 
                 {
-                    Document doc = Jsoup.connect(channelUrl).get();
+                    Document doc = HtmlUtils.getDocument(channelUrl);
                  
                     // -------------- 获取节目信息 --------------
                     // 返回结果

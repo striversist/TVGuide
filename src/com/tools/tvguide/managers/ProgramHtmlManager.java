@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.tools.tvguide.utils.HtmlUtils;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -41,7 +43,7 @@ public class ProgramHtmlManager
             {
                 try 
                 {
-                    Document doc = Jsoup.connect(programUrl).get();
+                    Document doc = HtmlUtils.getDocument(programUrl);
                     
                     // -------------- 获取Profile --------------
                     // 返回结果
@@ -99,7 +101,7 @@ public class ProgramHtmlManager
                     // 返回结果
                     String summary = "";
                     String descriptionLink = programUrl + "/detail";
-                    Document descriptionDoc = Jsoup.connect(descriptionLink).get();
+                    Document descriptionDoc = HtmlUtils.getDocument(descriptionLink);
                     Element descriptionElement = descriptionDoc.getElementsByAttributeValue("itemprop", "description").first();
                     if (descriptionElement != null)
                     {

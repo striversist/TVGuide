@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.utils.HtmlUtils;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
 
@@ -342,28 +343,7 @@ public class HotHtmlManager
     
     private Document getDocument(String url) throws IOException
     {
-        CacheManager cacheManager = AppEngine.getInstance().getCacheManager();
-        String html = cacheManager.get(url);
-        Document doc;
-        if (html == null)
-        {
-            NetDataGetter getter = new DefaultNetDataGetter(url);
-            for (int i=0; i<2; ++i)
-            {
-                html = getter.getStringData("GBK");
-                if (html != null)
-                    break;
-            }
-            if (html == null)
-                throw new IOException("Failed to get html from network");
-            doc = Jsoup.parse(html);
-            cacheManager.set(url, doc.html());
-        }
-        else
-        {
-            doc = Jsoup.parse(html);
-        }
-        return doc;
+        return HtmlUtils.getDocument(url, "GBK");
     }
     
     /**
