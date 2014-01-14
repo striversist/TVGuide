@@ -192,6 +192,18 @@ public class ChannelDetailListAdapter extends BaseAdapter
     {
         return mItemList.get(position).isClickable();
     }
+    
+    @Override
+    public int getViewTypeCount()
+    {
+        return ItemType.values().length;
+    }
+    
+    @Override
+    public int getItemViewType(int position)
+    {
+        return mItemList.get(position).getType().ordinal();
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) 
@@ -259,7 +271,9 @@ public class ChannelDetailListAdapter extends BaseAdapter
         @Override
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
-            convertView = inflater.inflate(getLayout(), null);
+            if (convertView == null)
+                convertView = inflater.inflate(getLayout(), null);
+            
             TextView title = (TextView) convertView.findViewById(R.id.hot_channel_name_tv);
             title.setText((String) mTag);
             return convertView;
@@ -304,7 +318,9 @@ public class ChannelDetailListAdapter extends BaseAdapter
         @Override
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
-            convertView = inflater.inflate(R.layout.detail_program_item, null);
+            if (convertView == null)
+                convertView = inflater.inflate(R.layout.detail_program_item, null);
+            
             TextView programNameTextView = (TextView) convertView.findViewById(R.id.detail_program_name_tv);
             ImageView indicator = (ImageView) convertView.findViewById(R.id.detail_program_indicator_iv);
             ImageView alarmIcon = (ImageView) convertView.findViewById(R.id.detail_alarm_icon_iv);
