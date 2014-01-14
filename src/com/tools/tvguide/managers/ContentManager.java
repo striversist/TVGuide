@@ -418,7 +418,7 @@ public class ContentManager
     
     private int getCurrentChannelVersion()
     {
-        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, 1);
+        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, EnvironmentManager.currentChannelVersion);
     }
     
     private void setChannelVersion(int version)
