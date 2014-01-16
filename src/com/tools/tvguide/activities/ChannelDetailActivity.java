@@ -16,12 +16,15 @@ import com.tools.tvguide.components.AlarmSettingDialog;
 import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AlarmHelper.AlarmListener;
+import com.tools.tvguide.managers.ChannelHtmlManager.ChannelDetailCallback;
 import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.EnvironmentManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.DetailLeftGuide;
 import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
@@ -53,6 +56,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
 {
     private static final String TAG = "ChannelDetailActivity";
     private static boolean sHasShownFirstStartTips = false;
+    private static int sRequestId = 0;
     private String mChannelName;
     private String mChannelId;
     private List<Channel> mChannelList;
@@ -67,14 +71,14 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     private DetailLeftGuide mLeftMenu;
     private ImageView mFavImageView;
     
-    private List<HashMap<String, String>> mProgramList;             // Key: time, title
-    private HashMap<String, String> mOnPlayingProgram;              // Key: time, title
+    private List<Program> mProgramList;
+    private Program mOnPlayingProgram;
     private MyProgressDialog mProgressDialog;
     private int mCurrentSelectedDay;
     private int mMaxDays;
     private List<ResultProgramAdapter.IListItem> mItemDataList;
     
-    private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM};
+    private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM, MSG_UPDATE_DATELIST};
     private final int TIMER_SCHEDULE_PERIOD = 3 * 60 * 1000;        // 3 minute
     private final int DEFAULT_MAX_DAYS = 7;
     private final String SEP = ":　";
@@ -105,8 +109,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mChannelList = (List<Channel>) getIntent().getSerializableExtra("channel_list");
         if (mChannelList == null)
         	mChannelList = new ArrayList<Channel>();
-        mProgramList = new ArrayList<HashMap<String,String>>();
-        mOnPlayingProgram = new HashMap<String, String>();
+        mProgramList = new ArrayList<Program>();
+        mOnPlayingProgram = new Program();
         mProgressDialog = new MyProgressDialog(this);
         mCurrentSelectedDay = Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         mMaxDays = DEFAULT_MAX_DAYS;
@@ -364,8 +368,15 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
 
     private void updateProgramList()
     {
+        if (EnvironmentManager.isChannelDetailFromProxy)
+            updateProgramListFromProxy();
+        else
+            updateProgramListFromWeb();
+    }
+    
+    private void updateProgramListFromProxy()
+    {
         mProgramList.clear();
-        mOnPlayingProgram.clear();
         final HashMap<String, Object> extraInfo = new HashMap<String, Object>();
         boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannelV3(mChannelId, mCurrentSelectedDay, mProgramList, 
                                 extraInfo, new ContentManager.LoadListener() 
@@ -373,23 +384,48 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public void onLoadFinish(int status) 
             {
-            	if (status == LoadListener.SUCCESS)
-            	{
-	                if (extraInfo.containsKey("onplaying"))
-	                    mOnPlayingProgram = (HashMap<String, String>) extraInfo.get("onplaying");
-	                if (extraInfo.containsKey("days"))
-	                    mMaxDays = Integer.parseInt((String) extraInfo.get("days")); 
-	                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
-            	}
+                if (status == LoadListener.SUCCESS)
+                {
+                    if (extraInfo.containsKey("onplaying"))
+                        mOnPlayingProgram = (Program) extraInfo.get("onplaying");
+                    if (extraInfo.containsKey("days"))
+                        mMaxDays = Integer.parseInt((String) extraInfo.get("days")); 
+                    uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+                    uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_DATELIST.ordinal());
+                }
             }
         });
         if (isSyncLoad == false)
             mProgressDialog.show();
     }
     
+    private void updateProgramListFromWeb()
+    {
+        sRequestId++;
+        mProgramList.clear();
+        
+        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, "http://www.tvmao.com/program/CCTV-CCTV1-w6.html", new ChannelDetailCallback() 
+        {            
+            @Override
+            public void onProgramsLoaded(int requestId, List<Program> programList) 
+            {
+                mProgramList.addAll(programList);
+                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+            }
+            
+            @Override
+            public void onDateLoaded(int requestId, List<ChannelDate> dateList) 
+            {
+                mMaxDays = dateList.size();
+                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_DATELIST.ordinal());
+            }
+        });
+        
+        mProgressDialog.show();
+    }
+    
     private void updateOnplayingProgram()
     {
-        mOnPlayingProgram.clear();
         AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
         {    
             @Override
@@ -402,7 +438,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     
     private void showFirstStartTips()
     {
-        String tips = "试试向右滑动";
+        String tips = ">>> 试试向右滑动 >>>";
         Toast tryToast = Toast.makeText(this, tips, Toast.LENGTH_LONG);
         tryToast.setGravity(Gravity.NO_GRAVITY, 0, 0);
         SpannableString ss = new SpannableString(tips);
@@ -442,14 +478,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     for (int i=0; i<mProgramList.size(); ++i)
                     {
                         Program program = new Program();
-                        program.time = mProgramList.get(i).get("time");
-                        program.title = mProgramList.get(i).get("title");
+                        program.time = mProgramList.get(i).time;
+                        program.title = mProgramList.get(i).title;
                         programList.add(program);
                     }
                     mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
                     mProgramListView.setAdapter(mListViewAdapter);
-                    if (mMaxDays != mDateAdapter.maxDays())
-                        mDateAdapter.resetMaxDays(mMaxDays);
                     
                     // 标注已经设定过闹钟的节目
                     for (int i=0; i<programList.size(); ++i)
@@ -460,12 +494,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     }
                     
                     // 标注正在播放的节目
-                    if (isTodayChosen() && mOnPlayingProgram.size() > 0)
+                    if (isTodayChosen() && mOnPlayingProgram != null)
                     {
-                        Program onplayingProgram = new Program();
-                        onplayingProgram.time = mOnPlayingProgram.get("time");
-                        onplayingProgram.title = mOnPlayingProgram.get("title");
-                        int position = mListViewAdapter.setOnplayingProgram(onplayingProgram);
+                        int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
                         mProgramListView.setSelection(position);
                     }
                     
@@ -478,13 +509,14 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     }
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
-                    if (isTodayChosen() && mOnPlayingProgram.size() > 0)
+                    if (isTodayChosen() && mOnPlayingProgram != null)
                     {
-                        Program onplayingProgram = new Program();
-                        onplayingProgram.time = mOnPlayingProgram.get("time");
-                        onplayingProgram.title = mOnPlayingProgram.get("title");
-                        mListViewAdapter.setOnplayingProgram(onplayingProgram);
+                        mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
                     }
+                    break;
+                case MSG_UPDATE_DATELIST:
+                    if (mMaxDays != mDateAdapter.maxDays())
+                        mDateAdapter.resetMaxDays(mMaxDays);
                     break;
                 default:
                     break;

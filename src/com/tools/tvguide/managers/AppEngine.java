@@ -18,6 +18,8 @@ public class AppEngine
     private UpdateManager                           mUpdateManager;
     private BootManager                             mBootManager;
     private HotHtmlManager                          mHotHtmlManager;
+    private ChannelHtmlManager                      mChannelHtmlManager;
+    private ProgramHtmlManager                      mProgramHtmlManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -117,6 +119,20 @@ public class AppEngine
         if (mHotHtmlManager == null)
             mHotHtmlManager = new HotHtmlManager(mApplicationContext);
         return mHotHtmlManager;
+    }
+    
+    public ChannelHtmlManager getChannelHtmlManager()
+    {
+        if (mChannelHtmlManager == null)
+            mChannelHtmlManager = new ChannelHtmlManager(mApplicationContext);
+        return mChannelHtmlManager;
+    }
+    
+    public ProgramHtmlManager getProgramHtmlManager()
+    {
+        if (mProgramHtmlManager == null)
+            mProgramHtmlManager = new ProgramHtmlManager(mApplicationContext);
+        return mProgramHtmlManager;
     }
     
     public void prepareBeforeExit()

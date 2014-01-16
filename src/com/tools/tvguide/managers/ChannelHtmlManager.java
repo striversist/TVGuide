@@ -45,6 +45,9 @@ public class ChannelHtmlManager
                 try 
                 {
                     Document doc = HtmlUtils.getDocument(channelUrl);
+                    String protocol = new URL(channelUrl).getProtocol();
+                    String host = new URL(channelUrl).getHost();
+                    String prefix = protocol + "://" + host;
                  
                     // -------------- 获取节目信息 --------------
                     // 返回结果
@@ -101,7 +104,7 @@ public class ChannelHtmlManager
                         
                         Element linkElement = program.select("> a[href]").first();
                         if (linkElement != null)
-                            link = linkElement.attr("abs:href");
+                            link = prefix + linkElement.attr("href");
                         
                         Program addProgram = new Program();
                         addProgram.time = time;
@@ -130,7 +133,7 @@ public class ChannelHtmlManager
                             if (!name.startsWith("周"))
                                 name = "周" + name;
                             
-                            String href = dates.get(i).attr("abs:href");
+                            String href = prefix + dates.get(i).attr("href");
                             if (href == null || href.equals(""))    // 当前的页面
                             {
                                 href = channelUrl;
@@ -156,7 +159,11 @@ public class ChannelHtmlManager
                             if (!name.startsWith("下"))
                                 name = "下" + name;
                             
-                            String href = dates.get(i).attr("abs:href");
+                            Element test = dates.get(i);
+                            String testurl = test.attr("abs:href");
+                            Log.d("", testurl);
+                            
+                            String href = prefix + dates.get(i).attr("href");
                             if (href == null || href.equals(""))    // 当前的页面
                             {
                                 href = channelUrl;

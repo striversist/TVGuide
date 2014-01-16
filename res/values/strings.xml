@@ -79,5 +79,6 @@
     <string name="evening">晚间节目</string>
     <string name="programchannellist">频道列表</string>
     <string name="crash_toast_text">抱歉，程序崩溃了！\n错误已发送，后续会修复这个问题！</string>
+    <string name="program_introduce">预告:</string>
 
 </resources>

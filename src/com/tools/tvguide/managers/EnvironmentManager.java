@@ -2,7 +2,8 @@ package com.tools.tvguide.managers;
 
 public class EnvironmentManager 
 {
-    public static final boolean isDevelopMode = false;
+    public static final boolean isDevelopMode = true;
+    public static final boolean isChannelDetailFromProxy = false;
     
-    public static final int currentChannelVersion = 4;
+    public static final int defaultChannelVersion = 4;
 }

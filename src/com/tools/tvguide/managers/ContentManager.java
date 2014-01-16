@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 
@@ -255,7 +256,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadProgramsByChannelV3(final String channelId, final int day, final List<HashMap<String, String>> programs, 
+    public boolean loadProgramsByChannelV3(final String channelId, final int day, final List<Program> programs, 
             final HashMap<String, Object> extra, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
@@ -275,21 +276,25 @@ public class ContentManager
                         {
                             for (int i=0; i<resultArray.length(); ++i)
                             {
-                                HashMap<String, String> map = new HashMap<String, String>();
-                                map.put("time", resultArray.getJSONObject(i).getString("time"));
-                                map.put("title", resultArray.getJSONObject(i).getString("title"));
-                                programs.add(map);
+                                String time = resultArray.getJSONObject(i).getString("time");
+                                String title = resultArray.getJSONObject(i).getString("title");
+                                
+                                Program program = new Program();
+                                program.time = time;
+                                program.title = title;
+                                programs.add(program);
                             }
                         }
                         
                         JSONObject jsonOnPlayingProgram = jsonRoot.getJSONObject("onplaying");
                         if (extra != null && jsonOnPlayingProgram != null)
                         {
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put("time", jsonOnPlayingProgram.getString("time"));
-                            map.put("title", jsonOnPlayingProgram.getString("title"));
-                            map.put("day", jsonOnPlayingProgram.getString("day"));
-                            extra.put("onplaying", map);
+                            Program program = new Program();
+                            program.day = Integer.parseInt(jsonOnPlayingProgram.getString("day"));
+                            program.time = jsonOnPlayingProgram.getString("time");
+                            program.title = jsonOnPlayingProgram.getString("title");
+                            
+                            extra.put("onplaying", program);
                         }
                         
                         String days = jsonRoot.getString("days");
@@ -372,7 +377,7 @@ public class ContentManager
         return false;
     }
     
-    public boolean loadOnPlayingProgramByChannel(final String channelId, final HashMap<String, String> result, final LoadListener listener)
+    public boolean loadOnPlayingProgramByChannel(final String channelId, final Program result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable()
         {
@@ -385,9 +390,12 @@ public class ContentManager
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                     {
-                        result.put("time", jsonRoot.getString("time"));
-                        result.put("title", jsonRoot.getString("title"));
-                        result.put("day", jsonRoot.getString("day"));
+                        Program program = new Program();
+                        program.day = Integer.parseInt(jsonRoot.getString("day"));
+                        program.time = jsonRoot.getString("time");
+                        program.title = jsonRoot.getString("title");
+                        
+                        result.copy(program);
                     }
                     listener.onLoadFinish(LoadListener.SUCCESS);
                 }
@@ -418,7 +426,7 @@ public class ContentManager
     
     private int getCurrentChannelVersion()
     {
-        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, EnvironmentManager.currentChannelVersion);
+        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, EnvironmentManager.defaultChannelVersion);
     }
     
     private void setChannelVersion(int version)

@@ -306,7 +306,7 @@ public class ChannelDetailListAdapter extends BaseAdapter
         @Override
         public int getLayout() 
         {
-            return R.layout.hot_program_item;
+            return R.layout.detail_program_item;
         }
 
         @Override

@@ -2,6 +2,7 @@ package com.tools.tvguide.data;
 
 public class Program 
 {
+    public int day;
     public String time;
     public String title;
     public String trailer;
@@ -27,5 +28,15 @@ public class Program
         if (link != null && link.trim().length() > 0)
             return true;
         return false;
+    }
+    
+    public void copy(Program program)
+    {
+        assert (program != null);
+        this.day = program.day;
+        this.time = program.time;
+        this.title = program.title;
+        this.trailer = program.trailer;
+        this.link = program.link;
     }
 }
