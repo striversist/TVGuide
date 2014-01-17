@@ -2,7 +2,11 @@ package com.tools.tvguide.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import com.tools.tvguide.R;
 
@@ -202,5 +206,36 @@ public class Utility
         long leftMs = (nowHour * 3600 + nowMinute * 60 + nowSecond) * 1000 + nowMilliSecond;
         
         return (now - daysMs - leftMs);
+    }
+    
+    /**
+     * 比较时间，两者必须是：HH:mm的格式
+     * @param time1
+     * @param time2
+     * @return 1(time1 > time2); 0(time1 == time2); -1(time1 < time2)
+     */
+    public static int compareTime(String time1, String time2)
+    {
+        assert(time1 != null && time2 != null);
+        
+        try 
+        {
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+            Date date1 = df.parse(time1);
+            Date date2 = df.parse(time2);
+            
+            if (date1.getTime() > date2.getTime())
+                return 1;
+            else if (date1.getTime() < date2.getTime())
+                return -1;
+            else
+                return 0;
+        } 
+        catch (ParseException e) 
+        {
+            e.printStackTrace();
+        }
+        
+        return 0;
     }
 }

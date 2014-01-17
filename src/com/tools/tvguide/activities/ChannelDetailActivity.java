@@ -31,6 +31,7 @@ import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IInterface;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
@@ -126,7 +127,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public void run() 
             {
-                updateOnplayingProgram();
+                updateOnplayingProgramFromProxy();
             }
         }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
     }
@@ -404,6 +405,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         sRequestId++;
         mProgramList.clear();
         
+        // Fake: should get from proxy
+        final String proxyTime = "16:00";
+        
         AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, "http://www.tvmao.com/program/CCTV-CCTV1-w6.html", new ChannelDetailCallback() 
         {            
             @Override
@@ -411,6 +415,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             {
                 mProgramList.addAll(programList);
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+                if (proxyTime != null && !proxyTime.equals(""))
+                    updateOnplayingProgramFromWeb(proxyTime);
             }
             
             @Override
@@ -424,7 +430,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mProgressDialog.show();
     }
     
-    private void updateOnplayingProgram()
+    private void updateOnplayingProgramFromProxy()
     {
         AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
         {    
@@ -434,6 +440,41 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
             }
         });
+    }
+    
+    private void updateOnplayingProgramFromWeb(String currentTime)
+    {
+        mOnPlayingProgram = new Program();
+        for (int i=0; i<mProgramList.size(); ++i)
+        {
+            String programTime = mProgramList.get(i).time;
+            if (programTime == null)
+                continue;
+            
+            if (i == 0 && Utility.compareTime(currentTime, programTime) < 0)    // 播放的还是昨晚的最后一个节目
+            {
+                break;
+            }
+            
+            if (i < mProgramList.size() - 1)   // 除最后一个节目外，中间正在播放的节目
+            {
+                String nextProgramTime = mProgramList.get(i + 1).time;
+                if (nextProgramTime == null)
+                    continue;
+                if (Utility.compareTime(currentTime, programTime)>=0 && Utility.compareTime(currentTime, nextProgramTime)<0)
+                {
+                    mOnPlayingProgram.copy(mProgramList.get(i));
+                    break;
+                }
+            }
+            else    // 当天的最后一个节目
+            {
+                mOnPlayingProgram.copy(mProgramList.get(i));
+                break;
+            }
+        }
+        
+        uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
     }
     
     private void showFirstStartTips()

@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -51,17 +52,17 @@ public class ChannelDetailListAdapter extends BaseAdapter
                 String time1 = programList.get(i).time;
                 String time2 = programList.get(i+1).time;
                 
-                if (i == 0 && compareTime(time1, midday) < 0)
+                if (i == 0 && Utility.compareTime(time1, midday) < 0)
                 {
                     LabelItem labelItem = new LabelItem();
                     labelItem.setTag(mContext.getResources().getString(R.string.morning));
                     mItemList.add(labelItem);
                 }
-                else if (compareTime(time1, midday) < 0 && compareTime(time2, midday) >= 0 && compareTime(time2, evening) < 0)
+                else if (Utility.compareTime(time1, midday) < 0 && Utility.compareTime(time2, midday) >= 0 && Utility.compareTime(time2, evening) < 0)
                 {
                     addMidday = true;
                 }
-                else if (compareTime(time1, evening) < 0 && compareTime(time2, evening) >= 0)
+                else if (Utility.compareTime(time1, evening) < 0 && Utility.compareTime(time2, evening) >= 0)
                 {
                     addEvening = true;
                 }
@@ -212,31 +213,6 @@ public class ChannelDetailListAdapter extends BaseAdapter
         return mItemList.get(position).getView(mContext, convertView, LayoutInflater.from(mContext));
     }
     
-    private int compareTime(String time1, String time2)
-    {
-        assert(time1 != null && time2 != null);
-        
-        try 
-        {
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            Date date1 = df.parse(time1);
-            Date date2 = df.parse(time2);
-            
-            if (date1.getTime() > date2.getTime())
-                return 1;
-            else if (date1.getTime() < date2.getTime())
-                return -1;
-            else
-                return 0;
-        } 
-        catch (ParseException e) 
-        {
-            e.printStackTrace();
-        }
-        
-        return 0;
-    }
-    
     private String getProgramString(String time, String title)
     {
         return time + ":　" + title;
@@ -335,6 +311,8 @@ public class ChannelDetailListAdapter extends BaseAdapter
             else
                 programNameTextView.setText(getProgramString(program.time, program.title));
             
+            alarmIcon.setVisibility(View.INVISIBLE);
+            indicator.setVisibility(View.VISIBLE);
             if (program.equals(mOnplayingProgram) == false)
             {
                 for (int i=0; i<mAlarmProgramList.size(); ++i)
@@ -343,7 +321,7 @@ public class ChannelDetailListAdapter extends BaseAdapter
                     {
                         alarmIcon.setVisibility(View.VISIBLE);
                         indicator.setVisibility(View.INVISIBLE);
-                        break;
+                        continue;
                     }
                 }
             }
