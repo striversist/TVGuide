@@ -12,6 +12,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannelDetailListAdapter;
 import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
+import com.tools.tvguide.adapters.DateAdapter.DateData;
 import com.tools.tvguide.components.AlarmSettingDialog;
 import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
@@ -435,10 +436,23 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             }
             
             @Override
-            public void onDateLoaded(int requestId, List<ChannelDate> dateList) 
+            public void onDateLoaded(int requestId, final List<ChannelDate> channelDateList) 
             {
-                mMaxDays = dateList.size();
-                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_DATELIST.ordinal());
+                // TODO: 这里应该用更合适的方式重构，即用消息的方式通知，又太影响公共的逻辑
+                uiHandler.post(new Runnable() 
+                {
+                    @Override
+                    public void run() 
+                    {
+                        List<DateData> dateList = new ArrayList<DateData>();
+                        for (int i=0; i<channelDateList.size(); ++i)
+                        {
+                            DateData dateData = new DateData(channelDateList.get(i).name);
+                            dateList.add(dateData);
+                        }
+                        mDateAdapter.resetDates(dateList);
+                    }
+                });
             }
         });
         

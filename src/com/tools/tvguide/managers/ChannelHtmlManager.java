@@ -31,7 +31,7 @@ public class ChannelHtmlManager
     public interface ChannelDetailCallback
     {
         void onProgramsLoaded(int requestId, List<Program> programList);
-        void onDateLoaded(int requestId, List<ChannelDate> dateList);
+        void onDateLoaded(int requestId, List<ChannelDate> channelDateList);
     }
     
     public void getChannelDetailAsync(final int requestId, final String channelUrl, final ChannelDetailCallback callback)

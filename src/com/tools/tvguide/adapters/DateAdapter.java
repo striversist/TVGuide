@@ -17,10 +17,10 @@ public class DateAdapter extends BaseAdapter
 {
     public static class DateData
     {
-        public String mDate;
+        public String date;
         public DateData(String date)
         {
-            mDate = date;
+            this.date = date;
         }
     }
     
@@ -65,6 +65,15 @@ public class DateAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
     
+    public void resetDates(List<DateData> dataList)
+    {
+        assert (dataList != null);
+        
+        mDataList.clear();
+        mDataList.addAll(dataList);
+        notifyDataSetChanged();
+    }
+    
     public void setCurrentIndex(int position)
     {
         assert(position >= 0);
@@ -99,12 +108,12 @@ public class DateAdapter extends BaseAdapter
     {
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.row, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.row_date, parent, false);
         }
         
         ImageView iconImageView = ((ImageView) convertView.findViewById(R.id.row_icon));
         TextView titleTextView = ((TextView) convertView.findViewById(R.id.row_title));
-        titleTextView.setText(mDataList.get(position).mDate);
+        titleTextView.setText(mDataList.get(position).date);
 
         if (position == mCurIndex)
         {
