@@ -413,6 +413,43 @@ public class ContentManager
         });
         return false;
     }
+    
+    public boolean loadNowTimeFromProxy(final StringBuffer result, final LoadListener listener)
+    {
+        mUpdateHandler.post(new Runnable()
+        {
+            public void run()
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?nowtime";
+                try 
+                {
+                    NetDataGetter getter = new DefaultNetDataGetter(url);
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    if (jsonRoot != null)
+                    {
+                        String time = jsonRoot.getString("nowtime");
+                        
+                        if (result.length() > 0)
+                            result.delete(0, result.length()-1);
+                        
+                        result.append(time);
+                    }
+                    listener.onLoadFinish(LoadListener.SUCCESS);
+                }
+                catch (MalformedURLException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+                catch (JSONException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+            }
+        });
+        return false;
+    }
 
     public void shutDown()
     {

@@ -35,6 +35,7 @@ public class UrlManager
     public static final int URL_FEEDBACK                = 9;
     public static final int URL_LOGIN                   = 10;
     public static final int URL_REPORT                  = 11;
+    public static final int URL_QUERY                   = 12;
         
     private static final boolean ENABLE_TEST            = EnvironmentManager.isDevelopMode;
     private String  mProxyHostName                      = REAL_HOST;
@@ -49,6 +50,8 @@ public class UrlManager
     private static final String PATH_CHOOSE               = "/public/json/programs.php";
     private static final String PATH_SEARCH               = "/public/json/search.php";
     private static final String PATH_HOT                  = "/public/json/hot.php";
+    private static final String PATH_QUERY                = "/public/json/query.php";
+    
     private static final String PATH_UPDATE               = "/public/update/update.php";
     private static final String PATH_FEEDBACK             = "/public/feedback.php";
     private static final String PATH_LOGIN                = "/public/login.php";
@@ -202,6 +205,9 @@ public class UrlManager
                 break;
             case URL_REPORT:
                 url += PATH_REPORT;
+                break;
+            case URL_QUERY:
+                url += PATH_QUERY;
                 break;
             default:
                 assert false: "Not reach here";

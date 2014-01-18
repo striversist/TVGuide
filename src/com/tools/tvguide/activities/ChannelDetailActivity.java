@@ -1,9 +1,13 @@
 package com.tools.tvguide.activities;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -452,9 +456,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             {
                 mProgramList.addAll(programList);
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
-                String currentTime = getCurrentTime();
-                if (currentTime != null && !currentTime.equals(""))
-                    updateOnplayingProgramFromWeb(currentTime);
+                updateOnplayingProgram();
             }
             
             @Override
@@ -486,13 +488,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         if (isLoadFromProxy())
             updateOnplayingProgramFromProxy();
         else
-            updateOnplayingProgramFromWeb(getCurrentTime());
-    }
-    
-    private String getCurrentTime()
-    {
-        // TODO: get time from proxy or from local
-        return "16:00";
+            updateOnplayingProgramFromWeb();
     }
     
     private void updateOnplayingProgramFromProxy()
@@ -507,39 +503,57 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         });
     }
     
-    private void updateOnplayingProgramFromWeb(String currentTime)
+    private void updateOnplayingProgramFromWeb()
     {
         mOnPlayingProgram = new Program();
-        for (int i=0; i<mProgramList.size(); ++i)
-        {
-            String programTime = mProgramList.get(i).time;
-            if (programTime == null)
-                continue;
-            
-            if (i == 0 && Utility.compareTime(currentTime, programTime) < 0)    // 播放的还是昨晚的最后一个节目
+        final StringBuffer buffer = new StringBuffer();
+        AppEngine.getInstance().getContentManager().loadNowTimeFromProxy(buffer, new ContentManager.LoadListener() 
+        {    
+            @Override
+            public void onLoadFinish(int status) 
             {
-                break;
-            }
-            
-            if (i < mProgramList.size() - 1)   // 除最后一个节目外，中间正在播放的节目
-            {
-                String nextProgramTime = mProgramList.get(i + 1).time;
-                if (nextProgramTime == null)
-                    continue;
-                if (Utility.compareTime(currentTime, programTime)>=0 && Utility.compareTime(currentTime, nextProgramTime)<0)
+                try 
                 {
-                    mOnPlayingProgram.copy(mProgramList.get(i));
-                    break;
+                    Date date = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(buffer.toString());
+                    String currentTime = date.getHours() + ":" + date.getMinutes();
+                    
+                    for (int i=0; i<mProgramList.size(); ++i)
+                    {
+                        String programTime = mProgramList.get(i).time;
+                        if (programTime == null)
+                            continue;
+                        
+                        if (i == 0 && Utility.compareTime(currentTime, programTime) < 0)    // 播放的还是昨晚的最后一个节目
+                        {
+                            break;
+                        }
+                        
+                        if (i < mProgramList.size() - 1)   // 除最后一个节目外，中间正在播放的节目
+                        {
+                            String nextProgramTime = mProgramList.get(i + 1).time;
+                            if (nextProgramTime == null)
+                                continue;
+                            if (Utility.compareTime(currentTime, programTime)>=0 && Utility.compareTime(currentTime, nextProgramTime)<0)
+                            {
+                                mOnPlayingProgram.copy(mProgramList.get(i));
+                                break;
+                            }
+                        }
+                        else    // 当天的最后一个节目
+                        {
+                            mOnPlayingProgram.copy(mProgramList.get(i));
+                            break;
+                        }
+                    }
+                    
+                    uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
+                } 
+                catch (ParseException e) 
+                {
+                    e.printStackTrace();
                 }
             }
-            else    // 当天的最后一个节目
-            {
-                mOnPlayingProgram.copy(mProgramList.get(i));
-                break;
-            }
-        }
-        
-        uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
+        });
     }
     
     private void showFirstStartTips()
@@ -582,7 +596,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     if (isTodayChosen() && mOnPlayingProgram != null)
                     {
                         int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
-                        mProgramListView.setSelection(position);
+                        if (position != -1)
+                            mProgramListView.setSelection(position);
                     }
                     
                     foldDateListView();
@@ -594,9 +609,11 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     }
                     break;
                 case MSG_UPDATE_ONPLAYING_PROGRAM:
-                    if (isTodayChosen() && mOnPlayingProgram != null)
+                    if (isTodayChosen() && mOnPlayingProgram != null && mListViewAdapter != null)
                     {
-                        mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
+                        int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
+                        if (position != -1)
+                            mProgramListView.setSelection(position);
                     }
                     break;
                 case MSG_UPDATE_DATELIST:
