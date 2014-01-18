@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.DateAdapter.DateData;
 import com.tools.tvguide.components.AlarmSettingDialog;
+import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
@@ -30,6 +32,9 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.managers.EnvironmentManager;
+import com.tools.tvguide.managers.UrlManager;
+import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.utils.NetworkManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.DetailLeftGuide;
 import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
@@ -463,6 +468,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                 mProgramList.addAll(programList);
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
                 updateOnplayingProgram();
+                reportVisitToProxy();
             }
             
             @Override
@@ -555,6 +561,29 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
                 } 
                 catch (ParseException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    private void reportVisitToProxy()
+    {
+        new Handler(NetworkManager.getInstance().getNetworkThreadLooper()).post(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) 
+                             + "?channel=" + mChannelId + "&day=" + mCurrentSelectedDay + "&report_visit";
+                NetDataGetter getter;
+                try 
+                {
+                    getter = new DefaultNetDataGetter(url);
+                    getter.getStringData();
+                } 
+                catch (MalformedURLException e) 
                 {
                     e.printStackTrace();
                 }
