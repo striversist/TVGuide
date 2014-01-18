@@ -530,13 +530,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     mItemDataList.clear();
                     mProgressDialog.dismiss();
                     List<Program> programList = new ArrayList<Program>();
-                    for (int i=0; i<mProgramList.size(); ++i)
-                    {
-                        Program program = new Program();
-                        program.time = mProgramList.get(i).time;
-                        program.title = mProgramList.get(i).title;
-                        programList.add(program);
-                    }
+                    programList.addAll(mProgramList);
                     mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
                     mProgramListView.setAdapter(mListViewAdapter);
                     

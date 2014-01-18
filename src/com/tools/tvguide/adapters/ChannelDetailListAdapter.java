@@ -311,8 +311,14 @@ public class ChannelDetailListAdapter extends BaseAdapter
             else
                 programNameTextView.setText(getProgramString(program.time, program.title));
             
+            // 角标处理：一般情况：有链接的节目有角标，无链接的节目无角标
+            if (program.hasLink())
+                indicator.setVisibility(View.VISIBLE);
+            else
+                indicator.setVisibility(View.INVISIBLE);
+            
+            // 针对设定过闹钟的节目的处理：显示闹钟图标，为防止图标重叠，此时不显示角标（即便是有链接的情况）
             alarmIcon.setVisibility(View.INVISIBLE);
-            indicator.setVisibility(View.VISIBLE);
             if (program.equals(mOnplayingProgram) == false)
             {
                 for (int i=0; i<mAlarmProgramList.size(); ++i)
