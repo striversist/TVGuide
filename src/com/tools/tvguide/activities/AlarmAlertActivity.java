@@ -21,12 +21,15 @@ public class AlarmAlertActivity extends Activity
     {
         super.onCreate(SavedInstanceState);
         final MediaPlayer localMediaPlayer = MediaPlayer.create(this, getDefaultRingtoneUri(4));
-        localMediaPlayer.setLooping(true);
-        localMediaPlayer.start();
-        final String channelId = getIntent().getStringExtra("channel_id");
-        final String channelName = getIntent().getStringExtra("channel_name");
-        final String program = getIntent().getStringExtra("program");
-        final String day = getIntent().getStringExtra("day");
+        if (localMediaPlayer != null)
+        {
+            localMediaPlayer.setLooping(true);
+            localMediaPlayer.start();
+        }
+        final String channelId = getIntent().getStringExtra("channel_id") == null ? "" : getIntent().getStringExtra("channel_id");
+        final String channelName = getIntent().getStringExtra("channel_name") == null ? "" : getIntent().getStringExtra("channel_name");
+        final String program = getIntent().getStringExtra("program") == null ? "" : getIntent().getStringExtra("program");
+        final String day = getIntent().getStringExtra("day") == null ? "1" : getIntent().getStringExtra("day");
         AlertDialog dialog = new AlertDialog.Builder(AlarmAlertActivity.this).setIcon(R.drawable.clock)
                 .setTitle(channelName)
                 .setMessage(program)
@@ -35,7 +38,8 @@ public class AlarmAlertActivity extends Activity
                     @Override
                     public void onClick(DialogInterface dialog, int which) 
                     {
-                        localMediaPlayer.stop();
+                        if (localMediaPlayer != null)
+                            localMediaPlayer.stop();
                         if (AppEngine.getInstance().getContext() == null)
                             AppEngine.getInstance().setContext(AlarmAlertActivity.this);    // 需要设置，否则会有空指针的异常
                         
