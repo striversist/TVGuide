@@ -32,9 +32,10 @@ import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IInterface;
 import android.os.Message;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.text.SpannableString;
@@ -47,7 +48,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -281,34 +282,49 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             }
         });
         
-        mProgramListView.setOnItemClickListener(new OnItemClickListener() 
+        mProgramListView.setLongClickable(true);
+        mProgramListView.setOnItemLongClickListener(new OnItemLongClickListener() 
         {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) 
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) 
             {
-                foldDateListView();
-
-                final Program program = mListViewAdapter.getProgram(position);
-                
-                String hour = program.time.split(":")[0];
-                String minute = program.time.split(":")[1];
-                
-                AlarmSettingDialog alarmSettingDialog = new AlarmSettingDialog(ChannelDetailActivity.this, mCurrentSelectedDay, Integer.parseInt(hour),
-                                Integer.parseInt(minute), mChannelId, mChannelName, getProgramString(program.time, program.title));
-                
-                alarmSettingDialog.setAlarmSettingListener(new OnAlarmSettingListener() 
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChannelDetailActivity.this).setTitle(null);
+                String[] stringArray = new String[1];
+                stringArray[0] = getResources().getString(R.string.setting_dialog);
+                AlertDialog settingDialog = builder.setItems(stringArray, new DialogInterface.OnClickListener() 
                 {
                     @Override
-                    public void onAlarmSetted(boolean success) 
+                    public void onClick(DialogInterface dialog, int which) 
                     {
-                        if (success)
-                            mListViewAdapter.addAlarmProgram(program);
-                        else
-                            mListViewAdapter.removeAlarmProgram(program);
+                        foldDateListView();
+        
+                        final Program program = mListViewAdapter.getProgram(position);
+                        
+                        String hour = program.time.split(":")[0];
+                        String minute = program.time.split(":")[1];
+                        
+                        AlarmSettingDialog alarmSettingDialog = new AlarmSettingDialog(ChannelDetailActivity.this, mCurrentSelectedDay, Integer.parseInt(hour),
+                                        Integer.parseInt(minute), mChannelId, mChannelName, getProgramString(program.time, program.title));
+                        
+                        alarmSettingDialog.setAlarmSettingListener(new OnAlarmSettingListener() 
+                        {
+                            @Override
+                            public void onAlarmSetted(boolean success) 
+                            {
+                                if (success)
+                                    mListViewAdapter.addAlarmProgram(program);
+                                else
+                                    mListViewAdapter.removeAlarmProgram(program);
+                            }
+                        });
+                        
+                        dialog.dismiss();
+                        alarmSettingDialog.show();
                     }
-                });
+                }).create();
+                settingDialog.show();
                 
-                alarmSettingDialog.show();
+                return true;
             }
         });
         

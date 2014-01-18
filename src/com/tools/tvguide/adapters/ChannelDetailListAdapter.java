@@ -1,11 +1,7 @@
 package com.tools.tvguide.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.Program;
