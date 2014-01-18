@@ -129,7 +129,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public void run() 
             {
-                updateOnplayingProgramFromProxy();
+                updateOnplayingProgram();
             }
         }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
     }
@@ -401,10 +401,18 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
 
     private void updateProgramList()
     {
-        if (EnvironmentManager.isChannelDetailFromProxy)
+        if (isLoadFromProxy())
             updateProgramListFromProxy();
         else
             updateProgramListFromWeb();
+    }
+    
+    private boolean isLoadFromProxy()
+    {
+         if (EnvironmentManager.isChannelDetailFromProxy)
+             return true;
+         else 
+             return false;
     }
     
     private void updateProgramListFromProxy()
@@ -437,9 +445,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         sRequestId++;
         mProgramList.clear();
         
-        // Fake: should get from proxy
-        final String proxyTime = "16:00";
-        
         AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, "http://www.tvmao.com/program/CCTV-CCTV1-w6.html", new ChannelDetailCallback() 
         {            
             @Override
@@ -447,8 +452,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             {
                 mProgramList.addAll(programList);
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
-                if (proxyTime != null && !proxyTime.equals(""))
-                    updateOnplayingProgramFromWeb(proxyTime);
+                String currentTime = getCurrentTime();
+                if (currentTime != null && !currentTime.equals(""))
+                    updateOnplayingProgramFromWeb(currentTime);
             }
             
             @Override
@@ -473,6 +479,20 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         });
         
         mProgressDialog.show();
+    }
+    
+    private void updateOnplayingProgram()
+    {
+        if (isLoadFromProxy())
+            updateOnplayingProgramFromProxy();
+        else
+            updateOnplayingProgramFromWeb(getCurrentTime());
+    }
+    
+    private String getCurrentTime()
+    {
+        // TODO: get time from proxy or from local
+        return "16:00";
     }
     
     private void updateOnplayingProgramFromProxy()
