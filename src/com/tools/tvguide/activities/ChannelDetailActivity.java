@@ -147,6 +147,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     }
     
     @Override
+    public void onBackPressed() 
+    {
+        finish();
+    };
+    
+    @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
@@ -162,7 +168,62 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         }
     }
     
-    public void initViews()
+    @Override
+    public void onAlarmed(HashMap<String, Object> info) 
+    {
+        String programString = (String) info.get("program");
+        if (programString == null)
+            return;
+        
+        Program program = convertToProgram(programString);
+        mListViewAdapter.removeAlarmProgram(program);
+    }
+    
+    public void back(View view)
+    {
+        if (view instanceof Button)
+        {
+            // The same effect with press back key
+            finish();
+        }
+    }
+    
+    public void onClick(View view)
+    {
+        switch (view.getId()) 
+        {
+            case R.id.channeldetail_date_iv:
+                toggleDateListView();
+                break;
+            case R.id.channeldetail_fav_iv:
+                toggleFavIcon();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public void collectChannel(boolean doCollect)
+    {
+        CollectManager manager = AppEngine.getInstance().getCollectManager();
+        if (doCollect)
+        {
+            HashMap<String, Object> info = new HashMap<String, Object>();
+            info.put("name", mChannelName);
+            manager.addCollectChannel(mChannelId, info);
+            String format = getResources().getString(R.string.collect_channel_success);
+            String tips = String.format(format, mChannelName);
+            Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            if (manager.isChannelCollected(mChannelId))
+                manager.removeCollectChannel(mChannelId);
+            Toast.makeText(this, R.string.cancel_collect, Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void initViews()
     {
         mChannelNameTextView = (TextView) findViewById(R.id.channeldetail_channel_name_tv);
         mDateTextView = (TextView) findViewById(R.id.channeldetail_date_tv);
@@ -177,11 +238,11 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         mLeftMenu.setChannelList(mChannelList);
         for (int i=0; i<mChannelList.size(); ++i)
         {
-        	if (mChannelList.get(i).id.equals(mChannelId))
-        	{
-        		mLeftMenu.setCurrentIndex(i);
-        		mLeftMenu.setSelection(i);
-        	}
+            if (mChannelList.get(i).id.equals(mChannelId))
+            {
+                mLeftMenu.setCurrentIndex(i);
+                mLeftMenu.setSelection(i);
+            }
         }
         mLeftMenu.setOnChannelSelectListener(new OnChannelSelectListener() 
         {
@@ -253,32 +314,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
     }
     
-    public void onClick(View view)
-    {
-        switch (view.getId()) 
-        {
-            case R.id.channeldetail_date_iv:
-                toggleDateListView();
-                break;
-            case R.id.channeldetail_fav_iv:
-                toggleFavIcon();
-                break;
-            default:
-                break;
-        }
-    }
-    
-    @Override
-    public void onAlarmed(HashMap<String, Object> info) 
-    {
-        String programString = (String) info.get("program");
-        if (programString == null)
-            return;
-        
-        Program program = convertToProgram(programString);
-        mListViewAdapter.removeAlarmProgram(program);
-    }
-    
     private void toggleDateListView()
     {
         if (mDateChosenListView.getVisibility() == View.GONE)
@@ -321,26 +356,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         {
             collectChannel(true);
             mFavImageView.setImageResource(R.drawable.btn_fav_checked);
-        }
-    }
-    
-    public void collectChannel(boolean doCollect)
-    {
-        CollectManager manager = AppEngine.getInstance().getCollectManager();
-        if (doCollect)
-        {
-            HashMap<String, Object> info = new HashMap<String, Object>();
-            info.put("name", mChannelName);
-            manager.addCollectChannel(mChannelId, info);
-            String format = getResources().getString(R.string.collect_channel_success);
-            String tips = String.format(format, mChannelName);
-            Toast.makeText(this, tips, Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            if (manager.isChannelCollected(mChannelId))
-                manager.removeCollectChannel(mChannelId);
-            Toast.makeText(this, R.string.cancel_collect, Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -487,21 +502,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         tryToast.setText(ss);
         tryToast.show();
         sHasShownFirstStartTips = true;
-    }
-
-    @Override
-    public void onBackPressed() 
-    {
-        finish();
-    };
-    
-    public void back(View view)
-    {
-        if (view instanceof Button)
-        {
-            // The same effect with press back key
-            finish();
-        }
     }
     
     private Handler uiHandler = new Handler()
