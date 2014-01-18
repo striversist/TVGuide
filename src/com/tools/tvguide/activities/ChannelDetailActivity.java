@@ -37,8 +37,10 @@ import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -292,6 +294,10 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) 
             {
+                // 震动
+                Vibrator vib = (Vibrator) ChannelDetailActivity.this.getSystemService(Service.VIBRATOR_SERVICE);
+                vib.vibrate(50);
+                
                 AlertDialog.Builder builder = new AlertDialog.Builder(ChannelDetailActivity.this).setTitle(null);
                 String[] stringArray = new String[1];
                 stringArray[0] = getResources().getString(R.string.setting_dialog);
