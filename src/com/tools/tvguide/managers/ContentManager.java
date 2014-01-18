@@ -450,6 +450,56 @@ public class ContentManager
         });
         return false;
     }
+    
+    public void loadAllTvmaoIdFromProxy(final HashMap<String, String> result, final LoadListener listener)
+    {
+        mUpdateHandler.post(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?all_tvmao_id";
+                try 
+                {
+                    NetDataGetter getter = new DefaultNetDataGetter(url);
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    if (jsonRoot != null)
+                    {
+                        JSONArray idArray = jsonRoot.getJSONArray("all_tvmao_id");
+                        if (idArray != null)
+                        {
+                            for (int i=0; i<idArray.length(); ++i)
+                            {
+                                String id = idArray.getJSONObject(i).getString("id");
+                                String tvmaoId = idArray.getJSONObject(i).getString("tvmao_id");
+                                
+                                result.put(id, tvmaoId);
+                            }
+                        }
+                    }
+                    listener.onLoadFinish(LoadListener.SUCCESS);
+                }
+                catch (MalformedURLException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+                catch (JSONException e) 
+                {
+                    listener.onLoadFinish(LoadListener.FAIL);
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
+    public String getTvmaoId(String channelId)
+    {
+        HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
+        if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(tvmaoIdMap))  // Success
+            return tvmaoIdMap.get(channelId);
+        return null;
+    }
 
     public void shutDown()
     {

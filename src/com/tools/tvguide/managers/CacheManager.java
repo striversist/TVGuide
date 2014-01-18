@@ -18,8 +18,10 @@ public class CacheManager
     private Context mContext;
     private HashMap<String, List<HashMap<String, String>>> mCategories;
     private HashMap<String, List<HashMap<String, String>>> mChannels;
+    private HashMap<String, String> mAllTvmaoIds;
     private final String FILE_CACHED_CATEGORIES = "categories.txt";
     private final String FILE_CACHED_CHANNELS   = "channels.txt";
+    private final String FILE_ALL_TVMAO_IDS = "web_ids.txt";
     private HashMap<String, String> mMemoryCache;
         
     public CacheManager(Context context)
@@ -96,6 +98,29 @@ public class CacheManager
         return saveObjectToFile(mChannels, FILE_CACHED_CHANNELS);
     }
     
+    @SuppressWarnings("unchecked")
+    public boolean loadAllTvmaoIds(HashMap<String, String> result)
+    {
+        assert (result != null);
+        if (mAllTvmaoIds == null)
+        {
+            mAllTvmaoIds = (HashMap<String, String>) loadObjectFromFile(FILE_ALL_TVMAO_IDS);
+            if (mAllTvmaoIds == null)
+            {
+                mAllTvmaoIds = new HashMap<String, String>();
+                return false;
+            }
+        }
+        result.putAll(mAllTvmaoIds);
+        return true;
+    }
+    
+    public boolean saveAllTvmaoIds(HashMap<String, String> tvmaoIdMap)
+    {
+        mAllTvmaoIds.putAll(tvmaoIdMap);
+        return saveObjectToFile(mAllTvmaoIds, FILE_ALL_TVMAO_IDS);
+    }
+    
     public void clear()
     {
         if (mCategories != null)
@@ -104,8 +129,10 @@ public class CacheManager
             mChannels.clear();
         File file1 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CATEGORIES);
         File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
+        File file3 = new File(mContext.getFilesDir() + File.separator + FILE_ALL_TVMAO_IDS);
         deleteFile(file1);
         deleteFile(file2);
+        deleteFile(file3);
         mMemoryCache.clear();
     }
     

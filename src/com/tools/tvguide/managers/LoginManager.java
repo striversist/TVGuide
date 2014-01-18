@@ -7,10 +7,12 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import org.acra.ErrorReporter;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
@@ -61,6 +63,21 @@ public class LoginManager
                             AppEngine.getInstance().getUpdateManager().setGUID(guid);
                             ErrorReporter.getInstance().putCustomData("GUID", guid);
                         }
+                    }
+                    
+                    // 从后台获取所有tvmao id信息，便于之后使用
+                    if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(new HashMap<String, String>()) == false)
+                    {
+                        final HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
+                        AppEngine.getInstance().getContentManager().loadAllTvmaoIdFromProxy(tvmaoIdMap, new ContentManager.LoadListener() 
+                        {
+                            @Override
+                            public void onLoadFinish(int status) 
+                            {
+                                if (status == LoadListener.SUCCESS)
+                                    AppEngine.getInstance().getCacheManager().saveAllTvmaoIds(tvmaoIdMap);
+                            }
+                        });
                     }
                 }
                 catch (MalformedURLException e) 

@@ -460,7 +460,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         sRequestId++;
         mProgramList.clear();
         
-        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, "http://www.tvmao.com/program/CCTV-CCTV1-w6.html", new ChannelDetailCallback() 
+        UrlManager urlManager = AppEngine.getInstance().getUrlManager();
+        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, urlManager.getWebChannelUrl(mChannelId, mCurrentSelectedDay), new ChannelDetailCallback() 
         {            
             @Override
             public void onProgramsLoaded(int requestId, List<Program> programList) 

@@ -228,6 +228,19 @@ public class UrlManager
         return PORT;
     }
     
+    public String getWebChannelUrl(String channelId, int day)
+    {
+        String tvmaoId = AppEngine.getInstance().getContentManager().getTvmaoId(channelId);
+        
+        if (tvmaoId == null)
+            return null;
+        
+        // eg. http://www.tvmao.com/program/CCTV-CCTV1-w6.html
+        String prefix = "http://www.tvmao.com/program/";
+        String sufix = ".html";
+        return prefix + tvmaoId + "-w" + String.valueOf(day) + sufix;
+    }
+    
     public static String tryToReplaceHostNameWithIP(String url)
     {
         if (url == null)
