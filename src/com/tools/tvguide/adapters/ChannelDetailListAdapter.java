@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ChannelDetailListAdapter extends BaseAdapter  
@@ -296,6 +297,8 @@ public class ChannelDetailListAdapter extends BaseAdapter
             TextView programNameTextView = (TextView) convertView.findViewById(R.id.detail_program_name_tv);
             ImageView indicator = (ImageView) convertView.findViewById(R.id.detail_program_indicator_iv);
             ImageView alarmIcon = (ImageView) convertView.findViewById(R.id.detail_alarm_icon_iv);
+            LinearLayout introduceLayout = (LinearLayout) convertView.findViewById(R.id.detail_program_introduce_ll);
+            TextView introduceTextView = (TextView) convertView.findViewById(R.id.detail_program_introduce_tv);
             
             Program program = (Program) mTag;
             if (program.equals(mOnplayingProgram))
@@ -326,6 +329,17 @@ public class ChannelDetailListAdapter extends BaseAdapter
                         continue;
                     }
                 }
+            }
+            
+            if (program.hasTrailer())
+            {
+                introduceLayout.setVisibility(View.VISIBLE);
+                introduceTextView.setText(program.trailer);
+            }
+            else
+            {
+                introduceLayout.setVisibility(View.GONE);
+                introduceTextView.setText("");
             }
             
             return convertView;

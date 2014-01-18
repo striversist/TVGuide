@@ -18,8 +18,7 @@
     </RelativeLayout>
     <ListView android:id="@+id/channeldetail_program_listview"
             android:layout_width="match_parent" android:layout_height="wrap_content" 
-            android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
-            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" android:layout_below="@id/channeldetail_top_rl" />
+            style="@style/style_listview" android:layout_below="@id/channeldetail_top_rl" />
     <ListView android:id="@+id/channeldetail_date_chosen_listview" android:visibility="gone" 
             android:background="@drawable/button_toptabs_mid_normal" android:layout_width="130.0sp" android:layout_height="wrap_content" 
             android:layout_marginRight="3.0sp" android:layout_marginBottom="3.0sp" android:layout_below="@id/channeldetail_top_rl" 

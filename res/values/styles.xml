@@ -96,4 +96,12 @@
         <item name="android:paddingLeft">8.0sp</item>
         <item name="android:singleLine">true</item>
     </style>
+    <style name="style_listview">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:fadingEdge">vertical</item>
+        <item name="android:cacheColorHint">#00000000</item>
+        <item name="android:divider">@color/divider_gray</item>
+        <item name="android:dividerHeight">0.5dip</item>
+    </style>
 </resources>
