@@ -77,7 +77,7 @@ public class HotProgramActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_program);
+        setContentView(R.layout.activity_hot_program);
         
         mInflater = LayoutInflater.from(this);
         mPlayTimes = new HashMap<String, List<String>>();
