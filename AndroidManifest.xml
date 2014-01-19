@@ -134,7 +134,7 @@
             android:label="@string/title_activity_feedback" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.activities.ProgramActivity"
+            android:name="com.tools.tvguide.activities.HotProgramActivity"
             android:label="@string/title_activity_program" >
         </activity>
         <activity
