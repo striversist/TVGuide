@@ -6,6 +6,10 @@
         <TextView android:textSize="15.0sp" android:textColor="@color/darkgray" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0sp" android:text="@string/program_introduce" />
         <TextView android:id="@+id/detail_program_introduce_tv" android:textSize="15.0sp" android:textColor="@color/darkgray" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0sp" android:layout_marginTop="2.0sp" android:text="TextView" />
     </LinearLayout>
-    <ImageView android:id="@+id/detail_program_indicator_iv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/abs__spinner_ab_disabled_holo_light" android:layout_alignBottom="@id/detail_program_introduce_ll" android:layout_alignParentRight="true" />
-    <ImageView android:id="@+id/detail_alarm_icon_iv" android:visibility="invisible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/btn_history_selected" android:layout_alignBottom="@id/detail_program_introduce_ll" android:layout_alignParentRight="true" />
+    <ImageView android:id="@+id/detail_program_indicator_iv" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+        android:src="@drawable/abs__spinner_ab_disabled_holo_light" android:layout_alignBottom="@id/detail_program_introduce_ll" 
+        android:layout_alignParentRight="true" android:layout_alignParentBottom="true" />
+    <ImageView android:id="@+id/detail_alarm_icon_iv" android:visibility="invisible" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:src="@drawable/btn_history_selected" android:layout_alignBottom="@id/detail_program_introduce_ll" 
+        android:layout_alignParentRight="true" />
 </RelativeLayout>
