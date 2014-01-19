@@ -11,6 +11,7 @@ import android.os.Message;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -21,11 +22,14 @@ public class ProgramActivity extends Activity
     private static int sRequestId;
     private String mProfile;
     private Bitmap mPicture;
+    private String mSummary;
     
     private Program mProgram;
     private TextView mProgramNameTextView;
     private TextView mProgramProfileTextView;
     private ImageView mProgramImageView;
+    private TextView mProgramSummaryTextView;
+    private ImageView mPlotsImageView;
     
     enum SelfMessage {MSG_SUMMARY_LOADED, MSG_PROFILE_LOADED, MSG_PICTURE_LOADED, MSG_HAS_DETAIL_PLOTS};
     
@@ -42,10 +46,26 @@ public class ProgramActivity extends Activity
         mProgramNameTextView = (TextView) findViewById(R.id.program_name);
         mProgramProfileTextView = (TextView) findViewById(R.id.program_profile);
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
+        mProgramSummaryTextView = (TextView) findViewById(R.id.program_summary_tv);
+        mPlotsImageView = (ImageView) findViewById(R.id.episode_iv);
         
         mProgramNameTextView.setText(mProgram.title);
+        mPlotsImageView.setVisibility(View.INVISIBLE);
         
         update();
+    }
+    
+    public void onClick(View view)
+    {
+        switch (view.getId()) 
+        {
+            case R.id.episode_iv:
+                break;
+            case R.id.more_plot_btn:
+                break;
+            default:
+                break;
+        }
     }
 
     private void update()
@@ -56,6 +76,7 @@ public class ProgramActivity extends Activity
             @Override
             public void onSummaryLoaded(int requestId, String summary) 
             {
+                mSummary = summary;
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_SUMMARY_LOADED.ordinal());
             }
             
@@ -98,6 +119,7 @@ public class ProgramActivity extends Activity
             switch (selfMsg)
             {
                 case MSG_SUMMARY_LOADED:
+                    mProgramSummaryTextView.setText(mSummary);
                     break;
                 case MSG_PROFILE_LOADED:
                     mProgramProfileTextView.setText(mProfile);
@@ -115,6 +137,8 @@ public class ProgramActivity extends Activity
                     mProgramImageView.setImageBitmap(mPicture);
                     break;
                 case MSG_HAS_DETAIL_PLOTS:
+                    mPlotsImageView.setVisibility(View.VISIBLE);
+                    ((Button) findViewById(R.id.more_plot_btn)).setVisibility(View.VISIBLE);
                     break;
             }
         }

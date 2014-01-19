@@ -59,9 +59,9 @@ public class ProgramHtmlManager
                         if (keyElement != null)
                             key = keyElement.ownText();
                         
-                        Element valueElement = profileElement.select("td span").first();
+                        Element valueElement = profileElement.select("td").last();
                         if (valueElement != null)
-                            value = valueElement.ownText();
+                            value = valueElement.text();
                         
                         profile += key + value + "\n";
                     }
@@ -81,6 +81,23 @@ public class ProgramHtmlManager
                     if (picLink != null)
                         callback.onPictureLinkParsed(requestId, picLink);
                     
+                    // -------------- 获取剧情概要 --------------
+                    // 返回结果
+                    String summary = "";
+                    String descriptionLink = programUrl + "/detail";
+                    Document descriptionDoc = HtmlUtils.getDocument(descriptionLink);
+                    Element descriptionElement = descriptionDoc.getElementsByAttributeValue("itemprop", "description").first();
+                    if (descriptionElement != null)
+                    {
+                        Elements pargfs = descriptionElement.select("p");
+                        for (int i=0; i<pargfs.size(); ++i)
+                        {
+                            summary += "　　" + pargfs.get(i).text() + "\n\n";
+                        }
+                    }
+                    
+                    callback.onSummaryLoaded(requestId, summary);
+                    
                     // -------------- 获取分集链接 --------------
                     String episodesLink = null;
                     Element dlElement = doc.select("dl.hdtab").first();
@@ -96,21 +113,6 @@ public class ProgramHtmlManager
                     }
                     if (episodesLink != null)
                         callback.onEpisodeLinkParsed(requestId, episodesLink);
-                    
-                    // -------------- 获取剧情概要 --------------
-                    // 返回结果
-                    String summary = "";
-                    String descriptionLink = programUrl + "/detail";
-                    Document descriptionDoc = HtmlUtils.getDocument(descriptionLink);
-                    Element descriptionElement = descriptionDoc.getElementsByAttributeValue("itemprop", "description").first();
-                    if (descriptionElement != null)
-                    {
-                        Elements pargfs = descriptionElement.select("p");
-                        for (int i=0; i<pargfs.size(); ++i)
-                            summary += pargfs.get(i).text() + "\n";
-                    }
-                    
-                    callback.onSummaryLoaded(requestId, summary);
                 }
                 catch (IOException e) 
                 {

@@ -7,7 +7,7 @@
         <ImageView android:id="@+id/episode_iv" android:background="@drawable/common_button_select" android:paddingLeft="14.0sp" android:paddingRight="14.0sp" android:clickable="true" android:layout_width="wrap_content" android:layout_height="fill_parent" android:src="@drawable/btn_more" android:onClick="onClick" />
     </LinearLayout>
     <LinearLayout android:orientation="vertical" android:id="@+id/program_content_ll" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@+id/program_top_ll">
-        <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@+id/program_sub_rl" android:padding="5.0sp" android:layout_width="fill_parent" android:layout_height="98.0sp">
+        <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@+id/program_sub_rl" android:padding="5.0sp" android:layout_width="fill_parent" android:layout_height="110.0sp">
             <ImageView android:id="@+id/program_image" android:layout_width="108.0sp" android:layout_height="fill_parent" android:layout_marginLeft="5.0sp" />
             <ScrollView android:id="@+id/program_profile_scroll_view" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="10.0sp">
                 <LinearLayout android:orientation="vertical" android:paddingLeft="5.0sp" android:paddingRight="5.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" >
@@ -27,14 +27,14 @@
     
 	    <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
 	        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
-	            <TextView android:id="@+id/program_summary" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	            <TextView android:id="@+id/program_summary_tv" android:layout_width="fill_parent" android:layout_height="fill_parent" 
 	                      android:layout_marginTop="18sp" android:layout_marginLeft="10dip"
 	                      android:textColor="@color/darkgray" android:textSize="18sp" android:lineSpacingExtra="5dp" />
 	            <Button android:textSize="18.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/more_plot_btn" 
 	                    android:background="@drawable/big_button_select" android:paddingTop="7.0sp" android:paddingBottom="7.0sp" 
 	                    android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="15.0sp" 
 	                    android:layout_marginRight="15.0sp" android:layout_marginBottom="25.0sp" android:text="@string/plot_introduce"
-	                    android:visibility="invisible" />
+	                    android:visibility="invisible" android:onClick="onClick" />
 	        </LinearLayout>
 	    </ScrollView>
         
