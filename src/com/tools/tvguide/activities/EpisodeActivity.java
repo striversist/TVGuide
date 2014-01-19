@@ -34,6 +34,8 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     private LayoutInflater mInflater;
     private ViewPager mViewPager;
     private ResultPageAdapter mPageAdapter;
+    private enum Source {TVMAO, TVSOU};
+    private Source mSource = Source.TVMAO;
     private enum SelfMessage {MSG_SHOW_PLOTS}
     
     @SuppressWarnings("unchecked")
@@ -48,12 +50,92 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         mProgramNameTV = (TextView) findViewById(R.id.episode_program_name_tv);
         
         Intent intent = getIntent();
-        mEpisodes = (List<HashMap<String, String>>) intent.getSerializableExtra("episodes");
-        if (mEpisodes == null)
-            return;
+        String source = intent.getStringExtra("source");
+        if (source != null)
+        {
+            if (source.equals("tvmao"))
+                mSource = Source.TVMAO;
+            else if (source.equals("tvsou"))
+                mSource = Source.TVSOU;
+        }
+        
         String programName = intent.getStringExtra("program_name");
         mProgramNameTV.setText(programName + getResources().getString(R.string.plot_detail));
         
+        updateEpisodes();
+        
+        // 将广告条adView添加到需要展示的layout控件中
+        RelativeLayout adLayout = (RelativeLayout) findViewById(R.id.adLayout);
+        AdView adView = new AdView(EpisodeActivity.this, AdSize.FIT_SCREEN);
+        adLayout.addView(adView);
+    }
+
+    @Override
+    public void onBackPressed() 
+    {
+        finish();
+    }
+    
+    @Override
+    public void onItemSelect(int index, Object paramObject) 
+    {
+        String url = (String)paramObject;
+        mViewPager.setCurrentItem(index);
+        updateTab(index);
+    }
+    
+    private void updateTab(int index)
+    {
+        if (mEpisodes == null)
+            return;
+        
+        if (index < 0 || index >= mEpisodes.size())
+            return;
+        
+        String link = mEpisodes.get(index).get("link");
+        if (mSource == Source.TVSOU)
+        {
+            AppEngine.getInstance().getHotHtmlManager().getEpisodesAsync(index, link, new EpisodeDetailCallback() 
+            {
+                @Override
+                public void onEpisodeLoaded(int requestId, List<HashMap<String, String>> episodes) 
+                {
+                    Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodes);
+                    uiHandler.sendMessage(msg);
+                }
+            });
+        }
+        else if (mSource == Source.TVMAO)
+        {
+            
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void updateEpisodes()
+    {
+        mEpisodes = (List<HashMap<String, String>>) getIntent().getSerializableExtra("episodes");
+        if (mEpisodes != null)
+        {
+            initSlidingMenu();
+            initViewPager();
+            updateTab(0);
+        }
+    }
+    
+    private void initSlidingMenu()
+    {
+        for (int i=0; i<mEpisodes.size(); ++i)
+        {
+            String name = mEpisodes.get(i).get("name");
+            String link = mEpisodes.get(i).get("link");
+            mSlidingMenuView.addMenu(name, link);
+        }
+        mSlidingMenuView.setOnSlidingMenuSelectListener(this);
+    }
+    
+    private void initViewPager()
+    {
         mPageAdapter = new ResultPageAdapter();
         for (int i=0; i<mEpisodes.size(); ++i)
         {
@@ -82,57 +164,6 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
             @Override
             public void onPageScrollStateChanged(int state) 
             {
-            }
-        });
-        
-        mSlidingMenuView.setOnSlidingMenuSelectListener(this);
-        
-        initSlidingMenu();
-        update(0);
-        
-        // 将广告条adView添加到需要展示的layout控件中
-        RelativeLayout adLayout = (RelativeLayout) findViewById(R.id.adLayout);
-        AdView adView = new AdView(EpisodeActivity.this, AdSize.FIT_SCREEN);
-        adLayout.addView(adView);
-    }
-
-    @Override
-    public void onBackPressed() 
-    {
-        finish();
-    }
-    
-    @Override
-    public void onItemSelect(int index, Object paramObject) 
-    {
-        String url = (String)paramObject;
-        mViewPager.setCurrentItem(index);
-        update(index);
-    }
-    
-    private void initSlidingMenu()
-    {
-        for (int i=0; i<mEpisodes.size(); ++i)
-        {
-            String name = mEpisodes.get(i).get("name");
-            String link = mEpisodes.get(i).get("link");
-            mSlidingMenuView.addMenu(name, link);
-        }
-    }
-    
-    private void update(int index)
-    {
-        if (index < 0 || index >= mEpisodes.size())
-            return;
-        
-        String link = mEpisodes.get(index).get("link");
-        AppEngine.getInstance().getHotHtmlManager().getEpisodesAsync(index, link, new EpisodeDetailCallback() 
-        {
-            @Override
-            public void onEpisodeLoaded(int requestId, List<HashMap<String, String>> episodes) 
-            {
-                Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodes);
-                uiHandler.sendMessage(msg);
             }
         });
     }
