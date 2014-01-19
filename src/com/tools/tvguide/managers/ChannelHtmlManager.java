@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -169,7 +168,7 @@ public class ChannelHtmlManager
                                 name = "下" + name;
                             
                             Element test = dates.get(i);
-                            String testurl = test.attr("abs:href");
+                            String testurl = prefix + test.attr("href");
                             Log.d("", testurl);
                             
                             String href = prefix + dates.get(i).attr("href");

@@ -1,11 +1,11 @@
 package com.tools.tvguide.managers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -13,7 +13,6 @@ import org.jsoup.select.Elements;
 import com.tools.tvguide.utils.HtmlUtils;
 
 import android.content.Context;
-import android.util.Log;
 
 public class ProgramHtmlManager 
 {
@@ -34,6 +33,12 @@ public class ProgramHtmlManager
         void onEpisodeLinkParsed(int requestId, String link);
     }
     
+    public interface ProgramEpisodesCallback
+    {
+        void onEntriesLoaded(int requestId, List<HashMap<String, String>> entryList);
+        void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodeList);
+    }
+    
     public void getProgramDetailAsync(final int requestId, final String programUrl, final ProgramDetailCallback callback)
     {
         assert (callback != null);
@@ -45,6 +50,9 @@ public class ProgramHtmlManager
                 try 
                 {
                     Document doc = HtmlUtils.getDocument(programUrl);
+                    String protocol = new URL(programUrl).getProtocol();
+                    String host = new URL(programUrl).getHost();
+                    String prefix = protocol + "://" + host;
                     
                     // -------------- 获取Title --------------
                     // 返回结果
@@ -131,12 +139,85 @@ public class ProgramHtmlManager
                         {
                             String text = links.get(i).ownText();
                             if (text.startsWith("分集剧情"))
-                                episodesLink = links.get(i).attr("abs:href");
+                                episodesLink = prefix + links.get(i).attr("href");
                         }
                     }
                     if (episodesLink != null)
                         callback.onEpisodeLinkParsed(requestId, episodesLink);
                 }
+                catch (IOException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    
+    public void getProgramEpisodesAsync(final int requestId, final String url, final ProgramEpisodesCallback callback)
+    {
+        assert (callback != null);
+        new Thread(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                try 
+                {
+                    Document doc = HtmlUtils.getDocument(url);
+                    String protocol = new URL(url).getProtocol();
+                    String host = new URL(url).getHost();
+                    String prefix = protocol + "://" + host;
+                    
+                    // -------------- 获取Tab链接 --------------
+                    // 返回结果
+                    List<HashMap<String, String>> entryList = new ArrayList<HashMap<String,String>>();
+                    Elements entryElements = doc.select("div.section-wrap div.epipage a");
+                    for (int i=0; i<entryElements.size(); ++i)
+                    {
+                        String name = entryElements.get(i).text().trim();
+                        String link = prefix + entryElements.get(i).attr("href");
+                        
+                        if (!name.equals("") && !link.equals(""))
+                        {
+                            HashMap<String, String> entry = new HashMap<String, String>();
+                            entry.put("name", name);
+                            entry.put("link", link);
+                            entryList.add(entry);
+                        }
+                    }
+                    callback.onEntriesLoaded(requestId, entryList);
+                    
+                    // -------------- 获取当前分集信息 --------------
+                    // 返回结果
+                    List<HashMap<String, String>> episodeList = new ArrayList<HashMap<String,String>>();
+                    Element articleElement = doc.select("div.section-wrap article").first();
+                    if (articleElement != null)
+                    {
+                        Elements titleElements = articleElement.getElementsByAttribute("id");
+                        for (int i=0; i<titleElements.size(); ++i)
+                        {
+                            Element titleElement = titleElements.get(i);
+                            Element plotElement = titleElement.siblingElements().first();
+                            
+                            if (titleElement != null && plotElement != null)
+                            {
+                                String title = titleElement.text().trim();
+                                String plot = "";
+                                
+                                Elements pargphs = plotElement.select("p");
+                                for (int j=0; j<pargphs.size(); ++j)
+                                    plot += pargphs.get(j).text().trim() + "\n\n";
+                                
+                                HashMap<String, String> episode = new HashMap<String, String>();
+                                episode.put("title", title);
+                                episode.put("plot", plot);
+                                episodeList.add(episode);
+                            }
+                        }
+                    }
+                    callback.onEpisodesLoaded(requestId, episodeList);
+                    
+                } 
                 catch (IOException e) 
                 {
                     e.printStackTrace();

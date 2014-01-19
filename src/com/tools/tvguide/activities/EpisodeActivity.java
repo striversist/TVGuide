@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.EpisodeDetailCallback;
+import com.tools.tvguide.managers.ProgramHtmlManager.ProgramEpisodesCallback;
 import com.tools.tvguide.views.SlidingMenuView;
 import com.tools.tvguide.views.SlidingMenuView.OnSlidingMenuSelectListener;
 
@@ -28,7 +30,7 @@ import android.content.Intent;
 
 public class EpisodeActivity extends Activity implements OnSlidingMenuSelectListener
 {
-    private List<HashMap<String, String>> mEpisodes;
+    private List<HashMap<String, String>> mEpisodeEntryList;        // key: name, link
     private SlidingMenuView mSlidingMenuView;
     private TextView mProgramNameTV;
     private LayoutInflater mInflater;
@@ -48,6 +50,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         mSlidingMenuView = (SlidingMenuView) findViewById(R.id.episode_slidingmenu);
         mViewPager = (ViewPager) findViewById(R.id.episode_viewpager);
         mProgramNameTV = (TextView) findViewById(R.id.episode_program_name_tv);
+        mEpisodeEntryList = new ArrayList<HashMap<String,String>>();
         
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
@@ -86,13 +89,13 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     
     private void updateTab(int index)
     {
-        if (mEpisodes == null)
+        if (mEpisodeEntryList == null)
             return;
         
-        if (index < 0 || index >= mEpisodes.size())
+        if (index < 0 || index >= mEpisodeEntryList.size())
             return;
         
-        String link = mEpisodes.get(index).get("link");
+        String link = mEpisodeEntryList.get(index).get("link");
         if (mSource == Source.TVSOU)
         {
             AppEngine.getInstance().getHotHtmlManager().getEpisodesAsync(index, link, new EpisodeDetailCallback() 
@@ -107,28 +110,73 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         }
         else if (mSource == Source.TVMAO)
         {
-            
+            AppEngine.getInstance().getProgramHtmlManager().getProgramEpisodesAsync(index, link, new ProgramEpisodesCallback() 
+            {
+                @Override
+                public void onEntriesLoaded(int requestId, List<HashMap<String, String>> entryList) 
+                {
+                }
+                
+                @Override
+                public void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodeList) 
+                {
+                    Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodeList);
+                    uiHandler.sendMessage(msg);
+                }
+            });
         }
     }
     
     @SuppressWarnings("unchecked")
     private void updateEpisodes()
     {
-        mEpisodes = (List<HashMap<String, String>>) getIntent().getSerializableExtra("episodes");
-        if (mEpisodes != null)
+        List<HashMap<String, String>> episodes = (List<HashMap<String, String>>) getIntent().getSerializableExtra("episode_entry_list");
+        if (episodes != null)
         {
+            mEpisodeEntryList.addAll(episodes);
             initSlidingMenu();
             initViewPager();
             updateTab(0);
+        }
+        else
+        {
+            String entryLink = getIntent().getStringExtra("episode_entry_link");
+            if (entryLink == null || entryLink.trim().length() == 0)
+                return;
+            
+            AppEngine.getInstance().getProgramHtmlManager().getProgramEpisodesAsync(0, entryLink, new ProgramEpisodesCallback() 
+            {
+                @Override
+                public void onEntriesLoaded(int requestId, List<HashMap<String, String>> entryList) 
+                {
+                    mEpisodeEntryList.addAll(entryList);
+                    uiHandler.post(new Runnable() 
+                    {
+                        @Override
+                        public void run() 
+                        {
+                            initSlidingMenu();
+                            initViewPager();
+                        }
+                    });
+                }
+                
+                @Override
+                public void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodeList) 
+                {
+                    Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodeList);
+                    uiHandler.sendMessage(msg);
+                }
+            });
         }
     }
     
     private void initSlidingMenu()
     {
-        for (int i=0; i<mEpisodes.size(); ++i)
+        for (int i=0; i<mEpisodeEntryList.size(); ++i)
         {
-            String name = mEpisodes.get(i).get("name");
-            String link = mEpisodes.get(i).get("link");
+            String name = mEpisodeEntryList.get(i).get("name");
+            String link = mEpisodeEntryList.get(i).get("link");
             mSlidingMenuView.addMenu(name, link);
         }
         mSlidingMenuView.setOnSlidingMenuSelectListener(this);
@@ -137,7 +185,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     private void initViewPager()
     {
         mPageAdapter = new ResultPageAdapter();
-        for (int i=0; i<mEpisodes.size(); ++i)
+        for (int i=0; i<mEpisodeEntryList.size(); ++i)
         {
             LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
             ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));

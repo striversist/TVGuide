@@ -188,7 +188,7 @@ public class HotProgramActivity extends Activity
             ArrayList<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
             episodes.addAll(mEpisodes);
             intent.putExtra("source", "tvsou");
-            intent.putExtra("episodes", episodes);
+            intent.putExtra("episode_entry_list", episodes);
             intent.putExtra("program_name", mName);
             startActivity(intent);
         }

@@ -1,5 +1,6 @@
 package com.tools.tvguide;
 
+import com.tools.tvguide.activities.EpisodeActivity;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ProgramHtmlManager;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ public class ProgramActivity extends Activity
     private String mProfile;
     private Bitmap mPicture;
     private String mSummary;
+    private String mEpisodeEntryLink;
     
     private Program mProgram;
     private LayoutInflater mInflater;
@@ -73,8 +76,8 @@ public class ProgramActivity extends Activity
         switch (view.getId()) 
         {
             case R.id.episode_iv:
-                break;
             case R.id.more_plot_btn:
+                startEpisodeActivity();
                 break;
             default:
                 break;
@@ -125,9 +128,23 @@ public class ProgramActivity extends Activity
             @Override
             public void onEpisodeLinkParsed(int requestId, String link) 
             {
+                mEpisodeEntryLink = link;
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_HAS_DETAIL_PLOTS.ordinal());
             }
         });
+    }
+    
+    private void startEpisodeActivity()
+    {
+        if (mEpisodeEntryLink != null && !mEpisodeEntryLink.equals(""))
+        {
+            Intent intent = new Intent(ProgramActivity.this, EpisodeActivity.class);
+            
+            intent.putExtra("source", "tvmao");
+            intent.putExtra("episode_entry_link", mEpisodeEntryLink);
+            intent.putExtra("program_name", mTitle);
+            startActivity(intent);
+        }
     }
     
     private Handler uiHandler = new Handler()
