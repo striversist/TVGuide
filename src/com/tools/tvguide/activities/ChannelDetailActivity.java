@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.tools.tvguide.ProgramActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannelDetailListAdapter;
 import com.tools.tvguide.adapters.DateAdapter;
@@ -340,6 +342,22 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                 settingDialog.show();
                 
                 return true;
+            }
+        });
+        
+        mProgramListView.setOnItemClickListener(new AdapterView.OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) 
+            {
+                Program program = mListViewAdapter.getProgram(position);
+                
+                if (program.hasLink())
+                {
+                    Intent intent = new Intent(ChannelDetailActivity.this, ProgramActivity.class);
+                    intent.putExtra("program", (Serializable) program);
+                    startActivity(intent);
+                }
             }
         });
         

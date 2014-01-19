@@ -1,7 +1,10 @@
 package com.tools.tvguide.data;
 
-public class Program 
+import java.io.Serializable;
+
+public class Program implements Serializable 
 {
+    private static final long serialVersionUID = 1L;
     public int day;
     public String time;
     public String title;

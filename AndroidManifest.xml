@@ -21,7 +21,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 可选 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+ <!-- 可选 -->
     <!-- /有米传媒 Android SDK 所需权限 -->
 
     <application
@@ -140,6 +141,10 @@
         <activity
             android:name="com.tools.tvguide.activities.EpisodeActivity"
             android:label="@string/title_activity_episode" >
+        </activity>
+        <activity
+            android:name="com.tools.tvguide.ProgramActivity"
+            android:label="@string/title_activity_program" >
         </activity>
     </application>
 

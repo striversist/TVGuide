@@ -15,6 +15,7 @@ import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
 import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.utils.Utility;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -228,7 +229,7 @@ public class HotProgramActivity extends Activity
                     @Override
                     public void run() 
                     {
-                        mPicture = getImage(picLink);
+                        mPicture = Utility.getNetworkImage(picLink);
                         if (mPicture != null)
                             uiHandler.sendEmptyMessage(MSG_PICTURE_LOADED);
                     }
@@ -250,21 +251,6 @@ public class HotProgramActivity extends Activity
                     uiHandler.sendEmptyMessage(MSG_HAS_DETAIL_PLOTS);
             }
         });
-    }
-    
-    private Bitmap getImage(String url)
-    {
-        Bitmap bitmap = null;
-        try
-        {
-            bitmap = BitmapFactory.decodeStream(new NetDataGetter(url).getInputStream());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        
-        return bitmap;
     }
     
     private Handler uiHandler = new Handler()

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:background="@color/light_dark_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@+id/program_top_ll" android:background="@drawable/abs__cab_background_top_holo_light" android:layout_width="fill_parent" android:layout_height="42.0dip" android:layout_alignParentTop="true">
+        <TextView android:id="@+id/program_name" android:layout_width="0.0sp" android:layout_height="wrap_content" android:layout_weight="1.0" style="@style/style_top_textview" />
+        <ImageView style="@style/style_tab_divider" />
+        <ImageView android:id="@+id/episode_iv" android:background="@drawable/common_button_select" android:paddingLeft="14.0sp" android:paddingRight="14.0sp" android:clickable="true" android:layout_width="wrap_content" android:layout_height="fill_parent" android:src="@drawable/btn_more" android:onClick="onClick" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:id="@+id/program_content_ll" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@+id/program_top_ll">
+        <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:id="@+id/program_sub_rl" android:padding="5.0sp" android:layout_width="fill_parent" android:layout_height="98.0sp">
+            <ImageView android:id="@+id/program_image" android:layout_width="108.0sp" android:layout_height="fill_parent" android:layout_marginLeft="5.0sp" />
+            <ScrollView android:id="@+id/program_profile_scroll_view" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="10.0sp">
+                <LinearLayout android:orientation="vertical" android:paddingLeft="5.0sp" android:paddingRight="5.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" >
+                    <TextView android:id="@+id/program_profile" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+                              android:textColor="@color/darkgray" android:textSize="15sp" android:lineSpacingExtra="3dp" />
+                </LinearLayout>
+            </ScrollView>
+            <LinearLayout android:id="@+id/program_profile_loading_ll" android:orientation="vertical" android:gravity="center" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="10.0sp" >
+                <TextView android:id="@+id/program_profile_loading_tv" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center"
+                          android:textColor="@color/darkgray" android:textSize="20sp" android:text="@string/loading_string" />
+            </LinearLayout>
+        </LinearLayout>
+        
+        <TextView android:textSize="16.0sp" android:textColor="@color/darkgray" android:background="@color/light_bg" 
+            android:paddingLeft="8.0sp" android:paddingTop="5.0sp" android:paddingRight="8.0sp" android:paddingBottom="5.0sp" 
+            android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/content_introduce" />
+    
+	    <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
+	        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+	            <TextView android:id="@+id/program_summary" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	                      android:layout_marginTop="18sp" android:layout_marginLeft="10dip"
+	                      android:textColor="@color/darkgray" android:textSize="18sp" android:lineSpacingExtra="5dp" />
+	            <Button android:textSize="18.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/more_plot_btn" 
+	                    android:background="@drawable/big_button_select" android:paddingTop="7.0sp" android:paddingBottom="7.0sp" 
+	                    android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="15.0sp" 
+	                    android:layout_marginRight="15.0sp" android:layout_marginBottom="25.0sp" android:text="@string/plot_introduce"
+	                    android:visibility="invisible" />
+	        </LinearLayout>
+	    </ScrollView>
+        
+        <RelativeLayout
+            android:id="@+id/adLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

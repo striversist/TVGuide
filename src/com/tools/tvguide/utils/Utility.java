@@ -238,4 +238,19 @@ public class Utility
         
         return 0;
     }
+    
+    public static Bitmap getNetworkImage(String url)
+    {
+        Bitmap bitmap = null;
+        try
+        {
+            bitmap = BitmapFactory.decodeStream(new NetDataGetter(url).getInputStream());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        
+        return bitmap;
+    }
 }
