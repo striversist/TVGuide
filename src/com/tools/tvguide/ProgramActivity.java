@@ -20,6 +20,7 @@ import android.widget.TextView;
 public class ProgramActivity extends Activity 
 {
     private static int sRequestId;
+    private String mTitle;
     private String mProfile;
     private Bitmap mPicture;
     private String mSummary;
@@ -31,7 +32,7 @@ public class ProgramActivity extends Activity
     private TextView mProgramSummaryTextView;
     private ImageView mPlotsImageView;
     
-    enum SelfMessage {MSG_SUMMARY_LOADED, MSG_PROFILE_LOADED, MSG_PICTURE_LOADED, MSG_HAS_DETAIL_PLOTS};
+    enum SelfMessage {MSG_TITLE_LOADED, MSG_SUMMARY_LOADED, MSG_PROFILE_LOADED, MSG_PICTURE_LOADED, MSG_HAS_DETAIL_PLOTS};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -73,6 +74,13 @@ public class ProgramActivity extends Activity
         sRequestId++;
         AppEngine.getInstance().getProgramHtmlManager().getProgramDetailAsync(sRequestId, mProgram.link, new ProgramHtmlManager.ProgramDetailCallback() 
         {
+            @Override
+            public void onTitleLoaded(int requestId, String title) 
+            {
+                mTitle = title;
+                uiHandler.sendEmptyMessage(SelfMessage.MSG_TITLE_LOADED.ordinal());
+            }
+            
             @Override
             public void onSummaryLoaded(int requestId, String summary) 
             {
@@ -118,6 +126,9 @@ public class ProgramActivity extends Activity
             SelfMessage selfMsg = SelfMessage.values()[msg.what];
             switch (selfMsg)
             {
+                case MSG_TITLE_LOADED:
+                    mProgramNameTextView.setText(mTitle);
+                    break;
                 case MSG_SUMMARY_LOADED:
                     mProgramSummaryTextView.setText(mSummary);
                     break;

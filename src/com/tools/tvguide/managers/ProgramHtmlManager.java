@@ -27,6 +27,7 @@ public class ProgramHtmlManager
     
     public interface ProgramDetailCallback
     {
+        void onTitleLoaded(int requestId, String title);
         void onProfileLoaded(int requestId, String profile);
         void onSummaryLoaded(int requestId, String summary);
         void onPictureLinkParsed(int requestId, String link);
@@ -44,6 +45,17 @@ public class ProgramHtmlManager
                 try 
                 {
                     Document doc = HtmlUtils.getDocument(programUrl);
+                    
+                    // -------------- 获取Title --------------
+                    // 返回结果
+                    String title = "";
+                    Element titleElement = doc.select("h1.lt[itemprop=name]").first();
+                    if (titleElement != null)
+                    {
+                        title = titleElement.text().trim();
+                    }
+                    if (title != null && !title.equals(""))
+                        callback.onTitleLoaded(requestId, title);
                     
                     // -------------- 获取Profile --------------
                     // 返回结果
