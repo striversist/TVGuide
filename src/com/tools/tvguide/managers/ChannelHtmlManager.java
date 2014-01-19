@@ -67,6 +67,15 @@ public class ChannelHtmlManager
                             continue;
                         
                         title = program.text().trim().replaceFirst(time, "").trim();
+                        Elements others = program.select("> a");
+                        if (others.size() > 1)  // 去除多余的信息：如“剧照”、“演员表”等
+                        {
+                            for (int j=1; j<others.size(); ++j)
+                            {
+                                title = title.replaceFirst(others.get(j).text(), "").trim();
+                            }
+                        }
+                        
                         Element dramaElement = program.select("> a[class=drama]").first();      // 直属的孩子
                         if (dramaElement != null)
                         {
