@@ -111,6 +111,10 @@ public class CacheManager
                 return false;
             }
         }
+        
+        if (mAllTvmaoIds.isEmpty())
+            return false;
+        
         result.putAll(mAllTvmaoIds);
         return true;
     }

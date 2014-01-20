@@ -443,7 +443,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     private boolean isLoadFromProxy()
     {
         String webUrl = AppEngine.getInstance().getUrlManager().getWebChannelUrl(mChannelId, mCurrentSelectedDay);
-        if (EnvironmentManager.isChannelDetailFromProxy || webUrl == null)
+        if (!EnvironmentManager.isChannelDetailFromWeb || webUrl == null)
             return true;
         else 
             return false;

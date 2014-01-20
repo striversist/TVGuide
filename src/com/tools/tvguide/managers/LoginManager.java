@@ -10,6 +10,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 import org.acra.ErrorReporter;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.managers.ContentManager.LoadListener;
@@ -54,7 +56,10 @@ public class LoginManager
 
                     NetDataGetter getter = new DefaultNetDataGetter(loginUrl);
                     getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
-                    getter.getStringData();     // Just send the request
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    if (jsonRoot != null)
+                        parseConfig(jsonRoot);
+                    
                     if (AppEngine.getInstance().getUpdateManager().getGUID() == null)   // First use
                     {
                         String guid = getter.getFirstHeader("GUID");
@@ -65,20 +70,7 @@ public class LoginManager
                         }
                     }
                     
-                    // 从后台获取所有tvmao id信息，便于之后使用
-                    if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(new HashMap<String, String>()) == false)
-                    {
-                        final HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
-                        AppEngine.getInstance().getContentManager().loadAllTvmaoIdFromProxy(tvmaoIdMap, new ContentManager.LoadListener() 
-                        {
-                            @Override
-                            public void onLoadFinish(int status) 
-                            {
-                                if (status == LoadListener.SUCCESS)
-                                    AppEngine.getInstance().getCacheManager().saveAllTvmaoIds(tvmaoIdMap);
-                            }
-                        });
-                    }
+                    doWork();
                 }
                 catch (MalformedURLException e) 
                 {
@@ -86,6 +78,48 @@ public class LoginManager
                 }
             }
         }.start();
+    }
+    
+    private void parseConfig(JSONObject jsonRoot)
+    {
+        assert (jsonRoot != null);
+        try 
+        {
+            JSONObject objectConfig = jsonRoot.getJSONObject("config");
+            if (objectConfig != null)
+            {
+                String detailFromWeb = objectConfig.getString("channel_detail_from_web");
+                if (detailFromWeb == null || detailFromWeb.equals("0"))
+                    EnvironmentManager.isChannelDetailFromWeb = false;
+                else
+                    EnvironmentManager.isChannelDetailFromWeb = true;
+            }
+        } 
+        catch (JSONException e) 
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void doWork()
+    {
+        // 从后台获取所有tvmao id信息，便于之后使用
+        if (EnvironmentManager.isChannelDetailFromWeb)
+        {
+            if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(new HashMap<String, String>()) == false)
+            {
+                final HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
+                AppEngine.getInstance().getContentManager().loadAllTvmaoIdFromProxy(tvmaoIdMap, new ContentManager.LoadListener() 
+                {
+                    @Override
+                    public void onLoadFinish(int status) 
+                    {
+                        if (status == LoadListener.SUCCESS)
+                            AppEngine.getInstance().getCacheManager().saveAllTvmaoIds(tvmaoIdMap);
+                    }
+                });
+            }
+        }
     }
 
     private String addUrlGetParam(String url, String paramName, String paramValue, boolean isFirstParam)

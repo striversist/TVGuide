@@ -458,6 +458,7 @@ public class ContentManager
             @Override
             public void run() 
             {
+                boolean success = false;
                 String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?all_tvmao_id";
                 try 
                 {
@@ -475,9 +476,14 @@ public class ContentManager
                                 
                                 result.put(id, tvmaoId);
                             }
+                            success = true;
                         }
                     }
-                    listener.onLoadFinish(LoadListener.SUCCESS);
+                    
+                    if (success)
+                        listener.onLoadFinish(LoadListener.SUCCESS);
+                    else
+                        listener.onLoadFinish(LoadListener.FAIL);
                 }
                 catch (MalformedURLException e) 
                 {
