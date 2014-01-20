@@ -19,8 +19,8 @@
     <channel id="cctv5">
         <logo>cctv5.jpg</logo>
     </channel>
-    <channel id="cctv5plug">
-        <logo>cctv5plug.jpg</logo>
+    <channel id="cctv5plus">
+        <logo>cctv5plus.jpg</logo>
     </channel>
     <channel id="cctv6">
         <logo>cctv6.jpg</logo>
