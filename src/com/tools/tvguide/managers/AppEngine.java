@@ -1,5 +1,7 @@
 package com.tools.tvguide.managers;
 
+import com.tools.tvguide.utils.MyApplication;
+
 import android.content.Context;
 
 public class AppEngine 
@@ -50,8 +52,15 @@ public class AppEngine
         return mContext;
     }
     
+    private void checkInitialized()
+    {
+        if (mApplicationContext == null)
+            mApplicationContext = MyApplication.getInstance().getApplicationContext();
+    }
+    
     public CollectManager getCollectManager()
     {
+        checkInitialized();
         if (mUserSettingManager == null)
             mUserSettingManager = new CollectManager(mApplicationContext);
         return mUserSettingManager;
@@ -59,6 +68,7 @@ public class AppEngine
     
     public LoginManager getLoginManager()
     {
+        checkInitialized();
         if (mLoginManager == null)
             mLoginManager = new LoginManager(mApplicationContext);
         return mLoginManager;
@@ -66,6 +76,7 @@ public class AppEngine
     
     public ContentManager getContentManager()
     {
+        checkInitialized();
         if (mContentManager == null)
             mContentManager = new ContentManager(mApplicationContext);
         return mContentManager;
@@ -73,6 +84,7 @@ public class AppEngine
     
     public CacheManager getCacheManager()
     {
+        checkInitialized();
         if (mCacheManager == null)
             mCacheManager = new CacheManager(mApplicationContext);
         return mCacheManager;
@@ -80,6 +92,7 @@ public class AppEngine
     
     public AlarmHelper getAlarmHelper()
     {
+        checkInitialized();
         if (mAlarmHelper == null)
             mAlarmHelper = new AlarmHelper(mApplicationContext);
         return mAlarmHelper;
@@ -87,6 +100,7 @@ public class AppEngine
     
     public UrlManager getUrlManager()
     {
+        checkInitialized();
         if (mUrlManager == null)
             mUrlManager = new UrlManager(mApplicationContext);
         return mUrlManager;
@@ -94,6 +108,7 @@ public class AppEngine
     
     public DnsManager getDnsManager()
     {
+        checkInitialized();
         if (mDnsManager == null)
             mDnsManager = new DnsManager(mApplicationContext);
         return mDnsManager;
@@ -101,6 +116,7 @@ public class AppEngine
     
     public UpdateManager getUpdateManager()
     {
+        checkInitialized();
         if (mUpdateManager == null)
             mUpdateManager = new UpdateManager(mApplicationContext);
         return mUpdateManager;
@@ -108,6 +124,7 @@ public class AppEngine
     
     public BootManager getBootManager()
     {
+        checkInitialized();
         assert (mContext != null);
         if (mBootManager == null)
             mBootManager = new BootManager(mContext);
@@ -116,6 +133,7 @@ public class AppEngine
     
     public HotHtmlManager getHotHtmlManager()
     {
+        checkInitialized();
         if (mHotHtmlManager == null)
             mHotHtmlManager = new HotHtmlManager(mApplicationContext);
         return mHotHtmlManager;
@@ -123,6 +141,7 @@ public class AppEngine
     
     public ChannelHtmlManager getChannelHtmlManager()
     {
+        checkInitialized();
         if (mChannelHtmlManager == null)
             mChannelHtmlManager = new ChannelHtmlManager(mApplicationContext);
         return mChannelHtmlManager;
@@ -130,6 +149,7 @@ public class AppEngine
     
     public ProgramHtmlManager getProgramHtmlManager()
     {
+        checkInitialized();
         if (mProgramHtmlManager == null)
             mProgramHtmlManager = new ProgramHtmlManager(mApplicationContext);
         return mProgramHtmlManager;
