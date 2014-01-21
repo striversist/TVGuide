@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.SplashDialog;
+import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.managers.UpdateManager.IOCompleteCallback;
 import com.tools.tvguide.utils.Utility;
 
@@ -24,7 +25,6 @@ public class BootManager
     private SharedPreferences   mPreference;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
     private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
-    private String              mUA;
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
     private boolean             mIsSplashShowing                            = false;
     
@@ -39,7 +39,7 @@ public class BootManager
         assert (context != null);
         mContext = context;
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        mUA = getUserAgentInternal();
+        GlobalData.UserAgent = getUserAgentInternal();
         mOnSplashFinishedCallbackList = new ArrayList<BootManager.OnSplashFinishedCallback>();
     }
     
@@ -67,11 +67,6 @@ public class BootManager
         });
         if (isFirstStart())
             new ShortcutInstaller(mContext).createShortCut();
-    }
-    
-    public String getUserAgent()
-    {
-        return mUA;
     }
     
     public void addOnSplashFinishedCallback(final OnSplashFinishedCallback callback)

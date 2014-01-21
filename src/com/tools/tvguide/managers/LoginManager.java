@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.utils.NetDataGetter;
 
@@ -55,7 +56,7 @@ public class LoginManager
                         loginUrl = addUrlGetParam(loginUrl, "APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName(), false);
 
                     NetDataGetter getter = new DefaultNetDataGetter(loginUrl);
-                    getter.setHeader("UA", AppEngine.getInstance().getBootManager().getUserAgent());
+                    getter.setHeader("UA", GlobalData.UserAgent);
                     JSONObject jsonRoot = getter.getJSONsObject();
                     if (jsonRoot != null)
                         parseConfig(jsonRoot);
