@@ -21,7 +21,7 @@ public class UANetDataGetter extends NetDataGetter
     
     private void setCommonHeaders()
     {
-        setHeader("User-Agent", GlobalData.UserAgent);
+        setHeader("User-Agent", GlobalData.ChromeUserAgent);
         setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         setHeader("Accept-Language", "zh-CN, en-US");
     }
