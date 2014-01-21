@@ -72,6 +72,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
 {
     private static final String TAG = "ChannelDetailActivity";
     private static boolean sHasShownFirstStartTips = false;
+    private static boolean sUseLocalTime = false;
     private static int sRequestId = 0;
     private String mChannelName;
     private String mChannelId;
@@ -539,6 +540,17 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     {
         mOnPlayingProgram = new Program();
         final StringBuffer buffer = new StringBuffer();
+        // 使用本地时间
+        if (sUseLocalTime)
+        {
+        	int localHour = Calendar.getInstance().getTime().getHours();
+            int localMinute = Calendar.getInstance().getTime().getMinutes();
+            String localTime = String.valueOf(localHour) + ":" + String.valueOf(localMinute);
+            resetOnplayingProgramByTime(localTime);
+            return;
+        }
+        
+        // 使用Proxy时间
         AppEngine.getInstance().getContentManager().loadNowTimeFromProxy(buffer, new ContentManager.LoadListener() 
         {    
             @Override
@@ -547,36 +559,16 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                 try 
                 {
                     Date date = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(buffer.toString());
-                    String currentTime = date.getHours() + ":" + date.getMinutes();
+                    String currentTime = String.valueOf(date.getHours()) + ":" + String.valueOf(date.getMinutes());
+                    resetOnplayingProgramByTime(currentTime);
                     
-                    for (int i=0; i<mProgramList.size(); ++i)
-                    {
-                        String programTime = mProgramList.get(i).time;
-                        if (programTime == null)
-                            continue;
-                        
-                        if (i == 0 && Utility.compareTime(currentTime, programTime) < 0)    // 播放的还是昨晚的最后一个节目
-                        {
-                            break;
-                        }
-                        
-                        if (i < mProgramList.size() - 1)   // 除最后一个节目外，中间正在播放的节目
-                        {
-                            String nextProgramTime = mProgramList.get(i + 1).time;
-                            if (nextProgramTime == null)
-                                continue;
-                            if (Utility.compareTime(currentTime, programTime)>=0 && Utility.compareTime(currentTime, nextProgramTime)<0)
-                            {
-                                mOnPlayingProgram.copy(mProgramList.get(i));
-                                break;
-                            }
-                        }
-                        else    // 当天的最后一个节目
-                        {
-                            mOnPlayingProgram.copy(mProgramList.get(i));
-                            break;
-                        }
-                    }
+                    // 优化：判断下次是否使用本地时间替代网络时间，以加快“正在播出”节目的显示
+                    long proxyHour = date.getHours();
+                    long proxyMinute = date.getMinutes();
+                    int localHour = Calendar.getInstance().getTime().getHours();
+                    int localMinute = Calendar.getInstance().getTime().getMinutes();
+                    if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
+                    	sUseLocalTime = true;
                     
                     uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
                 } 
@@ -586,6 +578,38 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                 }
             }
         });
+    }
+    
+    private void resetOnplayingProgramByTime(String newTime)
+    {
+    	for (int i=0; i<mProgramList.size(); ++i)
+        {
+            String programTime = mProgramList.get(i).time;
+            if (programTime == null)
+                continue;
+            
+            if (i == 0 && Utility.compareTime(newTime, programTime) < 0)    // 播放的还是昨晚的最后一个节目
+            {
+                break;
+            }
+            
+            if (i < mProgramList.size() - 1)   // 除最后一个节目外，中间正在播放的节目
+            {
+                String nextProgramTime = mProgramList.get(i + 1).time;
+                if (nextProgramTime == null)
+                    continue;
+                if (Utility.compareTime(newTime, programTime)>=0 && Utility.compareTime(newTime, nextProgramTime)<0)
+                {
+                    mOnPlayingProgram.copy(mProgramList.get(i));
+                    break;
+                }
+            }
+            else    // 当天的最后一个节目
+            {
+                mOnPlayingProgram.copy(mProgramList.get(i));
+                break;
+            }
+        }
     }
     
     private void reportVisitToProxy()
