@@ -10,7 +10,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.acra.ACRA;
 
 import android.content.Context;
-import android.os.Handler;
 
 public class UrlManager 
 {
@@ -58,7 +57,6 @@ public class UrlManager
     private static final String PATH_REPORT               = "/public/report.php";
     
     private Context mContext;
-    private Handler initHandler                           = new Handler();
     private ReentrantLock mLock                           = new ReentrantLock();
     private Condition mCondition;
     private boolean mHasInit                              = false;
@@ -90,14 +88,7 @@ public class UrlManager
         {
             if (callback != null)
             {
-                initHandler.post(new Runnable() 
-                {
-                    @Override
-                    public void run() 
-                    {
-                        callback.OnInitComplete(0);
-                    }
-                });
+                callback.OnInitComplete(0);
             }
             mHasInit = true;
             return;
@@ -121,14 +112,7 @@ public class UrlManager
                     mHasInit = true;
                     if (callback != null)
                     {
-                        initHandler.post(new Runnable() 
-                        {
-                            @Override
-                            public void run() 
-                            {
-                                callback.OnInitComplete(0);
-                            }
-                        });
+                        callback.OnInitComplete(0);
                     }
                     AppEngine.getInstance().getDnsManager().preloadFrequentlyUsedDns();
                 } 
