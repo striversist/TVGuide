@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.components.UANetDataGetter;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -244,7 +245,7 @@ public class Utility
         Bitmap bitmap = null;
         try
         {
-            bitmap = BitmapFactory.decodeStream(new NetDataGetter(url).getInputStream());
+            bitmap = BitmapFactory.decodeStream(new UANetDataGetter(url).getInputStream());
         }
         catch (IOException e)
         {

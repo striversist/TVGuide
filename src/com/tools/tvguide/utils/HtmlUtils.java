@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.components.UANetDataGetter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CacheManager;
 
@@ -23,7 +23,7 @@ public class HtmlUtils
         Document doc;
         if (html == null)
         {
-            NetDataGetter getter = new DefaultNetDataGetter(url);
+            NetDataGetter getter = new UANetDataGetter(url);
             for (int i=0; i<2; ++i)
             {
                 html = getter.getStringData(charset);

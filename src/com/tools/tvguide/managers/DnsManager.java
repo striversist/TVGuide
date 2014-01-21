@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.tools.tvguide.components.UANetDataGetter;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
 
@@ -114,8 +115,7 @@ public class DnsManager
         NetDataGetter getter;
         try 
         {
-            getter = new NetDataGetter(url);
-            getter.setHeader("User-Agent", AppEngine.getInstance().getBootManager().getUserAgent());
+            getter = new UANetDataGetter(url);
             String html = getter.getStringData();
             if (html == null)
                 return null;
@@ -164,8 +164,7 @@ public class DnsManager
         NetDataGetter getter;
         try
         {
-            getter = new NetDataGetter(url);
-            getter.setHeader("User-Agent", AppEngine.getInstance().getBootManager().getUserAgent());
+            getter = new UANetDataGetter(url);
             String html = getter.getStringData();
             if (html == null)
                 return null;
@@ -181,8 +180,7 @@ public class DnsManager
             
             // 获取当前位置信息
             url = UrlManager.URL_IPCN + "/getip.php?action=getip&ip_url=&from=web";
-            getter = new NetDataGetter(url);
-            getter.setHeader("User-Agent", AppEngine.getInstance().getBootManager().getUserAgent());
+            getter = new UANetDataGetter(url);
             html = getter.getStringData();
             if (html != null)
             {
