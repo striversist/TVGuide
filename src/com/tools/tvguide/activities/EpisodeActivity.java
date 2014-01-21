@@ -51,6 +51,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         mViewPager = (ViewPager) findViewById(R.id.episode_viewpager);
         mProgramNameTV = (TextView) findViewById(R.id.episode_program_name_tv);
         mEpisodeEntryList = new ArrayList<HashMap<String,String>>();
+        mPageAdapter = new ResultPageAdapter();
         
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
@@ -149,16 +150,19 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
                 @Override
                 public void onEntriesLoaded(int requestId, List<HashMap<String, String>> entryList) 
                 {
-                    mEpisodeEntryList.addAll(entryList);
-                    uiHandler.post(new Runnable() 
-                    {
-                        @Override
-                        public void run() 
-                        {
-                            initSlidingMenu();
-                            initViewPager();
-                        }
-                    });
+                	if (entryList.size() > 0)
+                	{
+	                    mEpisodeEntryList.addAll(entryList);
+	                    uiHandler.post(new Runnable() 
+	                    {
+	                        @Override
+	                        public void run() 
+	                        {
+	                            initSlidingMenu();
+	                            initViewPager();
+	                        }
+	                    });
+                	}
                 }
                 
                 @Override
@@ -184,7 +188,6 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     
     private void initViewPager()
     {
-        mPageAdapter = new ResultPageAdapter();
         for (int i=0; i<mEpisodeEntryList.size(); ++i)
         {
             LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
@@ -236,8 +239,11 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
                         plots += "　　" + episodes.get(i).get("plot") + "<br/><br/>";
                     }
                     ((TextView) layout.findViewById(R.id.program_tab_simpletext)).setText(Html.fromHtml(plots));
-                    ((LinearLayout) mPageAdapter.getView(index)).removeAllViews();
-                    ((LinearLayout) mPageAdapter.getView(index)).addView(layout);
+                    if (mPageAdapter.getCount() > index)
+                    {
+	                    ((LinearLayout) mPageAdapter.getView(index)).removeAllViews();
+	                    ((LinearLayout) mPageAdapter.getView(index)).addView(layout);
+                    }
                     break;
             }
         }
