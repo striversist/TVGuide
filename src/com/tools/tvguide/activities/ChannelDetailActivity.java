@@ -192,7 +192,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             return;
         
         Program program = convertToProgram(programString);
-        mListViewAdapter.removeAlarmProgram(program);
+        if (program != null)
+            mListViewAdapter.removeAlarmProgram(program);
     }
     
     public void back(View view)
