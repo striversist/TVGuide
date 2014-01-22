@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tools.tvguide"
-    android:versionCode="10"
-    android:versionName="1.3.1" >
+    android:versionCode="11"
+    android:versionName="1.3.2" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -22,7 +22,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
- <!-- 可选 -->
+    <!-- 可选 -->
     <!-- /有米传媒 Android SDK 所需权限 -->
 
     <application
@@ -31,8 +31,6 @@
         android:icon="@drawable/application"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar" >
-
-        <!-- 发布渠道(可选) -->
         <meta-data
             android:name="APP_CHANNEL"
             android:value="APP市场" />
