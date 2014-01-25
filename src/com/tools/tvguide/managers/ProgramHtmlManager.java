@@ -104,18 +104,7 @@ public class ProgramHtmlManager
                     // -------------- 获取剧情概要 --------------
                     // 返回结果
                     String summary = "";
-                    Element descriptionElement = null;
-                    if (programUrl.contains("competition"))     // 赛事：无detail页
-                    {
-                        descriptionElement = doc.getElementsByAttributeValue("itemprop", "description").first();
-                    }
-                    else
-                    {
-                        String descriptionLink = programUrl + "/detail";
-                        Document descriptionDoc = HtmlUtils.getDocument(descriptionLink);
-                        descriptionElement = descriptionDoc.getElementsByAttributeValue("itemprop", "description").first();
-                    }
-                    
+                    Element descriptionElement = doc.select("div.section-wrap div.lessmore div.more_c").first();
                     if (descriptionElement != null)
                     {
                         Elements pargfs = descriptionElement.select("p");
