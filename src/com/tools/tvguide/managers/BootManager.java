@@ -144,7 +144,7 @@ public class BootManager
     private void checkNetwork()
     {
         if (!Utility.isNetworkAvailable())
-            Toast.makeText(mContext, "注意：当前网络不可用！", Toast.LENGTH_LONG).show();
+            Toast.makeText(AppEngine.getInstance().getApplicationContext(), "注意：当前网络不可用！", Toast.LENGTH_LONG).show();
     }
     
     private Handler uiHandler = new Handler()
@@ -155,7 +155,7 @@ public class BootManager
             switch(msg.what)
             {
                 case IOCompleteCallback.NEED_UPDATE:
-                    Toast.makeText(mContext, "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AppEngine.getInstance().getApplicationContext(), "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
                     break;
                 case IOCompleteCallback.NO_NEED_UPDATE:
                     break;
