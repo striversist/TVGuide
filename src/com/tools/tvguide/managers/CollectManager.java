@@ -8,7 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.content.Context;
 
@@ -33,10 +36,55 @@ public class CollectManager
         mSettingChanged = true;
     }
     
-    public void removeCollectChannel(String id)
+    public void addCollectChannel(int position, String id, HashMap<String, Object> info)
     {
+    	if (position > mCollectChannels.size() || id == null || info == null)
+    		return;
+
+    	if (isChannelCollected(id))		// 若已存在，则不会生效
+    		return;
+    	
+    	if (position == mCollectChannels.size())	// 在尾部添加
+    	{
+    		mCollectChannels.put(id, info);
+    	}
+    	else
+    	{
+	    	int index = 0;
+	    	LinkedHashMap<String, HashMap<String, Object>> newCollectChannels = new LinkedHashMap<String, HashMap<String,Object>>();
+	    	Iterator<Entry<String, HashMap<String, Object>>> iter = mCollectChannels.entrySet().iterator();
+	        while (iter.hasNext())
+	        {
+	        	if (index == position)
+	        	{
+	        		newCollectChannels.put(id, info);
+	        	}
+	        	else
+	        	{
+		            Map.Entry<String, HashMap<String, Object>> entry = (Map.Entry<String, HashMap<String,Object>>)iter.next();
+		            String key = entry.getKey();
+		            HashMap<String, Object> value = entry.getValue();
+		            newCollectChannels.put(key, value);
+	        	}
+	            
+	            index++;
+	        }
+	        mCollectChannels.clear();
+	        mCollectChannels.putAll(newCollectChannels);
+    	}
+    }
+    
+    public HashMap<String, Object> removeCollectChannel(String id)
+    {
+    	HashMap<String, Object> removeChannelInfo = mCollectChannels.get(id);
         mCollectChannels.remove(id);
         mSettingChanged = true;
+        return removeChannelInfo;
+    }
+    
+    public HashMap<String, Object> getCollectChannel(String id)
+    {
+    	return mCollectChannels.get(id);
     }
     
     public HashMap<String, HashMap<String, Object>> getCollectChannels()

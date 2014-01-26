@@ -14,10 +14,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.mobeta.android.dslv.DragSortController;
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DragSortListener;
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -40,16 +44,16 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter.ViewBinder;
 
-public class CollectActivity extends Activity 
+public class CollectActivity extends Activity implements DragSortListener
 {
-    private ListView mChannelListView;
-    private SimpleAdapter mListViewAdapter;
+    private DragSortListView mChannelListView;
+    private DragSortController mController;
+    private MySimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
     private List<Channel> mChannelList;
     private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
@@ -101,6 +105,41 @@ public class CollectActivity extends Activity
             }
             return view;
         }
+        
+        @Override
+        public Object getItem(int position)
+        {
+        	return mItemList.get(position);
+        }
+        
+        public Object remove(int position)
+        {
+        	if (position < 0 || position >= getCount())
+        		return null;
+        	
+        	Object removeObject = getItem(position);
+        	mChannelList.remove(position);
+        	mItemList.remove(position);
+        	notifyDataSetChanged();
+        	
+        	return removeObject;
+        }
+        
+        @SuppressWarnings("unchecked")
+		public void add(int position, Object item)
+        {
+        	if (position < 0 || position > getCount() || item == null)
+        		return;
+        	
+        	HashMap<String, Object> hashItem = (HashMap<String, Object>) item;
+        	Channel channel = new Channel();
+        	channel.id = (String) hashItem.get("id");
+        	channel.name = (String) hashItem.get("name");
+        	
+        	mChannelList.add(position, channel);
+        	mItemList.add(position, hashItem);
+        	notifyDataSetChanged();
+        }
     }
     
     private class MyViewBinder implements ViewBinder
@@ -132,7 +171,7 @@ public class CollectActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect);
         
-        mChannelListView = (ListView)findViewById(R.id.collect_channel_list_view);
+        mChannelListView = (DragSortListView)findViewById(R.id.collect_channel_list_view);
         mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mChannelList = new ArrayList<Channel>();
         mOnPlayingProgramList = new ArrayList<Pair<String,String>>();
@@ -142,6 +181,13 @@ public class CollectActivity extends Activity
         mNoCollectLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoCollectLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.promote_collect_tips));
+        
+        mController = buildController(mChannelListView);
+        mChannelListView.setFloatViewManager(mController);
+        mChannelListView.setOnTouchListener(mController);
+        mChannelListView.setDragSortListener(this);
+        mChannelListView.setRemoveListener(this);
+        mChannelListView.setDragEnabled(true);
         
         mChannelListView.setOnItemClickListener(new OnItemClickListener() 
         {
@@ -223,12 +269,14 @@ public class CollectActivity extends Activity
         { 
             String id = mChannelList.get(i).id;
             String name = mChannelList.get(i).name;
-            HashMap<String, Object> item = new HashMap<String, Object>();
+            
+            HashMap<String, Object> item = new HashMap<String, Object>();            
+            item.put("id", id);
+            item.put("name", name);
             if (mXmlChannelInfo.get(id) != null)
             {
                 item.put("image", Utility.getImage(CollectActivity.this, (String) mXmlChannelInfo.get(id).get(XML_ELEMENT_LOGO)));                        
             }
-            item.put("name", name);
             mItemList.add(item);
         }
         mListViewAdapter.notifyDataSetChanged();
@@ -336,6 +384,16 @@ public class CollectActivity extends Activity
         }).start();
     }
     
+    private DragSortController buildController(DragSortListView dslv) 
+	{
+        DragSortController controller = new DragSortController(dslv);
+        controller.setRemoveEnabled(false);
+        controller.setSortEnabled(true);
+        controller.setDragInitMode(DragSortController.ON_LONG_PRESS);
+//        controller.setRemoveMode(DragSortController.FLING_REMOVE);
+        return controller;
+    }
+    
     private Handler uiHandler = new Handler()
     {
         public void handleMessage(Message msg)
@@ -358,4 +416,30 @@ public class CollectActivity extends Activity
             }
         }
     };
+
+	@Override
+	public void drop(int from, int to) 
+	{
+		CollectManager manager = AppEngine.getInstance().getCollectManager();
+		String dragChannelId = mChannelList.get(from).id;
+		if (dragChannelId != null)
+		{
+			HashMap<String, Object> dragChannelInfo = manager.removeCollectChannel(dragChannelId);
+			manager.addCollectChannel(to, dragChannelId, dragChannelInfo);
+		}
+		
+		Object dragObject = mListViewAdapter.remove(from);
+		if (dragObject != null)
+			mListViewAdapter.add(to, dragObject);
+	}
+
+	@Override
+	public void drag(int from, int to) 
+	{
+	}
+
+	@Override
+	public void remove(int which) 
+	{
+	}
 }

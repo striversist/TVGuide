@@ -4,7 +4,7 @@
     <LinearLayout android:id="@+id/collect_content_layout" 
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
-	    <ListView android:id="@+id/collect_channel_list_view" 
+	    <com.mobeta.android.dslv.DragSortListView android:id="@+id/collect_channel_list_view" 
                 android:layout_width="fill_parent" android:layout_height="wrap_content" 
                 android:fadingEdge="none" android:padding="2.0dip"
                 android:scrollingCache="false" android:divider="@color/white" 
