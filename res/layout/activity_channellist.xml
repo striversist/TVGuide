@@ -8,7 +8,7 @@
     <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
 	    <ListView android:id="@+id/channel_list" android:layout_width="fill_parent" android:layout_height="wrap_content" android:fadingEdge="none" android:padding="2.0dip" 
 	        android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice"
-	        android:layout_above="@id/adLayout" />
+	        android:layout_alignParentTop="true" android:layout_above="@id/adLayout" />
 	    <RelativeLayout
             android:id="@+id/adLayout"
             android:layout_width="match_parent"
