@@ -51,33 +51,36 @@ public class MyApplication extends Application
 		super.onCreate();
 		sInstance = this;
 		
-		ACRA.init(this);
 		AppEngine.getInstance().setApplicationContext(getApplicationContext());
-
-		String url;
-		if (EnvironmentManager.isDevelopMode)
+		if (EnvironmentManager.enableACRA)
 		{
-		    url = UrlManager.ACRA_PROXY_DEV;
+			ACRA.init(this);
+	
+			String url;
+			if (EnvironmentManager.isDevelopMode)
+			{
+			    url = UrlManager.ACRA_PROXY_DEV;
+			}
+			else
+			{
+			    url = UrlManager.ACRA_PROXY_REAL;
+			}
+			ACRA.getConfig().setFormUri(url);
+			
+			// 自定义上报数据
+			// GUID
+			if (AppEngine.getInstance().getUpdateManager().getGUID() != null)
+			    ErrorReporter.getInstance().putCustomData("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
+			
+			// 网络状态
+			if (Utility.isWifi(MyApplication.getInstance()))
+			    ErrorReporter.getInstance().putCustomData("NETWORK", "WIFI");
+			else
+			    ErrorReporter.getInstance().putCustomData("NETWORK", "non-WIFI");
+			
+			// 渠道
+			if (AppEngine.getInstance().getUpdateManager().getAppChannelName() != null)
+			    ErrorReporter.getInstance().putCustomData("APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName());
 		}
-		else
-		{
-		    url = UrlManager.ACRA_PROXY_REAL;
-		}
-		ACRA.getConfig().setFormUri(url);
-		
-		// 自定义上报数据
-		// GUID
-		if (AppEngine.getInstance().getUpdateManager().getGUID() != null)
-		    ErrorReporter.getInstance().putCustomData("GUID", AppEngine.getInstance().getUpdateManager().getGUID());
-		
-		// 网络状态
-		if (Utility.isWifi(MyApplication.getInstance()))
-		    ErrorReporter.getInstance().putCustomData("NETWORK", "WIFI");
-		else
-		    ErrorReporter.getInstance().putCustomData("NETWORK", "non-WIFI");
-		
-		// 渠道
-		if (AppEngine.getInstance().getUpdateManager().getAppChannelName() != null)
-		    ErrorReporter.getInstance().putCustomData("APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName());
 	}
 }

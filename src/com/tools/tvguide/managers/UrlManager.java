@@ -104,7 +104,8 @@ public class UrlManager
                     mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
                     if (ENABLE_TEST)
                         mProxyHostIP = DEV_IP;
-                    ACRA.getConfig().setFormUri(tryToReplaceHostNameWithIP(ACRA.getConfig().formUri()));
+                    if (EnvironmentManager.enableACRA)
+                    	ACRA.getConfig().setFormUri(tryToReplaceHostNameWithIP(ACRA.getConfig().formUri()));
                     
                     mLock.lock();
                     mCondition.signalAll();
