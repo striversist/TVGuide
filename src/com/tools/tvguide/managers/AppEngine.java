@@ -19,6 +19,7 @@ public class AppEngine
     private DnsManager                              mDnsManager;
     private UpdateManager                           mUpdateManager;
     private BootManager                             mBootManager;
+    private AdManager								mAdManager;
     private HotHtmlManager                          mHotHtmlManager;
     private ChannelHtmlManager                      mChannelHtmlManager;
     private ProgramHtmlManager                      mProgramHtmlManager;
@@ -129,6 +130,14 @@ public class AppEngine
         if (mBootManager == null)
             mBootManager = new BootManager(mContext);
         return mBootManager;
+    }
+    
+    public AdManager getAdManager()
+    {
+    	checkInitialized();
+    	if (mAdManager == null)
+    		mAdManager = new AdManager(mApplicationContext);
+    	return mAdManager;
     }
     
     public HotHtmlManager getHotHtmlManager()

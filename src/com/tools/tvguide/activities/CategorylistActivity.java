@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.youmi.android.diy.banner.DiyAdSize;
-import net.youmi.android.diy.banner.DiyBanner;
-
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.AdManager.AdSize;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +19,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -82,8 +79,7 @@ public class CategorylistActivity extends Activity
             @Override
             public void run() 
             {
-                // Mini广告
-                ((RelativeLayout)findViewById(R.id.adLayout)).addView(new DiyBanner(CategorylistActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
+                AppEngine.getInstance().getAdManager().addAdView(CategorylistActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
             }
         }, 500);
     }

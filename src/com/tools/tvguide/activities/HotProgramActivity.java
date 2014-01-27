@@ -1,20 +1,16 @@
 package com.tools.tvguide.activities;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.youmi.android.diy.banner.DiyAdSize;
-import net.youmi.android.diy.banner.DiyBanner;
-
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
-import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
 
 import android.os.Bundle;
@@ -25,7 +21,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -33,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -142,8 +136,7 @@ public class HotProgramActivity extends Activity
             @Override
             public void run() 
             {
-                // Mini广告
-                ((RelativeLayout)findViewById(R.id.adLayout)).addView(new DiyBanner(HotProgramActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
+                AppEngine.getInstance().getAdManager().addAdView(HotProgramActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
             }
         }, 500);
     }

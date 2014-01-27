@@ -7,18 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.youmi.android.banner.AdSize;
-import net.youmi.android.banner.AdView;
-import net.youmi.android.diy.banner.DiyAdSize;
-import net.youmi.android.diy.banner.DiyBanner;
-
 import com.tools.tvguide.R;
+import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -27,9 +22,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 
@@ -111,10 +104,7 @@ public class AlarmSettingActivity extends Activity
         createAndSetListViewAdapter();
         initAlarmList();
         
-        // 将广告条adView添加到需要展示的layout控件中
-        RelativeLayout adLayout = (RelativeLayout) findViewById(R.id.adLayout);
-        AdView adView = new AdView(AlarmSettingActivity.this, AdSize.FIT_SCREEN);
-        adLayout.addView(adView);
+        AppEngine.getInstance().getAdManager().addAdView(this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
     
     @Override

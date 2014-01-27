@@ -1,23 +1,17 @@
 package com.tools.tvguide.activities;
 
-import net.youmi.android.AdManager;
-import net.youmi.android.diy.banner.DiyAdSize;
-import net.youmi.android.diy.banner.DiyBanner;
-
 import com.tools.tvguide.R;
+import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.UrlManager;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -61,17 +55,13 @@ public class MainActivity extends TabActivity
             }
         }, delayTime);
         
-        // 初始化应用的发布ID和密钥，以及设置测试模式
-        AdManager.getInstance(this).init("18d3cb43223cb656", "ca026a5093fb2378", false); 
-        
+        AppEngine.getInstance().getAdManager().init();
         new Handler().postDelayed(new Runnable() 
         {
             @Override
             public void run() 
-            {
-                // Mini广告
-                ((RelativeLayout)findViewById(R.id.main_adLayout)).addView(new DiyBanner(MainActivity.this, DiyAdSize.SIZE_MATCH_SCREENx32));
-                AdManager.getInstance(MainActivity.this).setEnableDebugLog(false);
+            {               
+                AppEngine.getInstance().getAdManager().addAdView(MainActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
             }
         }, delayTime * 2);
     }
