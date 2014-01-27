@@ -48,6 +48,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter.ViewBinder;
+import android.widget.Toast;
 
 public class CollectActivity extends Activity implements DragSortListener
 {
@@ -216,6 +217,9 @@ public class CollectActivity extends Activity implements DragSortListener
         createAndSetListViewAdapter();
         createUpdateThreadAndHandler();
         report();
+
+        // Show tips: long press to sort
+        Toast.makeText(this, getResources().getString(R.string.long_press_sort_tips), Toast.LENGTH_LONG).show();
     }
     
     @Override
