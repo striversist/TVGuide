@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 public class CollectActivity extends Activity implements DragSortListener
 {
+    private static boolean sHasShownTips = false;
     private DragSortListView mChannelListView;
     private DragSortController mController;
     private MySimpleAdapter mListViewAdapter;
@@ -217,9 +218,6 @@ public class CollectActivity extends Activity implements DragSortListener
         createAndSetListViewAdapter();
         createUpdateThreadAndHandler();
         report();
-
-        // Show tips: long press to sort
-        Toast.makeText(this, getResources().getString(R.string.long_press_sort_tips), Toast.LENGTH_LONG).show();
     }
     
     @Override
@@ -238,6 +236,12 @@ public class CollectActivity extends Activity implements DragSortListener
         {
             mContentLayout.removeAllViews();
             mContentLayout.addView(mChannelListView);
+            // Show tips: long press to sort
+            if (mItemList.size() > 1 && sHasShownTips == false)
+            {
+                Toast.makeText(this, getResources().getString(R.string.long_press_sort_tips), Toast.LENGTH_LONG).show();
+                sHasShownTips = true;
+            }
         }
     };
 

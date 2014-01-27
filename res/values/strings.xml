@@ -81,6 +81,6 @@
     <string name="crash_toast_text">抱歉，程序崩溃了！\n错误已发送，后续会修复这个问题！</string>
     <string name="program_introduce">预告:</string>
     <string name="setting_dialog">设置闹钟</string>
-    <string name="long_press_sort_tips">提示：长按节目可以重新排序</string>
+    <string name="long_press_sort_tips">提示：长按节目可以调整顺序</string>
 
 </resources>
