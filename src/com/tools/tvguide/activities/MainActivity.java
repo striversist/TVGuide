@@ -36,6 +36,7 @@ public class MainActivity extends TabActivity
 //        Log.d(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
         
+        // Must be set first
         AppEngine.getInstance().setContext(this);
         AppEngine.getInstance().getBootManager().start();
         

@@ -33,7 +33,6 @@ public class BootManager
         void OnSplashFinished();
     }
     
-    // 因为BootManager中有对UI的操作，所以BootManager必须放在UI线程中创建，一般应放在MainActivity中创建
     public BootManager(Context context)
     {
         assert (context != null);
@@ -66,7 +65,7 @@ public class BootManager
             }
         });
         if (isFirstStart())
-            new ShortcutInstaller(mContext).createShortCut();
+            new ShortcutInstaller(AppEngine.getInstance().getContext()).createShortCut();
     }
     
     public void addOnSplashFinishedCallback(final OnSplashFinishedCallback callback)
@@ -77,7 +76,7 @@ public class BootManager
     // This API should be called in UI main thread
     private String getUserAgentInternal()
     {
-        WebView webView = new WebView(mContext);
+        WebView webView = new WebView(AppEngine.getInstance().getContext());
         webView.layout(0, 0, 0, 0);
         WebSettings settings = webView.getSettings();
         return settings.getUserAgentString();
@@ -95,7 +94,7 @@ public class BootManager
     
     public void showSplash()
     {
-        mSplashDialog = new SplashDialog(mContext);
+        mSplashDialog = new SplashDialog(AppEngine.getInstance().getContext());
         mSplashDialog.showSplash();
     }
     
