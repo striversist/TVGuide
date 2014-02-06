@@ -67,7 +67,8 @@ public class LoginManager
                         if (guid != null)
                         {
                             AppEngine.getInstance().getUpdateManager().setGUID(guid);
-                            ErrorReporter.getInstance().putCustomData("GUID", guid);
+                            if (EnvironmentManager.enableACRA)
+                                ErrorReporter.getInstance().putCustomData("GUID", guid);
                         }
                     }
                     
