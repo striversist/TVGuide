@@ -42,12 +42,6 @@ void FileDeleteObserver::onEvent(FileObserver::Event event, const std::string& p
 void FileDeleteObserver::onDelete(const std::string& path)
 {
     XLOG("FileDeleteObserver::onDelete delete path=%s", path.c_str());
-    SimpleTcpClient client;
-    if (client.connect("www.baidu.com", 80) < 0)
-    {
-        XLOG("FileDeleteObserver::onDelete connect error");
-    }
-
     int ret = sendRequest();
     if (!ret)
     {
@@ -80,7 +74,7 @@ int FileDeleteObserver::sendRequest()
         curl_easy_setopt(curl, CURLOPT_URL, mUrl.c_str());
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
   
         /* Perform the request, res will get the return code */ 
         res = curl_easy_perform(curl);

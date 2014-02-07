@@ -103,9 +103,16 @@ public class UrlManager
             {
                 try 
                 {
-                    mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
                     if (ENABLE_TEST)
+                    {
                         mProxyHostIP = DEV_IP;
+                        AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
+                    }
+                    else
+                    {
+                        mProxyHostIP = AppEngine.getInstance().getDnsManager().getProxyIPAddress(mProxyHostName);
+                    }
+                    
                     if (EnvironmentManager.enableACRA)
                     	ACRA.getConfig().setFormUri(tryToReplaceHostNameWithIP(ACRA.getConfig().formUri()));
                     
@@ -151,7 +158,9 @@ public class UrlManager
     public String getUrl(int type)
     {
         String url = "http://";
-        if (mProxyHostIP != null)
+        if (ENABLE_TEST)
+            url += DEV_IP;
+        else if (mProxyHostIP != null)
             url += mProxyHostIP;
         else
             url += mProxyHostName;
