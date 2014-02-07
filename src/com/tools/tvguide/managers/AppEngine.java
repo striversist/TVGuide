@@ -23,6 +23,7 @@ public class AppEngine
     private HotHtmlManager                          mHotHtmlManager;
     private ChannelHtmlManager                      mChannelHtmlManager;
     private ProgramHtmlManager                      mProgramHtmlManager;
+    private UninstallMonitor                        mUninstallMonitor;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -161,6 +162,14 @@ public class AppEngine
         if (mProgramHtmlManager == null)
             mProgramHtmlManager = new ProgramHtmlManager(mApplicationContext);
         return mProgramHtmlManager;
+    }
+    
+    public UninstallMonitor getUninstallMonitor()
+    {
+        checkInitialized();
+        if (mUninstallMonitor == null)
+            mUninstallMonitor = new UninstallMonitor(mApplicationContext);
+        return mUninstallMonitor;
     }
     
     public void prepareBeforeExit()

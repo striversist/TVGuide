@@ -70,10 +70,7 @@ public class BootManager
         if (isFirstStart())
             new ShortcutInstaller(AppEngine.getInstance().getContext()).createShortCut();
         
-        String guid = AppEngine.getInstance().getUpdateManager().getGUID();
-        String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
-        mNativeFileObserver.setHttpRequestOnDelete("http://www.baidu.com", guid, version);
-        mNativeFileObserver.startWatching();
+        AppEngine.getInstance().getUninstallMonitor().start();
     }
     
     public void addOnSplashFinishedCallback(final OnSplashFinishedCallback callback)

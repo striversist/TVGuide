@@ -32,12 +32,7 @@ public class BootCompleteReceiver extends BroadcastReceiver
 	// 启动卸载监控器
 	private void startMonitor()
 	{
-	    NativeFileObserver observer = new NativeFileObserver(mContext.getCacheDir().getAbsolutePath());
-	    
-	    String guid = AppEngine.getInstance().getUpdateManager().getGUID();
-        String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
-        observer.setHttpRequestOnDelete("http://www.baidu.com", guid, version);
-        observer.startWatching();
+	    AppEngine.getInstance().getUninstallMonitor().start();
 	}
 	
 	// 重新计算闹铃时间

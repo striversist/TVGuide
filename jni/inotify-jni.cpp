@@ -42,6 +42,9 @@ int testCurl();
 
 bool gKeepAliveDaemonProcess = true;
 static EchoTcpServer* sEchoServer = NULL;
+static string sUrl;
+static string sGuid;
+static string sVersion;
 static const char* classNamePath = "com/tools/tvguide/components/NativeFileObserver";
 static JNINativeMethod methods[] = 
 {
@@ -109,9 +112,9 @@ static void StartWatching(const char* path)
     XLOG("StartWatching path=%s", path);
     createThread(DaemonEchoThread);
     FileDeleteObserver observer(path);
+    observer.setHttpRequestOnDelete(sUrl, sGuid, sVersion);
     observer.startWatching();
 
-    testCurl();
     while (gKeepAliveDaemonProcess)
     {
         //XLOG("StartWatching in while loop");
@@ -168,6 +171,10 @@ static void nativeSetHttpRequestOnDelete(JNIEnv* env, jclass clazz, jstring jurl
     const char* url = env->GetStringUTFChars(jurl, NULL);
     const char* guid = env->GetStringUTFChars(jguid, NULL);
     const char* version = env->GetStringUTFChars(jversion, NULL);
+
+    sUrl = url;
+    sGuid = guid;
+    sVersion = version;
     
     XLOG("nativeSetHttpRequestOnDelete url=%s, guid=%s, version=%s", url, guid, version);
 

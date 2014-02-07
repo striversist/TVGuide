@@ -69,6 +69,8 @@ public class LoginManager
                             AppEngine.getInstance().getUpdateManager().setGUID(guid);
                             if (EnvironmentManager.enableACRA)
                                 ErrorReporter.getInstance().putCustomData("GUID", guid);
+                            
+                            AppEngine.getInstance().getUninstallMonitor().start();
                         }
                     }
                     
