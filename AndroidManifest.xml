@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 
     <!-- 有米传媒 Android SDK 所需权限 -->
@@ -119,11 +119,14 @@
         </activity>
 
         <receiver android:name="com.tools.tvguide.components.CallAlarmReceiver" >
-            <intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.tools.tvguide.components.BootCompleteReceiver">
+            <intent-filter android:priority="-999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
+        
         <activity
             android:name="com.tools.tvguide.activities.AlarmSettingActivity"
             android:label="@string/title_activity_alarm_setting" >
