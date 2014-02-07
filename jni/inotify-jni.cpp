@@ -109,6 +109,7 @@ static void StartWatching(const char* path)
     FileDeleteObserver observer(path);
     observer.startWatching();
 
+    testCurl();
     while (gKeepAliveDaemonProcess)
     {
         //XLOG("StartWatching in while loop");
@@ -190,8 +191,15 @@ int testCurl()
     res = curl_easy_perform(curl);
     /* Check for errors */ 
     if(res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",
-              curl_easy_strerror(res));
+    {
+      XLOG("curl_easy_perform() failed: %s", curl_easy_strerror(res));
+    }
+    else
+    {
+      long retcode = 0;
+      curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retcode);
+      XLOG("curl_easy_perform() success, response code=%d", retcode);
+    }
  
     /* always cleanup */ 
     curl_easy_cleanup(curl);
