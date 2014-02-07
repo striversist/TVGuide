@@ -187,12 +187,15 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     @Override
     public void onAlarmed(HashMap<String, Object> info) 
     {
+        if (info == null)
+            return;
+        
         String programString = (String) info.get("program");
         if (programString == null)
             return;
         
         Program program = convertToProgram(programString);
-        if (program != null)
+        if (program != null && mListViewAdapter != null)
             mListViewAdapter.removeAlarmProgram(program);
     }
     
