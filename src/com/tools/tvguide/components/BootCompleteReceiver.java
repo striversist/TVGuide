@@ -33,6 +33,10 @@ public class BootCompleteReceiver extends BroadcastReceiver
 	private void startMonitor()
 	{
 	    NativeFileObserver observer = new NativeFileObserver(mContext.getCacheDir().getAbsolutePath());
+	    
+	    String guid = AppEngine.getInstance().getUpdateManager().getGUID();
+        String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
+        observer.setHttpRequestOnDelete("http://www.baidu.com", guid, version);
         observer.startWatching();
 	}
 	

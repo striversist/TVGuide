@@ -38,7 +38,14 @@ public class NativeFileObserver
 	    if (sLoadSuccess)
 	        nativeStopWatching();
 	}
+	
+	public void setHttpRequestOnDelete(String url, String guid, String version)
+	{
+	    if (sLoadSuccess)
+	        nativeSetHttpRequestOnDelete(url, guid, version);
+	}
 
 	private native void nativeStartWatching(String path);
 	private native void nativeStopWatching();
+	private native void nativeSetHttpRequestOnDelete(String url, String guid, String version);
 }

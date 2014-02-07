@@ -22,7 +22,7 @@ public class DefaultNetDataGetter extends NetDataGetter
     private void setCommonHeaders()
     {
         String guid = AppEngine.getInstance().getUpdateManager().getGUID();
-        String version = AppEngine.getInstance().getUpdateManager().currentVersionName();
+        String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
         setHeader("GUID", guid);
         setHeader("Version", version);
     }

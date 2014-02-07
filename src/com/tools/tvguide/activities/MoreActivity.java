@@ -34,7 +34,7 @@ public class MoreActivity extends Activity
         
         TextView checkTextView = (TextView)findViewById(R.id.more_version_check);
         String versionFormat = checkTextView.getText().toString();
-        String finalVersion = String.format(versionFormat, AppEngine.getInstance().getUpdateManager().currentVersionName());
+        String finalVersion = String.format(versionFormat, AppEngine.getInstance().getUpdateManager().getCurrentVersionName());
         checkTextView.setText(finalVersion);
         
         mUpdateNewIcon = (TextView)findViewById(R.id.more_update_new_icon);
@@ -160,8 +160,8 @@ public class MoreActivity extends Activity
                         mCheckingDialog.dismiss();
                         
                         String downloadMsg;
-                        if (AppEngine.getInstance().getUpdateManager().latestVersionName() != null)
-                            downloadMsg = "发现最新版本(" + AppEngine.getInstance().getUpdateManager().latestVersionName() + "), 是否需要更新？";
+                        if (AppEngine.getInstance().getUpdateManager().getLatestVersionName() != null)
+                            downloadMsg = "发现最新版本(" + AppEngine.getInstance().getUpdateManager().getLatestVersionName() + "), 是否需要更新？";
                         else
                             downloadMsg = "发现最新版本，是否需要更新？";
                         

@@ -35,6 +35,7 @@ static int registerNatives(JNIEnv* env);
 static int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* gMethods, int numMethods);
 static void nativeStartWatching(JNIEnv* env, jclass clazz, jstring jpath);
 static void nativeStopWatching(JNIEnv* env, jclass clazz);
+static void nativeSetHttpRequestOnDelete(JNIEnv* env, jclass clazz, jstring jurl, jstring jguid, jstring jversion);
 bool isDaemonRunning();
 void* DaemonEchoThread(void* params);
 int testCurl();
@@ -46,6 +47,7 @@ static JNINativeMethod methods[] =
 {
     {"nativeStartWatching", "(Ljava/lang/String;)V", (void*)nativeStartWatching},
     {"nativeStopWatching", "()V", (void*)nativeStopWatching},
+    {"nativeSetHttpRequestOnDelete", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",(void*)nativeSetHttpRequestOnDelete},
 };
 typedef void* (*ThreadProc)(void*);
 int createThread(ThreadProc proc)
@@ -159,6 +161,19 @@ static void nativeStartWatching(JNIEnv* env, jclass clazz, jstring jpath)
 static void nativeStopWatching(JNIEnv* env, jclass clazz)
 {
     XLOG("nativeStopWatching");
+}
+
+static void nativeSetHttpRequestOnDelete(JNIEnv* env, jclass clazz, jstring jurl, jstring jguid, jstring jversion)
+{
+    const char* url = env->GetStringUTFChars(jurl, NULL);
+    const char* guid = env->GetStringUTFChars(jguid, NULL);
+    const char* version = env->GetStringUTFChars(jversion, NULL);
+    
+    XLOG("nativeSetHttpRequestOnDelete url=%s, guid=%s, version=%s", url, guid, version);
+
+    env->ReleaseStringUTFChars(jurl, url);
+    env->ReleaseStringUTFChars(jguid, guid);
+    env->ReleaseStringUTFChars(jversion, version);
 }
 
 void* DaemonEchoThread(void* params)

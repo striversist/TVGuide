@@ -82,12 +82,12 @@ public class UpdateManager
         return mIsNeedUpdate;
     }
     
-    public String currentVersionName()
+    public String getCurrentVersionName()
     {
         return mVersionController.getCurrentVersionName();
     }
     
-    public String latestVersionName()
+    public String getLatestVersionName()
     {
         assert(mChecked);
         return mVersionController.getLatestVersionName();
