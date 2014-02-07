@@ -22,7 +22,7 @@ public class UninstallMonitor
         String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
         if (guid != null && version != null)
         {
-            observer.setHttpRequestOnDelete("http://www.baidu.com", guid, version);
+            observer.setHttpRequestOnDelete(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGOUT) + "?uninstall=1", guid, version);
             observer.startWatching();
         }
     }

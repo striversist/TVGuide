@@ -35,6 +35,7 @@ public class UrlManager
     public static final int URL_LOGIN                   = 10;
     public static final int URL_REPORT                  = 11;
     public static final int URL_QUERY                   = 12;
+    public static final int URL_LOGOUT                  = 13;
         
     private static final boolean ENABLE_TEST            = EnvironmentManager.isDevelopMode;
     private String  mProxyHostName                      = REAL_HOST;
@@ -55,6 +56,7 @@ public class UrlManager
     private static final String PATH_FEEDBACK             = "/public/feedback.php";
     private static final String PATH_LOGIN                = "/public/login.php";
     private static final String PATH_REPORT               = "/public/report.php";
+    private static final String PATH_LOGOUT               = "/public/logout.php";
     
     private Context mContext;
     private ReentrantLock mLock                           = new ReentrantLock();
@@ -194,6 +196,8 @@ public class UrlManager
             case URL_QUERY:
                 url += PATH_QUERY;
                 break;
+            case URL_LOGOUT:
+                url += PATH_LOGOUT;
             default:
                 assert false: "Not reach here";
                 break;

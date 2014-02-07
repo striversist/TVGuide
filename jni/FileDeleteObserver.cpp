@@ -73,8 +73,14 @@ int FileDeleteObserver::sendRequest()
     curl = curl_easy_init();
     if(curl) 
     {
+        struct curl_slist* headers = NULL; 
+        headers = curl_slist_append(headers, string("GUID: " + mGuid).c_str());
+        headers = curl_slist_append(headers, string("Version: " + mVersion).c_str());
+    
         curl_easy_setopt(curl, CURLOPT_URL, mUrl.c_str());
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
   
         /* Perform the request, res will get the return code */ 
         res = curl_easy_perform(curl);
@@ -93,6 +99,7 @@ int FileDeleteObserver::sendRequest()
         }
   
         /* always cleanup */ 
+        curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
     
