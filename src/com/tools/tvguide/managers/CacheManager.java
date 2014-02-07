@@ -63,6 +63,9 @@ public class CacheManager
      */
     public boolean saveCatgegoriesByType(String type, List<HashMap<String, String>> categories)
     {
+        if (type == null || categories == null)
+            return false;
+        
         mCategories.put(type, categories);
         return saveObjectToFile(mCategories, FILE_CACHED_CATEGORIES);
     }
