@@ -27,13 +27,18 @@ LOCAL_SRC_FILES += \
 
 #NDK_ROOT := /usr/local/install/android-ndk-r8e
 NDK_ROOT := C:/cygwin/home/Administrator/android-ndk-r8e
+THIRD_PARTY_ROOT := ./third_party
 
 LOCAL_LDLIBS += \
     -llog \
-    -L$(NDK_ROOT)/sources/cxx-stl/stlport/libs/armeabi-v7a -lstlport_static
+    -lz \
+    -L$(NDK_ROOT)/sources/cxx-stl/stlport/libs/armeabi-v7a -lstlport_static \
+    -L$(THIRD_PARTY_ROOT)/curl-7.34.0/lib -lcurl
 
 
-LOCAL_C_INCLUDES += $(NDK_ROOT)/sources/cxx-stl/stlport/stlport
+LOCAL_C_INCLUDES += \
+    $(NDK_ROOT)/sources/cxx-stl/stlport/stlport \
+    $(THIRD_PARTY_ROOT)/curl-7.34.0/include
 
 include $(BUILD_SHARED_LIBRARY)
 LOCAL_PATH := $(call my-dir)
