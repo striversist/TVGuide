@@ -357,7 +357,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             {
                 Program program = mListViewAdapter.getProgram(position);
                 
-                if (program.hasLink())
+                if (program != null && program.hasLink())
                 {
                     Intent intent = new Intent(ChannelDetailActivity.this, ProgramActivity.class);
                     intent.putExtra("program", (Serializable) program);
