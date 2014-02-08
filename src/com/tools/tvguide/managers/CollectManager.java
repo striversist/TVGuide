@@ -13,9 +13,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.tools.tvguide.components.Shutter;
+
 import android.content.Context;
 
-public class CollectManager
+public class CollectManager implements Shutter
 {
     public static final String TAG = "UserSettingManager";
     
@@ -97,7 +99,8 @@ public class CollectManager
         return mCollectChannels.containsKey(id);
     }
     
-    public void shutDown()
+    @Override
+    public void onShutDown()
     {
         if (mSettingChanged)
         {

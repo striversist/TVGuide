@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.tools.tvguide.components.CallAlarmReceiver;
+import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.utils.Utility;
 
 import android.R.integer;
@@ -26,7 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class AlarmHelper
+public class AlarmHelper implements Shutter
 {
     public static final String TAG = "AlarmHelper";
     private Context mContext;
@@ -216,7 +217,8 @@ public class AlarmHelper
         return false;
     }
     
-    public void shutDown()
+    @Override
+    public void onShutDown()
     {
         if (mSettingChanged)
         {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.tools.tvguide.components.NativeFileObserver;
 import com.tools.tvguide.components.ShortcutInstaller;
+import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.components.SplashDialog;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.managers.UpdateManager.IOCompleteCallback;
@@ -18,7 +19,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-public class BootManager 
+public class BootManager implements Shutter
 {
     private Context             mContext;
     private SplashDialog        mSplashDialog;
@@ -139,7 +140,8 @@ public class BootManager
         }, 1000);
     }
     
-    public void shutDown()
+    @Override
+    public void onShutDown()
     {
         if (isFirstStart())
             mPreference.edit().putBoolean(KEY_FIRST_START_FLAG, false).commit();

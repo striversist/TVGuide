@@ -1,5 +1,9 @@
 package com.tools.tvguide.managers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.utils.MyApplication;
 
 import android.content.Context;
@@ -10,6 +14,7 @@ public class AppEngine
     private static AppEngine                        mInstance;
     private Context                                 mContext;
     private Context                                 mApplicationContext;
+    private List<Shutter>							mShutterList				= new ArrayList<Shutter>();
     private CollectManager                          mUserSettingManager;
     private LoginManager                            mLoginManager;
     private ContentManager                          mContentManager;
@@ -64,7 +69,10 @@ public class AppEngine
     {
         checkInitialized();
         if (mUserSettingManager == null)
+        {
             mUserSettingManager = new CollectManager(mApplicationContext);
+            mShutterList.add(mUserSettingManager);
+        }
         return mUserSettingManager;
     }
     
@@ -80,7 +88,10 @@ public class AppEngine
     {
         checkInitialized();
         if (mContentManager == null)
+        {
             mContentManager = new ContentManager(mApplicationContext);
+            mShutterList.add(mContentManager);
+        }
         return mContentManager;
     }
     
@@ -96,7 +107,10 @@ public class AppEngine
     {
         checkInitialized();
         if (mAlarmHelper == null)
+        {
             mAlarmHelper = new AlarmHelper(mApplicationContext);
+            mShutterList.add(mAlarmHelper);
+        }
         return mAlarmHelper;
     }
     
@@ -128,7 +142,10 @@ public class AppEngine
     {
         checkInitialized();
         if (mBootManager == null)
+        {
             mBootManager = new BootManager(mApplicationContext);
+            mShutterList.add(mBootManager);
+        }
         return mBootManager;
     }
     
@@ -173,19 +190,14 @@ public class AppEngine
     }
     
     public void prepareBeforeExit()
-    {
-        if (mBootManager != null)
-            mBootManager.shutDown();
-        
-        if (mUserSettingManager != null)
-            mUserSettingManager.shutDown();
-        
-        if (mAlarmHelper != null)
-            mAlarmHelper.shutDown();
-        
-        if (mContentManager != null)
-            mContentManager.shutDown();
-        
+    {        
+    	for (Shutter shutter : mShutterList)
+    	{
+    		if (shutter == null)
+    			continue;
+    		shutter.onShutDown();
+    	}
+    	
         exit();
     }
     

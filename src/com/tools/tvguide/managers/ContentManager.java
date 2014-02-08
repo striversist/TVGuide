@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
+import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.utils.NetDataGetter;
@@ -21,7 +22,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 
 
-public class ContentManager 
+public class ContentManager implements Shutter
 {
     private static final String SHARE_PREFERENCES_NAME                      = "content_settings";
     private static final String KEY_CHANNEL_VERSION_FLAG                    = "key_channel_version_flag";
@@ -507,7 +508,8 @@ public class ContentManager
         return null;
     }
 
-    public void shutDown()
+    @Override
+    public void onShutDown()
     {
         // 如果当前频道的版本号大于等于最新的，则不用清除缓存以更新频道
         if (getCurrentChannelVersion() >= AppEngine.getInstance().getUpdateManager().getLatestChannelVersion())
