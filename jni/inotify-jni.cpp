@@ -94,6 +94,7 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 
 jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
+    XLOG("JNI_OnLoad begin");
     JNIEnv* env = NULL;
     jint result = -1;
 
@@ -102,7 +103,8 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 
     if (registerNatives(env) < 0)
         return result;
-	
+
+    XLOG("JNI_OnLoad end");	
 	return JNI_VERSION_1_4;
 }
 
@@ -135,8 +137,8 @@ static void StartWatching(const char* path)
 
 static void nativeStartWatching(JNIEnv* env, jclass clazz, jstring jpath)
 {
+    XLOG("nativeStartWatching begin");
     const char* path = env->GetStringUTFChars(jpath, NULL);
-    XLOG("nativeStartWatching path=%s", path);
     if (isDaemonRunning())
     {
         XLOG("nativeStartWatching daemon already exist, return");

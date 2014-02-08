@@ -185,7 +185,10 @@ public class AppEngine
     {
         checkInitialized();
         if (mUninstallMonitor == null)
+        {
             mUninstallMonitor = new UninstallMonitor(mApplicationContext);
+            mShutterList.add(mUninstallMonitor);
+        }
         return mUninstallMonitor;
     }
     
