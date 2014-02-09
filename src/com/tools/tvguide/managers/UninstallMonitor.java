@@ -34,6 +34,9 @@ public class UninstallMonitor implements Shutter
     
     public void start()
     {
+        if (!EnvironmentManager.enableUninstallReport)
+            return;
+        
         if (mLoadSuccess == false)
             return;
         
