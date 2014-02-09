@@ -97,6 +97,11 @@ public class LoginManager
                     EnvironmentManager.isChannelDetailFromWeb = false;
                 else
                     EnvironmentManager.isChannelDetailFromWeb = true;
+                String enableAd = objectConfig.getString("enable_ad");
+                if (enableAd == null || enableAd.equals("0"))
+                    EnvironmentManager.enableAd = false;
+                else
+                    EnvironmentManager.enableAd = true;
             }
         } 
         catch (JSONException e) 
