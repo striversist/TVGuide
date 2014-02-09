@@ -10,9 +10,11 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends TabActivity
@@ -62,7 +64,9 @@ public class MainActivity extends TabActivity
             @Override
             public void run() 
             {               
-                AppEngine.getInstance().getAdManager().addAdView(MainActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
+                boolean adShow = AppEngine.getInstance().getAdManager().addAdView(MainActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
+                if (adShow)
+                    ((TextView) findViewById(R.id.title_tv)).setVisibility(View.GONE);
             }
         }, delayTime * 2);
     }

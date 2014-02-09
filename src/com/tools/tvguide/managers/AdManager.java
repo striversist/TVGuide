@@ -6,6 +6,7 @@ import net.youmi.android.diy.banner.DiyBanner;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 public class AdManager 
@@ -28,14 +29,20 @@ public class AdManager
 		net.youmi.android.AdManager.getInstance(mContext).setEnableDebugLog(false);
 	}
 	
-	public void addAdView(Activity activity, int id, AdSize size)
+	/**
+	 * @return: true on Success; false on Failed
+	 */
+	public boolean addAdView(Activity activity, int id, AdSize size)
 	{
+	    if (!EnvironmentManager.enableAd)
+	        return false;
+	    
 		if (activity == null)
-			return;
+			return false;
 		
 		RelativeLayout layout = (RelativeLayout) activity.findViewById(id);
 		if (layout == null)
-			return;
+			return false;
 		
 		switch (size) 
 		{
@@ -46,5 +53,7 @@ public class AdManager
 				layout.addView(new AdView(activity, net.youmi.android.banner.AdSize.FIT_SCREEN));
 				break;
 		}
+		layout.setVisibility(View.VISIBLE);
+		return true;
 	}
 }
