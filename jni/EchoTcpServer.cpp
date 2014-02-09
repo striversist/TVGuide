@@ -14,6 +14,9 @@
 
 using namespace std;
 
+const int kSelectTimeout = 60;      // Seconds
+const int kMaxRetryTimes = 5;
+
 EchoTcpServer::EchoTcpServer(int port)
 {
     mListenPort = port;
@@ -64,19 +67,21 @@ void EchoTcpServer::start()
     bzero(&client_addr, sizeof(client_addr));
     fd_set readFds;
     struct timeval timeout;
+    int failTimes = 0;
     
-    while (mLoop)
+    while (mLoop && (failTimes < kMaxRetryTimes))
     {
         XLOG("EchoTcpServer::start enter while loop\n");
         FD_ZERO(&readFds);
         FD_SET(mServerSocket, &readFds);
         int maxFd = mServerSocket + 1;
-        timeout.tv_sec = 6;
+        timeout.tv_sec = kSelectTimeout;
         timeout.tv_usec = 0;
         
         switch (select(maxFd, &readFds, NULL, NULL, &timeout))
         {
             case -1:    // Error
+                failTimes++;
                 break;
             case 0:
                 XLOG("EchoTcpServer::start timeout, continue");
