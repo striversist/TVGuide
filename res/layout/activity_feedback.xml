@@ -13,11 +13,29 @@
         android:minLines="10"
         android:textSize="18sp"
         android:maxLength="140" />
+    
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+        android:gravity="center_vertical" android:layout_marginTop="20sp" >
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5sp"
+            android:text="@string/your_email" android:textSize="16sp" android:textColor="@color/black" />
+	    <EditText android:id="@+id/email_edit"
+	        android:hint="@string/email_hint"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_vertical"
+	        android:maxLines="1"
+	        android:textSize="14sp"
+	        android:maxLength="40"
+	        android:inputType="textEmailAddress">
+        </EditText>
+    </LinearLayout>
+    
     <Button android:id="@+id/feedback_submit"
-        android:layout_width="80sp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="@string/submit"
-        android:onClick="submit"
-        />
+            android:layout_width="80sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="20dip"
+            android:text="@string/submit"
+            android:onClick="submit" >
+    </Button>
 </LinearLayout>

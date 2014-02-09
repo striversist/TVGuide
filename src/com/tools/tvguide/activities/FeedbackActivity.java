@@ -29,6 +29,7 @@ import android.widget.Toast;
 public class FeedbackActivity extends Activity 
 {
     private EditText mFeedbackText;
+    private EditText mEmailText;
     private Handler mUpdateHandler;
     
     @Override
@@ -39,6 +40,7 @@ public class FeedbackActivity extends Activity
         
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
         mFeedbackText = (EditText)findViewById(R.id.feedback_edit);
+        mEmailText = (EditText)findViewById(R.id.email_edit);
     }
 
     public void back(View view)
@@ -71,6 +73,9 @@ public class FeedbackActivity extends Activity
             {
                 List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                 pairs.add(new BasicNameValuePair("feedback", mFeedbackText.getText().toString()));
+                String email = mEmailText.getText().toString().trim();
+                if (email.length() > 0)
+                    pairs.add(new BasicNameValuePair("email", email));
                 
                 String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_FEEDBACK);
                 try 
