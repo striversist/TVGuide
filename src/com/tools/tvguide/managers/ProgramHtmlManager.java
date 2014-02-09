@@ -160,18 +160,22 @@ public class ProgramHtmlManager
                     // -------------- 获取Tab链接 --------------
                     // 返回结果
                     List<HashMap<String, String>> entryList = new ArrayList<HashMap<String,String>>();
-                    Elements entryElements = doc.select("div.section-wrap div.epipage a");
-                    for (int i=0; i<entryElements.size(); ++i)
+                    Element entriesElement = doc.select("div.section-wrap div.epipage").first();
+                    if (entriesElement != null)
                     {
-                        String name = entryElements.get(i).text().trim();
-                        String link = prefix + entryElements.get(i).attr("href");
-                        
-                        if (!name.equals("") && !link.equals(""))
+                        Elements entryElements = entriesElement.select("a");
+                        for (int i=0; i<entryElements.size(); ++i)
                         {
-                            HashMap<String, String> entry = new HashMap<String, String>();
-                            entry.put("name", name);
-                            entry.put("link", link);
-                            entryList.add(entry);
+                            String name = entryElements.get(i).text().trim();
+                            String link = prefix + entryElements.get(i).attr("href");
+                            
+                            if (!name.equals("") && !link.equals(""))
+                            {
+                                HashMap<String, String> entry = new HashMap<String, String>();
+                                entry.put("name", name);
+                                entry.put("link", link);
+                                entryList.add(entry);
+                            }
                         }
                     }
                     callback.onEntriesLoaded(requestId, entryList);
