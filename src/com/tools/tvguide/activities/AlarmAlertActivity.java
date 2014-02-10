@@ -20,7 +20,7 @@ public class AlarmAlertActivity extends Activity
     public void onCreate(Bundle SavedInstanceState) 
     {
         super.onCreate(SavedInstanceState);
-        final MediaPlayer localMediaPlayer = MediaPlayer.create(this, getDefaultRingtoneUri(4));
+        final MediaPlayer localMediaPlayer = MediaPlayer.create(this, getDefaultRingtoneUri(RingtoneManager.TYPE_ALARM));
         if (localMediaPlayer != null)
         {
             localMediaPlayer.setLooping(true);
@@ -75,9 +75,9 @@ public class AlarmAlertActivity extends Activity
         resetAllAlarms();
     }
     
-    public Uri getDefaultRingtoneUri(int paramInt)
+    public Uri getDefaultRingtoneUri(int type)
     {
-        return RingtoneManager.getActualDefaultRingtoneUri(this, paramInt);
+        return RingtoneManager.getActualDefaultRingtoneUri(this, type);
     }
     
     // 重新计算闹铃时间
