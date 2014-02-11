@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.youmi.android.banner.AdSize;
-import net.youmi.android.banner.AdView;
-
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.EpisodeDetailCallback;
 import com.tools.tvguide.managers.ProgramHtmlManager.ProgramEpisodesCallback;
@@ -23,7 +21,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
@@ -68,10 +65,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         
         updateEpisodes();
         
-        // 将广告条adView添加到需要展示的layout控件中
-        RelativeLayout adLayout = (RelativeLayout) findViewById(R.id.adLayout);
-        AdView adView = new AdView(EpisodeActivity.this, AdSize.FIT_SCREEN);
-        adLayout.addView(adView);
+        AppEngine.getInstance().getAdManager().addAdView(this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
 
     @Override
