@@ -116,17 +116,7 @@
         <activity
             android:name="com.tools.tvguide.activities.AlarmAlertActivity"
             android:label="@string/title_activity_alarmalert" >
-        </activity>
-
-        <receiver android:name="com.tools.tvguide.components.CallAlarmReceiver" >
-        </receiver>
-        <receiver
-            android:name="com.tools.tvguide.components.BootCompleteReceiver">
-            <intent-filter android:priority="-999">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        
+        </activity>        
         <activity
             android:name="com.tools.tvguide.activities.AlarmSettingActivity"
             android:label="@string/title_activity_alarm_setting" >
@@ -147,6 +137,20 @@
             android:name="com.tools.tvguide.ProgramActivity"
             android:label="@string/title_activity_program" >
         </activity>
+        
+        <receiver android:name="com.tools.tvguide.components.CallAlarmReceiver" />
+        <receiver
+            android:name="com.tools.tvguide.components.BootCompleteReceiver">
+            <intent-filter android:priority="-999">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        
+        <service
+            android:name="com.tools.tvguide.remote.RemoteService"
+            android:process=":remote"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
