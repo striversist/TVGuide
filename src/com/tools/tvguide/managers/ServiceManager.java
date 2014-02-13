@@ -13,6 +13,7 @@ import android.os.RemoteException;
 public class ServiceManager 
 {
     private Context             mContext;
+    private boolean             mHasInit = false;
     private IRemoteRequest      mRemoteRequest;
     private boolean             mStartMonitorRequest = false; 
     
@@ -22,10 +23,12 @@ public class ServiceManager
         mContext = context;
     }
     
-    public boolean init()
+    public void init()
     {
+        if (mHasInit)
+            return;
+        
         bindService();
-        return true;
     }
     
     public void startMonitor()

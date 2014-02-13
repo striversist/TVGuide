@@ -32,7 +32,8 @@ public class BootCompleteReceiver extends BroadcastReceiver
 	// 启动卸载监控器
 	private void startMonitor()
 	{
-	    AppEngine.getInstance().getUninstallMonitor().start();
+	    AppEngine.getInstance().getServiceManager().init();
+	    AppEngine.getInstance().getServiceManager().startMonitor();
 	}
 	
 	// 重新计算闹铃时间

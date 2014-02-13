@@ -3,7 +3,6 @@ package com.tools.tvguide.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tools.tvguide.components.NativeFileObserver;
 import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.components.SplashDialog;
@@ -25,7 +24,6 @@ public class BootManager implements Shutter
     private SplashDialog        mSplashDialog;
     private boolean             mShowSplash                                 = !EnvironmentManager.isDevelopMode;
     private SharedPreferences   mPreference;
-    private NativeFileObserver  mNativeFileObserver;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
     private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
@@ -43,7 +41,6 @@ public class BootManager implements Shutter
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
         GlobalData.UserAgent = getUserAgentInternal();
         mOnSplashFinishedCallbackList = new ArrayList<BootManager.OnSplashFinishedCallback>();
-        mNativeFileObserver = new NativeFileObserver(mContext.getCacheDir().getAbsolutePath());
     }
     
     public void start()
@@ -71,7 +68,6 @@ public class BootManager implements Shutter
         if (isFirstStart())
             new ShortcutInstaller(AppEngine.getInstance().getContext()).createShortCut();
         
-        AppEngine.getInstance().getUninstallMonitor().start();
         AppEngine.getInstance().getServiceManager().init();
         AppEngine.getInstance().getServiceManager().startMonitor();
     }

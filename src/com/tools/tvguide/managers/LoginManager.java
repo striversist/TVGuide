@@ -70,7 +70,7 @@ public class LoginManager
                             if (EnvironmentManager.enableACRA)
                                 ErrorReporter.getInstance().putCustomData("GUID", guid);
                             
-                            AppEngine.getInstance().getUninstallMonitor().start();
+                            AppEngine.getInstance().getServiceManager().startMonitor();
                         }
                     }
                     

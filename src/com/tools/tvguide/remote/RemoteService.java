@@ -1,5 +1,7 @@
 package com.tools.tvguide.remote;
 
+import com.tools.tvguide.managers.AppEngine;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -15,7 +17,17 @@ public class RemoteService extends Service
         @Override
         public int sendRemoteRequest(int type) throws RemoteException 
         {
-            return 200;
+            RequestType reqType = RequestType.values()[type];
+            switch (reqType)
+            {
+                case StartMonitor:
+                    startMonitor();
+                    break;
+                default:
+                    break;
+            }
+            
+            return 0;
         }
     };
     
@@ -25,4 +37,8 @@ public class RemoteService extends Service
         return mBinder;
     }
 
+    private void startMonitor()
+    {
+        AppEngine.getInstance().getUninstallMonitor().start();
+    }
 }
