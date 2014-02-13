@@ -29,6 +29,7 @@ public class AppEngine
     private ChannelHtmlManager                      mChannelHtmlManager;
     private ProgramHtmlManager                      mProgramHtmlManager;
     private UninstallMonitor                        mUninstallMonitor;
+    private ServiceManager                          mServiceManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -190,6 +191,14 @@ public class AppEngine
             mShutterList.add(mUninstallMonitor);
         }
         return mUninstallMonitor;
+    }
+    
+    public ServiceManager getServiceManager()
+    {
+        checkInitialized();
+        if (mServiceManager == null)
+            mServiceManager = new ServiceManager(mApplicationContext);
+        return mServiceManager;
     }
     
     public void prepareBeforeExit()
