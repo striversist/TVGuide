@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const int kSelectTimeout = 60;      // Seconds
+const int kSelectTimeout = 6;      // Seconds
 const int kMaxRetryTimes = 5;
 
 EchoTcpServer::EchoTcpServer(int port)

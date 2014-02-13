@@ -1,9 +1,11 @@
 #include "FileDeleteObserver.h"
 #include <string>
+#include <unistd.h>
 #include <curl/curl.h>
 #include "MyLog.h"
 #include "SimpleTcpClient.h"
 
+const int kFailRetryTimes = 10;
 extern bool gKeepAliveDaemonProcess;
 using namespace std;
 
@@ -42,14 +44,18 @@ void FileDeleteObserver::onEvent(FileObserver::Event event, const std::string& p
 void FileDeleteObserver::onDelete(const std::string& path)
 {
     XLOG("FileDeleteObserver::onDelete delete path=%s", path.c_str());
-    int ret = sendRequest();
-    if (!ret)
+    for (int i=0; i<kFailRetryTimes; ++i)
     {
-        XLOG("FileDeleteObserver::onDelete sendRequest success");
-    }
-    else
-    {
-        XLOG("FileDeleteObserver::onDelete sendRequest failed, ret=%s", ret);
+        if (CURLE_OK == sendRequest())
+        {
+            XLOG("FileDeleteObserver::onDelete sendRequest success");
+            break;
+        }
+        else
+        {
+            XLOG("FileDeleteObserver::onDelete sendRequest failed");
+            usleep(1000 * 1000 * 3);       // Wait for a while
+        }
     }
     
     gKeepAliveDaemonProcess = false;

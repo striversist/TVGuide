@@ -121,7 +121,7 @@ static void StartWatching(const char* path)
     {
         //XLOG("StartWatching in while loop");
 
-        usleep(1000 * 1000 * 60);
+        usleep(1000 * 1000 * 6);
         //break;
         
         //XLOG("StartWatching leave while loop");
@@ -131,7 +131,7 @@ static void StartWatching(const char* path)
         sEchoServer->stop();
 
     XLOG("StartWatching exit");
-    usleep(1000 * 1000 * 300);   // Wait a while for other components finish exist
+    usleep(1000 * 1000 * 10);   // Wait a while for other components finish exist
     exit(0);
 }
 
