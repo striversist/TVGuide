@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 public class ServiceManager 
 {
+    private static final String TAG = "ServiceManager";
     private Context             mContext;
     private boolean             mHasInit = false;
     private IRemoteRequest      mRemoteRequest;
@@ -33,6 +35,7 @@ public class ServiceManager
     
     public void startMonitor()
     {
+        Log.d(TAG, "startMonitor");
         if (mRemoteRequest != null)
             startMonitorInternal();
         else 

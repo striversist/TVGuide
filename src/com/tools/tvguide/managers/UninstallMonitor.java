@@ -35,15 +35,22 @@ public class UninstallMonitor implements Shutter
     public void start()
     {
         if (!EnvironmentManager.enableUninstallReport)
+        {
+            Log.d(TAG, "disable uninstall report");
             return;
+        }
         
         if (mLoadSuccess == false)
+        {
+            Log.d(TAG, "load library failed");
             return;
+        }
         
         final NativeFileObserver observer = new NativeFileObserver(mContext.getCacheDir().getAbsolutePath());
         
         String guid = AppEngine.getInstance().getUpdateManager().getGUID();
         String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
+        Log.d(TAG, "guid=" + guid + ", version=" + version);
         if (guid != null && version != null)
         {
             observer.setHttpRequestOnDelete(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGOUT) + "?uninstall=1", guid, version);

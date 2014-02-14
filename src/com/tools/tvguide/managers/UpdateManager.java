@@ -39,6 +39,7 @@ public class UpdateManager
         {
             FileOutputStream fos = mContext.openFileOutput(FILE_GUID, Context.MODE_PRIVATE);
             fos.write(mGuid.getBytes());
+            fos.close();
         } 
         catch (FileNotFoundException e) 
         {
@@ -52,6 +53,9 @@ public class UpdateManager
     
     public String getGUID()
     {
+        // TODO: 这是为了能在多进程中调用采用的临时方案，以后需要重构
+        if (mGuid == null)
+            load();
         return mGuid;
     }
     

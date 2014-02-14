@@ -6,11 +6,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 public class RemoteService extends Service 
 {
-    public enum RequestType { StartMonitor }
-    
+    public static final String TAG = "RemoteService";
+    public enum RequestType { StartMonitor }    
     
     private IRemoteRequest.Stub mBinder = new IRemoteRequest.Stub() 
     {
@@ -18,6 +19,7 @@ public class RemoteService extends Service
         public int sendRemoteRequest(int type) throws RemoteException 
         {
             RequestType reqType = RequestType.values()[type];
+            Log.d(TAG, "sendRemoteRequest type=" + reqType);
             switch (reqType)
             {
                 case StartMonitor:
