@@ -4,22 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff5f7fa" >
-
-    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" >
-	    <EditText android:id="@+id/search_edit_text"
-			    android:layout_width="0dip"
-			    android:layout_height="wrap_content"
-			    android:layout_weight="1"
-			    android:hint="@string/search_hint"
-			    android:singleLine="true"
-			    android:inputType="text"
-			    android:imeOptions="actionSearch" />
-	    <Button android:id="@+id/search_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="@string/search"
-		        android:onClick="search" />
-    </LinearLayout>
+   
+    <RelativeLayout android:background="@drawable/topbar" android:layout_width="fill_parent" android:layout_height="50.0dip">
+	    <RelativeLayout android:background="@drawable/search_inputbox" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="15.0dip" android:layout_marginTop="13.0dip" android:layout_centerHorizontal="true" android:layout_centerVertical="true">
+	        <EditText android:id="@+id/search_edit_text" android:background="@color/translucent" android:paddingLeft="10.0dip" 
+	               android:paddingRight="35.0dip" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="fill_parent" 
+	               android:layout_marginRight="53.0dip" android:hint="" android:singleLine="true" android:maxLength="30" android:imeOptions="actionSearch" />
+	        <RelativeLayout android:id="@+id/search_cancel_layout" android:visibility="gone" android:layout_width="45.0dip" android:layout_height="fill_parent" android:layout_marginRight="53.0dip" android:layout_alignParentRight="true">
+	            <ImageView android:id="@+id/search_input_cancel" android:background="@drawable/search_inputbox_cancel" android:layout_width="17.0dip" 
+	                   android:layout_height="17.0dip" android:layout_marginRight="10.0dip" android:layout_alignParentRight="true" 
+	                   android:layout_centerVertical="true" android:clickable="true" android:onClick="clear" />
+	        </RelativeLayout>
+	    </RelativeLayout>
+	    <RelativeLayout android:gravity="center" android:id="@+id/right_layout" android:background="@drawable/tab_item_search_selector" 
+	           android:layout_width="52.69998dip" android:layout_height="fill_parent" android:layout_marginTop="14.0dip" 
+	           android:layout_marginRight="8.0dip" android:layout_alignParentRight="true" android:layout_centerVertical="true"
+	           android:clickable="true" android:onClick="search" />
+    </RelativeLayout>
     
     <LinearLayout android:id="@+id/search_content_layout" 
                 android:layout_width="fill_parent"

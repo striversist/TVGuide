@@ -37,6 +37,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -48,6 +49,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -65,6 +67,7 @@ public class SearchActivity extends Activity
     private LinearLayout mNoSearchResultLayout;
     private LinearLayout mClassifyResultLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
+    private RelativeLayout mSearchCancelLayout;
     private int mResultProgramsNum;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
@@ -88,6 +91,7 @@ public class SearchActivity extends Activity
         mItemChannelDataList = new ArrayList<HashMap<String,Object>>();
         mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
+        mSearchCancelLayout = (RelativeLayout)findViewById(R.id.search_cancel_layout);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
         mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
@@ -154,18 +158,28 @@ public class SearchActivity extends Activity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) 
             {
-                mIsSelectAll = false;                
+                mIsSelectAll = false;
             }
             
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) 
+            {
                 // TODO Auto-generated method stub
             }
             
             @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
+            public void afterTextChanged(Editable editable) 
+            {
+                if (editable.toString().trim().length() > 0)
+                {
+                    if (mSearchCancelLayout.getVisibility() != View.VISIBLE)
+                        mSearchCancelLayout.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    if (mSearchCancelLayout.getVisibility() == View.VISIBLE)
+                        mSearchCancelLayout.setVisibility(View.GONE);
+                }
             }
         });
         
@@ -237,6 +251,11 @@ public class SearchActivity extends Activity
         }
         mKeyword = mSearchEditText.getText().toString().trim().split(" ")[0];
         updateResult();
+    }
+    
+    public void clear(View view)
+    {
+        mSearchEditText.setText("");
     }
     
     private void updateResult()
