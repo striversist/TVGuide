@@ -39,6 +39,11 @@ void FileDeleteObserver::onEvent(FileObserver::Event event, const std::string& p
     {
         onDelete(path);
     }
+    else if (event == FileObserver::Error)
+    {
+        XLOG("FileDeleteObserver::onEvent receive error");
+        gKeepAliveDaemonProcess = false;
+    }
 }
 
 void FileDeleteObserver::onDelete(const std::string& path)

@@ -17,6 +17,7 @@ public:
         Open,
         MovedFrom,
         Delete,
+        Error,
     };
 
     class Delegate

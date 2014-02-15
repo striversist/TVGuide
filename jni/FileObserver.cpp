@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <assert.h>
 #include <stddef.h>
 #include <sys/queue.h>
@@ -12,6 +13,7 @@
 #include "event_queue.h"
 
 using namespace std;
+const int kFailedRetryTimes = 10;
 
 struct ThreadParams
 {
@@ -25,6 +27,23 @@ bool isFileExist(const char* path)
     if (access(path, F_OK) == -1)
         return false;
     return true;
+}
+
+int setNonBlocking(int fd)
+{
+    int opts;
+    opts = fcntl(fd, F_GETFL);
+    if (opts<0)
+    {
+        perror("fcntl(sock,GETFL)");
+        return -1;
+    }
+    opts = opts|O_NONBLOCK;
+    if (fcntl(fd, F_SETFL, opts) < 0)
+    {
+        perror("fcntl(sock,SETFL,opts)");
+        return -1;
+    }
 }
 
 void* ThreadFunc(void* param)
@@ -41,6 +60,12 @@ void* ThreadFunc(void* param)
         return NULL;
     }
 
+    // Will cause read error
+    //if (setNonBlocking(fd) < 0)
+    //{
+    //    XLOG("Warning: set nonblocking failed");
+    //}
+
     char watchPath[256] = {0};
     sprintf(watchPath, path, strlen(path));
     int wd = inotify_add_watch(fd, watchPath, IN_ALL_EVENTS);
@@ -50,17 +75,22 @@ void* ThreadFunc(void* param)
         return NULL;
     }
 
+    int failedTimes = 0;
     XLOG("start watching %s\n", path);
-    while (true && loop)
+    while (true && loop && failedTimes < kFailedRetryTimes)
     {
-        XLOG("while loop begin");
+        XLOG("Watching loop begin");
         const int bufferSize = 16384;
         char buffer[bufferSize];
+        XLOG("before read");
         ssize_t recvSize = read(fd, buffer, bufferSize);
+        XLOG("after read");
         if (recvSize < 0)
         {
             XLOG("inotify read error");
-            break;
+            failedTimes++;
+            usleep(1000 * 1000);
+            continue;
         }
 
         queue_t q = queue_create();
@@ -184,6 +214,12 @@ void* ThreadFunc(void* param)
             }
         }
         queue_dequeue(q);
+        XLOG("Watching loop end");
+    }
+
+    if (failedTimes == kFailedRetryTimes)
+    {
+        delegate->onEvent(FileObserver::Error, path);
     }
 
     XLOG("inotify_rm_watch");

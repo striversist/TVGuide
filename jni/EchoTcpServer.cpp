@@ -71,7 +71,7 @@ void EchoTcpServer::start()
     
     while (mLoop && (failTimes < kMaxRetryTimes))
     {
-        XLOG("EchoTcpServer::start enter while loop\n");
+        //XLOG("EchoTcpServer::start enter while loop\n");
         FD_ZERO(&readFds);
         FD_SET(mServerSocket, &readFds);
         int maxFd = mServerSocket + 1;
