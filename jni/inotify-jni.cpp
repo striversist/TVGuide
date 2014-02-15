@@ -121,7 +121,7 @@ static void StartWatching(const char* path)
     {
         //XLOG("StartWatching in while loop");
 
-        usleep(1000 * 1000 * 6);
+        usleep(1000 * 1000 * 2);
         //break;
         
         //XLOG("StartWatching leave while loop");
