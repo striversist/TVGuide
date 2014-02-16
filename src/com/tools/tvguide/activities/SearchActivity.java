@@ -17,9 +17,9 @@ import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
-import com.tools.tvguide.utils.NetworkManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
+import com.tools.tvguide.views.SearchHotwordsView;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,9 +68,10 @@ public class SearchActivity extends Activity
     private ResultPageAdapter mResultPagerAdapter;
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
-    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST}
+    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH}
     private final int TAB_INDEX_CHANNELS = 0;
     private final int TAB_INDEX_PROGRAMS = 1;
+    private List<String> mPopSearchList;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -95,6 +96,7 @@ public class SearchActivity extends Activity
         mOriginProgramsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs)).getText().toString();
         mViewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
         mResultPagerAdapter = new ResultPageAdapter();
+        mPopSearchList = new ArrayList<String>();
         
         // NOTE：Should follow the TAB INDEX order at the beginning of the class
         ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
@@ -104,6 +106,17 @@ public class SearchActivity extends Activity
         mViewPager.setAdapter(mResultPagerAdapter);
         
         initContentLayout();
+        ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.search_hotwords_view)).setOnItemClickListener(new SearchHotwordsView.OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(String string) 
+            {
+                mKeyword = string;
+                mSearchEditText.setText(mKeyword);
+                mSearchEditText.setSelection(mSearchEditText.getText().length());
+                updateSearchResult();
+            }
+        });
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
         {
@@ -217,6 +230,8 @@ public class SearchActivity extends Activity
                 startActivity(intent);
             }
         });
+        
+        updatePopSearch();
     }
     
     public void onClick(View view)
@@ -241,7 +256,7 @@ public class SearchActivity extends Activity
             return;
         }
         mKeyword = mSearchEditText.getText().toString().trim().split(" ")[0];
-        updateResult();
+        updateSearchResult();
     }
     
     public void cancel(View view)
@@ -256,7 +271,7 @@ public class SearchActivity extends Activity
         mContentLayout.addView(mOriginContentLayout, mCenterLayoutParams);
     }
     
-    private void updateResult()
+    private void updateSearchResult()
     {        
         mItemProgramDataList.clear();
         mItemChannelDataList.clear();
@@ -320,6 +335,19 @@ public class SearchActivity extends Activity
             public void onLoadFinish(int status) 
             {
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_REFRESH_ON_PLAYING_PROGRAM_LIST.ordinal());
+            }
+        });
+    }
+    
+    private void updatePopSearch()
+    {
+        mPopSearchList.clear();
+        AppEngine.getInstance().getContentManager().loadPopSearch(6, mPopSearchList, new ContentManager.LoadListener() 
+        {
+            @Override
+            public void onLoadFinish(int status) 
+            {
+                uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_POP_SEARCH.ordinal());
             }
         });
     }
@@ -404,6 +432,9 @@ public class SearchActivity extends Activity
                         ((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList1));
                     }
 					break;
+				case MSG_SHOW_POP_SEARCH:
+				    ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.search_hotwords_view)).setWords(mPopSearchList.toArray(new String[0]));
+				    break;
 				default:
 					break;
 			}

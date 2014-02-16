@@ -592,6 +592,54 @@ public class ContentManager implements Shutter
         return false;
     }
     
+    public boolean loadPopSearch(final int num, final List<String> result, final LoadListener listener)
+    {
+        mUpdateHandler.post(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?pop_search=" + String.valueOf(num);
+                NetDataGetter getter;
+                boolean success = false;
+                try 
+                {
+                    getter = new DefaultNetDataGetter(url);
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    if (jsonRoot != null)
+                    {
+                        result.clear();
+                        JSONArray resultArray = jsonRoot.getJSONArray("pop_search");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                result.add(resultArray.getString(i));
+                            }
+                        }
+                        
+                        success = true;
+                        if (success)
+                            listener.onLoadFinish(LoadListener.SUCCESS);
+                        else
+                            listener.onLoadFinish(LoadListener.FAIL);
+                    }
+                } 
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                    listener.onLoadFinish(LoadListener.FAIL);
+                } 
+                catch (JSONException e) 
+                {
+                    e.printStackTrace();
+                    listener.onLoadFinish(LoadListener.FAIL);
+                }
+            }
+        });
+        return false;
+    }
+    
     public String getTvmaoId(String channelId)
     {
         HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
