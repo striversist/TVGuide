@@ -118,6 +118,17 @@ public class SearchActivity extends Activity
                 updateSearchResult();
             }
         });
+        ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.history_search_view)).setOnItemClickListener(new SearchHotwordsView.OnItemClickListener() 
+        {
+            @Override
+            public void onItemClick(String string) 
+            {
+                mKeyword = string;
+                mSearchEditText.setText(mKeyword);
+                mSearchEditText.setSelection(mSearchEditText.getText().length());
+                updateSearchResult();
+            }
+        });
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
         {
@@ -232,6 +243,7 @@ public class SearchActivity extends Activity
             }
         });
         
+        updateHistorySearch();
         updatePopSearch();
     }
     
@@ -273,7 +285,8 @@ public class SearchActivity extends Activity
     }
     
     private void updateSearchResult()
-    {        
+    {
+        AppEngine.getInstance().getSearchWordsManager().addSearchRecord(mKeyword);
         mItemProgramDataList.clear();
         mItemChannelDataList.clear();
         final List<Channel> channels = new ArrayList<Channel>();
@@ -338,6 +351,24 @@ public class SearchActivity extends Activity
                 uiHandler.sendEmptyMessage(SelfMessage.MSG_REFRESH_ON_PLAYING_PROGRAM_LIST.ordinal());
             }
         });
+    }
+    
+    private void updateHistorySearch()
+    {
+        SearchWordsManager manager = AppEngine.getInstance().getSearchWordsManager();
+        SearchHotwordsView historySearchView = (SearchHotwordsView) mOriginContentLayout.findViewById(R.id.history_search_view);
+        TextView historySearchTextView = (TextView) mOriginContentLayout.findViewById(R.id.history_search_tv);
+        if (manager.getHistorySearch().isEmpty())
+        {
+            historySearchTextView.setVisibility(View.GONE);
+            historySearchView.setVisibility(View.GONE);
+        }
+        else
+        {
+            historySearchTextView.setVisibility(View.VISIBLE);
+            historySearchView.setVisibility(View.VISIBLE);
+            historySearchView.setWords(manager.getHistorySearch().toArray(new String[0]));
+        }
     }
     
     private void updatePopSearch()
@@ -422,6 +453,7 @@ public class SearchActivity extends Activity
 		                if (!itemChannelList.isEmpty())
 		                	updateOnPlayingProgramList();
 		            }
+		            updateHistorySearch();
 					break;
 				
 				case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:

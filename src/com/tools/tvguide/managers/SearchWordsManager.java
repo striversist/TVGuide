@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.views.SearchHotwordsView;
 
@@ -14,6 +13,8 @@ public class SearchWordsManager
 {
     private Context mContext;
     private List<String> mPopSearchList;
+    private List<String> mHistorySearchList;
+    private HashMap<String, List<String>> mSearchWordsMap;
     public abstract interface UpdateListener
     {
         public void onUpdateFinish(List<String> result);
@@ -24,6 +25,8 @@ public class SearchWordsManager
         assert (context != null);
         mContext = context;
         mPopSearchList = new ArrayList<String>();
+        mHistorySearchList = new ArrayList<String>();
+        mSearchWordsMap = new HashMap<String, List<String>>();
         load();
     }
     
@@ -45,6 +48,24 @@ public class SearchWordsManager
         return popSearchList;
     }
     
+    public List<String> getHistorySearch()
+    {
+        List<String> historySearchList = new ArrayList<String>();
+        historySearchList.addAll(mHistorySearchList);
+        return historySearchList;
+    }
+    
+    public void addSearchRecord(String word)
+    {
+        if (mHistorySearchList.contains(word))
+            mHistorySearchList.remove(word);
+        
+        mHistorySearchList.add(0, word);    // 放在最前
+        if (mHistorySearchList.size() > SearchHotwordsView.MAX_WORDS)
+            mHistorySearchList = mHistorySearchList.subList(0, SearchHotwordsView.MAX_WORDS);
+        store();
+    }
+    
     public void updatePopSearch(final UpdateListener listener)
     {
         mPopSearchList.clear();
@@ -57,10 +78,7 @@ public class SearchWordsManager
                 {
                     if (listener != null)
                         listener.onUpdateFinish(mPopSearchList);
-                    
-                    HashMap<String, List<String>> saveData = new HashMap<String, List<String>>();
-                    saveData.put("pop_search", mPopSearchList);
-                    AppEngine.getInstance().getCacheManager().saveSearchWords(saveData);
+                    store();
                 }
             }
         });
@@ -76,6 +94,20 @@ public class SearchWordsManager
             {
                 mPopSearchList = saveData.get("pop_search");
             }
+            if (saveData.get("history_search") != null)
+            {
+                mHistorySearchList = saveData.get("history_search");
+            }
+        }
+    }
+    
+    private void store()
+    {
+        synchronized (this) 
+        {
+            mSearchWordsMap.put("pop_search", mPopSearchList);
+            mSearchWordsMap.put("history_search", mHistorySearchList);
+            AppEngine.getInstance().getCacheManager().saveSearchWords(mSearchWordsMap);
         }
     }
 }

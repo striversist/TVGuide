@@ -95,6 +95,8 @@ public class SearchHotwordsView extends RelativeLayout
     {
         if (mWordList.size() <= 3)
             mLineLayout2.setVisibility(View.GONE);
+        else
+            mLineLayout2.setVisibility(View.VISIBLE);
         
         for (int i=0; i<mWordList.size(); ++i)
             mTextViewList.get(i).setText(mWordList.get(i));
