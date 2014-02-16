@@ -64,10 +64,11 @@ public class SearchActivity extends Activity
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
+    private LinearLayout mOriginContentLayout;
     private LinearLayout mNoSearchResultLayout;
     private LinearLayout mClassifyResultLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
-    private RelativeLayout mSearchCancelLayout;
+    private RelativeLayout mCancelImage;
     private int mResultProgramsNum;
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
@@ -91,8 +92,9 @@ public class SearchActivity extends Activity
         mItemChannelDataList = new ArrayList<HashMap<String,Object>>();
         mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
         mProgressDialog = new MyProgressDialog(this);
-        mSearchCancelLayout = (RelativeLayout)findViewById(R.id.search_cancel_layout);
+        mCancelImage = (RelativeLayout)findViewById(R.id.search_cancel_layout);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
+        mOriginContentLayout = (LinearLayout)mInflater.inflate(R.layout.search_init_layout, null);
         mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
         mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -109,6 +111,7 @@ public class SearchActivity extends Activity
         mResultPagerAdapter.addView(programListView);
         mViewPager.setAdapter(mResultPagerAdapter);
         
+        initContentLayout();
         createUpdateThreadAndHandler();
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
@@ -173,13 +176,14 @@ public class SearchActivity extends Activity
             {
                 if (editable.toString().trim().length() > 0)
                 {
-                    if (mSearchCancelLayout.getVisibility() != View.VISIBLE)
-                        mSearchCancelLayout.setVisibility(View.VISIBLE);
+                    if (mCancelImage.getVisibility() != View.VISIBLE)
+                        mCancelImage.setVisibility(View.VISIBLE);
                 }
                 else
                 {
-                    if (mSearchCancelLayout.getVisibility() == View.VISIBLE)
-                        mSearchCancelLayout.setVisibility(View.GONE);
+                    if (mCancelImage.getVisibility() == View.VISIBLE)
+                        mCancelImage.setVisibility(View.GONE);
+                    initContentLayout();
                 }
             }
         });
@@ -254,9 +258,16 @@ public class SearchActivity extends Activity
         updateResult();
     }
     
-    public void clear(View view)
+    public void cancel(View view)
     {
         mSearchEditText.setText("");
+        initContentLayout();
+    }
+    
+    private void initContentLayout()
+    {
+        mContentLayout.removeAllViews();
+        mContentLayout.addView(mOriginContentLayout, mCenterLayoutParams);
     }
     
     private void updateResult()

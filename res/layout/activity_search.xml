@@ -13,7 +13,7 @@
 	        <RelativeLayout android:id="@+id/search_cancel_layout" android:visibility="gone" android:layout_width="45.0dip" android:layout_height="fill_parent" android:layout_marginRight="53.0dip" android:layout_alignParentRight="true">
 	            <ImageView android:id="@+id/search_input_cancel" android:background="@drawable/search_inputbox_cancel" android:layout_width="17.0dip" 
 	                   android:layout_height="17.0dip" android:layout_marginRight="10.0dip" android:layout_alignParentRight="true" 
-	                   android:layout_centerVertical="true" android:clickable="true" android:onClick="clear" />
+	                   android:layout_centerVertical="true" android:clickable="true" android:onClick="cancel" />
 	        </RelativeLayout>
 	    </RelativeLayout>
 	    <RelativeLayout android:gravity="center" android:id="@+id/right_layout" android:background="@drawable/tab_item_search_selector" 
@@ -24,11 +24,7 @@
     
     <LinearLayout android:id="@+id/search_content_layout" android:layout_width="fill_parent" android:layout_height="fill_parent"
         android:orientation="vertical" >
-	    <TextView android:textSize="16.0sp" android:textColor="@color/comment_detail_text_color_dark" 
-	           android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" 
-	           android:layout_marginTop="13.0dip" android:text="@string/search_all" android:lineSpacingExtra="5.0dip" />
-	    <com.tools.tvguide.views.SearchHotwordsView android:id="@+id/search_hotwords_view" 
-	           android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" />
     </LinearLayout>
     
 </LinearLayout>
