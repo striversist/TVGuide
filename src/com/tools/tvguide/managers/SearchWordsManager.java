@@ -63,6 +63,7 @@ public class SearchWordsManager
         mHistorySearchList.add(0, word);    // 放在最前
         if (mHistorySearchList.size() > SearchHotwordsView.MAX_WORDS)
         {
+            // 因subList得到的List无法序列化存储，故采用此方法
             List<String> newList = new ArrayList<String>();
             newList.addAll(mHistorySearchList.subList(0, SearchHotwordsView.MAX_WORDS));
             mHistorySearchList.clear();
