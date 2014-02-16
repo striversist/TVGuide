@@ -62,7 +62,12 @@ public class SearchWordsManager
         
         mHistorySearchList.add(0, word);    // 放在最前
         if (mHistorySearchList.size() > SearchHotwordsView.MAX_WORDS)
-            mHistorySearchList = mHistorySearchList.subList(0, SearchHotwordsView.MAX_WORDS);
+        {
+            List<String> newList = new ArrayList<String>();
+            newList.addAll(mHistorySearchList.subList(0, SearchHotwordsView.MAX_WORDS));
+            mHistorySearchList.clear();
+            mHistorySearchList.addAll(newList);
+        }
         store();
     }
     
