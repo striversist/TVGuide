@@ -19,9 +19,11 @@ public class CacheManager
     private HashMap<String, List<HashMap<String, String>>> mCategories;
     private HashMap<String, List<HashMap<String, String>>> mChannels;
     private HashMap<String, String> mAllTvmaoIds;
+    private HashMap<String, List<String>> mSearchWords;
     private final String FILE_CACHED_CATEGORIES = "categories.txt";
     private final String FILE_CACHED_CHANNELS   = "channels.txt";
     private final String FILE_ALL_TVMAO_IDS = "web_ids.txt";
+    private final String FILE_SEARCH_WORDS = "search_words.txt";
     private HashMap<String, String> mMemoryCache;
         
     public CacheManager(Context context)
@@ -124,8 +126,37 @@ public class CacheManager
     
     public boolean saveAllTvmaoIds(HashMap<String, String> tvmaoIdMap)
     {
+        assert (tvmaoIdMap != null);
         mAllTvmaoIds.putAll(tvmaoIdMap);
         return saveObjectToFile(mAllTvmaoIds, FILE_ALL_TVMAO_IDS);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public boolean loadSearchWords(HashMap<String, List<String>> result)
+    {
+        assert (result != null);
+        if (mSearchWords == null)
+        {
+            mSearchWords = (HashMap<String, List<String>>) loadObjectFromFile(FILE_SEARCH_WORDS);
+            if (mSearchWords == null)
+            {
+                mSearchWords = new HashMap<String, List<String>>();
+                return false;
+            }
+        }
+        
+        if (mSearchWords.isEmpty())
+            return false;
+        
+        result.putAll(mSearchWords);
+        return true;
+    }
+    
+    public boolean saveSearchWords(HashMap<String, List<String>> searchWords)
+    {
+        assert (searchWords != null);
+        mSearchWords.putAll(searchWords);
+        return saveObjectToFile(mSearchWords, FILE_SEARCH_WORDS);
     }
     
     public void clear()
@@ -137,9 +168,11 @@ public class CacheManager
         File file1 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CATEGORIES);
         File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
         File file3 = new File(mContext.getFilesDir() + File.separator + FILE_ALL_TVMAO_IDS);
+        File file4 = new File(mContext.getFilesDir() + File.separator + FILE_SEARCH_WORDS);
         deleteFile(file1);
         deleteFile(file2);
         deleteFile(file3);
+        deleteFile(file4);
         mMemoryCache.clear();
     }
     

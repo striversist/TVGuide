@@ -17,6 +17,7 @@ import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.SearchWordsManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
 import com.tools.tvguide.views.SearchHotwordsView;
@@ -342,14 +343,23 @@ public class SearchActivity extends Activity
     private void updatePopSearch()
     {
         mPopSearchList.clear();
-        AppEngine.getInstance().getContentManager().loadPopSearch(6, mPopSearchList, new ContentManager.LoadListener() 
+        mPopSearchList = AppEngine.getInstance().getSearchWordsManager().getPopSearch();
+        if (mPopSearchList.size() > 0)
         {
-            @Override
-            public void onLoadFinish(int status) 
+            uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_POP_SEARCH.ordinal());
+        }
+        else
+        {
+            AppEngine.getInstance().getSearchWordsManager().updatePopSearch(new SearchWordsManager.UpdateListener() 
             {
-                uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_POP_SEARCH.ordinal());
-            }
-        });
+                @Override
+                public void onUpdateFinish(List<String> result) 
+                {
+                    mPopSearchList.addAll(result);
+                    uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_POP_SEARCH.ordinal());
+                }
+            });
+        }
     }
     
     private void showInputKeyboard()

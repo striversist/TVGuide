@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class SearchHotwordsView extends RelativeLayout 
 {
     public static final String TAG = "SearchHotwordsView";
-    private static final int MAX_WORDS = 6;
+    public static final int MAX_WORDS = 6;
     private List<String> mWordList;
     private LinearLayout mLineLayout1;
     private LinearLayout mLineLayout2;
