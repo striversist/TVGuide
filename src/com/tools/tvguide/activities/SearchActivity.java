@@ -1,13 +1,8 @@
 package com.tools.tvguide.activities;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
@@ -17,12 +12,11 @@ import com.tools.tvguide.adapters.ResultProgramAdapter.Item;
 import com.tools.tvguide.adapters.ResultProgramAdapter.IListItem;
 import com.tools.tvguide.adapters.ResultProgramAdapter.LabelItem;
 import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
-import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
-import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
@@ -37,7 +31,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -70,7 +63,6 @@ public class SearchActivity extends Activity
     private LinearLayout.LayoutParams mCenterLayoutParams;
     private RelativeLayout mCancelImage;
     private int mResultProgramsNum;
-    private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
     private ViewPager mViewPager;
     private ResultPageAdapter mResultPagerAdapter;
@@ -112,7 +104,6 @@ public class SearchActivity extends Activity
         mViewPager.setAdapter(mResultPagerAdapter);
         
         initContentLayout();
-        createUpdateThreadAndHandler();
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
         {
@@ -240,11 +231,6 @@ public class SearchActivity extends Activity
                 break;
         }
     }
-
-    private void createUpdateThreadAndHandler()
-    {
-        mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
-    }
     
     public void search(View view)
     {
@@ -271,83 +257,50 @@ public class SearchActivity extends Activity
     }
     
     private void updateResult()
-    {
-        mUpdateHandler.post(new Runnable()
+    {        
+        mItemProgramDataList.clear();
+        mItemChannelDataList.clear();
+        final List<Channel> channels = new ArrayList<Channel>();
+        final List<HashMap<String, Object>> programs = new ArrayList<HashMap<String,Object>>();
+        AppEngine.getInstance().getContentManager().loadSearchResult(mKeyword, channels, programs, new ContentManager.LoadListener() 
         {
-            public void run()
+            @Override
+            public void onLoadFinish(int status) 
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_SEARCH) + "?keyword=" + mKeyword;
-                NetDataGetter getter;
-                try 
+                HashMap<String, HashMap<String, Object>> xmlChannelInfo = XmlParser.parseChannelInfo(SearchActivity.this);
+                for (int i=0; i<channels.size(); ++i)
                 {
-                    getter = new DefaultNetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    mItemProgramDataList.clear();
-                    mItemChannelDataList.clear();
-                    mResultProgramsNum = 0;
-                    if (jsonRoot != null)
+                    HashMap<String, Object> item = new HashMap<String, Object>();
+                    item.put("id", channels.get(i).id);
+                    item.put("name", channels.get(i).name);
+                    if (xmlChannelInfo.get(channels.get(i).id) != null)
                     {
-                        JSONArray resultArray;
-                        // Get result_channels
-                        resultArray = jsonRoot.getJSONArray("result_channels");
-                        if (resultArray != null)
-                        {
-                            HashMap<String, HashMap<String, Object>> xmlChannelInfo = XmlParser.parseChannelInfo(SearchActivity.this);
-                            for (int i=0; i<resultArray.length(); ++i)
-                            {
-                                String id = resultArray.getJSONObject(i).getString("id");
-                                String name = resultArray.getJSONObject(i).getString("name");
-                                HashMap<String, Object> item = new HashMap<String, Object>();
-                                item.put("id", id);
-                                item.put("name", name);
-                                if (xmlChannelInfo.get(id) != null)
-                                {
-                                    item.put("image", Utility.getImage(SearchActivity.this, (String) xmlChannelInfo.get(id).get("logo")));
-                                }
-                                mItemChannelDataList.add(item);
-                            }
-                        }
-                        
-                        // Get result_programs
-                        resultArray = jsonRoot.getJSONArray("result_programs");
-                        if (resultArray != null)
-                        {
-                            for (int i=0; i<resultArray.length(); ++i)
-                            {
-                                String id = resultArray.getJSONObject(i).getString("id");
-                                String name = resultArray.getJSONObject(i).getString("name");
-                                JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
-                                
-                                mItemProgramDataList.add(new LabelItem(name, R.layout.search_list_label_item, R.id.search_item_label_text_view));
-                                if (programsArray != null)
-                                {
-                                    for (int j=0; j<programsArray.length(); ++j)
-                                    {
-                                        String time = programsArray.getJSONObject(j).getString("time");
-                                        String title = programsArray.getJSONObject(j).getString("title");    
-                                        Item item = new Item();
-                                        item.id = id;
-                                        item.name = name;
-                                        item.time = time;
-                                        item.title = title;
-                                        item.key = mKeyword;
-                                        mItemProgramDataList.add(new ContentItem(item, R.layout.search_list_content_item, R.id.search_item_content_text_view));
-                                    }
-                                    mResultProgramsNum += programsArray.length();
-                                }
-                            }
-                        }
+                        item.put("image", Utility.getImage(SearchActivity.this, (String) xmlChannelInfo.get(channels.get(i).id).get("logo")));
                     }
-                    uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_RESULT.ordinal());
+                    mItemChannelDataList.add(item);
                 }
-                catch (MalformedURLException e) 
+                
+                for (int i=0; i<programs.size(); ++i)
                 {
-                    e.printStackTrace();
+                    Channel channel = (Channel) programs.get(i).get("channel");
+                    List<Program> programList = (List<Program>) programs.get(i).get("programs");
+                    if (channel == null || programList == null)
+                        continue;
+                    
+                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.search_list_label_item, R.id.search_item_label_text_view));
+                    for (int j=0; j<programList.size(); ++j)
+                    {
+                        Item item = new Item();
+                        item.id = channel.id;
+                        item.name = channel.name;
+                        item.time = programList.get(j).time;
+                        item.title = programList.get(j).title;
+                        item.key = mKeyword;
+                        mItemProgramDataList.add(new ContentItem(item, R.layout.search_list_content_item, R.id.search_item_content_text_view));
+                    }
+                    mResultProgramsNum += programList.size();
                 }
-                catch (JSONException e) 
-                {
-                    e.printStackTrace();
-                }
+                uiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_RESULT.ordinal());
             }
         });
         mProgressDialog.show();

@@ -500,6 +500,98 @@ public class ContentManager implements Shutter
         });
     }
     
+    public boolean loadSearchResult(final String keyword, final List<Channel> channels, final List<HashMap<String, Object>> programs, final LoadListener listener)
+    {
+        mUpdateHandler.post(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                boolean success = false;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_SEARCH) + "?keyword=" + keyword;
+                NetDataGetter getter;
+                try 
+                {
+                    getter = new DefaultNetDataGetter(url);
+                    JSONObject jsonRoot = getter.getJSONsObject();
+                    channels.clear();
+                    programs.clear();
+                    if (jsonRoot != null)
+                    {
+                        JSONArray resultArray;
+                        // Get result_channels
+                        resultArray = jsonRoot.getJSONArray("result_channels");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                String id = resultArray.getJSONObject(i).getString("id");
+                                String name = resultArray.getJSONObject(i).getString("name");
+                                
+                                Channel channel = new Channel();
+                                channel.id = id;
+                                channel.name = name;
+                                channels.add(channel);
+                            }
+                        }
+                        
+                        // Get result_programs
+                        resultArray = jsonRoot.getJSONArray("result_programs");
+                        if (resultArray != null)
+                        {
+                            for (int i=0; i<resultArray.length(); ++i)
+                            {
+                                String id = resultArray.getJSONObject(i).getString("id");
+                                String name = resultArray.getJSONObject(i).getString("name");
+                                Channel channel = new Channel();
+                                channel.id = id;
+                                channel.name = name;
+                                
+                                JSONArray programsArray = resultArray.getJSONObject(i).getJSONArray("programs");
+                                if (programsArray != null)
+                                {
+                                    List<Program> programList = new ArrayList<Program>();
+                                    for (int j=0; j<programsArray.length(); ++j)
+                                    {
+                                        String time = programsArray.getJSONObject(j).getString("time");
+                                        String title = programsArray.getJSONObject(j).getString("title");    
+                                        
+                                        Program program = new Program();
+                                        program.time = time;
+                                        program.title = title;
+                                        programList.add(program);
+                                    }
+                                    
+                                    HashMap<String, Object> info = new HashMap<String, Object>();
+                                    info.put("channel", channel);
+                                    info.put("programs", programList);
+                                    programs.add(info);
+                                }
+                            }
+                        }
+                        success = true;
+                    }
+                    
+                    if (success)
+                        listener.onLoadFinish(LoadListener.SUCCESS);
+                    else
+                        listener.onLoadFinish(LoadListener.FAIL);
+                }
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                    listener.onLoadFinish(LoadListener.FAIL);
+                }
+                catch (JSONException e) 
+                {
+                    e.printStackTrace();
+                    listener.onLoadFinish(LoadListener.FAIL);
+                }
+            }
+        });
+        return false;
+    }
+    
     public String getTvmaoId(String channelId)
     {
         HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
