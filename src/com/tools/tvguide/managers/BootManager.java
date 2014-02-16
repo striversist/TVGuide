@@ -26,6 +26,7 @@ public class BootManager implements Shutter
     private SharedPreferences   mPreference;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
     private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
+    private static final String KEY_LAST_START_FLAG                         = "key_last_start_flag";
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
     private boolean             mIsSplashShowing                            = false;
     
@@ -70,6 +71,7 @@ public class BootManager implements Shutter
         
         AppEngine.getInstance().getServiceManager().init();
         AppEngine.getInstance().getServiceManager().startMonitor();
+        mPreference.edit().putLong(KEY_LAST_START_FLAG, System.currentTimeMillis()).commit();
     }
     
     public void addOnSplashFinishedCallback(final OnSplashFinishedCallback callback)
@@ -89,6 +91,11 @@ public class BootManager implements Shutter
     public boolean isFirstStart()
     {
         return mPreference.getBoolean(KEY_FIRST_START_FLAG, true);
+    }
+    
+    public long getLastStartTime()
+    {
+        return mPreference.getLong(KEY_LAST_START_FLAG, 0);
     }
     
     public boolean isShowSplash()

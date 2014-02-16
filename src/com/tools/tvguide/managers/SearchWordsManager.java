@@ -27,6 +27,17 @@ public class SearchWordsManager
         load();
     }
     
+    public boolean needUpdate()
+    {
+        long lastStartTime = AppEngine.getInstance().getBootManager().getLastStartTime();
+        long currentTime = System.currentTimeMillis();
+        
+        if ((currentTime - lastStartTime) > 3600 * 12 * 1000)   // 超过12个小时，则需要重新更新
+            return true;
+        
+        return false;
+    }
+    
     public List<String> getPopSearch()
     {
         List<String> popSearchList = new ArrayList<String>();
@@ -36,7 +47,6 @@ public class SearchWordsManager
     
     public void updatePopSearch(final UpdateListener listener)
     {
-        assert (listener != null);
         mPopSearchList.clear();
         AppEngine.getInstance().getContentManager().loadPopSearch(SearchHotwordsView.MAX_WORDS, mPopSearchList, new ContentManager.LoadListener() 
         {
@@ -45,7 +55,9 @@ public class SearchWordsManager
             {
                 if (status == LoadListener.SUCCESS)
                 {
-                    listener.onUpdateFinish(mPopSearchList);
+                    if (listener != null)
+                        listener.onUpdateFinish(mPopSearchList);
+                    
                     HashMap<String, List<String>> saveData = new HashMap<String, List<String>>();
                     saveData.put("pop_search", mPopSearchList);
                     AppEngine.getInstance().getCacheManager().saveSearchWords(saveData);

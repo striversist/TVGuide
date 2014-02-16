@@ -129,6 +129,9 @@ public class LoginManager
                 });
             }
         }
+        
+        if (AppEngine.getInstance().getSearchWordsManager().needUpdate())
+            AppEngine.getInstance().getSearchWordsManager().updatePopSearch(null);
     }
 
     private String addUrlGetParam(String url, String paramName, String paramValue, boolean isFirstParam)
