@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff5f7fa" >
+    android:background="@color/apk_list_bg" >
    
     <RelativeLayout android:background="@drawable/topbar" android:layout_width="fill_parent" android:layout_height="50.0dip">
 	    <RelativeLayout android:background="@drawable/search_inputbox" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginLeft="15.0dip" android:layout_marginTop="13.0dip" android:layout_centerHorizontal="true" android:layout_centerVertical="true">
@@ -22,13 +22,13 @@
 	           android:clickable="true" android:onClick="search" />
     </RelativeLayout>
     
-    <LinearLayout android:id="@+id/search_content_layout" 
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-	    <ListView android:id="@+id/search_list_view"
-	            android:layout_width="match_parent" android:layout_height="wrap_content" 
-	            android:fadingEdge="none" android:scrollingCache="false" android:divider="@color/white" 
-	            android:dividerHeight="0.0dip" android:choiceMode="singleChoice" />
+    <LinearLayout android:id="@+id/search_content_layout" android:layout_width="fill_parent" android:layout_height="fill_parent"
+        android:orientation="vertical" >
+	    <TextView android:textSize="16.0sp" android:textColor="@color/comment_detail_text_color_dark" 
+	           android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" 
+	           android:layout_marginTop="13.0dip" android:text="@string/search_all" android:lineSpacingExtra="5.0dip" />
+	    <com.tools.tvguide.views.SearchHotwordsView android:id="@+id/search_hotwords_view" 
+	           android:layout_width="fill_parent" android:layout_height="wrap_content" />
     </LinearLayout>
     
 </LinearLayout>

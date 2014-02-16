@@ -19,4 +19,8 @@
     <color name="gray">#ff808080</color>
     <color name="divider_gray">#80c8c8c8</color>
     <color name="translucent">#00000000</color>
+    <color name="apk_list_bg">#ffeaeaea</color>
+    <color name="comment_detail_text_color_dark">#ff4b5159</color>
+    <color name="normal_color_download_num">#ff666666</color>
+    <color name="comment_detail_write_commen_color">#cc4b5159</color>
 </resources>

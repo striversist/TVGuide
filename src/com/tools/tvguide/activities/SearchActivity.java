@@ -104,8 +104,9 @@ public class SearchActivity extends Activity
         
         // NOTE：Should follow the TAB INDEX order at the beginning of the class
         ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+        ListView programListView = (ListView) mInflater.inflate(R.layout.search_programs_layout, null).findViewById(R.id.program_list_view);
         mResultPagerAdapter.addView(channelListView);
-        mResultPagerAdapter.addView((ListView)findViewById(R.id.search_list_view));
+        mResultPagerAdapter.addView(programListView);
         mViewPager.setAdapter(mResultPagerAdapter);
         
         createUpdateThreadAndHandler();
