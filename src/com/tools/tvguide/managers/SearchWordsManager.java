@@ -72,6 +72,12 @@ public class SearchWordsManager
         store();
     }
     
+    public void clearHistorySearch()
+    {
+    	mHistorySearchList.clear();
+    	store();
+    }
+    
     public void updatePopSearch(final UpdateListener listener)
     {
         mPopSearchList.clear();

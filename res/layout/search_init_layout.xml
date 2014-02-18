@@ -1,8 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:background="@color/apk_list_bg"
     android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="vertical" >
-    <TextView android:id="@+id/history_search_tv" android:textSize="16.0sp" android:textColor="@color/comment_detail_text_color_dark" 
-           android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" 
-           android:layout_marginTop="13.0dip" android:text="@string/history_search" android:lineSpacingExtra="5.0dip" />
+    <RelativeLayout android:id="@+id/history_search_tips_layout" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="11.0dip" >
+	    <TextView android:id="@+id/history_search_tv" android:textSize="16.0sp" android:textColor="@color/comment_detail_text_color_dark" 
+	           android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" 
+	           android:layout_marginTop="3.0dip" android:text="@string/history_search" android:lineSpacingExtra="5.0dip" />
+	    <Button android:id="@+id/history_clear_btn" android:layout_width="60.0dip" android:layout_height="35.0sp" 
+	        	android:layout_alignParentRight="true" android:layout_marginRight="13.0dip" android:textColor="@color/comment_detail_text_color_dark"
+	        	android:textSize="12.0sp" android:text="@string/clear" />
+    </RelativeLayout>
     <com.tools.tvguide.views.SearchHotwordsView android:id="@+id/history_search_view" 
            android:layout_width="fill_parent" android:layout_height="wrap_content" />
     

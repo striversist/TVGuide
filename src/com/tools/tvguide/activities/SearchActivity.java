@@ -38,6 +38,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -129,6 +130,15 @@ public class SearchActivity extends Activity
                 updateSearchResult();
             }
         });
+        ((Button) mOriginContentLayout.findViewById(R.id.history_clear_btn)).setOnClickListener(new View.OnClickListener() 
+        {
+			@Override
+			public void onClick(View v) 
+			{
+				AppEngine.getInstance().getSearchWordsManager().clearHistorySearch();
+				updateHistorySearch();
+			}
+		});
         
         mSearchEditText.setOnTouchListener(new View.OnTouchListener() 
         {
@@ -357,15 +367,15 @@ public class SearchActivity extends Activity
     {
         SearchWordsManager manager = AppEngine.getInstance().getSearchWordsManager();
         SearchHotwordsView historySearchView = (SearchHotwordsView) mOriginContentLayout.findViewById(R.id.history_search_view);
-        TextView historySearchTextView = (TextView) mOriginContentLayout.findViewById(R.id.history_search_tv);
+        RelativeLayout historySearchTipsLayout = (RelativeLayout) mOriginContentLayout.findViewById(R.id.history_search_tips_layout);
         if (manager.getHistorySearch().isEmpty())
         {
-            historySearchTextView.setVisibility(View.GONE);
+        	historySearchTipsLayout.setVisibility(View.GONE);
             historySearchView.setVisibility(View.GONE);
         }
         else
         {
-            historySearchTextView.setVisibility(View.VISIBLE);
+        	historySearchTipsLayout.setVisibility(View.VISIBLE);
             historySearchView.setVisibility(View.VISIBLE);
             historySearchView.setWords(manager.getHistorySearch().toArray(new String[0]));
         }
