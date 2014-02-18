@@ -131,7 +131,7 @@ public class BootManager implements Shutter
         for (int i=0; i<mOnSplashFinishedCallbackList.size(); ++i)
             mOnSplashFinishedCallbackList.get(i).OnSplashFinished();
         
-        mOnSplashFinishedCallbackList = null;
+        mOnSplashFinishedCallbackList.clear();
         mSplashDialog = null;
         mIsSplashShowing = false;
         
