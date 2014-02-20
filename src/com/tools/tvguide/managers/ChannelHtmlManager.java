@@ -118,7 +118,8 @@ public class ChannelHtmlManager
                         addProgram.time = time;
                         addProgram.title = title;
                         addProgram.trailer = trailer;
-                        if (link != null && link.contains("drama"))     // 在tvmao改版之后，只对drama做link，其它的节目因为没有了节目介绍，暂时不做link
+                        // 在tvmao改版之后，只对drama和movie做link，其它的节目因为没有了节目介绍，暂时不做link
+                        if (link != null && (link.contains("drama") || link.contains("movie")))
                             addProgram.link = link;
                         retProgramList.add(addProgram);
                     }
