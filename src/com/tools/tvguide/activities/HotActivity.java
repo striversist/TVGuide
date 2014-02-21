@@ -96,6 +96,7 @@ public class HotActivity extends Activity
                         String title = entryList.get(i).programList.get(j).get("name");
                         ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
                         item.title = title;
+                        item.hasLink = true;
                         ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
                         contentItem.setClickable(true);
                         HashMap<String, HashMap<String, String>> extraInfo = new HashMap<String, HashMap<String, String>>();

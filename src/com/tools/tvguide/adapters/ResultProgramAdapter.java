@@ -3,6 +3,8 @@ package com.tools.tvguide.adapters;
 import java.util.HashMap;
 import java.util.List;
 
+import com.tools.tvguide.R;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ResultProgramAdapter extends BaseAdapter 
@@ -141,6 +144,7 @@ public class ResultProgramAdapter extends BaseAdapter
         public String time;
         public String title;
         public String key;
+        public boolean hasLink;
     }
 
     public static class ContentItem implements IListItem 
@@ -180,6 +184,8 @@ public class ResultProgramAdapter extends BaseAdapter
 
             convertView = inflater.inflate(getLayout(), null);
             TextView tv = (TextView) convertView.findViewById(mItemId);
+            ImageView indicator = (ImageView) convertView.findViewById(R.id.hot_program_tag_iv);
+            
             SpannableString ss;
             if (mItem.time != null)
                 ss = new SpannableString(mItem.time + SEPERATOR + mItem.title);
@@ -195,6 +201,12 @@ public class ResultProgramAdapter extends BaseAdapter
                 }
             }
             tv.setText(ss);
+            
+            if (mItem.hasLink)
+            	indicator.setVisibility(View.VISIBLE);
+            else
+            	indicator.setVisibility(View.INVISIBLE);
+            
             return convertView;
         }
         

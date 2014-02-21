@@ -326,7 +326,7 @@ public class SearchActivity extends Activity
                     if (channel == null || programList == null)
                         continue;
                     
-                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.search_list_label_item, R.id.search_item_label_text_view));
+                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.hot_channel_item, R.id.hot_channel_name_tv));
                     for (int j=0; j<programList.size(); ++j)
                     {
                         Item item = new Item();
@@ -335,7 +335,8 @@ public class SearchActivity extends Activity
                         item.time = programList.get(j).time;
                         item.title = programList.get(j).title;
                         item.key = mKeyword;
-                        mItemProgramDataList.add(new ContentItem(item, R.layout.search_list_content_item, R.id.search_item_content_text_view));
+                        item.hasLink = false;
+                        mItemProgramDataList.add(new ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv));
                     }
                     mResultProgramsNum += programList.size();
                 }
