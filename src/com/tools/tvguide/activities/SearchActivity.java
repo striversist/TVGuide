@@ -299,6 +299,7 @@ public class SearchActivity extends Activity
         AppEngine.getInstance().getSearchWordsManager().addSearchRecord(mKeyword);
         mItemProgramDataList.clear();
         mItemChannelDataList.clear();
+        mResultProgramsNum = 0;
         final List<Channel> channels = new ArrayList<Channel>();
         final List<HashMap<String, Object>> programs = new ArrayList<HashMap<String,Object>>();
         AppEngine.getInstance().getContentManager().loadSearchResult(mKeyword, channels, programs, new ContentManager.LoadListener() 
