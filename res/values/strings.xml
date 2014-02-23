@@ -87,4 +87,7 @@
     <string name="pop_search">大家正在搜：</string>
     <string name="history_search">历史搜索：</string>
     <string name="clear">清除</string>
+    <string name="tv_drama">电视剧</string>
+    <string name="tv_column">电视栏目</string>
+    <string name="movie">电影</string>
 </resources>

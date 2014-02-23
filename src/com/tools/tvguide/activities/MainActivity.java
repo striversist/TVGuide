@@ -97,7 +97,7 @@ public class MainActivity extends TabActivity
         
         mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
                 .setIndicator(getResources().getString(R.string.category_hot))
-                .setContent(new Intent(this, HotActivity1.class)));
+                .setContent(new Intent(this, HotActivity2.class)));
         
         mTabHost.addTab(mTabHost.newTabSpec(mStringMore)
                 .setIndicator(getResources().getString(R.string.category_more))
