@@ -22,7 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class HotActivity extends Activity 
+public class HotActivity1 extends Activity 
 {
     private ListView mListView;
     private ArrayList<ResultProgramAdapter.IListItem> mItemList;
@@ -55,7 +55,7 @@ public class HotActivity extends Activity
                 
                 String name = programInfo.get("programInfo").get("name");
                 String link = programInfo.get("programInfo").get("link");
-                Intent intent = new Intent(HotActivity.this, HotProgramActivity.class);
+                Intent intent = new Intent(HotActivity1.this, HotProgramActivity.class);
                 intent.putExtra("name", name);
                 intent.putExtra("link", link);
                 startActivity(intent);
@@ -118,13 +118,13 @@ public class HotActivity extends Activity
             mProgressDialog.dismiss();
             mItemList.clear();
             if (mItemDataList.size() == 0)
-                Toast.makeText(HotActivity.this, getResources().getString(R.string.server_is_busy), Toast.LENGTH_LONG).show();
+                Toast.makeText(HotActivity1.this, getResources().getString(R.string.server_is_busy), Toast.LENGTH_LONG).show();
             for (int i=0; i<mItemDataList.size(); ++i)
             {
                 mItemList.add(mItemDataList.get(i));
             }
             
-            mListView.setAdapter(new ResultProgramAdapter(HotActivity.this, mItemList));
+            mListView.setAdapter(new ResultProgramAdapter(HotActivity1.this, mItemList));
             mHasUpdated = true;
         }
     };

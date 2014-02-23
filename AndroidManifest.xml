@@ -93,7 +93,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.activities.HotActivity"
+            android:name="com.tools.tvguide.activities.HotActivity1"
             android:label="@string/title_activity_more" >
         </activity>
         <activity
