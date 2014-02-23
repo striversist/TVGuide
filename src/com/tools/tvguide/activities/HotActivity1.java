@@ -35,7 +35,7 @@ public class HotActivity1 extends Activity
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hot);
+        setContentView(R.layout.activity_hot1);
         
         mListView = (ListView)findViewById(R.id.hot_list_view);
         mItemList = new ArrayList<ResultProgramAdapter.IListItem>();
