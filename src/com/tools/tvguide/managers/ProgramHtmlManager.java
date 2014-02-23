@@ -364,11 +364,18 @@ public class ProgramHtmlManager
                                 String line = lines[t].trim();
                                 if (line.length() > 0)   // 不是空行
                                 {
-                                    if (line.contains("评论") || line.contains("更多"))    // 除去某些行
+                                    if (line.equals(programName) 
+                                        || line.contains("评论") 
+                                        || line.contains("更多"))    // 除去某些行
                                         continue;
-                                    profile += line + "\n";
+                                    
+                                    if (line.equals("主演:") || line.equals("主演："))   // 解决“主演：”和演员名不在同一行的问题
+                                        profile += line;
+                                    else
+                                        profile += line + "\n";
                                 }
                             }
+                            
                             programInfo.put("profile", profile);
                         }
                         

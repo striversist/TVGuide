@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:background="@drawable/list_item_select" android:padding="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 
+    <NetImageView android:id="@+id/classify_item_iv" android:padding="3.0sp" android:layout_width="67.0sp" android:layout_height="90.0sp" />
+     -->
+    <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="100.0sp" android:layout_marginLeft="5.0dip">
+        <TextView android:textSize="16.0sp" android:textColor="@color/light_blue" android:id="@+id/classify_item_name_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0sp" android:text="TextView" android:singleLine="true" />
+        <TextView android:textSize="14.0sp" android:textColor="@color/darkgray" android:id="@+id/classify_item_text_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0sp" android:text="TextView" />
+        <!-- 
+        <TextView android:textSize="14.0sp" android:textColor="@color/darkgray" android:id="@+id/classify_item_sub_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0sp" android:text="TextView" android:singleLine="true" />
+         -->
+    </LinearLayout>
+</LinearLayout>

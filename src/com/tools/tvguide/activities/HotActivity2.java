@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.HotProgramListAdapter;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
@@ -20,6 +21,8 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -29,7 +32,8 @@ public class HotActivity2 extends Activity implements Callback
     private ViewPager mViewPager;
     private RadioGroup mTabsGroup;
     private ResultPageAdapter mPageAdapter;
-    private List<HashMap<String, String>> mProgramInfoList;
+    private HashMap<TabIndex, List<HashMap<String, String>>> mProgramInfoListMap;
+    private HashMap<TabIndex, LinearLayout> mLayoutMap;
     private Handler mUiHandler;
     
     enum TabIndex {Drama, Tvcolumn, Movie}
@@ -43,15 +47,21 @@ public class HotActivity2 extends Activity implements Callback
         mInflater = LayoutInflater.from(this);
         mViewPager = (ViewPager) findViewById(R.id.hot_view_pager);
         mTabsGroup = (RadioGroup) findViewById(R.id.hot_tabs_group);
-        mProgramInfoList = new ArrayList<HashMap<String,String>>();
+        mProgramInfoListMap = new HashMap<TabIndex, List<HashMap<String,String>>>();
+        mLayoutMap = new HashMap<TabIndex, LinearLayout>();
         mUiHandler = new Handler(this);
         
         mPageAdapter = new ResultPageAdapter();
         for (int i=0; i<mTabsGroup.getChildCount(); ++i)
         {
-            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
-            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
-            mPageAdapter.addView(loadingLayout);
+            if (mTabsGroup.getChildAt(i) instanceof RadioButton)
+            {
+                LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+                ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
+                mPageAdapter.addView(loadingLayout);
+                
+                mLayoutMap.put(TabIndex.values()[mPageAdapter.getCount() - 1], (LinearLayout) mInflater.inflate(R.layout.hot2_program_layout, null));
+            }
         }
         mViewPager.setAdapter(mPageAdapter);
         
@@ -104,9 +114,9 @@ public class HotActivity2 extends Activity implements Callback
     
     private void update()
     {
-        TabIndex index = TabIndex.values()[mViewPager.getCurrentItem()];
+        final TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
         String hotUrl = "";
-        switch (index)
+        switch (curIndex)
         {
             case Drama:
                 hotUrl = UrlManager.URL_HOT_DRAMA;
@@ -119,25 +129,41 @@ public class HotActivity2 extends Activity implements Callback
                 break;
         }
         
-        AppEngine.getInstance().getProgramHtmlManager().getHotProgramsAsync(0, hotUrl, new HotProgramsCallback() 
+        if (mProgramInfoListMap.get(curIndex) == null)       // Not loading yet
         {
-            @Override
-            public void onProgramsLoaded(int requestId, List<HashMap<String, String>> programInfoList) 
+            AppEngine.getInstance().getProgramHtmlManager().getHotProgramsAsync(0, hotUrl, new HotProgramsCallback() 
             {
-                if (!programInfoList.isEmpty())
+                @Override
+                public void onProgramsLoaded(int requestId, List<HashMap<String, String>> programInfoList) 
                 {
-                    mProgramInfoList.clear();
-                    mProgramInfoList.addAll(programInfoList);
-                    mUiHandler.sendEmptyMessage(0);
+                    if (!programInfoList.isEmpty())
+                    {
+                        List<HashMap<String, String>> tmpProgramInfoList = new ArrayList<HashMap<String,String>>();
+                        tmpProgramInfoList.addAll(programInfoList);
+                        mProgramInfoListMap.put(curIndex, tmpProgramInfoList);
+                        mUiHandler.sendEmptyMessage(0);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public boolean handleMessage(Message msg) 
     {
-        
-        return false;
+        switch (msg.what) 
+        {
+            case 0:
+                TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
+                LinearLayout layout = mLayoutMap.get(curIndex);
+                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivity2.this, mProgramInfoListMap.get(curIndex));
+                ((ListView) layout.findViewById(R.id.hot_program_listview)).setAdapter(adapter);
+                
+                ((LinearLayout) mPageAdapter.getView(mViewPager.getCurrentItem())).removeAllViews();
+                ((LinearLayout) mPageAdapter.getView(mViewPager.getCurrentItem())).addView(layout);
+                
+                break;
+        }
+        return true;
     }
 }

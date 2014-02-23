@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="horizontal" android:background="@color/bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListView android:id="@+id/channeldetail_program_listview"
+    <ListView android:id="@+id/hot_program_listview"
             android:layout_width="match_parent" android:layout_height="wrap_content" 
             style="@style/style_listview" />
 </LinearLayout>
