@@ -136,7 +136,7 @@ public class HotProgramActivity extends Activity
             @Override
             public void run() 
             {
-                AppEngine.getInstance().getAdManager().addAdView(HotProgramActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
+                AppEngine.getInstance().getAdManager().addAdView(HotProgramActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
             }
         }, 500);
     }
