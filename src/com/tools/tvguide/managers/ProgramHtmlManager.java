@@ -370,7 +370,7 @@ public class ProgramHtmlManager
                                         continue;
                                     
                                     if (line.equals("主演:") || line.equals("主演："))   // 解决“主演：”和演员名不在同一行的问题
-                                        profile += line;
+                                        profile += line + " ";
                                     else
                                         profile += line + "\n";
                                 }
