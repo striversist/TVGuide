@@ -90,7 +90,6 @@ public class ProgramActivity extends Activity
         switch (view.getId()) 
         {
             case R.id.episode_iv:
-            case R.id.more_plot_btn:
                 startEpisodeActivity();
                 break;
             default:
@@ -195,7 +194,15 @@ public class ProgramActivity extends Activity
                     break;
                 case MSG_HAS_DETAIL_PLOTS:
                     mPlotsImageView.setVisibility(View.VISIBLE);
-                    ((Button) findViewById(R.id.more_plot_btn)).setVisibility(View.VISIBLE);
+                    ((Button) mSummaryLayout.findViewById(R.id.more_plot_btn)).setVisibility(View.VISIBLE);
+                    ((Button) mSummaryLayout.findViewById(R.id.more_plot_btn)).setOnClickListener(new View.OnClickListener() 
+                    {                        
+                        @Override
+                        public void onClick(View view) 
+                        {
+                            startEpisodeActivity();
+                        }
+                    });
                     break;
             }
         }
