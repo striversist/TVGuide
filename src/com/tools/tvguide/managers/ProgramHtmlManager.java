@@ -41,6 +41,11 @@ public class ProgramHtmlManager
         void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodeList);
     }
     
+    public interface HotProgramsCallback
+    {
+        void onProgramsLoaded(int requestId, List<HashMap<String, String>> programList);
+    }
+    
     public void getProgramDetailAsync(final int requestId, final String programUrl, final ProgramDetailCallback callback)
     {
         assert (callback != null);
@@ -299,6 +304,79 @@ public class ProgramHtmlManager
             }
             
             callback.onSummaryLoaded(requestId, summary);
+        }
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void getHotProgramsAsync(final int requestId, final String hotUrl, final HotProgramsCallback callback)
+    {
+        assert (callback != null);
+        try 
+        {
+            Document doc = HtmlUtils.getDocument(hotUrl);
+            String protocol = new URL(hotUrl).getProtocol();
+            String host = new URL(hotUrl).getHost();
+            String prefix = protocol + "://" + host;
+            
+            // -------------- 获取整个列表 --------------
+            // 返回结果
+            List<HashMap<String, String>> programList = new ArrayList<HashMap<String,String>>();
+            Elements tableElements = doc.select("div.clear table");
+            for (int i=0; i<tableElements.size(); ++i)
+            {
+                HashMap<String, String> programInfo = new HashMap<String, String>();
+                Element tableElement = tableElements.get(i);
+
+                // -------------- 获取Program链接 --------------
+                // 返回结果
+                String programLink = "";
+                Element programLinkElement = tableElement.select("tbody td.td1 a").first();
+                if (programLinkElement != null)
+                {
+                    programLink = prefix + programLinkElement.attr("href");
+                    programInfo.put("program_link", programLink);
+                }
+                
+                // -------------- 获取Profile --------------
+                // 返回结果
+                String profile = "";
+                Element profileElement = tableElement.select("tbody td.td2 div").first();
+                if (profileElement != null)
+                {
+                    String tmpProfile = HtmlUtils.omitHtmlElement(profileElement.html());
+                    
+                    // 去除空行
+                    String lines[] = tmpProfile.split("\n");
+                    for (int t=0; t<lines.length; ++t)
+                    {
+                        String line = lines[t].trim();
+                        if (line.length() > 0)   // 不是空行
+                        {
+                            if (line.contains("评论") || line.contains("更多"))    // 除去某些行
+                                continue;
+                            profile += line + "\n";
+                        }
+                    }
+                    programInfo.put("profile", profile);
+                }
+                
+                // -------------- 获取图片链接 --------------
+                // 返回结果
+                String picLink = null;
+                Element imgElement = tableElement.select("tbody td.td1 img").first();
+                if (imgElement != null)
+                {
+                    picLink = imgElement.attr("src");
+                    programInfo.put("picture_link", picLink);
+                }
+                
+                programList.add(programInfo);
+            }
+            
+            callback.onProgramsLoaded(requestId, programList);
         }
         catch (IOException e) 
         {

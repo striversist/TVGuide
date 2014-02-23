@@ -1,6 +1,8 @@
 package com.tools.tvguide.utils;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,5 +42,15 @@ public class HtmlUtils
             doc = Jsoup.parse(html);
         }
         return doc;
+    }
+    
+    public static String omitHtmlElement(String html)
+    {
+        String regEx = "<.+?>";
+        Pattern p = Pattern.compile(regEx);    
+        Matcher m=p.matcher(html);  
+        String result = m.replaceAll("");
+        
+        return result;
     }
 }
