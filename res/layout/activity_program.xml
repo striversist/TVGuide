@@ -25,20 +25,11 @@
             android:paddingLeft="8.0sp" android:paddingTop="5.0sp" android:paddingRight="8.0sp" android:paddingBottom="5.0sp" 
             android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/content_introduce" />
     
-        <LinearLayout android:id="@+id/program_summary_loading_ll" android:orientation="vertical" android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
-	    <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
-	        <LinearLayout android:id="@+id/program_summary_ll" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
-	            <TextView android:id="@+id/program_summary_tv" android:layout_width="fill_parent" android:layout_height="fill_parent" 
-	                      android:layout_marginTop="18sp" android:layout_marginLeft="10dip"
-	                      android:textColor="@color/darkgray" android:textSize="18sp" android:lineSpacingExtra="5dp" />
-	            <Button android:textSize="18.0sp" android:textColor="@color/white" android:gravity="center" android:id="@+id/more_plot_btn" 
-	                    android:background="@drawable/big_button_select" android:paddingTop="7.0sp" android:paddingBottom="7.0sp" 
-	                    android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="15.0sp" 
-	                    android:layout_marginRight="15.0sp" android:layout_marginBottom="25.0sp" android:text="@string/plot_introduce"
-	                    android:visibility="invisible" android:onClick="onClick" />
-	        </LinearLayout>
-	    </ScrollView>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/program_view_pager"
+            android:layout_width="fill_parent"
+            android:layout_height="0.0sp"
+            android:layout_weight="1.0" />
         
         <RelativeLayout
             android:id="@+id/adLayout"

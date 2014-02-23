@@ -1,9 +1,11 @@
 package com.tools.tvguide;
 
 import com.tools.tvguide.activities.EpisodeActivity;
+import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ProgramHtmlManager;
+import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.utils.Utility;
 
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -35,8 +38,9 @@ public class ProgramActivity extends Activity
     private TextView mProgramProfileTextView;
     private ImageView mProgramImageView;
     private ImageView mPlotsImageView;
-    private LinearLayout mProgramSummaryLayout;
-    private LinearLayout mProgramSummaryLoadingLayout;
+    private ViewPager mViewPager;
+    private ResultPageAdapter mPageAdapter;
+    private LinearLayout mSummaryLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
     
     enum SelfMessage {MSG_TITLE_LOADED, MSG_SUMMARY_LOADED, MSG_PROFILE_LOADED, MSG_PICTURE_LOADED, MSG_HAS_DETAIL_PLOTS};
@@ -56,19 +60,29 @@ public class ProgramActivity extends Activity
         mProgramProfileTextView = (TextView) findViewById(R.id.program_profile);
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
         mPlotsImageView = (ImageView) findViewById(R.id.episode_iv);
-        mProgramSummaryLayout = (LinearLayout) findViewById(R.id.program_summary_ll);
-        mProgramSummaryLoadingLayout = (LinearLayout) findViewById(R.id.program_summary_loading_ll);
+        mSummaryLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_summary, null);
+        mViewPager = (ViewPager) findViewById(R.id.program_view_pager);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         
         mProgramNameTextView.setText(mProgram.title);
         mPlotsImageView.setVisibility(View.INVISIBLE);
         
-        mProgramSummaryLayout.setVisibility(View.GONE);
+        mPageAdapter = new ResultPageAdapter();
         LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
         ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
-        mProgramSummaryLoadingLayout.addView(loadingLayout, mCenterLayoutParams);
+        mPageAdapter.addView(loadingLayout);
+        mViewPager.setAdapter(mPageAdapter);
         
         update();
+        
+        new Handler().postDelayed(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                AppEngine.getInstance().getAdManager().addAdView(ProgramActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
+            }
+        }, 500);
     }
     
     public void onClick(View view)
@@ -159,9 +173,10 @@ public class ProgramActivity extends Activity
                     mProgramNameTextView.setText(mTitle);
                     break;
                 case MSG_SUMMARY_LOADED:
-                    mProgramSummaryLoadingLayout.setVisibility(View.GONE);
-                    ((TextView) mProgramSummaryLayout.findViewById(R.id.program_summary_tv)).setText(mSummary);
-                    mProgramSummaryLayout.setVisibility(View.VISIBLE);
+                    ((TextView) mSummaryLayout.findViewById(R.id.program_tab_simpletext)).setText(mSummary);
+                    ((LinearLayout) mPageAdapter.getView(0)).removeAllViews();
+                    ((LinearLayout) mPageAdapter.getView(0)).addView(mSummaryLayout, mCenterLayoutParams);
+                    mViewPager.setCurrentItem(0);
                     break;
                 case MSG_PROFILE_LOADED:
                     mProgramProfileTextView.setText(mProfile);
