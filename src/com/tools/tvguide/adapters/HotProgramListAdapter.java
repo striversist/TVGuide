@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 public class HotProgramListAdapter extends BaseAdapter
 {
+    private static final String TAG = "HotProgramListAdapter";
     private Context mContext;
     private List<HashMap<String, String>> mProgramInfoList;
     
@@ -77,7 +78,7 @@ public class HotProgramListAdapter extends BaseAdapter
             holder.nameTextView.setText(programInfo.get("name"));
             holder.profileTextView.setText(programInfo.get("profile"));
             holder.netImageView.loadImage(programInfo.get("picture_link"));
-        }
+        }        
         
         return convertView;
     }

@@ -12,6 +12,11 @@ import android.widget.ImageView;
 
 public class NetImageView extends ImageView
 {
+    private static final String TAG = "NetImageView";
+    private ImageUrlAsyncTask mCurrentTask;
+    private Bitmap mBitmap;
+    private String mUrl;
+    
     public static interface ImageLoadListener
     {
         void onImageLoaded(Bitmap bitmap);
@@ -26,26 +31,48 @@ public class NetImageView extends ImageView
     {
         if (url == null)
             return;
+
+        if (mUrl != null && mUrl.equals(url))
+            setImageBitmap(mBitmap);
         
-        ImageUrlAsyncTask task = new ImageUrlAsyncTask(this, null);
-        task.execute(url);
+        if (mCurrentTask != null)
+            mCurrentTask.cancel(true);
+
+        mUrl = url;
+        mCurrentTask = new ImageUrlAsyncTask(this, new ImageLoadListener() 
+        {
+            @Override
+            public void onImageLoaded(Bitmap bitmap) 
+            {
+                mBitmap = bitmap;
+                mCurrentTask = null;
+            }
+        });
+        mCurrentTask.execute(url);
+    }
+    
+    public String getUrl()
+    {
+        return mUrl;
     }
     
     private class ImageUrlAsyncTask extends AsyncTask<String, Void, Bitmap>
     {
-        private WeakReference<ImageView> mImageViewRef;
+        private WeakReference<NetImageView> mImageViewRef;
         private ImageLoadListener mListener;
+        private String mTaskUrl;
         
-        public ImageUrlAsyncTask(ImageView imageView, ImageLoadListener listener)
+        public ImageUrlAsyncTask(NetImageView imageView, ImageLoadListener listener)
         {
             assert (imageView != null);
-            mImageViewRef = new WeakReference<ImageView>(imageView);
+            mImageViewRef = new WeakReference<NetImageView>(imageView);
             mListener = listener;
         }
         
         @Override
         protected Bitmap doInBackground(String... urls) 
         {
+            mTaskUrl = urls[0];
             Bitmap bitmap = Utility.getNetworkImage(urls[0]);
             return bitmap;
         }
@@ -56,8 +83,10 @@ public class NetImageView extends ImageView
             if (bitmap == null)
                 return;
             
-            if (mImageViewRef.get() != null)
+            if (mImageViewRef.get() != null && mTaskUrl.equals(mImageViewRef.get().getUrl()))
+            {
                 mImageViewRef.get().setImageBitmap(bitmap);
+            }
             
             if (mListener != null)
                 mListener.onImageLoaded(bitmap);
