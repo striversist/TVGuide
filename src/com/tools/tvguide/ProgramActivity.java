@@ -126,16 +126,27 @@ public class ProgramActivity extends Activity
             @Override
             public void onPictureLinkParsed(int requestId, final String link) 
             {
-                new Thread(new Runnable() 
+                if (AppEngine.getInstance().getCacheManager().getBitmap(link) != null)
                 {
-                    @Override
-                    public void run() 
+                    mPicture = AppEngine.getInstance().getCacheManager().getBitmap(link);
+                    uiHandler.sendEmptyMessage(SelfMessage.MSG_PICTURE_LOADED.ordinal());
+                }
+                else
+                {
+                    new Thread(new Runnable() 
                     {
-                        mPicture = Utility.getNetworkImage(link);
-                        if (mPicture != null)
-                            uiHandler.sendEmptyMessage(SelfMessage.MSG_PICTURE_LOADED.ordinal());
-                    }
-                }).start();
+                        @Override
+                        public void run() 
+                        {
+                            mPicture = Utility.getNetworkImage(link);
+                            if (mPicture != null)
+                            {
+                                AppEngine.getInstance().getCacheManager().setBitmap(link, mPicture);
+                                uiHandler.sendEmptyMessage(SelfMessage.MSG_PICTURE_LOADED.ordinal());
+                            }
+                        }
+                    }).start();
+                }
             }
             
             @Override

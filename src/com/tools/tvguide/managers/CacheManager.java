@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.util.LruCache;
 
 public class CacheManager 
 {
@@ -25,11 +27,13 @@ public class CacheManager
     private final String FILE_ALL_TVMAO_IDS = "web_ids.txt";
     private final String FILE_SEARCH_WORDS = "search_words.txt";
     private HashMap<String, String> mMemoryCache;
+    private LruCache<String, Bitmap> mBitmapCache;
         
     public CacheManager(Context context)
     {
         mContext = context;
         mMemoryCache = new HashMap<String, String>();
+        mBitmapCache = new LruCache<String, Bitmap>(100);
     }
     
     /*
@@ -184,6 +188,17 @@ public class CacheManager
     public void set(String key, String value)
     {
         mMemoryCache.put(key, value);
+    }
+    
+    public Bitmap getBitmap(String key)
+    {
+        return mBitmapCache.get(key);
+    }
+    
+    public void setBitmap(String key, Bitmap bitmap)
+    {
+        if (key != null && bitmap != null)
+            mBitmapCache.put(key, bitmap);
     }
     
     private void deleteFile(File file)
