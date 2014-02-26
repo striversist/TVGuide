@@ -7,12 +7,14 @@ import com.tools.tvguide.utils.Utility;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.support.v4.util.LruCache;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 public class NetImageView extends ImageView
 {
     private static final String TAG = "NetImageView";
+    private static LruCache<String, Bitmap> sCache = new LruCache<String, Bitmap>(100);
     private ImageUrlAsyncTask mCurrentTask;
     private Bitmap mBitmap;
     private String mUrl;
@@ -33,7 +35,17 @@ public class NetImageView extends ImageView
             return;
 
         if (mUrl != null && mUrl.equals(url))
+        {
             setImageBitmap(mBitmap);
+            return;
+        }
+        
+        if (sCache.get(url) != null)
+        {
+            mBitmap = sCache.get(url);
+            setImageBitmap(mBitmap);
+            return;
+        }
         
         if (mCurrentTask != null)
             mCurrentTask.cancel(true);
@@ -45,6 +57,7 @@ public class NetImageView extends ImageView
             public void onImageLoaded(Bitmap bitmap) 
             {
                 mBitmap = bitmap;
+                sCache.put(mUrl, bitmap);
                 mCurrentTask = null;
             }
         });
