@@ -342,7 +342,9 @@ public class ProgramHtmlManager
                         Element programLinkElement = tableElement.select("tbody td.td2 a").first();
                         if (programLinkElement != null)
                         {
-                            programLink = prefix + programLinkElement.attr("href");
+                            programLink = programLinkElement.attr("href");
+                            if (!programLink.contains(protocol + "://"))    // not absolute path
+                                programLink = prefix + programLink;
                             programInfo.put("link", programLink);
                             
                             programName = programLinkElement.text();
