@@ -95,9 +95,18 @@ public class MainActivity extends TabActivity
                 .setIndicator(getResources().getString(R.string.category_search))
                 .setContent(new Intent(this, SearchActivity.class)));
         
-        mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
-                .setIndicator(getResources().getString(R.string.category_hot))
-                .setContent(new Intent(this, HotActivity2.class)));
+        if (AppEngine.getInstance().getEnvironmentManager().isHotFromTvmao())
+        {
+            mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
+                    .setIndicator(getResources().getString(R.string.category_hot))
+                    .setContent(new Intent(this, HotActivity2.class)));
+        }
+        else
+        {
+            mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
+                    .setIndicator(getResources().getString(R.string.category_hot))
+                    .setContent(new Intent(this, HotActivity1.class)));
+        }
         
         mTabHost.addTab(mTabHost.newTabSpec(mStringMore)
                 .setIndicator(getResources().getString(R.string.category_more))

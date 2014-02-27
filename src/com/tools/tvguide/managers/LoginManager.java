@@ -97,11 +97,17 @@ public class LoginManager
                     AppEngine.getInstance().getEnvironmentManager().setChannelDetailFromWeb(false);
                 else
                     AppEngine.getInstance().getEnvironmentManager().setChannelDetailFromWeb(true);
+                
                 String enableAd = objectConfig.getString("enable_ad");
                 if (enableAd == null || enableAd.equals("0"))
                     AppEngine.getInstance().getEnvironmentManager().setAdEnable(false);
                 else
                     AppEngine.getInstance().getEnvironmentManager().setAdEnable(true);
+                
+                String hotSource = objectConfig.getString("hot_source");
+                if (hotSource != null && (hotSource.equals("tvmao") || hotSource.equals("tvsou")))
+                    AppEngine.getInstance().getEnvironmentManager().setHotSource(hotSource);
+                    
             }
         } 
         catch (JSONException e) 
