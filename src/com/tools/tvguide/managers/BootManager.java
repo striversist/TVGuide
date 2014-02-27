@@ -51,6 +51,7 @@ public class BootManager implements Shutter
         
         checkNetwork();
         
+        AppEngine.getInstance().getEnvironmentManager().init();
         AppEngine.getInstance().getUrlManager().init(new UrlManager.OnInitCompleteCallback() 
         {
             @Override

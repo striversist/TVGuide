@@ -94,14 +94,14 @@ public class LoginManager
             {
                 String detailFromWeb = objectConfig.getString("channel_detail_from_web");
                 if (detailFromWeb == null || detailFromWeb.equals("0"))
-                    EnvironmentManager.isChannelDetailFromWeb = false;
+                    AppEngine.getInstance().getEnvironmentManager().setChannelDetailFromWeb(false);
                 else
-                    EnvironmentManager.isChannelDetailFromWeb = true;
+                    AppEngine.getInstance().getEnvironmentManager().setChannelDetailFromWeb(true);
                 String enableAd = objectConfig.getString("enable_ad");
                 if (enableAd == null || enableAd.equals("0"))
-                    EnvironmentManager.enableAd = false;
+                    AppEngine.getInstance().getEnvironmentManager().setAdEnable(false);
                 else
-                    EnvironmentManager.enableAd = true;
+                    AppEngine.getInstance().getEnvironmentManager().setAdEnable(true);
             }
         } 
         catch (JSONException e) 
@@ -113,7 +113,7 @@ public class LoginManager
     private void doWork()
     {
         // 从后台获取所有tvmao id信息，便于之后使用
-        if (EnvironmentManager.isChannelDetailFromWeb)
+        if (AppEngine.getInstance().getEnvironmentManager().isChannelDetailFromWeb())
         {
             if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(new HashMap<String, String>()) == false)
             {

@@ -34,7 +34,7 @@ public class AdManager
 	 */
 	public boolean addAdView(Activity activity, int id, AdSize size)
 	{
-	    if (!EnvironmentManager.enableAd)
+	    if (!AppEngine.getInstance().getEnvironmentManager().isAdEnable())
 	        return false;
 	    
 		if (activity == null)

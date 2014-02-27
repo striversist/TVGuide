@@ -15,6 +15,7 @@ public class AppEngine
     private Context                                 mContext;
     private Context                                 mApplicationContext;
     private List<Shutter>							mShutterList				= new ArrayList<Shutter>();
+    private EnvironmentManager                      mEnvironmentManager;
     private CollectManager                          mUserSettingManager;
     private LoginManager                            mLoginManager;
     private ContentManager                          mContentManager;
@@ -65,6 +66,17 @@ public class AppEngine
     {
         if (mApplicationContext == null)
             mApplicationContext = MyApplication.getInstance().getApplicationContext();
+    }
+    
+    public EnvironmentManager getEnvironmentManager()
+    {
+        checkInitialized();
+        if (mEnvironmentManager == null)
+        {
+            mEnvironmentManager = new EnvironmentManager(mApplicationContext);
+            mShutterList.add(mEnvironmentManager);
+        }
+        return mEnvironmentManager;
     }
     
     public CollectManager getCollectManager()
