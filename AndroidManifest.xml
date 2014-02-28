@@ -137,7 +137,7 @@
             android:label="@string/title_activity_episode" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.ProgramActivity"
+            android:name="com.tools.tvguide.activities.ProgramActivity"
             android:label="@string/title_activity_program" >
         </activity>
 

@@ -14,7 +14,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.tools.tvguide.ProgramActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannelDetailListAdapter;
 import com.tools.tvguide.adapters.DateAdapter;
