@@ -61,7 +61,7 @@ public class HotHtmlManager
         
         try 
         {
-            String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_HOT);
+            String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.ProxyUrl.Hot);
             String protocol = new URL(url).getProtocol();
             String host = new URL(url).getHost();
             

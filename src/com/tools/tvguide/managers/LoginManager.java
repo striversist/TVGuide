@@ -49,7 +49,7 @@ public class LoginManager
             {
                 try 
                 {
-                    String loginUrl = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_LOGIN);
+                    String loginUrl = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Login);
                     loginUrl = addUrlGetParam(loginUrl, "UIP", AppEngine.getInstance().getDnsManager().getDeviceIpAddress(), true);
                     loginUrl = addUrlGetParam(loginUrl, "UL", AppEngine.getInstance().getDnsManager().getDeviceLocation(), false);
                     if (AppEngine.getInstance().getUpdateManager().getAppChannelName() != null)

@@ -302,7 +302,7 @@ public class CollectActivity extends Activity implements DragSortListener
             public void run()
             {
                 assert(mChannelList != null);
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.OnPlayingPrograms);
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -365,7 +365,7 @@ public class CollectActivity extends Activity implements DragSortListener
             @Override
             public void run() 
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_REPORT) + "?type=collect";
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Report) + "?type=collect";
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);

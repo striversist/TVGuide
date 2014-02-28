@@ -26,19 +26,8 @@ public class UrlManager
     public static final String ACRA_PROXY_REAL          = "http://" + REAL_HOST + ":59840/acra-tvguide/_design/acra-storage/_update/report";
     public static final String ACRA_PROXY_DEV           = "http://" + DEV_IP + ":5984/acra-tvguide/_design/acra-storage/_update/report";
     
-    public static final int URL_CATEGORIES              = 1;
-    public static final int URL_CHANNELS                = 2;
-    public static final int URL_ON_PLAYING_PROGRAM      = 3;
-    public static final int URL_ON_PLAYING_PROGRAMS     = 4;
-    public static final int URL_CHOOSE                  = 5;
-    public static final int URL_SEARCH                  = 6;
-    public static final int URL_HOT                     = 7;
-    public static final int URL_UPDATE                  = 8;
-    public static final int URL_FEEDBACK                = 9;
-    public static final int URL_LOGIN                   = 10;
-    public static final int URL_REPORT                  = 11;
-    public static final int URL_QUERY                   = 12;
-    public static final int URL_LOGOUT                  = 13;
+    public enum ProxyUrl {Categories, Channels, OnPlayingProgram, OnPlayingPrograms, Choose, Search,
+    					  Hot, Update, Feedback, Login, Report, Query, Logout}
         
     private static final boolean ENABLE_TEST            = EnvironmentManager.isDevelopMode;
     private String  mProxyHostName                      = REAL_HOST;
@@ -136,7 +125,7 @@ public class UrlManager
         }.start();
     }
     
-    public String tryToGetDnsedUrl(int type)
+    public String tryToGetDnsedUrl(ProxyUrl type)
     {
         if (mProxyHostIP != null || mHasInit)
             return getUrl(type);
@@ -158,7 +147,7 @@ public class UrlManager
         return getUrl(type);
     }
     
-    public String getUrl(int type)
+    public String getUrl(ProxyUrl type)
     {
         String url = "http://";
         if (ENABLE_TEST)
@@ -172,43 +161,43 @@ public class UrlManager
         url += BASE_PATH;
         switch (type)
         {
-            case URL_CATEGORIES:
+            case Categories:
                 url += PATH_CATEGORIES;
                 break;
-            case URL_CHANNELS:
+            case Channels:
                 url += PATH_CHANNELS;
                 break;
-            case URL_ON_PLAYING_PROGRAM:
+            case OnPlayingProgram:
                 url += PATH_ON_PLAYING_PROGRAM;
                 break;
-            case URL_ON_PLAYING_PROGRAMS:
+            case OnPlayingPrograms:
                 url += PATH_ON_PLAYING_PROGRAMS;
                 break;
-            case URL_CHOOSE:
+            case Choose:
                 url += PATH_CHOOSE;
                 break;
-            case URL_SEARCH:
+            case Search:
                 url += PATH_SEARCH;
                 break;
-            case URL_HOT:
+            case Hot:
                 url = URL_PUB_HOT;
                 break;
-            case URL_UPDATE:
+            case Update:
                 url += PATH_UPDATE;
                 break;
-            case URL_FEEDBACK:
+            case Feedback:
                 url += PATH_FEEDBACK;
                 break;
-            case URL_LOGIN:
+            case Login:
                 url += PATH_LOGIN;
                 break;
-            case URL_REPORT:
+            case Report:
                 url += PATH_REPORT;
                 break;
-            case URL_QUERY:
+            case Query:
                 url += PATH_QUERY;
                 break;
-            case URL_LOGOUT:
+            case Logout:
                 url += PATH_LOGOUT;
             default:
                 assert false: "Not reach here";

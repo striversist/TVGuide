@@ -77,7 +77,7 @@ public class FeedbackActivity extends Activity
                 if (email.length() > 0)
                     pairs.add(new BasicNameValuePair("email", email));
                 
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_FEEDBACK);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Feedback);
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);

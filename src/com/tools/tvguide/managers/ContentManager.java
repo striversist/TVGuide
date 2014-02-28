@@ -56,7 +56,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CATEGORIES) + "?type=" + type;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Categories) + "?type=" + type;
                 NetDataGetter getter;
                 try 
                 {
@@ -115,7 +115,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHANNELS) + "?category=" + categoryId;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Channels) + "?category=" + categoryId;
                 NetDataGetter getter;
                 try 
                 {
@@ -167,7 +167,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Choose) + "?channel=" + channelId + "&day=" + day;
                 NetDataGetter getter;
                 try 
                 {
@@ -211,7 +211,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day + "&onplaying=1";
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Choose) + "?channel=" + channelId + "&day=" + day + "&onplaying=1";
                 NetDataGetter getter;
                 try 
                 {
@@ -264,7 +264,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) + "?channel=" + channelId + "&day=" + day + "&onplaying=1";
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Choose) + "?channel=" + channelId + "&day=" + day + "&onplaying=1";
                 NetDataGetter getter;
                 try 
                 {
@@ -341,7 +341,7 @@ public class ContentManager implements Shutter
                 idArray += "]";
                 pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
                 
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_ON_PLAYING_PROGRAMS);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.OnPlayingPrograms);
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -384,7 +384,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_ON_PLAYING_PROGRAM) + "?channel=" + channelId;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.OnPlayingProgram) + "?channel=" + channelId;
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -421,7 +421,7 @@ public class ContentManager implements Shutter
         {
             public void run()
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?nowtime";
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Query) + "?nowtime";
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -460,7 +460,7 @@ public class ContentManager implements Shutter
             public void run() 
             {
                 boolean success = false;
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?all_tvmao_id";
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Query) + "?all_tvmao_id";
                 try 
                 {
                     NetDataGetter getter = new DefaultNetDataGetter(url);
@@ -508,7 +508,7 @@ public class ContentManager implements Shutter
             public void run() 
             {
                 boolean success = false;
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_SEARCH) + "?keyword=" + keyword;
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Search) + "?keyword=" + keyword;
                 NetDataGetter getter;
                 try 
                 {
@@ -599,7 +599,7 @@ public class ContentManager implements Shutter
             @Override
             public void run() 
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_QUERY) + "?pop_search=" + String.valueOf(num);
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Query) + "?pop_search=" + String.valueOf(num);
                 NetDataGetter getter;
                 boolean success = false;
                 try 

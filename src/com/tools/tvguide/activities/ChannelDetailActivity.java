@@ -622,7 +622,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public void run() 
             {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.URL_CHOOSE) 
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Choose) 
                              + "?channel=" + mChannelId + "&day=" + mCurrentSelectedDay + "&report_visit";
                 NetDataGetter getter;
                 try 

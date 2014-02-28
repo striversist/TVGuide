@@ -53,7 +53,7 @@ public class UninstallMonitor implements Shutter
         Log.d(TAG, "guid=" + guid + ", version=" + version);
         if (guid != null && version != null)
         {
-            observer.setHttpRequestOnDelete(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.URL_LOGOUT) + "?uninstall=1", guid, version);
+            observer.setHttpRequestOnDelete(AppEngine.getInstance().getUrlManager().getUrl(UrlManager.ProxyUrl.Logout) + "?uninstall=1", guid, version);
             observer.startWatching();
         }
     }
