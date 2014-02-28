@@ -73,7 +73,7 @@ public class ProgramActivityTvsou extends Activity
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hot_program);
+        setContentView(R.layout.activity_program_tvsou);
         
         mInflater = LayoutInflater.from(this);
         mPlayTimes = new HashMap<String, List<String>>();
@@ -94,7 +94,7 @@ public class ProgramActivityTvsou extends Activity
         {
         	if (mTabsGroup.getChildAt(i) instanceof RadioButton)
         	{
-	            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+	            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
 	            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
 	            mProgramPageAdapter.addView(loadingLayout);
         	}

@@ -71,7 +71,7 @@ public class ProgramActivity extends Activity
         mPlotsImageView.setVisibility(View.INVISIBLE);
         
         mPageAdapter = new ResultPageAdapter();
-        LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+        LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
         ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
         mPageAdapter.addView(loadingLayout);
         mViewPager.setAdapter(mPageAdapter);

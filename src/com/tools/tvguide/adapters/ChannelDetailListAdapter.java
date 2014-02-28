@@ -279,7 +279,7 @@ public class ChannelDetailListAdapter extends BaseAdapter
         @Override
         public int getLayout() 
         {
-            return R.layout.detail_program_item;
+            return R.layout.channel_detail_program_item;
         }
 
         @Override
@@ -292,7 +292,7 @@ public class ChannelDetailListAdapter extends BaseAdapter
         public View getView(Context context, View convertView, LayoutInflater inflater) 
         {
             if (convertView == null)
-                convertView = inflater.inflate(R.layout.detail_program_item, null);
+                convertView = inflater.inflate(R.layout.channel_detail_program_item, null);
             
             TextView programNameTextView = (TextView) convertView.findViewById(R.id.detail_program_name_tv);
             ImageView indicator = (ImageView) convertView.findViewById(R.id.detail_program_indicator_iv);

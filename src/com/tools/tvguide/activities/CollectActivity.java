@@ -180,7 +180,7 @@ public class CollectActivity extends Activity implements DragSortListener
         mReportList = new ArrayList<String>();
         mInflater = LayoutInflater.from(this);
         mContentLayout = (LinearLayout)findViewById(R.id.collect_content_layout);
-        mNoCollectLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+        mNoCollectLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoCollectLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.promote_collect_tips));
         

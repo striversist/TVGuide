@@ -90,7 +90,7 @@ public class SearchActivity extends Activity
         mCancelImage = (RelativeLayout)findViewById(R.id.search_cancel_layout);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
         mOriginContentLayout = (LinearLayout)mInflater.inflate(R.layout.search_init_layout, null);
-        mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null); 
+        mNoSearchResultLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null); 
         mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
@@ -337,7 +337,7 @@ public class SearchActivity extends Activity
                         item.title = programList.get(j).title;
                         item.key = mKeyword;
                         item.hasLink = false;
-                        mItemProgramDataList.add(new ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv));
+                        mItemProgramDataList.add(new ContentItem(item, R.layout.hot_program_tvsou_item, R.id.hot_program_name_tv));
                     }
                     mResultProgramsNum += programList.size();
                 }

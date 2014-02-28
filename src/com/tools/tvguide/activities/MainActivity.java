@@ -99,7 +99,7 @@ public class MainActivity extends TabActivity
         {
             mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
                     .setIndicator(getResources().getString(R.string.category_hot))
-                    .setContent(new Intent(this, HotActivityTvmao.class)));
+                    .setContent(new Intent(this, HotActivity.class)));
         }
         else
         {

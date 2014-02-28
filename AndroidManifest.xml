@@ -96,7 +96,7 @@
             android:label="@string/title_activity_more" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.activities.HotActivityTvmao"
+            android:name="com.tools.tvguide.activities.HotActivity"
             android:label="@string/title_activity_more" >
         </activity>
         <activity

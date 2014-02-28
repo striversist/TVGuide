@@ -35,7 +35,7 @@ public class HotActivityTvsou extends Activity
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hot1);
+        setContentView(R.layout.activity_hot_tvsou);
         
         mListView = (ListView)findViewById(R.id.hot_list_view);
         mItemList = new ArrayList<ResultProgramAdapter.IListItem>();
@@ -97,7 +97,7 @@ public class HotActivityTvsou extends Activity
                         ResultProgramAdapter.Item item = new ResultProgramAdapter.Item();
                         item.title = title;
                         item.hasLink = true;
-                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_item, R.id.hot_program_name_tv);
+                        ResultProgramAdapter.ContentItem contentItem = new ResultProgramAdapter.ContentItem(item, R.layout.hot_program_tvsou_item, R.id.hot_program_name_tv);
                         contentItem.setClickable(true);
                         HashMap<String, HashMap<String, String>> extraInfo = new HashMap<String, HashMap<String, String>>();
                         extraInfo.put("programInfo", entryList.get(i).programList.get(j));

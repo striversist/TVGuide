@@ -31,7 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class HotActivityTvmao extends Activity implements Callback 
+public class HotActivity extends Activity implements Callback 
 {
     private LayoutInflater mInflater;
     private ViewPager mViewPager;
@@ -47,7 +47,7 @@ public class HotActivityTvmao extends Activity implements Callback
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hot2);
+        setContentView(R.layout.activity_hot);
         
         mInflater = LayoutInflater.from(this);
         mViewPager = (ViewPager) findViewById(R.id.hot_view_pager);
@@ -61,11 +61,11 @@ public class HotActivityTvmao extends Activity implements Callback
         {
             if (mTabsGroup.getChildAt(i) instanceof RadioButton)
             {
-                LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+                LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
                 ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
                 mPageAdapter.addView(loadingLayout);
                 
-                mClassifyLayoutMap.put(TabIndex.values()[mPageAdapter.getCount() - 1], (LinearLayout) mInflater.inflate(R.layout.hot2_program_layout, null));
+                mClassifyLayoutMap.put(TabIndex.values()[mPageAdapter.getCount() - 1], (LinearLayout) mInflater.inflate(R.layout.hot_program_layout, null));
             }
         }
         mViewPager.setAdapter(mPageAdapter);
@@ -161,7 +161,7 @@ public class HotActivityTvmao extends Activity implements Callback
             case 0:
                 TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
                 LinearLayout layout = mClassifyLayoutMap.get(curIndex);
-                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivityTvmao.this, mProgramInfoListMap.get(curIndex));
+                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivity.this, mProgramInfoListMap.get(curIndex));
                 ListView hotProgramListView = (ListView) layout.findViewById(R.id.hot_program_listview);
                 hotProgramListView.setAdapter(adapter);
                 
@@ -183,7 +183,7 @@ public class HotActivityTvmao extends Activity implements Callback
                         else if (curIndex == TabIndex.Tvcolumn)
                             link = link.replace("www.tvmao.com", "m.tvmao.com");
                         
-                        Intent intent = new Intent(HotActivityTvmao.this, ProgramActivity.class);
+                        Intent intent = new Intent(HotActivity.this, ProgramActivity.class);
                         Program program = new Program();
                         program.title = name;
                         program.link = link;
