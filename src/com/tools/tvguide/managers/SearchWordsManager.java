@@ -8,13 +8,19 @@ import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.views.SearchHotwordsView;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class SearchWordsManager
 {
     private Context mContext;
+    private SharedPreferences   mPreference;
+    private static final String SHARE_PREFERENCES_NAME                      = "searchwords_settings";
+    private static final String KEY_POP_SEARCH_LAST_UPDATE_FLAG             = "key_pop_search_last_update_flag";
+    
     private List<String> mPopSearchList;
     private List<String> mHistorySearchList;
     private HashMap<String, List<String>> mSearchWordsMap;
+    
     public abstract interface UpdateListener
     {
         public void onUpdateFinish(List<String> result);
@@ -27,15 +33,16 @@ public class SearchWordsManager
         mPopSearchList = new ArrayList<String>();
         mHistorySearchList = new ArrayList<String>();
         mSearchWordsMap = new HashMap<String, List<String>>();
+        mPreference = mContext.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
         load();
     }
     
     public boolean needUpdate()
     {
-        long lastStartTime = AppEngine.getInstance().getBootManager().getLastStartTime();
+        long lastUpdateTime = mPreference.getLong(KEY_POP_SEARCH_LAST_UPDATE_FLAG, 0);
         long currentTime = System.currentTimeMillis();
         
-        if ((currentTime - lastStartTime) > 3600 * 12 * 1000)   // 超过12个小时，则需要重新更新
+        if ((currentTime - lastUpdateTime) > 3600 * 12 * 1000)   // 超过12个小时，则需要重新更新
             return true;
         
         return false;
@@ -91,6 +98,7 @@ public class SearchWordsManager
                     if (listener != null)
                         listener.onUpdateFinish(mPopSearchList);
                     store();
+                    mPreference.edit().putLong(KEY_POP_SEARCH_LAST_UPDATE_FLAG, System.currentTimeMillis()).commit();
                 }
             }
         });
