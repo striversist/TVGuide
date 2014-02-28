@@ -57,7 +57,7 @@ public class HotProgramListAdapter extends BaseAdapter
         
         if (convertView == null)
         {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.classify_item, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.hot_program_item, parent, false);
             TextView nameTextView = (TextView) convertView.findViewById(R.id.classify_item_name_tv);
             TextView profileTextView = (TextView) convertView.findViewById(R.id.classify_item_text_tv);
             NetImageView netImageView = (NetImageView) convertView.findViewById(R.id.classify_item_net_iv);

@@ -327,7 +327,7 @@ public class SearchActivity extends Activity
                     if (channel == null || programList == null)
                         continue;
                     
-                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.hot_channel_item, R.id.hot_channel_name_tv));
+                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.hot_channel_tvsou_item, R.id.hot_channel_name_tv));
                     for (int j=0; j<programList.size(); ++j)
                     {
                         Item item = new Item();

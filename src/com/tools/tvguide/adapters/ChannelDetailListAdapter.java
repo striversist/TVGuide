@@ -232,7 +232,7 @@ public class ChannelDetailListAdapter extends BaseAdapter
         @Override
         public int getLayout() 
         {
-            return R.layout.hot_channel_item;
+            return R.layout.hot_channel_tvsou_item;
         }
 
         @Override

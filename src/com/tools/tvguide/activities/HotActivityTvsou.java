@@ -90,7 +90,7 @@ public class HotActivityTvsou extends Activity
                 List<HotHtmlManager.HotEntry> entryList = AppEngine.getInstance().getHotHtmlManager().getEntryList();
                 for (int i=0; i<entryList.size(); ++i)
                 {
-                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName, R.layout.hot_channel_item, R.id.hot_channel_name_tv));
+                    mItemDataList.add(new ResultProgramAdapter.LabelItem(entryList.get(i).channelName, R.layout.hot_channel_tvsou_item, R.id.hot_channel_name_tv));
                     for (int j=0; j<entryList.get(i).programList.size(); ++j)
                     {
                         String title = entryList.get(i).programList.get(j).get("name");
