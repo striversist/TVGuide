@@ -55,7 +55,7 @@ public class HotActivityTvsou extends Activity
                 
                 String name = programInfo.get("programInfo").get("name");
                 String link = programInfo.get("programInfo").get("link");
-                Intent intent = new Intent(HotActivityTvsou.this, HotProgramActivity.class);
+                Intent intent = new Intent(HotActivityTvsou.this, ProgramActivityTvsou.class);
                 intent.putExtra("name", name);
                 intent.putExtra("link", link);
                 startActivity(intent);

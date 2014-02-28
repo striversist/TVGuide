@@ -27,12 +27,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class HotProgramActivity extends Activity 
+public class ProgramActivityTvsou extends Activity 
 {
     private static int smRequestId = 0;
     private String mName;
@@ -91,9 +92,12 @@ public class HotProgramActivity extends Activity
         
         for (int i=0; i<mTabsGroup.getChildCount(); ++i)
         {
-            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
-            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
-            mProgramPageAdapter.addView(loadingLayout);
+        	if (mTabsGroup.getChildAt(i) instanceof RadioButton)
+        	{
+	            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips, null);
+	            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
+	            mProgramPageAdapter.addView(loadingLayout);
+        	}
         }
         mViewPager.setAdapter(mProgramPageAdapter);
         
@@ -136,7 +140,7 @@ public class HotProgramActivity extends Activity
             @Override
             public void run() 
             {
-                AppEngine.getInstance().getAdManager().addAdView(HotProgramActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
+                AppEngine.getInstance().getAdManager().addAdView(ProgramActivityTvsou.this, R.id.adLayout, AdSize.NORMAL_SIZE);
             }
         }, 500);
     }
@@ -177,7 +181,7 @@ public class HotProgramActivity extends Activity
     {
         if (mEpisodes != null && mEpisodes.size() > 0)
         {
-            Intent intent = new Intent(HotProgramActivity.this, EpisodeActivity.class);
+            Intent intent = new Intent(ProgramActivityTvsou.this, EpisodeActivity.class);
             ArrayList<HashMap<String, String>> episodes = new ArrayList<HashMap<String,String>>();
             episodes.addAll(mEpisodes);
             intent.putExtra("source", "tvsou");
@@ -307,7 +311,7 @@ public class HotProgramActivity extends Activity
                         space.put("name", " ");
                         data.add(space);
                     }
-                    ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new SimpleAdapter(HotProgramActivity.this, 
+                    ((ListView) mPlayTimesLayout.findViewById(R.id.program_tab_playtimes_listview)).setAdapter(new SimpleAdapter(ProgramActivityTvsou.this, 
                             data, R.layout.program_tab_playtimes_item, new String[]{"name"}, new int[]{R.id.playtimes_item_text}));
                     ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_PLAYTIMES)).removeAllViews();
                     ((LinearLayout) mProgramPageAdapter.getView(TAB_INDEX_PLAYTIMES)).addView(mPlayTimesLayout, mCenterLayoutParams);
