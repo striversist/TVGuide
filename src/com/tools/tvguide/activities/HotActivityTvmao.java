@@ -31,7 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class HotActivity2 extends Activity implements Callback 
+public class HotActivityTvmao extends Activity implements Callback 
 {
     private LayoutInflater mInflater;
     private ViewPager mViewPager;
@@ -161,7 +161,7 @@ public class HotActivity2 extends Activity implements Callback
             case 0:
                 TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
                 LinearLayout layout = mClassifyLayoutMap.get(curIndex);
-                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivity2.this, mProgramInfoListMap.get(curIndex));
+                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivityTvmao.this, mProgramInfoListMap.get(curIndex));
                 ListView hotProgramListView = (ListView) layout.findViewById(R.id.hot_program_listview);
                 hotProgramListView.setAdapter(adapter);
                 
@@ -183,7 +183,7 @@ public class HotActivity2 extends Activity implements Callback
                         else if (curIndex == TabIndex.Tvcolumn)
                             link = link.replace("www.tvmao.com", "m.tvmao.com");
                         
-                        Intent intent = new Intent(HotActivity2.this, ProgramActivity.class);
+                        Intent intent = new Intent(HotActivityTvmao.this, ProgramActivity.class);
                         Program program = new Program();
                         program.title = name;
                         program.link = link;
