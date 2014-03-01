@@ -79,7 +79,7 @@ public class CategorylistActivity extends Activity
             @Override
             public void run() 
             {
-                AppEngine.getInstance().getAdManager().addAdView(CategorylistActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
+                AppEngine.getInstance().getAdManager().addAdView(CategorylistActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
             }
         }, 500);
     }

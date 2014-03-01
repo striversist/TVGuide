@@ -94,7 +94,7 @@ public class ChannellistActivity extends Activity
             @Override
             public void run() 
             {
-                AppEngine.getInstance().getAdManager().addAdView(ChannellistActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
+                AppEngine.getInstance().getAdManager().addAdView(ChannellistActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
             }
         }, 500);
     }

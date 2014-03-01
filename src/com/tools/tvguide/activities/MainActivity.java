@@ -1,7 +1,6 @@
 package com.tools.tvguide.activities;
 
 import com.tools.tvguide.R;
-import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 
 import android.os.Bundle;
@@ -10,11 +9,9 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends TabActivity
@@ -59,16 +56,6 @@ public class MainActivity extends TabActivity
         }, delayTime);
         
         AppEngine.getInstance().getAdManager().init();
-        new Handler().postDelayed(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {               
-                boolean adShow = AppEngine.getInstance().getAdManager().addAdView(MainActivity.this, R.id.adLayout, AdSize.MINI_SIZE);
-                if (adShow)
-                    ((TextView) findViewById(R.id.title_tv)).setVisibility(View.GONE);
-            }
-        }, delayTime * 2);
     }
     
     private void config()
