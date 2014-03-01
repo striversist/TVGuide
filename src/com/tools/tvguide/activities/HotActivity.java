@@ -133,28 +133,27 @@ public class HotActivity extends Activity implements Callback
                 hotUrl = UrlManager.URL_HOT_MOVIE;
                 break;
         }
-        
-        if (mProgramInfoListMap.get(curIndex) == null)       // Not loading yet
-        {
-            AppEngine.getInstance().getProgramHtmlManager().getHotProgramsAsync(0, hotUrl, new HotProgramsCallback() 
-            {
-                @Override
-                public void onProgramsLoaded(int requestId, List<HashMap<String, String>> programInfoList) 
-                {
-                    if (!programInfoList.isEmpty())
-                    {
-                        List<HashMap<String, String>> tmpProgramInfoList = new ArrayList<HashMap<String,String>>();
-                        tmpProgramInfoList.addAll(programInfoList);
-                        mProgramInfoListMap.put(curIndex, tmpProgramInfoList);
-                        mUiHandler.sendEmptyMessage(0);
-                    }
-                }
-            });
-        }
-        else 
+
+        if (mProgramInfoListMap.get(curIndex) != null)
         {
             mUiHandler.sendEmptyMessage(0);
+            return;
         }
+        
+        AppEngine.getInstance().getProgramHtmlManager().getHotProgramsAsync(0, hotUrl, new HotProgramsCallback() 
+        {
+            @Override
+            public void onProgramsLoaded(int requestId, List<HashMap<String, String>> programInfoList) 
+            {
+                if (!programInfoList.isEmpty())
+                {
+                    List<HashMap<String, String>> tmpProgramInfoList = new ArrayList<HashMap<String,String>>();
+                    tmpProgramInfoList.addAll(programInfoList);
+                    mProgramInfoListMap.put(curIndex, tmpProgramInfoList);
+                    mUiHandler.sendEmptyMessage(0);
+                }
+            }
+        });
     }
 
     @Override
@@ -169,11 +168,16 @@ public class HotActivity extends Activity implements Callback
                 
                 LinearLayout layout = mClassifyLayoutMap.get(curIndex);
                 ListView hotProgramListView = (ListView) layout.findViewById(R.id.hot_program_listview);
-                if (hotProgramListView.getAdapter() != null)    // 已经设置并展示了页面
-                    break;
-                
-                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivity.this, mProgramInfoListMap.get(curIndex));
-                hotProgramListView.setAdapter(adapter);
+                HotProgramListAdapter adapter = (HotProgramListAdapter) hotProgramListView.getAdapter();
+                if (adapter == null)
+                {
+                    adapter = new HotProgramListAdapter(HotActivity.this, mProgramInfoListMap.get(curIndex));
+                    hotProgramListView.setAdapter(adapter);
+                }
+                else 
+                {
+                    adapter.updateItems(mProgramInfoListMap.get(curIndex));
+                }
                 
                 hotProgramListView.setOnItemClickListener(new OnItemClickListener() 
                 {

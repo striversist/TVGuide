@@ -31,6 +31,15 @@ public class HotProgramListAdapter extends BaseAdapter
         mProgramInfoList.addAll(programInfoList);
     }
     
+    public void updateItems(List<HashMap<String, String>> programInfoList)
+    {
+        if (programInfoList == null)
+            return;
+        mProgramInfoList.clear();
+        mProgramInfoList.addAll(programInfoList);
+        notifyDataSetChanged();
+    }
+    
     @Override
     public int getCount() 
     {
