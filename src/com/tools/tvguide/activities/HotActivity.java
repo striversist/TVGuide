@@ -151,6 +151,10 @@ public class HotActivity extends Activity implements Callback
                 }
             });
         }
+        else 
+        {
+            mUiHandler.sendEmptyMessage(0);
+        }
     }
 
     @Override
@@ -160,9 +164,15 @@ public class HotActivity extends Activity implements Callback
         {
             case 0:
                 TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
+                if (mProgramInfoListMap.get(curIndex) == null)
+                    break;
+                
                 LinearLayout layout = mClassifyLayoutMap.get(curIndex);
-                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivity.this, mProgramInfoListMap.get(curIndex));
                 ListView hotProgramListView = (ListView) layout.findViewById(R.id.hot_program_listview);
+                if (hotProgramListView.getAdapter() != null)    // 已经设置并展示了页面
+                    break;
+                
+                HotProgramListAdapter adapter = new HotProgramListAdapter(HotActivity.this, mProgramInfoListMap.get(curIndex));
                 hotProgramListView.setAdapter(adapter);
                 
                 hotProgramListView.setOnItemClickListener(new OnItemClickListener() 
