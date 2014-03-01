@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -289,7 +288,7 @@ public class ProgramHtmlManager
             // 返回结果
             String summary = "";
             String descriptionLink = programUrl + "/detail";
-            Document descriptionDoc = Jsoup.connect(descriptionLink).get();
+            Document descriptionDoc = HtmlUtils.getDocument(descriptionLink);
             Element descriptionElement = descriptionDoc.select("p.desc").first();
             if (descriptionElement != null)
             {
