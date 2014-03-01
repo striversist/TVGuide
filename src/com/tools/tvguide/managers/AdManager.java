@@ -1,9 +1,5 @@
 package com.tools.tvguide.managers;
 
-import net.youmi.android.banner.AdView;
-import net.youmi.android.diy.banner.DiyAdSize;
-import net.youmi.android.diy.banner.DiyBanner;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
@@ -25,8 +21,6 @@ public class AdManager
 	public void init()
 	{
 		// 初始化应用的发布ID和密钥，以及设置测试模式
-		net.youmi.android.AdManager.getInstance(mContext).init("18d3cb43223cb656", "ca026a5093fb2378", false);
-		net.youmi.android.AdManager.getInstance(mContext).setEnableDebugLog(false);
 	}
 	
 	/**
@@ -47,10 +41,8 @@ public class AdManager
 		switch (size) 
 		{
 			case MINI_SIZE:
-				layout.addView(new DiyBanner(activity, DiyAdSize.SIZE_MATCH_SCREENx32));
 				break;
 			case NORMAL_SIZE:
-				layout.addView(new AdView(activity, net.youmi.android.banner.AdSize.FIT_SCREEN));
 				break;
 		}
 		layout.setVisibility(View.VISIBLE);

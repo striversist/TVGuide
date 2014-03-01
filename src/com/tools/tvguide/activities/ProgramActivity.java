@@ -1,9 +1,6 @@
 package com.tools.tvguide.activities;
 
 import com.tools.tvguide.R;
-import com.tools.tvguide.R.id;
-import com.tools.tvguide.R.layout;
-import com.tools.tvguide.R.string;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
