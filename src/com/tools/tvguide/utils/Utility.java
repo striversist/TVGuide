@@ -2,6 +2,8 @@ package com.tools.tvguide.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -253,5 +255,32 @@ public class Utility
         }
         
         return bitmap;
+    }
+    
+    public static String addUrlGetParam(String url, String paramName, String paramValue, boolean isFirstParam)
+    {
+        if (url == null || paramName == null)
+            return url;
+     
+        String newUrl = url;
+        if (paramValue == null)
+            paramValue = "";
+        
+        if (isFirstParam)
+            newUrl += "?";
+        else
+            newUrl += "&";
+        
+        try 
+        {
+            newUrl += paramName + "=" + URLEncoder.encode(paramValue, "UTF-8");
+        } 
+        catch (UnsupportedEncodingException e) 
+        {
+            newUrl = url;
+            e.printStackTrace();
+        }
+        
+        return newUrl;
     }
 }

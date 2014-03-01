@@ -16,6 +16,7 @@ import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
+import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -57,6 +58,7 @@ public class ContentManager implements Shutter
             public void run()
             {
                 String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Categories) + "?type=" + type;
+                url = Utility.addUrlGetParam(url, "app_channel", AppEngine.getInstance().getUpdateManager().getAppChannelName(), false);
                 NetDataGetter getter;
                 try 
                 {
