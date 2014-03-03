@@ -2,19 +2,23 @@ package com.tools.tvguide.activities;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.BootManager.OnStartedCallback;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends TabActivity
+public class MainActivity extends TabActivity implements OnStartedCallback
 {
     private static final String TAG = "MainActivity";
     private TabHost         mTabHost;
@@ -26,6 +30,7 @@ public class MainActivity extends TabActivity
     private String          mStringSearch;
     private String          mStringAbout;
     private String          mStringMore;
+    private TextView        mNewMsg;
     
     private long mExitTime;
     
@@ -37,7 +42,7 @@ public class MainActivity extends TabActivity
         
         // Must be set first
         AppEngine.getInstance().setContext(this);
-        AppEngine.getInstance().getBootManager().start();
+        AppEngine.getInstance().getBootManager().start(this);
         
         // 延缓MainActivity组件的初始化（显示），否则在闪屏之前背景会闪出一下，影响体验
         int delayTime = 0;
@@ -69,6 +74,7 @@ public class MainActivity extends TabActivity
         mStringSearch   = getResources().getString(R.string.category_search);
         mStringAbout    = getResources().getString(R.string.category_hot);
         mStringMore     = getResources().getString(R.string.category_more);
+        mNewMsg         = (TextView) findViewById(R.id.new_msg_tv);
        
         mTabHost.addTab(mTabHost.newTabSpec(mStringHome)
                 .setIndicator(getResources().getString(R.string.category_home))
@@ -171,8 +177,30 @@ public class MainActivity extends TabActivity
         }
     }
     
+    public void onClick(View view)
+    {
+        switch (view.getId()) 
+        {
+            case R.id.tab_more:
+                mTabGroup.check(R.id.tab_more);
+                if (mNewMsg.getVisibility() == View.VISIBLE)
+                    mNewMsg.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
+    
     public void doOnDestroy()
     {
         android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    @Override
+    public void OnUpdateInfo(boolean needUpdate) 
+    {
+        if (needUpdate)
+        {
+            if (!TextUtils.equals(mTabHost.getCurrentTabTag(), mStringMore))    // 当前Tab没有被选中时
+                mNewMsg.setVisibility(View.VISIBLE);
+        }
     }
 }

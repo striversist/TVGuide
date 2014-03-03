@@ -10,11 +10,16 @@
         <FrameLayout android:id="@android:id/tabcontent" android:layout_width="fill_parent" android:layout_height="0dip" android:layout_weight="1.0" />
         <TabWidget android:id="@android:id/tabs" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1.0" />
         <RadioGroup android:id="@+id/tab_group" android:gravity="center_vertical" android:layout_gravity="bottom" android:orientation="horizontal" android:background="@drawable/phonetabview_bg" android:layout_width="fill_parent" android:layout_height="wrap_content">"
-	        <RadioButton android:id="@+id/tab_home" android:checked="true" android:text="@string/category_home" android:drawableTop="@drawable/tab_home_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
-	        <RadioButton android:id="@+id/tab_collect" android:text="@string/category_collect" android:drawableTop="@drawable/tab_collect_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
-	        <RadioButton android:id="@+id/tab_search" android:text="@string/category_search" android:drawableTop="@drawable/tab_search_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
-	        <RadioButton android:id="@+id/tab_hot" android:text="@string/category_hot" android:drawableTop="@drawable/tab_hot_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
-	        <RadioButton android:id="@+id/tab_more" android:text="@string/category_more" android:drawableTop="@drawable/tab_more_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+            <RadioButton android:id="@+id/tab_home" android:checked="true" android:text="@string/category_home" android:drawableTop="@drawable/tab_home_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+            <RadioButton android:id="@+id/tab_collect" android:text="@string/category_collect" android:drawableTop="@drawable/tab_collect_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+            <RadioButton android:id="@+id/tab_search" android:text="@string/category_search" android:drawableTop="@drawable/tab_search_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+            <RadioButton android:id="@+id/tab_hot" android:text="@string/category_hot" android:drawableTop="@drawable/tab_hot_selector" android:layout_weight="1.0" style="@style/main_tab_bottom" />
+            <FrameLayout android:background="@null" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1.0">
+                <LinearLayout android:gravity="bottom|center" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <RadioButton android:id="@+id/tab_more" android:text="@string/category_more" android:drawableTop="@drawable/tab_more_selector" style="@style/main_tab_bottom" android:onClick="onClick" />
+                </LinearLayout>
+                <TextView android:id="@+id/new_msg_tv" android:textSize="10.0dip" android:textColor="@color/white" android:gravity="center" android:layout_gravity="top|center" android:background="@drawable/new_message_icon_tab" android:visibility="invisible" android:layout_width="16.0dip" android:layout_height="16.0dip" android:layout_marginLeft="15.0dip" />
+            </FrameLayout>
         </RadioGroup>
     </LinearLayout>
 </TabHost>

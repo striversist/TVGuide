@@ -27,12 +27,18 @@ public class BootManager implements Shutter
     private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
     private static final String KEY_LAST_START_FLAG                         = "key_last_start_flag";
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
+    private OnStartedCallback  mOnStartedCallback;
     private boolean             mIsSplashShowing                            = false;
     private enum SelfMessage {Msg_Need_Update};
     
     public interface OnSplashFinishedCallback
     {
         void OnSplashFinished();
+    }
+    
+    public interface OnStartedCallback
+    {
+        void OnUpdateInfo(boolean needUpdate);
     }
     
     public BootManager(Context context)
@@ -42,6 +48,13 @@ public class BootManager implements Shutter
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
         GlobalData.UserAgent = getUserAgentInternal();
         mOnSplashFinishedCallbackList = new ArrayList<BootManager.OnSplashFinishedCallback>();
+    }
+    
+    public void start(OnStartedCallback callback)
+    {
+        assert (callback != null);
+        mOnStartedCallback = callback;
+        start();
     }
     
     public void start()
@@ -170,6 +183,8 @@ public class BootManager implements Shutter
             {
                 case Msg_Need_Update:
                     Toast.makeText(AppEngine.getInstance().getApplicationContext(), "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
+                    if (mOnStartedCallback != null)
+                        mOnStartedCallback.OnUpdateInfo(true);
                     break;
             }
         }
