@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.tools.tvguide.components.VersionController;
+import com.tools.tvguide.managers.UpdateManager.IOCompleteCallback.CheckResult;
 
 import android.content.Context;
 
@@ -21,9 +22,8 @@ public class UpdateManager
     
     public interface IOCompleteCallback
     {
-        void OnIOComplete(int result);
-        final int NEED_UPDATE = 0;
-        final int NO_NEED_UPDATE = 1;
+        void OnIOComplete(CheckResult result);
+        enum CheckResult {Need_Update, No_Need_Update};
     }
     public UpdateManager(Context context)
     {
@@ -61,6 +61,15 @@ public class UpdateManager
     
     public boolean checkUpdate(final IOCompleteCallback callback)
     {
+        if (mChecked)
+        {
+            if (mIsNeedUpdate)
+                callback.OnIOComplete(CheckResult.Need_Update);
+            else
+                callback.OnIOComplete(CheckResult.No_Need_Update);
+            return true;
+        }
+        
         new Thread()
         {
             public void run()
@@ -68,22 +77,16 @@ public class UpdateManager
                 if (mVersionController.checkLatestVersion())
                 {
                     mIsNeedUpdate = true;
-                    callback.OnIOComplete(IOCompleteCallback.NEED_UPDATE);
+                    callback.OnIOComplete(CheckResult.Need_Update);
                 }
                 else
                 {
-                    callback.OnIOComplete(IOCompleteCallback.NO_NEED_UPDATE);
+                    callback.OnIOComplete(CheckResult.No_Need_Update);
                 }
                 mChecked = true;
             }
         }.start();
         return false;
-    }
-    
-    public boolean isNeedUpdate()
-    {
-        assert(mChecked);
-        return mIsNeedUpdate;
     }
     
     public String getCurrentVersionName()

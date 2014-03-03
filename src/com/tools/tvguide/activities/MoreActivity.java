@@ -24,6 +24,7 @@ public class MoreActivity extends Activity
     private Dialog mInfoDialog;
     private Dialog mDownloaDialog;
     private TextView mUpdateNewIcon;
+    private enum SelfMessage {Msg_Need_Update, Msg_No_Need_Update, Msg_Update_Icon_Show, Msg_Update_Icon_Hide};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -44,10 +45,17 @@ public class MoreActivity extends Activity
     protected void onResume()
     {
         super.onResume();
-        if (AppEngine.getInstance().getUpdateManager().isNeedUpdate())
-            mUpdateNewIcon.setVisibility(View.VISIBLE);
-        else
-            mUpdateNewIcon.setVisibility(View.INVISIBLE);
+        AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
+        {
+            @Override
+            public void OnIOComplete(CheckResult result) 
+            {
+                if (result == CheckResult.Need_Update)
+                    uiHandler.obtainMessage(SelfMessage.Msg_Update_Icon_Show.ordinal()).sendToTarget();
+                else
+                    uiHandler.obtainMessage(SelfMessage.Msg_Update_Icon_Hide.ordinal()).sendToTarget();
+            }
+        });
     }
     
     private void createDialogs()
@@ -110,9 +118,12 @@ public class MoreActivity extends Activity
         mCheckingDialog.show();
         AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
         {
-            public void OnIOComplete(int result) 
+            public void OnIOComplete(CheckResult result) 
             {
-                uiHandler.sendEmptyMessage(result);
+                if (result == CheckResult.Need_Update)
+                    uiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
+                else
+                    uiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
             }
         });
     }
@@ -152,9 +163,10 @@ public class MoreActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            switch (msg.what)
+            SelfMessage selfMsg = SelfMessage.values()[msg.what];
+            switch (selfMsg)
             {
-                case UpdateManager.IOCompleteCallback.NEED_UPDATE:
+                case Msg_Need_Update:
                     if (mCheckingDialog.isShowing())
                     {
                         mCheckingDialog.dismiss();
@@ -189,12 +201,18 @@ public class MoreActivity extends Activity
                         mDownloaDialog.show();
                     }
                     break;
-                case UpdateManager.IOCompleteCallback.NO_NEED_UPDATE:
+                case Msg_No_Need_Update:
                     if (mCheckingDialog.isShowing())
                     {
                         mCheckingDialog.dismiss();
                         mInfoDialog.show();
                     }
+                    break;
+                case Msg_Update_Icon_Show:
+                    mUpdateNewIcon.setVisibility(View.VISIBLE);
+                    break;
+                case Msg_Update_Icon_Hide:
+                    mUpdateNewIcon.setVisibility(View.INVISIBLE);
                     break;
             }
         }

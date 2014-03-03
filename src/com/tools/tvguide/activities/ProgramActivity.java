@@ -43,7 +43,7 @@ public class ProgramActivity extends Activity
     private LinearLayout mSummaryLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
     
-    enum SelfMessage {MSG_TITLE_LOADED, MSG_SUMMARY_LOADED, MSG_PROFILE_LOADED, MSG_PICTURE_LOADED, MSG_HAS_DETAIL_PLOTS};
+    private enum SelfMessage {MSG_TITLE_LOADED, MSG_SUMMARY_LOADED, MSG_PROFILE_LOADED, MSG_PICTURE_LOADED, MSG_HAS_DETAIL_PLOTS};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 

@@ -7,7 +7,6 @@ import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.components.SplashDialog;
 import com.tools.tvguide.data.GlobalData;
-import com.tools.tvguide.managers.UpdateManager.IOCompleteCallback;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
@@ -29,6 +28,7 @@ public class BootManager implements Shutter
     private static final String KEY_LAST_START_FLAG                         = "key_last_start_flag";
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
     private boolean             mIsSplashShowing                            = false;
+    private enum SelfMessage {Msg_Need_Update};
     
     public interface OnSplashFinishedCallback
     {
@@ -59,9 +59,10 @@ public class BootManager implements Shutter
             {
                 AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
                 {
-                    public void OnIOComplete(int result) 
+                    public void OnIOComplete(CheckResult result) 
                     {
-                        uiHandler.sendEmptyMessage(result);
+                        if (result == CheckResult.Need_Update)
+                            uiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
                     }
                 });
                 AppEngine.getInstance().getLoginManager().login();
@@ -164,12 +165,11 @@ public class BootManager implements Shutter
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            switch(msg.what)
+            SelfMessage selfMsg = SelfMessage.values()[msg.what];
+            switch(selfMsg)
             {
-                case IOCompleteCallback.NEED_UPDATE:
+                case Msg_Need_Update:
                     Toast.makeText(AppEngine.getInstance().getApplicationContext(), "有新版本啦，请检查更新", Toast.LENGTH_LONG).show();
-                    break;
-                case IOCompleteCallback.NO_NEED_UPDATE:
                     break;
             }
         }
