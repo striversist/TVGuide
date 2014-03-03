@@ -1,12 +1,9 @@
 package com.tools.tvguide.components;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Locale;
-import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -18,14 +15,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.utils.MyApplication;
-import com.tools.tvguide.utils.NetDataGetter;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.AssetManager;
 
 public class VersionController
 {
