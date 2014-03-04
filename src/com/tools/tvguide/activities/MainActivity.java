@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback
     private String          mStringSearch;
     private String          mStringAbout;
     private String          mStringMore;
-    private TextView        mNewMsg;
+    private ImageView        mNewMsg;
     
     private long mExitTime;
     
@@ -74,7 +75,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback
         mStringSearch   = getResources().getString(R.string.category_search);
         mStringAbout    = getResources().getString(R.string.category_hot);
         mStringMore     = getResources().getString(R.string.category_more);
-        mNewMsg         = (TextView) findViewById(R.id.new_msg_tv);
+        mNewMsg         = (ImageView) findViewById(R.id.new_msg_tv);
        
         mTabHost.addTab(mTabHost.newTabSpec(mStringHome)
                 .setIndicator(getResources().getString(R.string.category_home))

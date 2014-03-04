@@ -18,7 +18,7 @@
                 <LinearLayout android:gravity="bottom|center" android:layout_width="fill_parent" android:layout_height="wrap_content">
                     <RadioButton android:id="@+id/tab_more" android:text="@string/category_more" android:drawableTop="@drawable/tab_more_selector" style="@style/main_tab_bottom" android:onClick="onClick" />
                 </LinearLayout>
-                <TextView android:id="@+id/new_msg_tv" android:textSize="10.0dip" android:textColor="@color/white" android:gravity="center" android:layout_gravity="top|center" android:background="@drawable/new_message_icon_tab" android:visibility="invisible" android:layout_width="16.0dip" android:layout_height="16.0dip" android:layout_marginLeft="15.0dip" />
+                <ImageView android:id="@+id/new_msg_tv" android:contentDescription="@null" android:textColor="@color/white" android:gravity="center" android:layout_gravity="top|center" android:background="@drawable/more_update_new" android:visibility="invisible" android:scaleType="fitXY" android:layout_width="24.0dip" android:layout_height="24.0dip" android:layout_marginLeft="15.0dip" />
             </FrameLayout>
         </RadioGroup>
     </LinearLayout>
