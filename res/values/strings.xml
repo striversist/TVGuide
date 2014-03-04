@@ -31,7 +31,8 @@
     <string name="recent_view">最近查看</string>
     <string name="user_home">个人中心</string>
     <string name="alarm">闹钟提醒</string>
-    <string name="version_check">检查新版本(ver %1$s)</string>
+    <string name="version_check">检查新版本 (当前: %1$s)</string>
+    <string name="version_upgrade">版本升级 (%1$s -> %2$s)</string>
     <string name="issue_title">意见反馈</string>
     <string name="about">关于</string>
     <string name="refresh">刷新</string>

@@ -8,6 +8,7 @@ import com.tools.tvguide.components.PackageInstaller;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,13 +19,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MoreActivity extends Activity 
+public class MoreActivity extends Activity implements Callback 
 {
     private Dialog mCheckingDialog;
     private Dialog mInfoDialog;
     private Dialog mDownloaDialog;
+    private TextView mCheckTextView;
     private TextView mUpdateNewIcon;
-    private enum SelfMessage {Msg_Need_Update, Msg_No_Need_Update, Msg_Update_Icon_Show, Msg_Update_Icon_Hide};
+    private Handler mUiHandler;
+    private enum SelfMessage {Msg_Need_Update, Msg_No_Need_Update};
+    private enum TextStatus {State_Check, State_Upgrade};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -33,12 +37,14 @@ public class MoreActivity extends Activity
         setContentView(R.layout.activity_more);
         createDialogs();
         
-        TextView checkTextView = (TextView)findViewById(R.id.more_version_check);
-        String versionFormat = checkTextView.getText().toString();
+        mCheckTextView = (TextView)findViewById(R.id.more_version_check);
+        String versionFormat = mCheckTextView.getText().toString();
         String finalVersion = String.format(versionFormat, AppEngine.getInstance().getUpdateManager().getCurrentVersionName());
-        checkTextView.setText(finalVersion);
+        mCheckTextView.setText(finalVersion);
+        mCheckTextView.setTag(TextStatus.State_Check);
         
         mUpdateNewIcon = (TextView)findViewById(R.id.more_update_new_icon);
+        mUiHandler = new Handler(this);
     }
     
     @Override
@@ -51,9 +57,9 @@ public class MoreActivity extends Activity
             public void OnIOComplete(CheckResult result) 
             {
                 if (result == CheckResult.Need_Update)
-                    uiHandler.obtainMessage(SelfMessage.Msg_Update_Icon_Show.ordinal()).sendToTarget();
+                    mUiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
                 else
-                    uiHandler.obtainMessage(SelfMessage.Msg_Update_Icon_Hide.ordinal()).sendToTarget();
+                    mUiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
             }
         });
     }
@@ -95,7 +101,11 @@ public class MoreActivity extends Activity
                 startActivity(alarmIntent);
                 break;
             case R.id.more_check_new_ver:
-                checkNewVersion();
+                TextStatus state = (TextStatus) mCheckTextView.getTag();
+                if (state == TextStatus.State_Check)
+                    checkNewVersion();
+                else if (state == TextStatus.State_Upgrade)
+                    upgrade();
                 break;
             case R.id.more_feedback:
                 Intent feedbackIntent = new Intent(MoreActivity.this, FeedbackActivity.class);
@@ -121,9 +131,9 @@ public class MoreActivity extends Activity
             public void OnIOComplete(CheckResult result) 
             {
                 if (result == CheckResult.Need_Update)
-                    uiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
+                    mUiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
                 else
-                    uiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
+                    mUiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
             }
         });
     }
@@ -146,6 +156,13 @@ public class MoreActivity extends Activity
         dialog.show();
     }
     
+    private void upgrade()
+    {
+        String newUrl = UrlManager.tryToReplaceHostNameWithIP(AppEngine.getInstance().getUpdateManager().getUrl());
+        new PackageInstaller(MoreActivity.this).installRemotePackage(newUrl);
+        Toast.makeText(MoreActivity.this, "正在下载...", Toast.LENGTH_SHORT).show();
+    }
+    
     private void clearCache()
     {
         AppEngine.getInstance().getCacheManager().clear();
@@ -157,64 +174,61 @@ public class MoreActivity extends Activity
         AppEngine.getInstance().prepareBeforeExit();
         finish();
     }
-    
-    private Handler uiHandler = new Handler()
+
+    @Override
+    public boolean handleMessage(Message msg) 
     {
-        public void handleMessage(Message msg)
+        SelfMessage selfMsg = SelfMessage.values()[msg.what];
+        switch (selfMsg)
         {
-            super.handleMessage(msg);
-            SelfMessage selfMsg = SelfMessage.values()[msg.what];
-            switch (selfMsg)
-            {
-                case Msg_Need_Update:
-                    if (mCheckingDialog.isShowing())
-                    {
-                        mCheckingDialog.dismiss();
-                        
-                        String downloadMsg;
-                        if (AppEngine.getInstance().getUpdateManager().getLatestVersionName() != null)
-                            downloadMsg = "发现最新版本(" + AppEngine.getInstance().getUpdateManager().getLatestVersionName() + "), 是否需要更新？";
-                        else
-                            downloadMsg = "发现最新版本，是否需要更新？";
-                        
-                        mDownloaDialog = new AlertDialog.Builder(MoreActivity.this)
-                            .setTitle("下载")
-                            .setMessage(downloadMsg)
-                            .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener()
+            case Msg_Need_Update:
+                if (mCheckingDialog.isShowing())
+                {
+                    mCheckingDialog.dismiss();
+                    
+                    String downloadMsg;
+                    if (AppEngine.getInstance().getUpdateManager().getLatestVersionName() != null)
+                        downloadMsg = "发现最新版本(" + AppEngine.getInstance().getUpdateManager().getLatestVersionName() + "), 是否需要更新？";
+                    else
+                        downloadMsg = "发现最新版本，是否需要更新？";
+                    
+                    mDownloaDialog = new AlertDialog.Builder(MoreActivity.this)
+                        .setTitle("下载")
+                        .setMessage(downloadMsg)
+                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) 
                             {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) 
-                                {
-                                }
-                            })
-                            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener()
+                            }
+                        })
+                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) 
                             {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) 
-                                {
-                                    String newUrl = UrlManager.tryToReplaceHostNameWithIP(AppEngine.getInstance().getUpdateManager().getUrl());
-                                    new PackageInstaller(MoreActivity.this).installRemotePackage(newUrl);
-                                    Toast.makeText(MoreActivity.this, "正在下载...", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .create();
-                        mDownloaDialog.show();
-                    }
-                    break;
-                case Msg_No_Need_Update:
-                    if (mCheckingDialog.isShowing())
-                    {
-                        mCheckingDialog.dismiss();
-                        mInfoDialog.show();
-                    }
-                    break;
-                case Msg_Update_Icon_Show:
-                    mUpdateNewIcon.setVisibility(View.VISIBLE);
-                    break;
-                case Msg_Update_Icon_Hide:
-                    mUpdateNewIcon.setVisibility(View.INVISIBLE);
-                    break;
-            }
+                                upgrade();
+                            }
+                        })
+                        .create();
+                    mDownloaDialog.show();
+                }
+                mUpdateNewIcon.setVisibility(View.VISIBLE);
+                String upgradeFormat = getResources().getString(R.string.version_upgrade);
+                String upgradeInfo = String.format(upgradeFormat, AppEngine.getInstance().getUpdateManager().getCurrentVersionName(), 
+                                                    AppEngine.getInstance().getUpdateManager().getLatestVersionName());
+                mCheckTextView.setText(upgradeInfo);
+                mCheckTextView.setTag(TextStatus.State_Upgrade);
+                break;
+            case Msg_No_Need_Update:
+                if (mCheckingDialog.isShowing())
+                {
+                    mCheckingDialog.dismiss();
+                    mInfoDialog.show();
+                }
+                mUpdateNewIcon.setVisibility(View.INVISIBLE);
+                break;
         }
-    };
+        return false;
+    }
 }
