@@ -24,7 +24,16 @@ public class AlarmAlertActivity extends Activity
     public void onCreate(Bundle SavedInstanceState) 
     {
         super.onCreate(SavedInstanceState);
-        mMediaPlayer = MediaPlayer.create(this, getDefaultRingtoneUri(RingtoneManager.TYPE_ALARM));
+        Uri alarmUri = getDefaultRingtoneUri(RingtoneManager.TYPE_ALARM);
+        if (alarmUri == null)
+            alarmUri = getDefaultRingtoneUri(RingtoneManager.TYPE_RINGTONE);
+        if (alarmUri == null)
+            alarmUri = getDefaultRingtoneUri(RingtoneManager.TYPE_NOTIFICATION);
+        if (alarmUri != null)
+            mMediaPlayer = MediaPlayer.create(this, alarmUri);
+        else
+            mMediaPlayer = null;
+        
         mVibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
         
         startMakingNoisy();
