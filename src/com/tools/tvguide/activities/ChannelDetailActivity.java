@@ -32,7 +32,6 @@ import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
-import com.tools.tvguide.managers.EnvironmentManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -42,6 +41,7 @@ import com.tools.tvguide.views.DetailLeftGuide.OnChannelSelectListener;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.os.Vibrator;
 import android.app.Activity;
@@ -67,7 +67,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ChannelDetailActivity extends Activity implements AlarmListener 
+public class ChannelDetailActivity extends Activity implements AlarmListener, Callback 
 {
     private static final String TAG = "ChannelDetailActivity";
     private static boolean sHasShownFirstStartTips = false;
@@ -77,9 +77,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     private String mChannelId;
     private List<Channel> mChannelList;
     private TextView mChannelNameTextView;
-    private TextView mDateTextView;
     private ListView mProgramListView;
     private ChannelDetailListAdapter mListViewAdapter;
+    private Handler mUiHandler;
     
     private ListView mDateChosenListView;
     private DateAdapter mDateAdapter;
@@ -120,6 +120,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
 //        menu.setSecondaryShadowDrawable(R.drawable.shadowright);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         
+        mUiHandler = new Handler(this);
         mChannelId = getIntent().getStringExtra("id");
         mChannelName = getIntent().getStringExtra("name");
         mChannelList = (List<Channel>) getIntent().getSerializableExtra("channel_list");
@@ -245,7 +246,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
     private void initViews()
     {
         mChannelNameTextView = (TextView) findViewById(R.id.channeldetail_channel_name_tv);
-        mDateTextView = (TextView) findViewById(R.id.channeldetail_date_tv);
         mProgramListView = (ListView) findViewById(R.id.channeldetail_program_listview);
         mDateChosenListView = (ListView) findViewById(R.id.channeldetail_date_chosen_listview);
         mFavImageView = (ImageView) findViewById(R.id.channeldetail_fav_iv);
@@ -469,8 +469,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                         mOnPlayingProgram = (Program) extraInfo.get("onplaying");
                     if (extraInfo.containsKey("days"))
                         mMaxDays = Integer.parseInt((String) extraInfo.get("days")); 
-                    uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
-                    uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_DATELIST.ordinal());
+                    mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+                    mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_DATELIST.ordinal());
                 }
             }
         });
@@ -490,7 +490,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             public void onProgramsLoaded(int requestId, List<Program> programList) 
             {
                 mProgramList.addAll(programList);
-                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
+                mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
                 updateOnplayingProgram();
                 reportVisitToProxy();
             }
@@ -499,7 +499,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             public void onDateLoaded(int requestId, final List<ChannelDate> channelDateList) 
             {
                 // TODO: 这里应该用更合适的方式重构，即用消息的方式通知，又太影响公共的逻辑
-                uiHandler.post(new Runnable() 
+                mUiHandler.post(new Runnable() 
                 {
                     @Override
                     public void run() 
@@ -534,7 +534,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             @Override
             public void onLoadFinish(int status) 
             {
-                uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
+                mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
             }
         });
     }
@@ -573,7 +573,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
                     if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
                     	sUseLocalTime = true;
                     
-                    uiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
+                    mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
                 } 
                 catch (ParseException e) 
                 {
@@ -649,66 +649,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
         tryToast.show();
         sHasShownFirstStartTips = true;
     }
-    
-    private Handler uiHandler = new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            super.handleMessage(msg);
-            SelfMessage selfMsg = SelfMessage.values()[msg.what];
-            switch (selfMsg) 
-            {
-                case MSG_UPDATE_PROGRAMS:
-                    mItemDataList.clear();
-                    mProgressDialog.dismiss();
-                    List<Program> programList = new ArrayList<Program>();
-                    programList.addAll(mProgramList);
-                    mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
-                    mProgramListView.setAdapter(mListViewAdapter);
-                    
-                    // 标注已经设定过闹钟的节目
-                    for (int i=0; i<programList.size(); ++i)
-                    {
-                        Program program = programList.get(i);
-                        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, getProgramString(program.time, program.title), mCurrentSelectedDay))
-                            mListViewAdapter.addAlarmProgram(program);
-                    }
-                    
-                    // 标注正在播放的节目
-                    if (isTodayChosen() && mOnPlayingProgram != null)
-                    {
-                        int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
-                        if (position != -1)
-                            mProgramListView.setSelection(position);
-                    }
-                    
-                    foldDateListView();
-                    
-                    if (AppEngine.getInstance().getContext() != null    // Crash上报这里进入BootManager会crash，不知原因，故先做保护
-                        && AppEngine.getInstance().getBootManager().isFirstStart() && sHasShownFirstStartTips == false)
-                    {
-                        showFirstStartTips();
-                    }
-                    break;
-                case MSG_UPDATE_ONPLAYING_PROGRAM:
-                    if (isTodayChosen() && mOnPlayingProgram != null && mListViewAdapter != null)
-                    {
-                        int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
-                        if (position != -1)
-                            mProgramListView.setSelection(position);
-                    }
-                    break;
-                case MSG_UPDATE_DATELIST:
-                    if (mMaxDays != mDateAdapter.maxDays())
-                        mDateAdapter.resetMaxDays(mMaxDays);
-                    break;
-                default:
-                    break;
-            }
-            
-        }
-    };
-    
+        
     private boolean isTodayChosen()
     {
     	return mCurrentSelectedDay == getDayOfToday();
@@ -735,5 +676,61 @@ public class ChannelDetailActivity extends Activity implements AlarmListener
             return program;
         }
         return null;
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) 
+    {
+        SelfMessage selfMsg = SelfMessage.values()[msg.what];
+        switch (selfMsg) 
+        {
+            case MSG_UPDATE_PROGRAMS:
+                mItemDataList.clear();
+                mProgressDialog.dismiss();
+                List<Program> programList = new ArrayList<Program>();
+                programList.addAll(mProgramList);
+                mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
+                mProgramListView.setAdapter(mListViewAdapter);
+                
+                // 标注已经设定过闹钟的节目
+                for (int i=0; i<programList.size(); ++i)
+                {
+                    Program program = programList.get(i);
+                    if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, getProgramString(program.time, program.title), mCurrentSelectedDay))
+                        mListViewAdapter.addAlarmProgram(program);
+                }
+                
+                // 标注正在播放的节目
+                if (isTodayChosen() && mOnPlayingProgram != null)
+                {
+                    int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
+                    if (position != -1)
+                        mProgramListView.setSelection(position);
+                }
+                
+                foldDateListView();
+                
+                if (AppEngine.getInstance().getContext() != null    // Crash上报这里进入BootManager会crash，不知原因，故先做保护
+                    && AppEngine.getInstance().getBootManager().isFirstStart() && sHasShownFirstStartTips == false)
+                {
+                    showFirstStartTips();
+                }
+                break;
+            case MSG_UPDATE_ONPLAYING_PROGRAM:
+                if (isTodayChosen() && mOnPlayingProgram != null && mListViewAdapter != null)
+                {
+                    int position = mListViewAdapter.setOnplayingProgram(mOnPlayingProgram);
+                    if (position != -1)
+                        mProgramListView.setSelection(position);
+                }
+                break;
+            case MSG_UPDATE_DATELIST:
+                if (mMaxDays != mDateAdapter.maxDays())
+                    mDateAdapter.resetMaxDays(mMaxDays);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }
