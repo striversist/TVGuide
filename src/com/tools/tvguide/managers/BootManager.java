@@ -29,6 +29,7 @@ public class BootManager implements Shutter
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
     private OnStartedCallback  mOnStartedCallback;
     private boolean             mIsSplashShowing                            = false;
+    private boolean             mIsFirstStart;
     private enum SelfMessage {Msg_Need_Update};
     
     public interface OnSplashFinishedCallback
@@ -48,6 +49,7 @@ public class BootManager implements Shutter
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
         GlobalData.UserAgent = getUserAgentInternal();
         mOnSplashFinishedCallbackList = new ArrayList<BootManager.OnSplashFinishedCallback>();
+        mIsFirstStart = mPreference.getBoolean(KEY_FIRST_START_FLAG, true);
     }
     
     public void start(OnStartedCallback callback)
@@ -105,7 +107,7 @@ public class BootManager implements Shutter
     
     public boolean isFirstStart()
     {
-        return mPreference.getBoolean(KEY_FIRST_START_FLAG, true);
+        return mIsFirstStart;
     }
     
     public long getLastStartTime()
