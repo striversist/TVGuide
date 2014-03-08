@@ -658,12 +658,15 @@ public class ContentManager implements Shutter
             return;
         // 否则，需要清除缓存，以便在下次启动的时候重新拉去频道列表
         setChannelVersion(AppEngine.getInstance().getUpdateManager().getLatestChannelVersion());
-        AppEngine.getInstance().getCacheManager().clear();
+        
+        // 第一次启动时，频道都是最新的，所以不用再清除缓存
+        if (!AppEngine.getInstance().getBootManager().isFirstStart())
+            AppEngine.getInstance().getCacheManager().clear();
     }
     
     private int getCurrentChannelVersion()
     {
-        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, EnvironmentManager.defaultChannelVersion);
+        return mPreference.getInt(KEY_CHANNEL_VERSION_FLAG, 0);
     }
     
     private void setChannelVersion(int version)

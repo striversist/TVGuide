@@ -10,7 +10,6 @@ public class EnvironmentManager implements Shutter
     public static final boolean isDevelopMode          = false;
     public static final boolean enableACRA             = true;
     public static final boolean enableUninstallReport  = true;
-    public static final int defaultChannelVersion      = 5;
     
     private Context mContext;
     private boolean mIsChannelDetailFromWeb;
