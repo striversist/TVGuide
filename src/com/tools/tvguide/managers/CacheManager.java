@@ -26,13 +26,13 @@ public class CacheManager
     private final String FILE_CACHED_CHANNELS   = "channels.txt";
     private final String FILE_ALL_TVMAO_IDS = "web_ids.txt";
     private final String FILE_SEARCH_WORDS = "search_words.txt";
-    private HashMap<String, String> mMemoryCache;
+    private LruCache<String, String> mHtmlCache;
     private LruCache<String, Bitmap> mBitmapCache;
         
     public CacheManager(Context context)
     {
         mContext = context;
-        mMemoryCache = new HashMap<String, String>();
+        mHtmlCache = new LruCache<String, String>(100);
         mBitmapCache = new LruCache<String, Bitmap>(100);
     }
     
@@ -177,17 +177,18 @@ public class CacheManager
         deleteFile(file2);
         deleteFile(file3);
         deleteFile(file4);
-        mMemoryCache.clear();
+        mHtmlCache.evictAll();
+        mBitmapCache.evictAll();
     }
     
-    public String get(String key)
+    public String getHtml(String key)
     {
-        return mMemoryCache.get(key);
+        return mHtmlCache.get(key);
     }
     
-    public void set(String key, String value)
+    public void setHtml(String key, String value)
     {
-        mMemoryCache.put(key, value);
+        mHtmlCache.put(key, value);
     }
     
     public Bitmap getBitmap(String key)

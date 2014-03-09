@@ -21,7 +21,7 @@ public class HtmlUtils
     public static Document getDocument(String url, String charset) throws IOException
     {
         CacheManager cacheManager = AppEngine.getInstance().getCacheManager();
-        String html = cacheManager.get(url);
+        String html = cacheManager.getHtml(url);
         Document doc;
         if (html == null)
         {
@@ -35,7 +35,7 @@ public class HtmlUtils
             if (html == null)
                 throw new IOException("Failed to get html from network");
             doc = Jsoup.parse(html);
-            cacheManager.set(url, doc.html());
+            cacheManager.setHtml(url, doc.html());
         }
         else
         {
