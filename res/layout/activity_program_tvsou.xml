@@ -20,53 +20,10 @@
                           android:textColor="@color/darkgray" android:textSize="20sp" android:text="@string/loading_string" />
             </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="36.0sp"
-	        android:background="@drawable/abs__ab_solid_light_holo"
-	        android:gravity="center_vertical"
-	        android:orientation="horizontal" >
-	
-	        <RadioGroup 
-	            android:id="@+id/program_tabs"
-	            android:layout_width="fill_parent"
-	            android:layout_height="fill_parent"
-	            android:orientation="horizontal"
-	            android:background="@null" >
-	            
-	            <RadioButton
-	                android:checked="true"
-	                android:id="@+id/program_tab_actors"
-	                style="@style/style_tab_text"
-	                android:layout_width="0.0sp"
-	                android:layout_height="fill_parent"
-	                android:layout_weight="1.0"
-	                android:background="@drawable/result_tab_selector"
-	                android:text="@string/actor_list"
-	                android:onClick="onClickTabs" />
-	            <ImageView style="@style/style_tab_divider" />
-	            <RadioButton
-	                android:id="@+id/program_tab_summary"
-	                style="@style/style_tab_text"
-	                android:layout_width="0.0sp"
-	                android:layout_height="fill_parent"
-	                android:layout_weight="1.0"
-	                android:background="@drawable/result_tab_selector"
-	                android:text="@string/plot_sumary"
-	                android:onClick="onClickTabs" />
-	            <ImageView style="@style/style_tab_divider" />
-	            <RadioButton
-                    android:id="@+id/program_tab_playtimes"
-                    style="@style/style_tab_text"
-                    android:layout_width="0.0sp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1.0"
-                    android:background="@drawable/result_tab_selector"
-                    android:text="@string/playtime"
-                    android:onClick="onClickTabs" />
-	            
-	        </RadioGroup>
-	    </LinearLayout>
+        <com.tools.tvguide.views.MyViewPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="36sp" />
 	
 	    <android.support.v4.view.ViewPager
 	        android:id="@+id/program_view_pager"

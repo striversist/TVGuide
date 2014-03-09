@@ -12,6 +12,7 @@ import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
 import com.tools.tvguide.utils.Utility;
+import com.tools.tvguide.views.MyViewPagerIndicator;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,8 +28,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -56,7 +55,7 @@ public class ProgramActivityTvsou extends Activity
     private LinearLayout mPlayTimesLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
     private LayoutInflater mInflater;
-    private RadioGroup mTabsGroup;
+    private MyViewPagerIndicator mIndicator;
     
     private final int MSG_PROFILE_LOADED = 1;
     private final int MSG_SUMMARY_LOADED = 2;
@@ -82,7 +81,7 @@ public class ProgramActivityTvsou extends Activity
         mProgramImageView = (ImageView) findViewById(R.id.program_image);
         mPlotsImageView = (ImageView) findViewById(R.id.episode_iv);
         mViewPager = (ViewPager) findViewById(R.id.program_view_pager);
-        mTabsGroup = (RadioGroup) findViewById(R.id.program_tabs);
+        mIndicator = (MyViewPagerIndicator) findViewById(R.id.indicator);
         
         mProgramPageAdapter = new ResultPageAdapter();
         mActorsLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
@@ -90,14 +89,23 @@ public class ProgramActivityTvsou extends Activity
         mPlayTimesLayout = (LinearLayout) mInflater.inflate(R.layout.program_tab_playtimes, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         
-        for (int i=0; i<mTabsGroup.getChildCount(); ++i)
+        mIndicator.addTab(getResources().getString(R.string.actor_list), null);
+        mIndicator.addTab(getResources().getString(R.string.plot_sumary), null);
+        mIndicator.addTab(getResources().getString(R.string.playtime), null);
+        mIndicator.setCurrentTab(0);
+        mIndicator.setOnTabClickListener(new MyViewPagerIndicator.OnTabClickListener() 
         {
-        	if (mTabsGroup.getChildAt(i) instanceof RadioButton)
-        	{
-	            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
-	            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
-	            mProgramPageAdapter.addView(loadingLayout);
-        	}
+            @Override
+            public void onTabClick(int index, Object tag) 
+            {
+                mViewPager.setCurrentItem(index);
+            }
+        });
+        for (int i=0; i<mIndicator.getTabsCount(); ++i)
+        {
+            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
+            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
+            mProgramPageAdapter.addView(loadingLayout);
         }
         mViewPager.setAdapter(mProgramPageAdapter);
         
@@ -106,12 +114,7 @@ public class ProgramActivityTvsou extends Activity
             @Override
             public void onPageSelected(int position) 
             {
-                if (position == TAB_INDEX_ACTORS)
-                    mTabsGroup.check(R.id.program_tab_actors);
-                else if (position == TAB_INDEX_SUMMARY)
-                    mTabsGroup.check(R.id.program_tab_summary);
-                else if (position == TAB_INDEX_PLAYTIMES)
-                    mTabsGroup.check(R.id.program_tab_playtimes);
+                mIndicator.setCurrentTab(position);
             }
             
             @Override
@@ -150,23 +153,7 @@ public class ProgramActivityTvsou extends Activity
     {
         finish();
     }
-    
-    public void onClickTabs(View view)
-    {
-        switch(view.getId())
-        {
-            case R.id.program_tab_actors:
-                mViewPager.setCurrentItem(TAB_INDEX_ACTORS);
-                break;
-            case R.id.program_tab_summary:
-                mViewPager.setCurrentItem(TAB_INDEX_SUMMARY);
-                break;
-            case R.id.program_tab_playtimes:
-                mViewPager.setCurrentItem(TAB_INDEX_PLAYTIMES);
-                break;
-        }
-    }
-    
+       
     public void onClick(View view)
     {
         switch (view.getId())
