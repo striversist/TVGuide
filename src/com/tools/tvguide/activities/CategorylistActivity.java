@@ -74,14 +74,7 @@ public class CategorylistActivity extends Activity
             }
         });
         
-        new Handler().postDelayed(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                AppEngine.getInstance().getAdManager().addAdView(CategorylistActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
-            }
-        }, 500);
+        AppEngine.getInstance().getAdManager().addAdView(CategorylistActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
 
     public void back(View view)

@@ -138,14 +138,7 @@ public class ProgramActivityTvsou extends Activity
         mPlotsImageView.setVisibility(View.INVISIBLE);
         update();
         
-        new Handler().postDelayed(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                AppEngine.getInstance().getAdManager().addAdView(ProgramActivityTvsou.this, R.id.adLayout, AdSize.NORMAL_SIZE);
-            }
-        }, 500);
+        AppEngine.getInstance().getAdManager().addAdView(ProgramActivityTvsou.this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
  
     @Override

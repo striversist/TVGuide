@@ -75,14 +75,7 @@ public class ProgramActivity extends Activity
         
         update();
         
-        new Handler().postDelayed(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                AppEngine.getInstance().getAdManager().addAdView(ProgramActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
-            }
-        }, 500);
+        AppEngine.getInstance().getAdManager().addAdView(ProgramActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
     
     public void onClick(View view)
