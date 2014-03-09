@@ -16,6 +16,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +26,7 @@ public class MoreActivity extends Activity implements Callback
     private Dialog mInfoDialog;
     private Dialog mDownloaDialog;
     private TextView mCheckTextView;
-    private TextView mUpdateNewIcon;
+    private ImageView mUpdateNewIcon;
     private Handler mUiHandler;
     private enum SelfMessage {Msg_Need_Update, Msg_No_Need_Update};
     private enum TextStatus {State_Check, State_Upgrade};
@@ -43,7 +44,7 @@ public class MoreActivity extends Activity implements Callback
         mCheckTextView.setText(finalVersion);
         mCheckTextView.setTag(TextStatus.State_Check);
         
-        mUpdateNewIcon = (TextView)findViewById(R.id.more_update_new_icon);
+        mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
         mUiHandler = new Handler(this);
     }
     

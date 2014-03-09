@@ -29,9 +29,9 @@
                 android:background="@drawable/top_layout_select"
                 android:onClick="onClick" >
                 <TextView android:id="@+id/more_version_check" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/style_layout_textview" />
-                <TextView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
+                <ImageView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
                               android:background="@drawable/more_update_new" android:visibility="invisible" android:layout_width="24.0dip" 
-                              android:layout_height="24.0dip" android:layout_marginRight="20.0dip" android:layout_marginTop="-8.0dip" />
+                              android:layout_height="24.0dip" android:scaleType="fitXY" android:layout_marginTop="-8.0dip" />
                 <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
             </LinearLayout>
             <LinearLayout
