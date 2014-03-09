@@ -1,0 +1,4 @@
+<ImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/style_tab_divider"
+    android:contentDescription="@null" />

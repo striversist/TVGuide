@@ -4,59 +4,15 @@
     android:layout_height="match_parent"
     android:background="@color/bg" >
 
-    <LinearLayout
-        android:id="@+id/tabs_ll"
+    <com.tools.tvguide.views.MyViewPagerIndicator
+        android:id="@+id/indicator"
         android:layout_width="fill_parent"
-        android:layout_height="42.0sp"
-        android:background="@drawable/abs__ab_solid_light_holo"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <RadioGroup 
-            android:id="@+id/hot_tabs_group"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal"
-            android:background="@null" >
-            
-            <RadioButton
-                android:checked="true"
-                android:id="@+id/hot_tab_drama"
-                style="@style/style_tab_text"
-                android:layout_width="0.0sp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"
-                android:background="@drawable/result_tab_selector"
-                android:text="@string/tv_drama"
-                android:onClick="onClickTabs" />
-            <ImageView style="@style/style_tab_divider" />
-            <RadioButton
-                android:id="@+id/hot_tab_tvcolumn"
-                style="@style/style_tab_text"
-                android:layout_width="0.0sp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"
-                android:background="@drawable/result_tab_selector"
-                android:text="@string/tv_column"
-                android:onClick="onClickTabs" />
-            <ImageView style="@style/style_tab_divider" />
-            <RadioButton
-                android:id="@+id/hot_tab_movie"
-                style="@style/style_tab_text"
-                android:layout_width="0.0sp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"
-                android:background="@drawable/result_tab_selector"
-                android:text="@string/movie"
-                android:onClick="onClickTabs" />
-            
-        </RadioGroup>
-    </LinearLayout>
+        android:layout_height="wrap_content" />
         
     <android.support.v4.view.ViewPager
             android:id="@+id/hot_view_pager"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tabs_ll" />
+            android:layout_below="@id/indicator" />
 
 </RelativeLayout>

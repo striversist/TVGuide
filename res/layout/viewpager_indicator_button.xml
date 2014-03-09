@@ -1,0 +1,7 @@
+<RadioButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/button"
+    style="@style/style_tab_text"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:background="@drawable/result_tab_selector" />

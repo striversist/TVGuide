@@ -12,6 +12,7 @@ import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.managers.ProgramHtmlManager.HotProgramsCallback;
+import com.tools.tvguide.views.MyViewPagerIndicator;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,8 +27,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -35,7 +34,7 @@ public class HotActivity extends Activity implements Callback
 {
     private LayoutInflater mInflater;
     private ViewPager mViewPager;
-    private RadioGroup mTabsGroup;
+    private MyViewPagerIndicator mIndicator;
     private ResultPageAdapter mPageAdapter;
     private HashMap<TabIndex, List<HashMap<String, String>>> mProgramInfoListMap;
     private HashMap<TabIndex, LinearLayout> mClassifyLayoutMap;
@@ -51,22 +50,32 @@ public class HotActivity extends Activity implements Callback
         
         mInflater = LayoutInflater.from(this);
         mViewPager = (ViewPager) findViewById(R.id.hot_view_pager);
-        mTabsGroup = (RadioGroup) findViewById(R.id.hot_tabs_group);
+        mIndicator = (MyViewPagerIndicator) findViewById(R.id.indicator);
         mProgramInfoListMap = new HashMap<TabIndex, List<HashMap<String,String>>>();
         mClassifyLayoutMap = new HashMap<TabIndex, LinearLayout>();
         mUiHandler = new Handler(this);
         
-        mPageAdapter = new ResultPageAdapter();
-        for (int i=0; i<mTabsGroup.getChildCount(); ++i)
+        mIndicator.addTab(getResources().getString(R.string.tv_drama), null);
+        mIndicator.addTab(getResources().getString(R.string.tv_column), null);
+        mIndicator.addTab(getResources().getString(R.string.movie), null);
+        mIndicator.setCurrentTab(0);
+        mIndicator.setOnTabClickListener(new MyViewPagerIndicator.OnTabClickListener() 
         {
-            if (mTabsGroup.getChildAt(i) instanceof RadioButton)
+            @Override
+            public void onTabClick(int index, Object tag) 
             {
-                LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
-                ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
-                mPageAdapter.addView(loadingLayout);
-                
-                mClassifyLayoutMap.put(TabIndex.values()[mPageAdapter.getCount() - 1], (LinearLayout) mInflater.inflate(R.layout.hot_program_layout, null));
+                mViewPager.setCurrentItem(index);
+                update();
             }
+        });
+        
+        mPageAdapter = new ResultPageAdapter();
+        for (int i=0; i<mIndicator.getTabsCount(); ++i)
+        {
+            LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
+            ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
+            mPageAdapter.addView(loadingLayout);
+            mClassifyLayoutMap.put(TabIndex.values()[mPageAdapter.getCount() - 1], (LinearLayout) mInflater.inflate(R.layout.hot_program_layout, null));
         }
         mViewPager.setAdapter(mPageAdapter);
         
@@ -75,12 +84,7 @@ public class HotActivity extends Activity implements Callback
             @Override
             public void onPageSelected(int position) 
             {
-                if (position == TabIndex.Drama.ordinal())
-                    mTabsGroup.check(R.id.hot_tab_drama);
-                else if (position == TabIndex.Tvcolumn.ordinal())
-                    mTabsGroup.check(R.id.hot_tab_tvcolumn);
-                else if (position == TabIndex.Movie.ordinal())
-                    mTabsGroup.check(R.id.hot_tab_movie);
+                mIndicator.setCurrentTab(position);
                 update();
             }
             
@@ -96,25 +100,6 @@ public class HotActivity extends Activity implements Callback
         });
         
         update();
-    }
-
-    public void onClickTabs(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.hot_tab_drama:
-                mViewPager.setCurrentItem(TabIndex.Drama.ordinal());
-                update();
-                break;
-            case R.id.hot_tab_tvcolumn:
-                mViewPager.setCurrentItem(TabIndex.Tvcolumn.ordinal());
-                update();
-                break;
-            case R.id.hot_tab_movie:
-                mViewPager.setCurrentItem(TabIndex.Movie.ordinal());
-                update();
-                break;
-        }
     }
     
     private void update()
