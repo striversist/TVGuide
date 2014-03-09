@@ -87,8 +87,8 @@ public class SearchWordsManager
     
     public void updatePopSearch(final UpdateListener listener)
     {
-        mPopSearchList.clear();
-        AppEngine.getInstance().getContentManager().loadPopSearch(SearchHotwordsView.MAX_WORDS, mPopSearchList, new ContentManager.LoadListener() 
+        final List<String> popSearchList = new ArrayList<String>();
+        AppEngine.getInstance().getContentManager().loadPopSearch(SearchHotwordsView.MAX_WORDS, popSearchList, new ContentManager.LoadListener() 
         {
             @Override
             public void onLoadFinish(int status) 
@@ -96,7 +96,12 @@ public class SearchWordsManager
                 if (status == LoadListener.SUCCESS)
                 {
                     if (listener != null)
-                        listener.onUpdateFinish(mPopSearchList);
+                        listener.onUpdateFinish(popSearchList);
+                    if (!popSearchList.isEmpty())
+                    {
+                        mPopSearchList.clear();
+                        mPopSearchList.addAll(popSearchList);
+                    }
                     store();
                     mPreference.edit().putLong(KEY_POP_SEARCH_LAST_UPDATE_FLAG, System.currentTimeMillis()).commit();
                 }
