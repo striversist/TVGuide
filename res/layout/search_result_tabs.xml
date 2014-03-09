@@ -3,46 +3,10 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <com.tools.tvguide.views.MyViewPagerIndicator
+        android:id="@+id/indicator"
         android:layout_width="fill_parent"
-        android:layout_height="42.0sp"
-        android:background="@drawable/abs__ab_solid_light_holo"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <RadioGroup 
-            android:id="@+id/result_tabs"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal"
-            android:background="@null" >
-            
-	        <RadioButton
-	            android:checked="true"
-	            android:id="@+id/result_channels"
-	            style="@style/style_tab_text"
-	            android:layout_width="0.0sp"
-	            android:layout_height="fill_parent"
-	            android:layout_weight="1.0"
-	            android:background="@drawable/result_tab_selector"
-	            android:text="@string/channels"
-	            android:onClick="onClick" />
-	
-	        <ImageView
-	            android:id="@+id/view1"
-	            style="@style/style_tab_divider" />
-	
-	        <RadioButton
-	            android:id="@+id/result_programs"
-	            style="@style/style_tab_text"
-	            android:layout_width="0.0sp"
-	            android:layout_height="fill_parent"
-	            android:layout_weight="1.0"
-	            android:background="@drawable/result_tab_selector"
-	            android:text="@string/programs"
-	            android:onClick="onClick" />
-        </RadioGroup>
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/search_view_pager"

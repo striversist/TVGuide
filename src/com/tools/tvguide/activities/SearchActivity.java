@@ -20,6 +20,7 @@ import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.managers.SearchWordsManager;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
+import com.tools.tvguide.views.MyViewPagerIndicator;
 import com.tools.tvguide.views.SearchHotwordsView;
 
 import android.os.Bundle;
@@ -42,8 +43,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,8 +93,8 @@ public class SearchActivity extends Activity
         mClassifyResultLayout = (LinearLayout)mInflater.inflate(R.layout.search_result_tabs, null);
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
-        mOriginChannelsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_channels)).getText().toString();
-        mOriginProgramsFormatString = ((RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs)).getText().toString();
+        mOriginChannelsFormatString = getResources().getString(R.string.channels);
+        mOriginProgramsFormatString = getResources().getString(R.string.programs);
         mViewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
         mResultPagerAdapter = new ResultPageAdapter();
         mPopSearchList = new ArrayList<String>();
@@ -194,7 +193,6 @@ public class SearchActivity extends Activity
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) 
             {
-                // TODO Auto-generated method stub
             }
             
             @Override
@@ -214,28 +212,33 @@ public class SearchActivity extends Activity
             }
         });
         
+        MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
+        indicator.setOnTabClickListener(new MyViewPagerIndicator.OnTabClickListener() 
+        {
+            @Override
+            public void onTabClick(int index, Object tag) 
+            {
+                mViewPager.setCurrentItem(index);
+            }
+        });
+        
         mViewPager.setOnPageChangeListener(new OnPageChangeListener() 
         {
             @Override
             public void onPageSelected(int position) 
             {
-                RadioGroup radioTabs = (RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs);
-                if (position == TAB_INDEX_CHANNELS)
-                    radioTabs.check(R.id.result_channels);
-                else if (position == TAB_INDEX_PROGRAMS)
-                    radioTabs.check(R.id.result_programs);
+                MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
+                indicator.setCurrentTab(position);
             }
             
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) 
             {
-                // TODO Auto-generated method stub
             }
             
             @Override
             public void onPageScrollStateChanged(int state) 
             {
-                // TODO Auto-generated method stub
             }
         });
         
@@ -255,19 +258,6 @@ public class SearchActivity extends Activity
         
         updateHistorySearch();
         updatePopSearch();
-    }
-    
-    public void onClick(View view)
-    {
-        switch(view.getId())
-        {
-            case R.id.result_channels:
-                mViewPager.setCurrentItem(TAB_INDEX_CHANNELS);
-                break;
-            case R.id.result_programs:
-                mViewPager.setCurrentItem(TAB_INDEX_PROGRAMS);
-                break;
-        }
     }
     
     public void search(View view)
@@ -443,20 +433,20 @@ public class SearchActivity extends Activity
 		            }
 		            else
 		            {
-		                RadioButton channelsBtn = (RadioButton) mClassifyResultLayout.findViewById(R.id.result_channels);
-	                    RadioButton programsBtn = (RadioButton) mClassifyResultLayout.findViewById(R.id.result_programs);
-	                    channelsBtn.setText(String.format(mOriginChannelsFormatString, mItemChannelDataList.size()));
-	                    programsBtn.setText(String.format(mOriginProgramsFormatString, mResultProgramsNum));
+		                MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
+		                indicator.reset();
+		                indicator.addTab(String.format(mOriginChannelsFormatString, mItemChannelDataList.size()), null);
+		                indicator.addTab(String.format(mOriginProgramsFormatString, mResultProgramsNum), null);
 		                
 		                if (!itemChannelList.isEmpty())
 		                {
-	                        mViewPager.setCurrentItem(0);
-	                        ((RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs)).check(R.id.result_channels);
+	                        mViewPager.setCurrentItem(TAB_INDEX_CHANNELS);
+	                        indicator.setCurrentTab(TAB_INDEX_CHANNELS);
 		                }
 		                else 
 		                {
-		                    mViewPager.setCurrentItem(1);
-		                    ((RadioGroup) mClassifyResultLayout.findViewById(R.id.result_tabs)).check(R.id.result_programs);
+		                    mViewPager.setCurrentItem(TAB_INDEX_PROGRAMS);
+		                    indicator.setCurrentTab(TAB_INDEX_PROGRAMS);
                         }
 		                
 		                mContentLayout.removeAllViews();
