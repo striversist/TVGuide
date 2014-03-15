@@ -32,6 +32,7 @@ public class AppEngine
     private UninstallMonitor                        mUninstallMonitor;
     private ServiceManager                          mServiceManager;
     private SearchWordsManager                      mSearchWordsManager;
+    private SearchHtmlManager                       mSearchHtmlManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -220,6 +221,14 @@ public class AppEngine
         if (mSearchWordsManager == null)
             mSearchWordsManager = new SearchWordsManager(mApplicationContext);
         return mSearchWordsManager;
+    }
+    
+    public SearchHtmlManager getSearchHtmlManager()
+    {
+        checkInitialized();
+        if (mSearchHtmlManager == null)
+            mSearchHtmlManager = new SearchHtmlManager(mApplicationContext);
+        return mSearchHtmlManager;
     }
     
     public void prepareBeforeExit()

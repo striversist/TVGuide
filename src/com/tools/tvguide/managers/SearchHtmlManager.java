@@ -38,7 +38,7 @@ public class SearchHtmlManager
     {
         public void onCategoriesLoaded(int requestId, List<SearchResultCategory> categoryList);
         public void onEntriesLoaded(int requestId, SearchResultCategory.Type categoryType, List<SearchResultDataEntry> entryList);
-        public void onProgramScheduleLoadeded(int requestId, int page, List<HashMap<String, Object>> scheduleList);
+        public void onProgramScheduleLoadeded(int requestId, int pageIndex, List<HashMap<String, Object>> scheduleList);
     }
     
     public void search(final int requestId, final String keyword, final SearchResultCallback callback)
@@ -51,7 +51,7 @@ public class SearchHtmlManager
             {
                 try 
                 {
-                    Document doc = Jsoup.connect(QUERY_URL).data("key", keyword).data("submit", "搜索").timeout(20).post();
+                    Document doc = Jsoup.connect(QUERY_URL).data("key", keyword).data("submit", "搜索").timeout(20000).post();
                     String protocol = new URL(QUERY_URL).getProtocol();
                     String host = new URL(QUERY_URL).getHost();
                     String prefix = protocol + "://" + host;

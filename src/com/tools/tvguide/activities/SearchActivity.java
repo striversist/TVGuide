@@ -15,9 +15,14 @@ import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.data.SearchResultCategory;
+import com.tools.tvguide.data.SearchResultDataEntry;
+import com.tools.tvguide.data.SearchResultCategory.Type;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.SearchHtmlManager.SearchResultCallback;
 import com.tools.tvguide.managers.SearchWordsManager;
+import com.tools.tvguide.utils.HtmlUtils;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.utils.XmlParser;
 import com.tools.tvguide.views.MyViewPagerIndicator;
@@ -70,11 +75,13 @@ public class SearchActivity extends Activity implements Callback
     private ResultPageAdapter mResultPagerAdapter;
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
-    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH}
+    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL, MSG_SHOW_PROGRAM_SCHEDULE}
     private final int TAB_INDEX_CHANNELS = 0;
     private final int TAB_INDEX_PROGRAMS = 1;
     private List<String> mPopSearchList;
     private Handler mUiHandler;
+    
+    private List<SearchResultCategory> mCategoryList;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -101,13 +108,14 @@ public class SearchActivity extends Activity implements Callback
         mResultPagerAdapter = new ResultPageAdapter();
         mPopSearchList = new ArrayList<String>();
         mUiHandler = new Handler(this);
+        mCategoryList = new ArrayList<SearchResultCategory>();
         
         // NOTE：Should follow the TAB INDEX order at the beginning of the class
-        ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
-        ListView programListView = (ListView) mInflater.inflate(R.layout.search_programs_layout, null).findViewById(R.id.program_list_view);
-        mResultPagerAdapter.addView(channelListView);
-        mResultPagerAdapter.addView(programListView);
-        mViewPager.setAdapter(mResultPagerAdapter);
+//        ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+//        ListView programListView = (ListView) mInflater.inflate(R.layout.search_programs_layout, null).findViewById(R.id.program_list_view);
+//        mResultPagerAdapter.addView(channelListView);
+//        mResultPagerAdapter.addView(programListView);
+//        mViewPager.setAdapter(mResultPagerAdapter);
         
         initContentLayout();
         ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.search_hotwords_view)).setOnItemClickListener(new SearchHotwordsView.OnItemClickListener() 
@@ -221,7 +229,7 @@ public class SearchActivity extends Activity implements Callback
             @Override
             public void onTabClick(int index, Object tag) 
             {
-                mViewPager.setCurrentItem(index);
+//                mViewPager.setCurrentItem(index);
             }
         });
         
@@ -245,19 +253,19 @@ public class SearchActivity extends Activity implements Callback
             }
         });
         
-        channelListView.setOnItemClickListener(new OnItemClickListener() 
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
-            {
-                String channelId = (String) mItemChannelDataList.get(position).get("id");
-                String channelName = (String) mItemChannelDataList.get(position).get("name");
-                Intent intent = new Intent(SearchActivity.this, ChannelDetailActivity.class);
-                intent.putExtra("id", channelId);
-                intent.putExtra("name", channelName);
-                startActivity(intent);
-            }
-        });
+//        channelListView.setOnItemClickListener(new OnItemClickListener() 
+//        {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+//            {
+//                String channelId = (String) mItemChannelDataList.get(position).get("id");
+//                String channelName = (String) mItemChannelDataList.get(position).get("name");
+//                Intent intent = new Intent(SearchActivity.this, ChannelDetailActivity.class);
+//                intent.putExtra("id", channelId);
+//                intent.putExtra("name", channelName);
+//                startActivity(intent);
+//            }
+//        });
         
         updateHistorySearch();
         updatePopSearch();
@@ -295,68 +303,103 @@ public class SearchActivity extends Activity implements Callback
         mResultProgramsNum = 0;
         final List<Channel> channels = new ArrayList<Channel>();
         final List<HashMap<String, Object>> programs = new ArrayList<HashMap<String,Object>>();
-        AppEngine.getInstance().getContentManager().loadSearchResult(mKeyword, channels, programs, new ContentManager.LoadListener() 
+//        AppEngine.getInstance().getContentManager().loadSearchResult(mKeyword, channels, programs, new ContentManager.LoadListener() 
+//        {
+//            @Override
+//            public void onLoadFinish(int status) 
+//            {
+//                HashMap<String, HashMap<String, Object>> xmlChannelInfo = XmlParser.parseChannelInfo(SearchActivity.this);
+//                for (int i=0; i<channels.size(); ++i)
+//                {
+//                    HashMap<String, Object> item = new HashMap<String, Object>();
+//                    item.put("id", channels.get(i).id);
+//                    item.put("name", channels.get(i).name);
+//                    if (xmlChannelInfo.get(channels.get(i).id) != null)
+//                    {
+//                        item.put("image", Utility.getImage(SearchActivity.this, (String) xmlChannelInfo.get(channels.get(i).id).get("logo")));
+//                    }
+//                    mItemChannelDataList.add(item);
+//                }
+//                
+//                for (int i=0; i<programs.size(); ++i)
+//                {
+//                    Channel channel = (Channel) programs.get(i).get("channel");
+//                    List<Program> programList = (List<Program>) programs.get(i).get("programs");
+//                    if (channel == null || programList == null)
+//                        continue;
+//                    
+//                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.hot_channel_tvsou_item, R.id.hot_channel_name_tv));
+//                    for (int j=0; j<programList.size(); ++j)
+//                    {
+//                        Item item = new Item();
+//                        item.id = channel.id;
+//                        item.name = channel.name;
+//                        item.time = programList.get(j).time;
+//                        item.title = programList.get(j).title;
+//                        item.key = mKeyword;
+//                        item.hasLink = false;
+//                        mItemProgramDataList.add(new ContentItem(item, R.layout.hot_program_tvsou_item, R.id.hot_program_name_tv));
+//                    }
+//                    mResultProgramsNum += programList.size();
+//                }
+//                mUiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_RESULT.ordinal());
+//            }
+//        });
+        AppEngine.getInstance().getSearchHtmlManager().search(0, mKeyword, new SearchResultCallback() 
         {
             @Override
-            public void onLoadFinish(int status) 
+            public void onCategoriesLoaded(int requestId, List<SearchResultCategory> categoryList) 
             {
-                HashMap<String, HashMap<String, Object>> xmlChannelInfo = XmlParser.parseChannelInfo(SearchActivity.this);
-                for (int i=0; i<channels.size(); ++i)
+                if (categoryList != null)
                 {
-                    HashMap<String, Object> item = new HashMap<String, Object>();
-                    item.put("id", channels.get(i).id);
-                    item.put("name", channels.get(i).name);
-                    if (xmlChannelInfo.get(channels.get(i).id) != null)
-                    {
-                        item.put("image", Utility.getImage(SearchActivity.this, (String) xmlChannelInfo.get(channels.get(i).id).get("logo")));
-                    }
-                    mItemChannelDataList.add(item);
+                    mCategoryList.clear();
+                    mCategoryList.addAll(categoryList);
+                    mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_CATEGORY.ordinal()).sendToTarget();
                 }
+            }
+            
+            @Override
+            public void onEntriesLoaded(int requestId, Type categoryType, List<SearchResultDataEntry> entryList) 
+            {
+                if (categoryType == Type.Channel)
+                {
+                    for (int i=0; i<entryList.size(); ++i)
+                    {
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+                        item.put("id", HtmlUtils.filterTvmaoId(entryList.get(i).detailLink));
+                        item.put("name", entryList.get(i).name);
+                        mItemChannelDataList.add(item);
+                    }
+                    mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_CHANNEL.ordinal()).sendToTarget();
+                }
+            }
+            
+            @Override
+            public void onProgramScheduleLoadeded(int requestId, int pageIndex, List<HashMap<String, Object>> scheduleList) 
+            {
                 
-                for (int i=0; i<programs.size(); ++i)
-                {
-                    Channel channel = (Channel) programs.get(i).get("channel");
-                    List<Program> programList = (List<Program>) programs.get(i).get("programs");
-                    if (channel == null || programList == null)
-                        continue;
-                    
-                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.hot_channel_tvsou_item, R.id.hot_channel_name_tv));
-                    for (int j=0; j<programList.size(); ++j)
-                    {
-                        Item item = new Item();
-                        item.id = channel.id;
-                        item.name = channel.name;
-                        item.time = programList.get(j).time;
-                        item.title = programList.get(j).title;
-                        item.key = mKeyword;
-                        item.hasLink = false;
-                        mItemProgramDataList.add(new ContentItem(item, R.layout.hot_program_tvsou_item, R.id.hot_program_name_tv));
-                    }
-                    mResultProgramsNum += programList.size();
-                }
-                mUiHandler.sendEmptyMessage(SelfMessage.MSG_SHOW_RESULT.ordinal());
             }
         });
         mProgressDialog.show();
     }
     
-    private void updateOnPlayingProgramList()
-    {
-        mOnPlayingProgramList.clear();
-        List<String> idList = new ArrayList<String>();
-        for (int i=0; i<mItemChannelDataList.size(); ++i)
-        {
-            idList.add((String) mItemChannelDataList.get(i).get("id"));
-        }
-        AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
-        {    
-            @Override
-            public void onLoadFinish(int status) 
-            {
-                mUiHandler.sendEmptyMessage(SelfMessage.MSG_REFRESH_ON_PLAYING_PROGRAM_LIST.ordinal());
-            }
-        });
-    }
+//    private void updateOnPlayingProgramList()
+//    {
+//        mOnPlayingProgramList.clear();
+//        List<String> idList = new ArrayList<String>();
+//        for (int i=0; i<mItemChannelDataList.size(); ++i)
+//        {
+//            idList.add((String) mItemChannelDataList.get(i).get("id"));
+//        }
+//        AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
+//        {    
+//            @Override
+//            public void onLoadFinish(int status) 
+//            {
+//                mUiHandler.sendEmptyMessage(SelfMessage.MSG_REFRESH_ON_PLAYING_PROGRAM_LIST.ordinal());
+//            }
+//        });
+//    }
     
     private void updateHistorySearch()
     {
@@ -416,73 +459,109 @@ public class SearchActivity extends Activity implements Callback
         SelfMessage selfMsg = SelfMessage.values()[msg.what];
         switch (selfMsg) 
         {
-            case MSG_SHOW_RESULT:
+//            case MSG_SHOW_RESULT:
+//                mProgressDialog.dismiss();
+//                // 数据拷贝，防止Crash: "Make sure the content of your adapter is not modified from a background thread, but only from the UI thread"
+//                List<HashMap<String, Object>> itemChannelList = new ArrayList<HashMap<String,Object>>();
+//                itemChannelList.addAll(mItemChannelDataList);
+//                List<IListItem> itemProgramList = new ArrayList<ResultProgramAdapter.IListItem>();
+//                itemProgramList.addAll(mItemProgramDataList);
+//                
+//                ((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList));
+//                ((ListView)mResultPagerAdapter.getView(TAB_INDEX_PROGRAMS)).setAdapter(new ResultProgramAdapter(SearchActivity.this, itemProgramList));
+//                mSearchEditText.requestFocus();
+//                if (itemChannelList.isEmpty() && itemProgramList.isEmpty())
+//                {
+//                    mContentLayout.removeAllViews();
+//                    mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
+//                }
+//                else
+//                {
+//                    MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
+//                    indicator.reset();
+//                    indicator.addTab(String.format(mOriginChannelsFormatString, mItemChannelDataList.size()), null);
+//                    indicator.addTab(String.format(mOriginProgramsFormatString, mResultProgramsNum), null);
+//                    
+//                    if (!itemChannelList.isEmpty())
+//                    {
+//                        mViewPager.setCurrentItem(TAB_INDEX_CHANNELS);
+//                        indicator.setCurrentTab(TAB_INDEX_CHANNELS);
+//                    }
+//                    else 
+//                    {
+//                        mViewPager.setCurrentItem(TAB_INDEX_PROGRAMS);
+//                        indicator.setCurrentTab(TAB_INDEX_PROGRAMS);
+//                    }
+//                    
+//                    mContentLayout.removeAllViews();
+//                    mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
+//                    
+//                    if (!itemChannelList.isEmpty())
+//                        updateOnPlayingProgramList();
+//                }
+//                updateHistorySearch();
+//                break;
+//            
+//            case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
+//                if (mOnPlayingProgramList != null)
+//                {
+//                    List<HashMap<String, Object>> itemChannelList1 = new ArrayList<HashMap<String,Object>>();
+//                    itemChannelList1.addAll(mItemChannelDataList);
+//                    for (int i=0; i<itemChannelList1.size(); ++i)
+//                    {
+//                        for (int j=0; j<mOnPlayingProgramList.size(); ++j)
+//                        {
+//                            if (itemChannelList1.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
+//                            {
+//                                itemChannelList1.get(i).put("program", "正在播出：" + mOnPlayingProgramList.get(j).get("title"));
+//                            }
+//                        }
+//                    }
+//                    ((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList1));
+//                }
+//                break;
+//            case MSG_SHOW_POP_SEARCH:
+//                ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.search_hotwords_view)).setWords(mPopSearchList.toArray(new String[0]));
+//                break;
+            case MSG_SHOW_CATEGORY:
                 mProgressDialog.dismiss();
+                MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
+                indicator.reset();
+                for (int i=0; i<mCategoryList.size(); ++i)
+                {
+                    indicator.addTab(mCategoryList.get(i).name, null);
+                    ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+                    mResultPagerAdapter.addView(channelListView);
+                }
+                mViewPager.setAdapter(mResultPagerAdapter);
+                mContentLayout.removeAllViews();
+                mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
+                updateHistorySearch();
+                break;
+            case MSG_SHOW_CHANNEL:
                 // 数据拷贝，防止Crash: "Make sure the content of your adapter is not modified from a background thread, but only from the UI thread"
                 List<HashMap<String, Object>> itemChannelList = new ArrayList<HashMap<String,Object>>();
                 itemChannelList.addAll(mItemChannelDataList);
-                List<IListItem> itemProgramList = new ArrayList<ResultProgramAdapter.IListItem>();
-                itemProgramList.addAll(mItemProgramDataList);
-                
-                ((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList));
-                ((ListView)mResultPagerAdapter.getView(TAB_INDEX_PROGRAMS)).setAdapter(new ResultProgramAdapter(SearchActivity.this, itemProgramList));
-                mSearchEditText.requestFocus();
-                if (itemChannelList.isEmpty() && itemProgramList.isEmpty())
-                {
-                    mContentLayout.removeAllViews();
-                    mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
-                }
-                else
-                {
-                    MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
-                    indicator.reset();
-                    indicator.addTab(String.format(mOriginChannelsFormatString, mItemChannelDataList.size()), null);
-                    indicator.addTab(String.format(mOriginProgramsFormatString, mResultProgramsNum), null);
-                    
-                    if (!itemChannelList.isEmpty())
-                    {
-                        mViewPager.setCurrentItem(TAB_INDEX_CHANNELS);
-                        indicator.setCurrentTab(TAB_INDEX_CHANNELS);
-                    }
-                    else 
-                    {
-                        mViewPager.setCurrentItem(TAB_INDEX_PROGRAMS);
-                        indicator.setCurrentTab(TAB_INDEX_PROGRAMS);
-                    }
-                    
-                    mContentLayout.removeAllViews();
-                    mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
-                    
-                    if (!itemChannelList.isEmpty())
-                        updateOnPlayingProgramList();
-                }
-                updateHistorySearch();
-                break;
-            
-            case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
-                if (mOnPlayingProgramList != null)
-                {
-                    List<HashMap<String, Object>> itemChannelList1 = new ArrayList<HashMap<String,Object>>();
-                    itemChannelList1.addAll(mItemChannelDataList);
-                    for (int i=0; i<itemChannelList1.size(); ++i)
-                    {
-                        for (int j=0; j<mOnPlayingProgramList.size(); ++j)
-                        {
-                            if (itemChannelList1.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
-                            {
-                                itemChannelList1.get(i).put("program", "正在播出：" + mOnPlayingProgramList.get(j).get("title"));
-                            }
-                        }
-                    }
-                    ((ListView)mResultPagerAdapter.getView(TAB_INDEX_CHANNELS)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList1));
-                }
-                break;
-            case MSG_SHOW_POP_SEARCH:
-                ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.search_hotwords_view)).setWords(mPopSearchList.toArray(new String[0]));
+                int tabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Channel);
+                ((ListView)mResultPagerAdapter.getView(tabIndex)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList));
                 break;
             default:
                 break;
         }
         return true;
+    }
+    
+    private int getCategoryTypeIndex(SearchResultCategory.Type type)
+    {
+        int result = -1;
+        for (int i=0; i<mCategoryList.size(); ++i)
+        {
+            if (mCategoryList.get(i).type == type)
+            {
+                result = i;
+                break;
+            }
+        }
+        return result;
     }
 }
