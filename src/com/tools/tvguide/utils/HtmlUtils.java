@@ -53,4 +53,30 @@ public class HtmlUtils
         
         return result;
     }
+    
+    public static String filterTvmaoId(String url)
+    {
+        if (url == null || url.trim().length() == 0)
+            return "";
+        
+        String id = "";
+        Pattern resultPattern = Pattern.compile("program/(.+)");
+        Matcher resultMatcher = resultPattern.matcher(url);
+        if (resultMatcher.find())
+        {
+            String result = resultMatcher.group(1);
+            id = result.replace('/', '-');
+        }
+        if (id.contains("-w"))  // 包含星期，需要过滤
+        {
+            Pattern weekPattern = Pattern.compile("(.*?)-w.+");
+            Matcher weekMatcher = weekPattern.matcher(id);
+            if (weekMatcher.find())
+            {
+                id = weekMatcher.group(1);  
+            }
+        }
+        
+        return id;
+    }
 }

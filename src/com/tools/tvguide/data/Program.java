@@ -6,6 +6,7 @@ public class Program implements Serializable
 {
     private static final long serialVersionUID = 1L;
     public int day;
+    public String date;
     public String time;
     public String title;
     public String trailer;
