@@ -78,7 +78,7 @@ public class SearchActivity extends Activity implements Callback
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
     private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL, MSG_SHOW_PROGRAM_SCHEDULE,
-                              MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE}
+                              MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE, MSG_SHOW_DRAMA}
     private final int TAB_INDEX_CHANNELS = 0;
     private final int TAB_INDEX_PROGRAMS = 1;
     private List<String> mPopSearchList;
@@ -88,6 +88,7 @@ public class SearchActivity extends Activity implements Callback
     private List<Channel> mChannelList = new ArrayList<Channel>();
     private List<HashMap<String, String>> mTvcolumnList = new ArrayList<HashMap<String,String>>();
     private List<HashMap<String, String>> mMovieList = new ArrayList<HashMap<String,String>>();
+    private List<HashMap<String, String>> mDramaList = new ArrayList<HashMap<String,String>>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -399,13 +400,25 @@ public class SearchActivity extends Activity implements Callback
                 {
                     for (int i=0; i<entryList.size(); ++i)
                     {
-                        HashMap<String, String> tvcolumn = new HashMap<String, String>();
-                        tvcolumn.put("name", entryList.get(i).name);
-                        tvcolumn.put("profile", entryList.get(i).profile);
-                        tvcolumn.put("picture_link", entryList.get(i).imageLink);
-                        mMovieList.add(tvcolumn);
+                        HashMap<String, String> movie = new HashMap<String, String>();
+                        movie.put("name", entryList.get(i).name);
+                        movie.put("profile", entryList.get(i).profile);
+                        movie.put("picture_link", entryList.get(i).imageLink);
+                        mMovieList.add(movie);
                     }
                     mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_MOVIE.ordinal()).sendToTarget();
+                }
+                else if (categoryType == Type.Drama)
+                {
+                    for (int i=0; i<entryList.size(); ++i)
+                    {
+                        HashMap<String, String> drama = new HashMap<String, String>();
+                        drama.put("name", entryList.get(i).name);
+                        drama.put("profile", entryList.get(i).profile);
+                        drama.put("picture_link", entryList.get(i).imageLink);
+                        mDramaList.add(drama);
+                    }
+                    mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_DRAMA.ordinal()).sendToTarget();
                 }
             }
             
@@ -603,6 +616,13 @@ public class SearchActivity extends Activity implements Callback
                 {
                     ListView movieListView = (ListView) mResultPagerAdapter.getView(movieTabIndex).findViewById(R.id.hot_program_listview);
                     movieListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
+                }
+            case MSG_SHOW_DRAMA:
+                int dramaTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Drama);
+                if (dramaTabIndex != -1)
+                {
+                    ListView dramaListView = (ListView) mResultPagerAdapter.getView(dramaTabIndex).findViewById(R.id.hot_program_listview);
+                    dramaListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mDramaList));
                 }
             default:
                 break;
