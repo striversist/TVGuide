@@ -291,7 +291,7 @@ public class SearchHtmlManager
                 
                 Element nameElement = li.select("span.name").first();
                 if (nameElement != null)
-                    program.title = nameElement.ownText();
+                    program.title = nameElement.text();
                 
                 if (linkElement != null)
                     program.link = getAbsoluteUrl(linkElement.attr("href"));
