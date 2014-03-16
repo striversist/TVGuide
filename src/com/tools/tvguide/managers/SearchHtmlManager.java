@@ -308,10 +308,13 @@ public class SearchHtmlManager
         }
         
         String nextPageLink = null;
-        Element nextPageElement = doc.select("div.page a").first();
-        if (nextPageElement != null && nextPageElement.text().contains("下一页"))
+        Elements pageElements = doc.select("div.page a");
+        for (int i=0; i<pageElements.size(); ++i)
         {
-            nextPageLink = getAbsoluteUrl(nextPageElement.attr("href"));
+            if (pageElements.get(i).text().contains("下一页"))
+            {
+                nextPageLink = getAbsoluteUrl(pageElements.get(i).attr("href"));
+            }
         }
         
         return nextPageLink;
