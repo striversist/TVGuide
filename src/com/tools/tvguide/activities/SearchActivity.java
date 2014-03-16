@@ -78,7 +78,7 @@ public class SearchActivity extends Activity implements Callback
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
     private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL, MSG_SHOW_PROGRAM_SCHEDULE,
-                              MSG_SHOW_TVCOLUMN}
+                              MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE}
     private final int TAB_INDEX_CHANNELS = 0;
     private final int TAB_INDEX_PROGRAMS = 1;
     private List<String> mPopSearchList;
@@ -87,6 +87,7 @@ public class SearchActivity extends Activity implements Callback
     private List<SearchResultCategory> mCategoryList;
     private List<Channel> mChannelList = new ArrayList<Channel>();
     private List<HashMap<String, String>> mTvcolumnList = new ArrayList<HashMap<String,String>>();
+    private List<HashMap<String, String>> mMovieList = new ArrayList<HashMap<String,String>>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -394,6 +395,18 @@ public class SearchActivity extends Activity implements Callback
                     }
                     mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_TVCOLUMN.ordinal()).sendToTarget();
                 }
+                else if (categoryType == Type.Movie)
+                {
+                    for (int i=0; i<entryList.size(); ++i)
+                    {
+                        HashMap<String, String> tvcolumn = new HashMap<String, String>();
+                        tvcolumn.put("name", entryList.get(i).name);
+                        tvcolumn.put("profile", entryList.get(i).profile);
+                        tvcolumn.put("picture_link", entryList.get(i).imageLink);
+                        mMovieList.add(tvcolumn);
+                    }
+                    mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_MOVIE.ordinal()).sendToTarget();
+                }
             }
             
             @Override
@@ -578,9 +591,19 @@ public class SearchActivity extends Activity implements Callback
                 break;
             case MSG_SHOW_TVCOLUMN:
                 int tvcolumnTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Tvcolumn);
-                ListView columnListView = (ListView) mResultPagerAdapter.getView(tvcolumnTabIndex).findViewById(R.id.hot_program_listview);
-                columnListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
+                if (tvcolumnTabIndex != -1)
+                {
+                    ListView columnListView = (ListView) mResultPagerAdapter.getView(tvcolumnTabIndex).findViewById(R.id.hot_program_listview);
+                    columnListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
+                }
                 break;
+            case MSG_SHOW_MOVIE:
+                int movieTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Movie);
+                if (movieTabIndex != -1)
+                {
+                    ListView movieListView = (ListView) mResultPagerAdapter.getView(movieTabIndex).findViewById(R.id.hot_program_listview);
+                    movieListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
+                }
             default:
                 break;
         }
