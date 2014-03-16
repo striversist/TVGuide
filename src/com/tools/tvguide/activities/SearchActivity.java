@@ -75,6 +75,7 @@ public class SearchActivity extends Activity implements Callback
     private List<HashMap<String, String>> mTvcolumnList = new ArrayList<HashMap<String,String>>();
     private List<HashMap<String, String>> mMovieList = new ArrayList<HashMap<String,String>>();
     private List<HashMap<String, String>> mDramaList = new ArrayList<HashMap<String,String>>();
+    private ResultProgramAdapter mScheduleAdapter;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -98,6 +99,7 @@ public class SearchActivity extends Activity implements Callback
         mPopSearchList = new ArrayList<String>();
         mUiHandler = new Handler(this);
         mCategoryList = new ArrayList<SearchResultCategory>();
+        mScheduleAdapter = new ResultProgramAdapter(this);
         
         initContentLayout();
         ((SearchHotwordsView) mOriginContentLayout.findViewById(R.id.search_hotwords_view)).setOnItemClickListener(new SearchHotwordsView.OnItemClickListener() 
@@ -341,9 +343,6 @@ public class SearchActivity extends Activity implements Callback
             @Override
             public void onProgramScheduleLoadeded(int requestId, int pageIndex, List<HashMap<String, Object>> scheduleList) 
             {
-                if (pageIndex != 0) // 目前只针对第一页
-                    return;
-                
                 for (int i=0; i<scheduleList.size(); ++i)
                 {
                     Channel channel = (Channel) scheduleList.get(i).get("channel");
@@ -357,7 +356,7 @@ public class SearchActivity extends Activity implements Callback
                         Item item = new Item();
                         item.id = channel.id;
                         item.name = channel.name;
-                        item.time = programList.get(j).time;
+                        item.time = programList.get(j).date + " " + programList.get(j).time;
                         item.title = programList.get(j).title;
                         item.key = mKeyword;
                         item.hasLink = false;
@@ -456,6 +455,7 @@ public class SearchActivity extends Activity implements Callback
                     if (layout != null)
                         mResultPagerAdapter.addView(layout);
                 }
+                indicator.setCurrentTab(0);
                 mViewPager.setAdapter(mResultPagerAdapter);
                 mContentLayout.removeAllViews();
                 mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
@@ -495,7 +495,9 @@ public class SearchActivity extends Activity implements Callback
                 if (scheduleTabIndex != -1)
                 {
                     ListView scheduleListView = (ListView) mResultPagerAdapter.getView(scheduleTabIndex).findViewById(R.id.program_list_view);
-                    scheduleListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemProgramDataList));
+                    if (scheduleListView.getAdapter() == null)
+                        scheduleListView.setAdapter(mScheduleAdapter);
+                    mScheduleAdapter.updateItemList(mItemProgramDataList);
                 }
                 break;
             default:

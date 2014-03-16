@@ -23,10 +23,27 @@ public class ResultProgramAdapter extends BaseAdapter
     private Context mContext;
     private List<IListItem> mItemList = new ArrayList<ResultProgramAdapter.IListItem>();
     
+    public ResultProgramAdapter(Context context)
+    {
+        assert (context != null);
+        mContext = context;
+    }
+    
     public ResultProgramAdapter(Context context, List<IListItem> itemList)
     {
+        assert (context != null);
         mContext = context;
         mItemList.addAll(itemList);
+    }
+    
+    public void updateItemList(List<IListItem> itemList)
+    {
+        if (itemList == null)
+            return;
+        
+        mItemList.clear();
+        mItemList.addAll(itemList);
+        notifyDataSetChanged();
     }
     
     @Override
