@@ -77,8 +77,8 @@ public class SearchActivity extends Activity implements Callback
     private ResultPageAdapter mResultPagerAdapter;
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
-    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL, MSG_SHOW_PROGRAM_SCHEDULE,
-                              MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE, MSG_SHOW_DRAMA}
+    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL,
+                              MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE, MSG_SHOW_DRAMA, MSG_SHOW_SCHEDULE}
     private final int TAB_INDEX_CHANNELS = 0;
     private final int TAB_INDEX_PROGRAMS = 1;
     private List<String> mPopSearchList;
@@ -425,7 +425,30 @@ public class SearchActivity extends Activity implements Callback
             @Override
             public void onProgramScheduleLoadeded(int requestId, int pageIndex, List<HashMap<String, Object>> scheduleList) 
             {
+                if (pageIndex != 0) // 目前只针对第一页
+                    return;
                 
+                for (int i=0; i<scheduleList.size(); ++i)
+                {
+                    Channel channel = (Channel) scheduleList.get(i).get("channel");
+                    List<Program> programList = (List<Program>) scheduleList.get(i).get("programs");
+                    if (channel == null || programList == null)
+                        continue;
+                    
+                    mItemProgramDataList.add(new LabelItem(channel.name, R.layout.hot_channel_tvsou_item, R.id.hot_channel_name_tv));
+                    for (int j=0; j<programList.size(); ++j)
+                    {
+                        Item item = new Item();
+                        item.id = channel.id;
+                        item.name = channel.name;
+                        item.time = programList.get(j).time;
+                        item.title = programList.get(j).title;
+                        item.key = mKeyword;
+                        item.hasLink = false;
+                        mItemProgramDataList.add(new ContentItem(item, R.layout.hot_program_tvsou_item, R.id.hot_program_name_tv));
+                    }
+                }
+                mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_SCHEDULE.ordinal()).sendToTarget();
             }
         });
         mProgressDialog.show();
@@ -588,6 +611,10 @@ public class SearchActivity extends Activity implements Callback
                     {
                         layout =  mInflater.inflate(R.layout.hot_program_layout, null);
                     }
+                    else if (mCategoryList.get(i).type == Type.ProgramSchedule)
+                    {
+                        layout = mInflater.inflate(R.layout.search_programs_layout, null);
+                    }
                     
                     if (layout != null)
                         mResultPagerAdapter.addView(layout);
@@ -617,6 +644,7 @@ public class SearchActivity extends Activity implements Callback
                     ListView movieListView = (ListView) mResultPagerAdapter.getView(movieTabIndex).findViewById(R.id.hot_program_listview);
                     movieListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
                 }
+                break;
             case MSG_SHOW_DRAMA:
                 int dramaTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Drama);
                 if (dramaTabIndex != -1)
@@ -624,6 +652,15 @@ public class SearchActivity extends Activity implements Callback
                     ListView dramaListView = (ListView) mResultPagerAdapter.getView(dramaTabIndex).findViewById(R.id.hot_program_listview);
                     dramaListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mDramaList));
                 }
+                break;
+            case MSG_SHOW_SCHEDULE:
+                int scheduleTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.ProgramSchedule);
+                if (scheduleTabIndex != -1)
+                {
+                    ListView scheduleListView = (ListView) mResultPagerAdapter.getView(scheduleTabIndex).findViewById(R.id.program_list_view);
+                    scheduleListView.setAdapter(new ResultProgramAdapter(SearchActivity.this, mItemProgramDataList));
+                }
+                break;
             default:
                 break;
         }

@@ -1,5 +1,6 @@
 package com.tools.tvguide.adapters;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,12 +21,12 @@ import android.widget.TextView;
 public class ResultProgramAdapter extends BaseAdapter 
 {
     private Context mContext;
-    private List<IListItem> mItemList;
+    private List<IListItem> mItemList = new ArrayList<ResultProgramAdapter.IListItem>();
     
     public ResultProgramAdapter(Context context, List<IListItem> itemList)
     {
         mContext = context;
-        mItemList = itemList;
+        mItemList.addAll(itemList);
     }
     
     @Override
