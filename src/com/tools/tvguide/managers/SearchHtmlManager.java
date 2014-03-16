@@ -263,40 +263,41 @@ public class SearchHtmlManager
         {
             Element li = liElements.get(i);
             Element linkElement = li.select("a").first();
-            if (linkElement != null)
+            if (linkElement != null && linkElement.attr("href").contains("program"))    // 频道
             {
-                if (linkElement.attr("href").contains("program"))   // 频道
-                {
-                    Channel channel = new Channel();
-                    channel.name = linkElement.ownText();
-                    channel.tvmaoId = HtmlUtils.filterTvmaoId(linkElement.attr("href"));
-                    channel.tvmaoLink = getAbsoluteUrl(linkElement.attr("href"));
+                Channel channel = new Channel();
+                channel.name = linkElement.ownText();
+                channel.tvmaoId = HtmlUtils.filterTvmaoId(linkElement.attr("href"));
+                channel.tvmaoLink = getAbsoluteUrl(linkElement.attr("href"));
+                
+                if (schedule != null)
+                    schedules.add(schedule);
                     
-                    if (schedule != null)
-                        schedules.add(schedule);
-                        
-                    schedule = new HashMap<String, Object>();
-                    programList = new ArrayList<Program>();
-                    schedule.put("channel", channel);
-                    schedule.put("programs", programList);
-                }
-                else    // 节目
-                {
-                    Program program = new Program();
-                    Element dateElement = li.select("span.date").first();
-                    if (dateElement != null)
-                        program.date = dateElement.ownText();
-                    
-                    Element timeElement = li.select("span.time").first();
-                    if (timeElement != null)
-                        program.time = timeElement.ownText();
-                    
-                    program.title = linkElement.ownText();
+                schedule = new HashMap<String, Object>();
+                programList = new ArrayList<Program>();
+                schedule.put("channel", channel);
+                schedule.put("programs", programList);
+            }
+            else    // 节目
+            {
+                Program program = new Program();
+                Element dateElement = li.select("span.date").first();
+                if (dateElement != null)
+                    program.date = dateElement.ownText();
+                
+                Element timeElement = li.select("span.time").first();
+                if (timeElement != null)
+                    program.time = timeElement.ownText();
+                
+                Element nameElement = li.select("span.name").first();
+                if (nameElement != null)
+                    program.title = nameElement.ownText();
+                
+                if (linkElement != null)
                     program.link = getAbsoluteUrl(linkElement.attr("href"));
-                    
-                    if (programList != null)
-                        programList.add(program);
-                }
+                
+                if (programList != null)
+                    programList.add(program);
             }
             
             if (i == liElements.size() -1)  // 最后一个
