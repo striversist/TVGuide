@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
+import com.tools.tvguide.adapters.ChannellistAdapter2;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter.Item;
@@ -62,6 +63,7 @@ public class SearchActivity extends Activity implements Callback
     private List<IListItem> mItemProgramDataList;
     private List<HashMap<String, Object>> mItemChannelDataList; 
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
+    private List<Channel> mChannelList = new ArrayList<Channel>();
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mOriginContentLayout;
@@ -300,6 +302,7 @@ public class SearchActivity extends Activity implements Callback
         AppEngine.getInstance().getSearchWordsManager().addSearchRecord(mKeyword);
         mItemProgramDataList.clear();
         mItemChannelDataList.clear();
+        mChannelList.clear();
         mResultProgramsNum = 0;
         final List<Channel> channels = new ArrayList<Channel>();
         final List<HashMap<String, Object>> programs = new ArrayList<HashMap<String,Object>>();
@@ -365,10 +368,16 @@ public class SearchActivity extends Activity implements Callback
                 {
                     for (int i=0; i<entryList.size(); ++i)
                     {
-                        HashMap<String, Object> item = new HashMap<String, Object>();
-                        item.put("id", HtmlUtils.filterTvmaoId(entryList.get(i).detailLink));
-                        item.put("name", entryList.get(i).name);
-                        mItemChannelDataList.add(item);
+//                        HashMap<String, Object> item = new HashMap<String, Object>();
+//                        item.put("id", HtmlUtils.filterTvmaoId(entryList.get(i).detailLink));
+//                        item.put("name", entryList.get(i).name);
+//                        mItemChannelDataList.add(item);
+                        Channel channel = new Channel();
+                        channel.name = entryList.get(i).name;
+                        channel.tvmaoId = HtmlUtils.filterTvmaoId(entryList.get(i).detailLink);
+                        channel.tvmaoLink = entryList.get(i).detailLink;
+                        channel.logoLink = entryList.get(i).imageLink;
+                        mChannelList.add(channel);
                     }
                     mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_CHANNEL.ordinal()).sendToTarget();
                 }
@@ -540,10 +549,10 @@ public class SearchActivity extends Activity implements Callback
                 break;
             case MSG_SHOW_CHANNEL:
                 // 数据拷贝，防止Crash: "Make sure the content of your adapter is not modified from a background thread, but only from the UI thread"
-                List<HashMap<String, Object>> itemChannelList = new ArrayList<HashMap<String,Object>>();
-                itemChannelList.addAll(mItemChannelDataList);
+                List<Channel> channelList = new ArrayList<Channel>();
+                channelList.addAll(mChannelList);
                 int tabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Channel);
-                ((ListView)mResultPagerAdapter.getView(tabIndex)).setAdapter(new ChannellistAdapter(SearchActivity.this, itemChannelList));
+                ((ListView)mResultPagerAdapter.getView(tabIndex)).setAdapter(new ChannellistAdapter2(SearchActivity.this, channelList));
                 break;
             default:
                 break;

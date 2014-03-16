@@ -70,7 +70,8 @@ public class SearchHtmlManager
                             category.name = categoryLink.ownText();
                             category.type = SearchResultCategory.getType(category.name);
                             category.link = getAbsoluteUrl(categoryLink.attr("href"));
-                            categoryList.add(category);
+                            if (category.type != Type.Unknown)
+                                categoryList.add(category);
                         }
                     }
                     callback.onCategoriesLoaded(requestId, categoryList);
@@ -128,7 +129,7 @@ public class SearchHtmlManager
                                 break;
                         }
                         
-                        if (categoryList.get(i).type != Type.ProgramSchedule)
+                        if (categoryList.get(i).type != Type.Unknown && categoryList.get(i).type != Type.ProgramSchedule)
                             callback.onEntriesLoaded(requestId, categoryList.get(i).type, entryList);
                     }
                     

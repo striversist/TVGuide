@@ -9,4 +9,5 @@ public class Channel implements Serializable
     public String name;
     public String tvmaoId;
     public String tvmaoLink;
+    public String logoLink;
 }
