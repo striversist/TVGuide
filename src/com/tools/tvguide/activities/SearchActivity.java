@@ -268,10 +268,11 @@ public class SearchActivity extends Activity implements Callback
     private void updateSearchResult()
     {
         AppEngine.getInstance().getSearchWordsManager().addSearchRecord(mKeyword);
-        mItemProgramDataList.clear();
         mChannelList.clear();
+        mDramaList.clear();
         mTvcolumnList.clear();
         mMovieList.clear();
+        mItemProgramDataList.clear();
         
         AppEngine.getInstance().getSearchHtmlManager().search(0, mKeyword, new SearchResultCallback() 
         {
@@ -434,6 +435,9 @@ public class SearchActivity extends Activity implements Callback
                 mProgressDialog.dismiss();
                 MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
                 indicator.reset();
+                mViewPager.removeAllViews();
+                mResultPagerAdapter.clear();
+                
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
                     indicator.addTab(mCategoryList.get(i).name, null);

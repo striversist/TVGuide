@@ -86,20 +86,19 @@ public class SearchHtmlManager
                         List<HashMap<String, Object>> schedule = new ArrayList<HashMap<String,Object>>();
                         
                         Document document = null;
-                        if (i == 0) { // 当前页
-                            document = doc;
-                        } else {
-                            String html = new UANetDataGetter(categoryList.get(i).link).getStringData();
-                            if (html != null)
-                                document = Jsoup.parse(html);
-                            else 
-                                continue;
-                        }
+                        String html = new UANetDataGetter(categoryList.get(i).link).getStringData();
+                        if (html != null)
+                            document = Jsoup.parse(html);
+                        else 
+                            continue;
                         
                         switch (categoryList.get(i).type) 
                         {
                             case Channel:
                                 getChannels(document, entryList);
+                                break;
+                            case Drama:
+                                getDramas(document, entryList);
                                 break;
                             case Tvcolumn:
                                 getTvcolumns(document, entryList);
@@ -116,9 +115,9 @@ public class SearchHtmlManager
                                     callback.onProgramScheduleLoadeded(requestId, page, schedule);
                                     
                                     if (nextPageLink != null) {
-                                        String html = new UANetDataGetter(nextPageLink).getStringData();
-                                        if (html != null) {
-                                            nextPageDocument = Jsoup.parse(html);
+                                        String scheduleHtml = new UANetDataGetter(nextPageLink).getStringData();
+                                        if (scheduleHtml != null) {
+                                            nextPageDocument = Jsoup.parse(scheduleHtml);
                                             schedule = new ArrayList<HashMap<String,Object>>();
                                             page++;
                                         }
@@ -165,6 +164,32 @@ public class SearchHtmlManager
             }
             
             channels.add(entry);
+        }
+    }
+    
+    private void getDramas(Document doc, List<SearchResultDataEntry> dramas)
+    {
+        if (doc == null || dramas == null)
+            return;
+        
+        Elements dramaBlocks = doc.select("table[id=t_q_tab_drama] tr");
+        for (int i=0; i<dramaBlocks.size(); ++i)
+        {
+            Element dramaElement = dramaBlocks.get(i);
+            SearchResultDataEntry entry = new SearchResultDataEntry();
+            
+            Element imageElement = dramaElement.select("img").first();
+            if (imageElement != null)
+                entry.imageLink = getAbsoluteUrl(imageElement.attr("src"));
+            Elements links = dramaElement.select("a");
+            if (links.size() > 1)
+            {
+                entry.name = links.get(1).ownText();
+                entry.detailLink = getAbsoluteUrl(links.get(1).attr("href"));
+            }
+            entry.profile = dramaElement.text().replace(entry.name, "");
+            
+            dramas.add(entry);
         }
     }
     

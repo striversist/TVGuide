@@ -11,28 +11,33 @@ import android.view.View;
 
 public class ResultPageAdapter extends PagerAdapter 
 {
-    private List<View> mViewLists = new ArrayList<View>();
+    private List<View> mViewList = new ArrayList<View>();
     
     public void addView(View view)
     {
-        mViewLists.add(view);
+        mViewList.add(view);
     }
     
     public void setView(int index, View view)
     {
-        mViewLists.set(index, view);
+        mViewList.set(index, view);
     }
     
     public View getView(int position)
     {
-        return mViewLists.get(position);
+        return mViewList.get(position);
+    }
+    
+    public void clear()
+    {
+        mViewList.clear();
     }
         
     @Override
     public void destroyItem(View arg0, int arg1, Object arg2) 
     {
         Log.d("ResultPageAdapter", "destroyItem");
-        ((ViewPager) arg0).removeView(mViewLists.get(arg1));
+        ((ViewPager) arg0).removeView(mViewList.get(arg1));
     }
 
     @Override
@@ -45,15 +50,15 @@ public class ResultPageAdapter extends PagerAdapter
     public int getCount() 
     {
         Log.d("ResultPageAdapter", "getCount");
-        return mViewLists.size();
+        return mViewList.size();
     }
 
     @Override
     public Object instantiateItem(View arg0, int arg1) 
     {
         Log.d("ResultPageAdapter", "instantiateItem");
-        ((ViewPager) arg0).addView(mViewLists.get(arg1), 0);
-        return mViewLists.get(arg1);
+        ((ViewPager) arg0).addView(mViewList.get(arg1), 0);
+        return mViewList.get(arg1);
     }
 
     @Override
