@@ -7,6 +7,7 @@ import java.util.List;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.adapters.ChannellistAdapter2;
+import com.tools.tvguide.adapters.HotProgramListAdapter;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter.Item;
@@ -63,7 +64,6 @@ public class SearchActivity extends Activity implements Callback
     private List<IListItem> mItemProgramDataList;
     private List<HashMap<String, Object>> mItemChannelDataList; 
     private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
-    private List<Channel> mChannelList = new ArrayList<Channel>();
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mOriginContentLayout;
@@ -77,13 +77,16 @@ public class SearchActivity extends Activity implements Callback
     private ResultPageAdapter mResultPagerAdapter;
     private String mOriginChannelsFormatString;
     private String mOriginProgramsFormatString;
-    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL, MSG_SHOW_PROGRAM_SCHEDULE}
+    private enum SelfMessage {MSG_SHOW_RESULT, MSG_REFRESH_ON_PLAYING_PROGRAM_LIST, MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL, MSG_SHOW_PROGRAM_SCHEDULE,
+                              MSG_SHOW_TVCOLUMN}
     private final int TAB_INDEX_CHANNELS = 0;
     private final int TAB_INDEX_PROGRAMS = 1;
     private List<String> mPopSearchList;
     private Handler mUiHandler;
     
     private List<SearchResultCategory> mCategoryList;
+    private List<Channel> mChannelList = new ArrayList<Channel>();
+    private List<HashMap<String, String>> mTvcolumnList = new ArrayList<HashMap<String,String>>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -113,7 +116,8 @@ public class SearchActivity extends Activity implements Callback
         mCategoryList = new ArrayList<SearchResultCategory>();
         
         // NOTE：Should follow the TAB INDEX order at the beginning of the class
-//        ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+        ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
+        channelListView.getParent();
 //        ListView programListView = (ListView) mInflater.inflate(R.layout.search_programs_layout, null).findViewById(R.id.program_list_view);
 //        mResultPagerAdapter.addView(channelListView);
 //        mResultPagerAdapter.addView(programListView);
@@ -231,7 +235,7 @@ public class SearchActivity extends Activity implements Callback
             @Override
             public void onTabClick(int index, Object tag) 
             {
-//                mViewPager.setCurrentItem(index);
+                mViewPager.setCurrentItem(index);
             }
         });
         
@@ -303,6 +307,7 @@ public class SearchActivity extends Activity implements Callback
         mItemProgramDataList.clear();
         mItemChannelDataList.clear();
         mChannelList.clear();
+        mTvcolumnList.clear();
         mResultProgramsNum = 0;
         final List<Channel> channels = new ArrayList<Channel>();
         final List<HashMap<String, Object>> programs = new ArrayList<HashMap<String,Object>>();
@@ -368,10 +373,6 @@ public class SearchActivity extends Activity implements Callback
                 {
                     for (int i=0; i<entryList.size(); ++i)
                     {
-//                        HashMap<String, Object> item = new HashMap<String, Object>();
-//                        item.put("id", HtmlUtils.filterTvmaoId(entryList.get(i).detailLink));
-//                        item.put("name", entryList.get(i).name);
-//                        mItemChannelDataList.add(item);
                         Channel channel = new Channel();
                         channel.name = entryList.get(i).name;
                         channel.tvmaoId = HtmlUtils.filterTvmaoId(entryList.get(i).detailLink);
@@ -380,6 +381,18 @@ public class SearchActivity extends Activity implements Callback
                         mChannelList.add(channel);
                     }
                     mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_CHANNEL.ordinal()).sendToTarget();
+                } 
+                else if (categoryType == Type.Tvcolumn)
+                {
+                    for (int i=0; i<entryList.size(); ++i)
+                    {
+                        HashMap<String, String> tvcolumn = new HashMap<String, String>();
+                        tvcolumn.put("name", entryList.get(i).name);
+                        tvcolumn.put("profile", entryList.get(i).profile);
+                        tvcolumn.put("picture_link", entryList.get(i).imageLink);
+                        mTvcolumnList.add(tvcolumn);
+                    }
+                    mUiHandler.obtainMessage(SelfMessage.MSG_SHOW_TVCOLUMN.ordinal()).sendToTarget();
                 }
             }
             
@@ -539,8 +552,19 @@ public class SearchActivity extends Activity implements Callback
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
                     indicator.addTab(mCategoryList.get(i).name, null);
-                    ListView channelListView = (ListView) mInflater.inflate(R.layout.activity_channellist, null).findViewById(R.id.channel_list);
-                    mResultPagerAdapter.addView(channelListView);
+                    View layout = null;
+                    if (mCategoryList.get(i).type == Type.Channel)
+                    {
+                        layout = mInflater.inflate(R.layout.channel_listview, null);
+                    }
+                    else if (mCategoryList.get(i).type == Type.Tvcolumn || mCategoryList.get(i).type == Type.Drama
+                            || mCategoryList.get(i).type == Type.Movie)
+                    {
+                        layout =  mInflater.inflate(R.layout.hot_program_layout, null);
+                    }
+                    
+                    if (layout != null)
+                        mResultPagerAdapter.addView(layout);
                 }
                 mViewPager.setAdapter(mResultPagerAdapter);
                 mContentLayout.removeAllViews();
@@ -548,11 +572,14 @@ public class SearchActivity extends Activity implements Callback
                 updateHistorySearch();
                 break;
             case MSG_SHOW_CHANNEL:
-                // 数据拷贝，防止Crash: "Make sure the content of your adapter is not modified from a background thread, but only from the UI thread"
-                List<Channel> channelList = new ArrayList<Channel>();
-                channelList.addAll(mChannelList);
                 int tabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Channel);
-                ((ListView)mResultPagerAdapter.getView(tabIndex)).setAdapter(new ChannellistAdapter2(SearchActivity.this, channelList));
+                ListView channelListView = (ListView)mResultPagerAdapter.getView(tabIndex).findViewById(R.id.channel_lv);
+                channelListView.setAdapter(new ChannellistAdapter2(SearchActivity.this, mChannelList));
+                break;
+            case MSG_SHOW_TVCOLUMN:
+                int tvcolumnTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Tvcolumn);
+                ListView columnListView = (ListView) mResultPagerAdapter.getView(tvcolumnTabIndex).findViewById(R.id.hot_program_listview);
+                columnListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
                 break;
             default:
                 break;

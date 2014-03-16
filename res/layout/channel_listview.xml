@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal" android:background="@color/bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListView android:id="@+id/channel_lv" android:layout_width="fill_parent" android:layout_height="wrap_content" android:fadingEdge="none" android:padding="2.0dip" 
+	            android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice"
+	            android:layout_alignParentTop="true" android:layout_above="@id/adLayout" />
+</LinearLayout>

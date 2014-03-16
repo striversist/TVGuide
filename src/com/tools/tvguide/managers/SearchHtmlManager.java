@@ -188,6 +188,7 @@ public class SearchHtmlManager
                 entry.name = links.get(1).ownText();
                 entry.detailLink = getAbsoluteUrl(links.get(1).attr("href"));
             }
+            entry.profile = columnElement.text().replace(entry.name, "");
             
             columns.add(entry);
         }
