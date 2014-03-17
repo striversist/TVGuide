@@ -51,10 +51,10 @@ import android.widget.Toast;
 
 public class SearchActivity extends Activity implements Callback 
 {
+    private static int sRequest = 0;
     private EditText mSearchEditText;
     private boolean mIsSelectAll = false;
     private String mKeyword;
-    private List<IListItem> mItemProgramDataList; 
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mOriginContentLayout;
@@ -64,18 +64,18 @@ public class SearchActivity extends Activity implements Callback
     private RelativeLayout mCancelImage;
     private MyProgressDialog mProgressDialog;
     private ViewPager mViewPager;
-    private ResultPageAdapter mResultPagerAdapter;
-    private enum SelfMessage {MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL,
-                              MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE, MSG_SHOW_DRAMA, MSG_SHOW_SCHEDULE}
-    private List<String> mPopSearchList;
-    private Handler mUiHandler;
-    
-    private List<SearchResultCategory> mCategoryList;
-    private List<Channel> mChannelList = new ArrayList<Channel>();
+    private List<IListItem> mItemProgramDataList    = new ArrayList<IListItem>();; 
+    private ResultPageAdapter mResultPagerAdapter   = new ResultPageAdapter();;
+    private List<String> mPopSearchList             = new ArrayList<String>();;
+    private List<Channel> mChannelList              = new ArrayList<Channel>();
+    private List<SearchResultCategory> mCategoryList = new ArrayList<SearchResultCategory>();;
     private List<HashMap<String, String>> mTvcolumnList = new ArrayList<HashMap<String,String>>();
     private List<HashMap<String, String>> mMovieList = new ArrayList<HashMap<String,String>>();
     private List<HashMap<String, String>> mDramaList = new ArrayList<HashMap<String,String>>();
     private ResultProgramAdapter mScheduleAdapter;
+    private enum SelfMessage {MSG_SHOW_POP_SEARCH, MSG_SHOW_CATEGORY, MSG_SHOW_CHANNEL,
+            MSG_SHOW_TVCOLUMN, MSG_SHOW_MOVIE, MSG_SHOW_DRAMA, MSG_SHOW_SCHEDULE}
+    private Handler mUiHandler;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -85,7 +85,6 @@ public class SearchActivity extends Activity implements Callback
         
         mInflater = LayoutInflater.from(this);
         mSearchEditText = (EditText)findViewById(R.id.search_edit_text);
-        mItemProgramDataList = new ArrayList<IListItem>();
         mProgressDialog = new MyProgressDialog(this);
         mCancelImage = (RelativeLayout)findViewById(R.id.search_cancel_layout);
         mContentLayout = (LinearLayout)findViewById(R.id.search_content_layout);
@@ -95,10 +94,7 @@ public class SearchActivity extends Activity implements Callback
         mCenterLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         ((TextView) mNoSearchResultLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.no_found_tips));
         mViewPager = (ViewPager) mClassifyResultLayout.findViewById(R.id.search_view_pager);
-        mResultPagerAdapter = new ResultPageAdapter();
-        mPopSearchList = new ArrayList<String>();
         mUiHandler = new Handler(this);
-        mCategoryList = new ArrayList<SearchResultCategory>();
         mScheduleAdapter = new ResultProgramAdapter(this);
         
         initContentLayout();
@@ -273,12 +269,16 @@ public class SearchActivity extends Activity implements Callback
         mTvcolumnList.clear();
         mMovieList.clear();
         mItemProgramDataList.clear();
+        sRequest++;
         
-        AppEngine.getInstance().getSearchHtmlManager().search(0, mKeyword, new SearchResultCallback() 
+        AppEngine.getInstance().getSearchHtmlManager().search(sRequest, mKeyword, new SearchResultCallback() 
         {
             @Override
             public void onCategoriesLoaded(int requestId, List<SearchResultCategory> categoryList) 
             {
+                if (requestId != sRequest)
+                    return;
+                
                 if (categoryList != null)
                 {
                     mCategoryList.clear();
@@ -290,6 +290,9 @@ public class SearchActivity extends Activity implements Callback
             @Override
             public void onEntriesLoaded(int requestId, Type categoryType, List<SearchResultDataEntry> entryList) 
             {
+                if (requestId != sRequest)
+                    return;
+                
                 if (categoryType == Type.Channel)
                 {
                     for (int i=0; i<entryList.size(); ++i)
@@ -344,6 +347,9 @@ public class SearchActivity extends Activity implements Callback
             @Override
             public void onProgramScheduleLoadeded(int requestId, int pageIndex, List<HashMap<String, Object>> scheduleList) 
             {
+                if (requestId != sRequest)
+                    return;
+                
                 for (int i=0; i<scheduleList.size(); ++i)
                 {
                     Channel channel = (Channel) scheduleList.get(i).get("channel");
@@ -436,7 +442,14 @@ public class SearchActivity extends Activity implements Callback
                 MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
                 indicator.reset();
                 mViewPager.removeAllViews();
-                mResultPagerAdapter.clear();
+                mResultPagerAdapter = new ResultPageAdapter();
+                
+                if (mCategoryList.isEmpty())
+                {
+                    mContentLayout.removeAllViews();
+                    mContentLayout.addView(mNoSearchResultLayout, mCenterLayoutParams);
+                    break;
+                }
                 
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
