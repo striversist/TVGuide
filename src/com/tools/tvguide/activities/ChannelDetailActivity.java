@@ -28,7 +28,6 @@ import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AlarmHelper.AlarmListener;
 import com.tools.tvguide.managers.ChannelHtmlManager.ChannelDetailCallback;
-import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
@@ -121,7 +120,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         
         mUiHandler = new Handler(this);
-        mChannelId = getIntent().getStringExtra("id");
+        mChannelId = getIntent().getStringExtra("tvmao_id");
         mChannelName = getIntent().getStringExtra("name");
         mChannelList = (List<Channel>) getIntent().getSerializableExtra("channel_list");
         if (mChannelList == null)
@@ -257,7 +256,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         mLeftMenu.setChannelList(mChannelList);
         for (int i=0; i<mChannelList.size(); ++i)
         {
-            if (mChannelList.get(i).id.equals(mChannelId))
+            if (mChannelList.get(i).tvmaoId.equals(mChannelId))
             {
                 mLeftMenu.setCurrentIndex(i);
                 mLeftMenu.setSelection(i);
@@ -268,7 +267,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
             @Override
             public void onChannelSelect(Channel channel) 
             {
-                mChannelId = channel.id;
+                mChannelId = channel.tvmaoId;
                 mChannelName = channel.name;
                 updateAll();
             }
@@ -438,44 +437,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
 
     private void updateProgramList()
     {
-        if (isLoadFromProxy())
-            updateProgramListFromProxy();
-        else
-            updateProgramListFromWeb();
-    }
-    
-    private boolean isLoadFromProxy()
-    {
-        String webUrl = AppEngine.getInstance().getUrlManager().getWebChannelUrl(mChannelId, mCurrentSelectedDay);
-        if (!AppEngine.getInstance().getEnvironmentManager().isChannelDetailFromWeb() || webUrl == null)
-            return true;
-        else 
-            return false;
-    }
-    
-    private void updateProgramListFromProxy()
-    {
-        mProgramList.clear();
-        final HashMap<String, Object> extraInfo = new HashMap<String, Object>();
-        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadProgramsByChannelV3(mChannelId, mCurrentSelectedDay, mProgramList, 
-                                extraInfo, new ContentManager.LoadListener() 
-        {
-            @Override
-            public void onLoadFinish(int status) 
-            {
-                if (status == LoadListener.SUCCESS)
-                {
-                    if (extraInfo.containsKey("onplaying"))
-                        mOnPlayingProgram = (Program) extraInfo.get("onplaying");
-                    if (extraInfo.containsKey("days"))
-                        mMaxDays = Integer.parseInt((String) extraInfo.get("days")); 
-                    mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
-                    mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_DATELIST.ordinal());
-                }
-            }
-        });
-        if (isSyncLoad == false)
-            mProgressDialog.show();
+        updateProgramListFromWeb();
     }
     
     private void updateProgramListFromWeb()
@@ -521,22 +483,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     
     private void updateOnplayingProgram()
     {
-        if (isLoadFromProxy())
-            updateOnplayingProgramFromProxy();
-        else
-            updateOnplayingProgramFromWeb();
-    }
-    
-    private void updateOnplayingProgramFromProxy()
-    {
-        AppEngine.getInstance().getContentManager().loadOnPlayingProgramByChannel(mChannelId, mOnPlayingProgram, new ContentManager.LoadListener() 
-        {    
-            @Override
-            public void onLoadFinish(int status) 
-            {
-                mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
-            }
-        });
+        updateOnplayingProgramFromWeb();
     }
     
     private void updateOnplayingProgramFromWeb()

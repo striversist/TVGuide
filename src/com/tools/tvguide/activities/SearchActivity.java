@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
@@ -41,6 +43,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -475,7 +479,20 @@ public class SearchActivity extends Activity implements Callback
                 if (tabIndex != -1)
                 {
                     View channelLayout = mInflater.inflate(R.layout.channel_listview, null);
-                    ((ListView) channelLayout.findViewById(R.id.channel_lv)).setAdapter(new ChannellistAdapter2(SearchActivity.this, mChannelList));
+                    ListView channelListView = (ListView) channelLayout.findViewById(R.id.channel_lv);
+                    channelListView.setOnItemClickListener(new OnItemClickListener() 
+                    {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+                        {
+                            Intent intent = new Intent(SearchActivity.this, ChannelDetailActivity.class);
+                            intent.putExtra("tvmao_id", mChannelList.get(position).tvmaoId);
+                            intent.putExtra("name", mChannelList.get(position).name);
+                            intent.putExtra("channel_list", (Serializable) mChannelList);
+                            startActivity(intent);
+                        }
+                    });
+                    channelListView.setAdapter(new ChannellistAdapter2(SearchActivity.this, mChannelList));
                     setPageAdapterView(tabIndex, channelLayout);
                 }
                 break;
