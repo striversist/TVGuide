@@ -427,6 +427,12 @@ public class SearchActivity extends Activity implements Callback
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
+    
+    private void setPageAdapterView(int index, View view)
+    {
+        ((LinearLayout) mResultPagerAdapter.getView(index)).removeAllViews();
+        ((LinearLayout) mResultPagerAdapter.getView(index)).addView(view);
+    }
 
     @Override
     public boolean handleMessage(Message msg) 
@@ -454,23 +460,9 @@ public class SearchActivity extends Activity implements Callback
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
                     indicator.addTab(mCategoryList.get(i).name, null);
-                    View layout = null;
-                    if (mCategoryList.get(i).type == Type.Channel)
-                    {
-                        layout = mInflater.inflate(R.layout.channel_listview, null);
-                    }
-                    else if (mCategoryList.get(i).type == Type.Tvcolumn || mCategoryList.get(i).type == Type.Drama
-                            || mCategoryList.get(i).type == Type.Movie)
-                    {
-                        layout =  mInflater.inflate(R.layout.hot_program_layout, null);
-                    }
-                    else if (mCategoryList.get(i).type == Type.ProgramSchedule)
-                    {
-                        layout = mInflater.inflate(R.layout.search_programs_layout, null);
-                    }
-                    
-                    if (layout != null)
-                        mResultPagerAdapter.addView(layout);
+                    LinearLayout loadingLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
+                    ((TextView) loadingLayout.findViewById(R.id.center_tips_text_view)).setText(getResources().getString(R.string.loading_string));
+                    mResultPagerAdapter.addView(loadingLayout);
                 }
                 indicator.setCurrentTab(0);
                 mViewPager.setAdapter(mResultPagerAdapter);
@@ -480,40 +472,51 @@ public class SearchActivity extends Activity implements Callback
                 break;
             case MSG_SHOW_CHANNEL:
                 int tabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Channel);
-                ListView channelListView = (ListView)mResultPagerAdapter.getView(tabIndex).findViewById(R.id.channel_lv);
-                channelListView.setAdapter(new ChannellistAdapter2(SearchActivity.this, mChannelList));
+                if (tabIndex != -1)
+                {
+                    View channelLayout = mInflater.inflate(R.layout.channel_listview, null);
+                    ((ListView) channelLayout.findViewById(R.id.channel_lv)).setAdapter(new ChannellistAdapter2(SearchActivity.this, mChannelList));
+                    setPageAdapterView(tabIndex, channelLayout);
+                }
                 break;
             case MSG_SHOW_TVCOLUMN:
                 int tvcolumnTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Tvcolumn);
                 if (tvcolumnTabIndex != -1)
                 {
-                    ListView columnListView = (ListView) mResultPagerAdapter.getView(tvcolumnTabIndex).findViewById(R.id.hot_program_listview);
-                    columnListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
+                    View tvcolumnLayout = mInflater.inflate(R.layout.hot_program_layout, null);
+                    ((ListView) tvcolumnLayout.findViewById(R.id.hot_program_listview)).setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
+                    setPageAdapterView(tvcolumnTabIndex, tvcolumnLayout);
                 }
                 break;
             case MSG_SHOW_MOVIE:
                 int movieTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Movie);
                 if (movieTabIndex != -1)
                 {
-                    ListView movieListView = (ListView) mResultPagerAdapter.getView(movieTabIndex).findViewById(R.id.hot_program_listview);
-                    movieListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
+                    View movieLayout = mInflater.inflate(R.layout.hot_program_layout, null);
+                    ((ListView) movieLayout.findViewById(R.id.hot_program_listview)).setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
+                    setPageAdapterView(movieTabIndex, movieLayout);
                 }
                 break;
             case MSG_SHOW_DRAMA:
                 int dramaTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Drama);
                 if (dramaTabIndex != -1)
                 {
-                    ListView dramaListView = (ListView) mResultPagerAdapter.getView(dramaTabIndex).findViewById(R.id.hot_program_listview);
-                    dramaListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mDramaList));
+                    View dramaLayout = mInflater.inflate(R.layout.hot_program_layout, null);
+                    ((ListView) dramaLayout.findViewById(R.id.hot_program_listview)).setAdapter(new HotProgramListAdapter(SearchActivity.this, mDramaList));
+                    setPageAdapterView(dramaTabIndex, dramaLayout);
                 }
                 break;
             case MSG_SHOW_SCHEDULE:
                 int scheduleTabIndex = getCategoryTypeIndex(SearchResultCategory.Type.ProgramSchedule);
                 if (scheduleTabIndex != -1)
                 {
-                    ListView scheduleListView = (ListView) mResultPagerAdapter.getView(scheduleTabIndex).findViewById(R.id.program_list_view);
+                    View scheduleLayout = mInflater.inflate(R.layout.search_programs_layout, null);
+                    ListView scheduleListView = (ListView) scheduleLayout.findViewById(R.id.program_list_view);
                     if (scheduleListView.getAdapter() == null)
+                    {
                         scheduleListView.setAdapter(mScheduleAdapter);
+                        setPageAdapterView(scheduleTabIndex, scheduleLayout);
+                    }
                     mScheduleAdapter.updateItemList(mItemProgramDataList);
                 }
                 break;
