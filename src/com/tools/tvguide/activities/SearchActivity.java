@@ -317,6 +317,7 @@ public class SearchActivity extends Activity implements Callback
                         HashMap<String, String> tvcolumn = new HashMap<String, String>();
                         tvcolumn.put("name", entryList.get(i).name);
                         tvcolumn.put("profile", entryList.get(i).profile);
+                        tvcolumn.put("link", entryList.get(i).detailLink);
                         tvcolumn.put("picture_link", entryList.get(i).imageLink);
                         mTvcolumnList.add(tvcolumn);
                     }
@@ -329,6 +330,7 @@ public class SearchActivity extends Activity implements Callback
                         HashMap<String, String> movie = new HashMap<String, String>();
                         movie.put("name", entryList.get(i).name);
                         movie.put("profile", entryList.get(i).profile);
+                        movie.put("link", entryList.get(i).detailLink);
                         movie.put("picture_link", entryList.get(i).imageLink);
                         mMovieList.add(movie);
                     }
@@ -341,6 +343,7 @@ public class SearchActivity extends Activity implements Callback
                         HashMap<String, String> drama = new HashMap<String, String>();
                         drama.put("name", entryList.get(i).name);
                         drama.put("profile", entryList.get(i).profile);
+                        drama.put("link", entryList.get(i).detailLink);
                         drama.put("picture_link", entryList.get(i).imageLink);
                         mDramaList.add(drama);
                     }
@@ -485,7 +488,7 @@ public class SearchActivity extends Activity implements Callback
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
                         {
-                            Intent intent = new Intent(SearchActivity.this, ChannelDetailActivity.class);
+                            Intent intent = new Intent(SearchActivity.this, ProgramActivity.class);
                             intent.putExtra("tvmao_id", mChannelList.get(position).tvmaoId);
                             intent.putExtra("name", mChannelList.get(position).name);
                             intent.putExtra("channel_list", (Serializable) mChannelList);
@@ -501,7 +504,25 @@ public class SearchActivity extends Activity implements Callback
                 if (tvcolumnTabIndex != -1)
                 {
                     View tvcolumnLayout = mInflater.inflate(R.layout.hot_program_layout, null);
-                    ((ListView) tvcolumnLayout.findViewById(R.id.hot_program_listview)).setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
+                    ListView tvcolumnListView = (ListView) tvcolumnLayout.findViewById(R.id.hot_program_listview);
+                    tvcolumnListView.setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+                        {
+                            String link = mTvcolumnList.get(position).get("link");
+                            if (link == null || link.trim().length() == 0)
+                                return;
+                            
+                            link = link.replace("www.tvmao.com", "m.tvmao.com");    // for tvcolumn
+                            Intent intent = new Intent(SearchActivity.this, ProgramActivity.class);
+                            Program program = new Program();
+                            program.title = mTvcolumnList.get(position).get("name");
+                            program.link = link;
+                            intent.putExtra("program", (Serializable) program);
+                            startActivity(intent);
+                        }
+                    });
+                    tvcolumnListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mTvcolumnList));
                     setPageAdapterView(tvcolumnTabIndex, tvcolumnLayout);
                 }
                 break;
@@ -510,7 +531,26 @@ public class SearchActivity extends Activity implements Callback
                 if (movieTabIndex != -1)
                 {
                     View movieLayout = mInflater.inflate(R.layout.hot_program_layout, null);
-                    ((ListView) movieLayout.findViewById(R.id.hot_program_listview)).setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
+                    ListView movieListView = (ListView) movieLayout.findViewById(R.id.hot_program_listview);
+                    movieListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mMovieList));
+                    movieListView.setOnItemClickListener(new OnItemClickListener() 
+                    {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+                        {
+                            String link = mMovieList.get(position).get("link");
+                            if (link == null || link.trim().length() == 0)
+                                return;
+                            
+                            link = link.replace("m.tvmao.com", "www.tvmao.com");    // for movie
+                            Intent intent = new Intent(SearchActivity.this, ProgramActivity.class);
+                            Program program = new Program();
+                            program.title = mMovieList.get(position).get("name");
+                            program.link = link;
+                            intent.putExtra("program", (Serializable) program);
+                            startActivity(intent);
+                        }
+                    });
                     setPageAdapterView(movieTabIndex, movieLayout);
                 }
                 break;
@@ -519,7 +559,26 @@ public class SearchActivity extends Activity implements Callback
                 if (dramaTabIndex != -1)
                 {
                     View dramaLayout = mInflater.inflate(R.layout.hot_program_layout, null);
-                    ((ListView) dramaLayout.findViewById(R.id.hot_program_listview)).setAdapter(new HotProgramListAdapter(SearchActivity.this, mDramaList));
+                    ListView dramaListView = (ListView) dramaLayout.findViewById(R.id.hot_program_listview);
+                    dramaListView.setAdapter(new HotProgramListAdapter(SearchActivity.this, mDramaList));
+                    dramaListView.setOnItemClickListener(new OnItemClickListener() 
+                    {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+                        {
+                            String link = mDramaList.get(position).get("link");
+                            if (link == null || link.trim().length() == 0)
+                                return;
+                            
+                            link = link.replace("m.tvmao.com", "www.tvmao.com");    // for drama
+                            Intent intent = new Intent(SearchActivity.this, ProgramActivity.class);
+                            Program program = new Program();
+                            program.title = mDramaList.get(position).get("name");
+                            program.link = link;
+                            intent.putExtra("program", (Serializable) program);
+                            startActivity(intent);
+                        }
+                    });
                     setPageAdapterView(dramaTabIndex, dramaLayout);
                 }
                 break;
