@@ -488,7 +488,7 @@ public class SearchActivity extends Activity implements Callback
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
                         {
-                            Intent intent = new Intent(SearchActivity.this, ProgramActivity.class);
+                            Intent intent = new Intent(SearchActivity.this, ChannelDetailActivity.class);
                             intent.putExtra("tvmao_id", mChannelList.get(position).tvmaoId);
                             intent.putExtra("name", mChannelList.get(position).name);
                             intent.putExtra("channel_list", (Serializable) mChannelList);
