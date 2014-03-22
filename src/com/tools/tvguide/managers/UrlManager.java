@@ -218,7 +218,7 @@ public class UrlManager
         return PORT;
     }
     
-    public String getWebChannelUrl(String tvmaoId, int day)
+    public static String getWebChannelUrl(String tvmaoId, int day)
     {        
         // eg. http://www.tvmao.com/program/CCTV-CCTV1-w6.html
         String prefix = "http://www.tvmao.com/program/";

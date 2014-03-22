@@ -130,7 +130,7 @@ public class ChannellistActivity extends Activity implements Callback
                         item.put("name", mChannelList.get(i).name);
                         mItemList.add(item);
                     }
-                    mListAdapter.notifyDataSetChanged();
+                    mListAdapter.setItemList(mItemList);
                     updateOnPlayingProgramList();
                 }
                 break;
@@ -146,7 +146,8 @@ public class ChannellistActivity extends Activity implements Callback
                         mItemList.get(i).put("program", "正在播出：" + onPlayingString);
                     }
                 }
-                mListAdapter.notifyDataSetChanged();
+                mListAdapter.setItemList(mItemList);
+//                mListAdapter.notifyDataSetChanged();
                 break;
         }
         return true;

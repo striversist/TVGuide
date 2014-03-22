@@ -5,6 +5,5 @@
             android:paddingLeft="10.0dip" android:layout_marginLeft="5.0dip" android:layout_marginTop="6.0dip" 
             android:layout_marginBottom="6.0dip" />
     <TextView android:id="@+id/channel_name_tv" android:layout_width="fill_parent" android:layout_height="wrap_content" 
-            android:layout_marginLeft="10dp" android:textColor="@color/black" android:singleLine="true" android:textSize="17.0dip" 
-            android:text="@string/sample_item_text" />
+            android:layout_marginLeft="10dp" android:textColor="@color/black" android:singleLine="true" android:textSize="17.0dip" />
 </LinearLayout>
