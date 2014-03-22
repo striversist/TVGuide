@@ -64,7 +64,7 @@ public class CategorylistActivity extends Activity implements Callback
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
                 Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
-                intent.putExtra("category", (Serializable) mCurrentCategory.categoryList.get(position));
+                intent.putExtra("category", (Serializable) mItemList.get(position).get("category"));
                 startActivity(intent);
             }
         });
@@ -111,6 +111,7 @@ public class CategorylistActivity extends Activity implements Callback
                 {
                     HashMap<String, Object> item = new HashMap<String, Object>();
                     item.put("name", mCurrentCategory.categoryList.get(i).name);
+                    item.put("category", mCurrentCategory.categoryList.get(i));
                     if (shouldBeFirst(mCurrentCategory.categoryList.get(i).name))
                         mItemList.add(0, item);
                     else
