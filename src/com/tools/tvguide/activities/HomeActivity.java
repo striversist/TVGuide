@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,20 +59,21 @@ public class HomeActivity extends Activity implements Callback
             {
                 if (mCategoryList != null)
                 {
-//                    String categoryId = mCategoryList.get(position).get("id");
-//                    String categoryName = mCategoryList.get(position).get("name");
-//                    Intent intent;
-//                    if (mCategoryList.get(position).get("has_sub_category").equals("1"))
-//                    {
-//                        intent = new Intent(HomeActivity.this, CategorylistActivity.class);
-//                    }
-//                    else
-//                    {
-//                        intent = new Intent(HomeActivity.this, ChannellistActivity.class);
-//                    }
-//                    intent.putExtra("categoryId", categoryId);
-//                    intent.putExtra("categoryName", categoryName);
-//                    startActivity(intent);
+                    Intent intent = null;
+                    if (mCategoryList.get(position).next == Category.Next.CategoryList)
+                    {
+                        intent = new Intent(HomeActivity.this, CategorylistActivity.class);
+                    }
+                    else
+                    {
+                        intent = new Intent(HomeActivity.this, ChannellistActivity.class);
+                    }
+                    
+                    if (intent != null)
+                    {
+                        intent.putExtra("category", (Serializable) mCategoryList.get(position));
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -98,6 +101,7 @@ public class HomeActivity extends Activity implements Callback
                 {
                     mCategoryList.clear();
                     mCategoryList.addAll(categories);
+                    mCategoryList = classifyCategory(mCategoryList);
                     mUiHandler.obtainMessage(SelfMessage.SHOW_CATEGORY.ordinal()).sendToTarget();
                 }
             }
@@ -126,5 +130,52 @@ public class HomeActivity extends Activity implements Callback
         }
         
         return true;
+    }
+    
+    private List<Category> classifyCategory(List<Category> categoryList)
+    {
+        if (categoryList == null)
+            return null;
+        
+        List<Category> newCategoryList      = new ArrayList<Category>();
+        List<Category> hatCategoryList      = new ArrayList<Category>();       // 港澳台频道
+        List<Category> localCategoryList    = new ArrayList<Category>();       // 各省频道
+        
+        for (int i=0; i<categoryList.size(); ++i)
+        {
+            String name = categoryList.get(i).name;
+            if (TextUtils.equals(name, "央视") || TextUtils.equals(name, "卫视") || TextUtils.equals(name, "数字"))
+            {
+                categoryList.get(i).name = categoryList.get(i).name + "频道";
+                newCategoryList.add(categoryList.get(i));
+            }
+            else if (TextUtils.equals(name, "香港") || TextUtils.equals(name, "澳门") || TextUtils.equals(name, "台湾"))
+            {
+                hatCategoryList.add(categoryList.get(i));
+            }
+            else
+            {
+                localCategoryList.add(categoryList.get(i));
+            }
+        }
+        
+        if (!hatCategoryList.isEmpty())
+        {
+            Category hatCategory = new Category();
+            hatCategory.name = "港澳台";
+            hatCategory.next = Category.Next.CategoryList;
+            hatCategory.categoryList = hatCategoryList;
+            newCategoryList.add(hatCategory);
+        }
+        if (!localCategoryList.isEmpty())
+        {
+            Category localCategory = new Category();
+            localCategory.name = "各省频道";
+            localCategory.next = Category.Next.CategoryList;
+            localCategory.categoryList = localCategoryList;
+            newCategoryList.add(localCategory);
+        }
+        
+        return newCategoryList;
     }
 }
