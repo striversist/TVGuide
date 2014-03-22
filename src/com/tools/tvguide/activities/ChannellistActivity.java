@@ -114,6 +114,7 @@ public class ChannellistActivity extends Activity implements Callback
                 }
             }
         });
+        mProgressDialog.show();
     }
     
     private void updateOnPlayingProgramList()

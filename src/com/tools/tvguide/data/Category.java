@@ -8,6 +8,7 @@ public class Category implements Serializable
     private static final long serialVersionUID = 1L;
     
     public String name = "";
+    public String tvmaoId = "";
     public String link = "";
     
     public enum Next { CategoryList, ChannelList, None };

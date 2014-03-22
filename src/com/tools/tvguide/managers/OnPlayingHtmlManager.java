@@ -80,6 +80,7 @@ public class OnPlayingHtmlManager
                         
                         Category category = new Category();
                         category.name = optionElement.ownText();
+                        category.tvmaoId = optionElement.attr("value");
                         category.link = getAbsoluteUrlByOptionValue(optionElement.attr("value"));
                         categoryList.add(category);
                     }
@@ -107,7 +108,14 @@ public class OnPlayingHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(category.link);
+                    Document doc = null;
+                    if (category.tvmaoId != null && category.tvmaoId.trim().length() > 0)
+                        doc = Jsoup.connect(category.link).data("prov", category.tvmaoId).timeout(20000).post();
+                    else
+                        doc = HtmlUtils.getDocument(category.link);
+                    
+                    if (doc == null)
+                        return;
                     
                     // 返回结果
                     List<Channel> channelList = new ArrayList<Channel>();
