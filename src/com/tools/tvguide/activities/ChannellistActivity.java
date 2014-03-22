@@ -1,6 +1,5 @@
 package com.tools.tvguide.activities;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,15 +7,15 @@ import java.util.List;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Category;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.ContentManager;
 import com.tools.tvguide.managers.AdManager.AdSize;
-import com.tools.tvguide.utils.Utility;
-import com.tools.tvguide.utils.XmlParser;
+import com.tools.tvguide.managers.OnPlayingHtmlManager.OnPlayingCallback;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
@@ -27,21 +26,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ChannellistActivity extends Activity 
+public class ChannellistActivity extends Activity implements Callback 
 {
-    private String mCategoryId;
-    private String mCategoryName;
     private ListView mChannelListView;
     private ChannellistAdapter mListAdapter;
     private TextView mTitltTextView;
     private List<Channel> mChannelList;
-    private List<HashMap<String, String>> mOnPlayingProgramList;            // Key: id, title
-    private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
+    private HashMap<String, String> mOnPlayingPrograms = new HashMap<String, String>();
     private ArrayList<HashMap<String, Object>> mItemList;
+    private Category mCurrentCategory;
     private MyProgressDialog mProgressDialog;
-    private final String XML_ELEMENT_LOGO = "logo";
-    private final int MSG_REFRESH_CHANNEL_LIST              = 0;
-    private final int MSG_REFRESH_ON_PLAYING_PROGRAM_LIST   = 1;
+    private Handler mUiHandler;
+    private enum SelfMessage { Refresh_Channel_List, Refresh_On_Playing_Program_List };
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -51,41 +47,38 @@ public class ChannellistActivity extends Activity
         mChannelListView = (ListView)findViewById(R.id.channel_list);
         mTitltTextView = (TextView)findViewById(R.id.channellist_text_title);
         mChannelList = new ArrayList<Channel>();
-        mOnPlayingProgramList = new ArrayList<HashMap<String,String>>();
-        mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         mItemList = new ArrayList<HashMap<String, Object>>();
         mListAdapter = new ChannellistAdapter(this, mItemList);
         mChannelListView.setAdapter(mListAdapter);
         mProgressDialog = new MyProgressDialog(this);
+        mUiHandler = new Handler(this);
+        mCurrentCategory = (Category) getIntent().getSerializableExtra("category");
+        if (mCurrentCategory == null)
+            return;
         
-        mCategoryId = getIntent().getStringExtra("categoryId");
-        mCategoryName = getIntent().getStringExtra("categoryName");
-        mTitltTextView.setText(mCategoryName);
-        if (mCategoryId != null)
-        {
-            updateChannelList();
-        }
+        mTitltTextView.setText(mCurrentCategory.name);
+        updateChannelList();
         mChannelListView.setOnItemClickListener(new OnItemClickListener() 
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
-                String channelId = mChannelList.get(position).id;
-                String channelName = mChannelList.get(position).name;
-                Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
-                intent.putExtra("id", channelId);
-                intent.putExtra("name", channelName);
-                
-                ArrayList<Channel> channelList = new ArrayList<Channel>();
-                for (int i=0; i<mChannelList.size(); ++i)
-                {
-                    Channel channel = new Channel();
-                    channel.id = mChannelList.get(i).id;
-                    channel.name = mChannelList.get(i).name;
-                    channelList.add(channel);
-                }
-                intent.putExtra("channel_list", (Serializable) channelList);
-                startActivity(intent);
+//                String channelId = mChannelList.get(position).id;
+//                String channelName = mChannelList.get(position).name;
+//                Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
+//                intent.putExtra("id", channelId);
+//                intent.putExtra("name", channelName);
+//                
+//                ArrayList<Channel> channelList = new ArrayList<Channel>();
+//                for (int i=0; i<mChannelList.size(); ++i)
+//                {
+//                    Channel channel = new Channel();
+//                    channel.id = mChannelList.get(i).id;
+//                    channel.name = mChannelList.get(i).name;
+//                    channelList.add(channel);
+//                }
+//                intent.putExtra("channel_list", (Serializable) channelList);
+//                startActivity(intent);
             }
         });
         
@@ -103,85 +96,68 @@ public class ChannellistActivity extends Activity
        
     private void updateChannelList()
     {
-        mChannelList.clear();
-        boolean isSyncLoad = AppEngine.getInstance().getContentManager().loadChannelsByCategory(mCategoryId, mChannelList, new ContentManager.LoadListener() 
-        {    
+        AppEngine.getInstance().getOnPlayingHtmlManager().getOnPlayingChannels(0, mCurrentCategory, new OnPlayingCallback() 
+        {
             @Override
-            public void onLoadFinish(int status) 
+            public void onPlayingChannelsLoaded(int requestId, List<Channel> channels, HashMap<String, String> programs) 
             {
-                uiHandler.sendEmptyMessage(MSG_REFRESH_CHANNEL_LIST);
+                if (channels != null)
+                {
+                    mChannelList.clear();
+                    mChannelList.addAll(channels);
+                    mUiHandler.obtainMessage(SelfMessage.Refresh_Channel_List.ordinal()).sendToTarget();
+                }
+                if (programs != null)
+                {
+                    mOnPlayingPrograms.clear();
+                    mOnPlayingPrograms.putAll(programs);
+                }
             }
         });
-        if (isSyncLoad == true)
-            uiHandler.sendEmptyMessage(MSG_REFRESH_CHANNEL_LIST);
-        else
-            mProgressDialog.show();
     }
     
     private void updateOnPlayingProgramList()
     {
-        mOnPlayingProgramList.clear();
-        List<String> idList = new ArrayList<String>();
-        for (int i=0; i<mChannelList.size(); ++i)
-        {
-            idList.add(mChannelList.get(i).id);
-        }
-        AppEngine.getInstance().getContentManager().loadOnPlayingPrograms(idList, mOnPlayingProgramList, new ContentManager.LoadListener() 
-        {    
-            @Override
-            public void onLoadFinish(int status) 
-            {
-                uiHandler.sendEmptyMessage(MSG_REFRESH_ON_PLAYING_PROGRAM_LIST);
-            }
-        });
+        mUiHandler.obtainMessage(SelfMessage.Refresh_On_Playing_Program_List.ordinal()).sendToTarget();
     }
-       
-    private Handler uiHandler = new Handler()
+
+    @Override
+    public boolean handleMessage(Message msg) 
     {
-        public void handleMessage(Message msg)
+        SelfMessage selfMsg = SelfMessage.values()[msg.what];
+        switch (selfMsg)
         {
-            super.handleMessage(msg);
-            switch (msg.what) 
-            {
-                case MSG_REFRESH_CHANNEL_LIST:
-                    if (mChannelList != null)
+            case Refresh_Channel_List:
+                if (mChannelList != null)
+                {
+                    mProgressDialog.dismiss();
+                    mItemList.clear();
+                    for(int i=0; i<mChannelList.size(); ++i)
                     {
-                        mProgressDialog.dismiss();
-                        mItemList.clear();
-                        for(int i=0; i<mChannelList.size(); ++i)
-                        {
-                            HashMap<String, Object> item = new HashMap<String, Object>();
-                            item.put("id", mChannelList.get(i).id);
-                            if (mXmlChannelInfo.get(mChannelList.get(i).id) != null)
-                            {
-                                item.put("image", Utility.getImage(ChannellistActivity.this, (String) mXmlChannelInfo.get(mChannelList.get(i).id).get(XML_ELEMENT_LOGO)));                        
-                            }
-                            item.put("name", mChannelList.get(i).name);
-                            mItemList.add(item);
-                        }
-                        mListAdapter.notifyDataSetChanged();
-                        updateOnPlayingProgramList();
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+                        item.put("tvmao_id", mChannelList.get(i).tvmaoId);
+                        item.put("name", mChannelList.get(i).name);
+                        mItemList.add(item);
                     }
-                    break;
-                case MSG_REFRESH_ON_PLAYING_PROGRAM_LIST:
-                    if (mOnPlayingProgramList != null)
+                    mListAdapter.notifyDataSetChanged();
+                    updateOnPlayingProgramList();
+                }
+                break;
+            case Refresh_On_Playing_Program_List:
+                for (int i=0; i<mItemList.size(); ++i)
+                {
+                    String channelId = (String) mItemList.get(i).get("tvmao_id");
+                    if (channelId == null)
+                        continue;
+                    String onPlayingString = mOnPlayingPrograms.get(channelId);
+                    if (onPlayingString != null)
                     {
-                        for (int i=0; i<mItemList.size(); ++i)
-                        {
-                            for (int j=0; j<mOnPlayingProgramList.size(); ++j)
-                            {
-                                if (mItemList.get(i).get("id").equals(mOnPlayingProgramList.get(j).get("id")))
-                                {
-                                    mItemList.get(i).put("program", "正在播出：" + mOnPlayingProgramList.get(j).get("title"));
-                                }
-                            }
-                        }
-                        mListAdapter.notifyDataSetChanged();
+                        mItemList.get(i).put("program", "正在播出：" + onPlayingString);
                     }
-                    break;
-                default:
-                    break;
-            }
+                }
+                mListAdapter.notifyDataSetChanged();
+                break;
         }
-    };
+        return true;
+    }
 }

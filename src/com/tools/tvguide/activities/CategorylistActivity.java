@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,15 +63,9 @@ public class CategorylistActivity extends Activity implements Callback
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
-//                if (mItemList != null)
-//                {
-//                    String categoryId = (String) mItemList.get(position).get("id");
-//                    String categoryName = (String) mItemList.get(position).get("name");
-//                    Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
-//                    intent.putExtra("categoryId", categoryId);
-//                    intent.putExtra("categoryName", categoryName);
-//                    startActivity(intent);
-//                }
+                Intent intent = new Intent(CategorylistActivity.this, ChannellistActivity.class);
+                intent.putExtra("category", (Serializable) mCurrentCategory.categoryList.get(position));
+                startActivity(intent);
             }
         });
         
