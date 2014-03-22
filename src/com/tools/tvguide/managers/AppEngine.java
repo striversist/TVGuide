@@ -33,6 +33,7 @@ public class AppEngine
     private ServiceManager                          mServiceManager;
     private SearchWordsManager                      mSearchWordsManager;
     private SearchHtmlManager                       mSearchHtmlManager;
+    private OnPlayingHtmlManager                    mOnPlayingHtmlManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -229,6 +230,14 @@ public class AppEngine
         if (mSearchHtmlManager == null)
             mSearchHtmlManager = new SearchHtmlManager(mApplicationContext);
         return mSearchHtmlManager;
+    }
+    
+    public OnPlayingHtmlManager getOnPlayingHtmlManager()
+    {
+        checkInitialized();
+        if (mOnPlayingHtmlManager == null)
+            mOnPlayingHtmlManager = new OnPlayingHtmlManager(mApplicationContext);
+        return mOnPlayingHtmlManager;
     }
     
     public void prepareBeforeExit()

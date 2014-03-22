@@ -6,14 +6,15 @@ import java.util.List;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Category;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.BootManager;
-import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.OnPlayingHtmlManager.CategoryEntriesCallback;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -22,15 +23,17 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class HomeActivity extends Activity 
+public class HomeActivity extends Activity implements Callback 
 {
     private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;
     private SimpleAdapter mListViewAdapter;
     private List<HashMap<String, Object>> mItemList;
-    private List<HashMap<String, String>> mCategoryList;
+    private List<Category> mCategoryList;
     private MyProgressDialog mProgressDialog;
     private boolean mHasUpdated = false;
+    private Handler mUiHandler;
+    private enum SelfMessage { SHOW_CATEGORY };
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -42,8 +45,9 @@ public class HomeActivity extends Activity
         mItemList = new ArrayList<HashMap<String, Object>>();
         mListViewAdapter = new SimpleAdapter(HomeActivity.this, mItemList, R.layout.home_list_item,
                 new String[]{"name"}, new int[]{R.id.home_item_text});
-        mCategoryList = new ArrayList<HashMap<String,String>>();
+        mCategoryList = new ArrayList<Category>();
         mProgressDialog = new MyProgressDialog(this);
+        mUiHandler = new Handler(this);
         
         mCategoryListView.setAdapter(mListViewAdapter);
         mCategoryListView.setOnItemClickListener(new OnItemClickListener() 
@@ -53,20 +57,20 @@ public class HomeActivity extends Activity
             {
                 if (mCategoryList != null)
                 {
-                    String categoryId = mCategoryList.get(position).get("id");
-                    String categoryName = mCategoryList.get(position).get("name");
-                    Intent intent;
-                    if (mCategoryList.get(position).get("has_sub_category").equals("1"))
-                    {
-                        intent = new Intent(HomeActivity.this, CategorylistActivity.class);
-                    }
-                    else
-                    {
-                        intent = new Intent(HomeActivity.this, ChannellistActivity.class);
-                    }
-                    intent.putExtra("categoryId", categoryId);
-                    intent.putExtra("categoryName", categoryName);
-                    startActivity(intent);
+//                    String categoryId = mCategoryList.get(position).get("id");
+//                    String categoryName = mCategoryList.get(position).get("name");
+//                    Intent intent;
+//                    if (mCategoryList.get(position).get("has_sub_category").equals("1"))
+//                    {
+//                        intent = new Intent(HomeActivity.this, CategorylistActivity.class);
+//                    }
+//                    else
+//                    {
+//                        intent = new Intent(HomeActivity.this, ChannellistActivity.class);
+//                    }
+//                    intent.putExtra("categoryId", categoryId);
+//                    intent.putExtra("categoryName", categoryName);
+//                    startActivity(intent);
                 }
             }
         });
@@ -85,58 +89,42 @@ public class HomeActivity extends Activity
 
     private void update()
     {
-        mCategoryList.clear();
-        boolean isSyncLoad = false;
-        isSyncLoad = AppEngine.getInstance().getContentManager().loadCategoriesByType("root", mCategoryList, new ContentManager.LoadListener() 
-        {    
+        AppEngine.getInstance().getOnPlayingHtmlManager().getCategoryEntries(0, new CategoryEntriesCallback() 
+        {
             @Override
-            public void onLoadFinish(int status) 
+            public void onCategoryEntriesLoaded(int requestId, List<Category> categories) 
             {
-                uiHandler.sendEmptyMessage(0);
+                if (categories != null)
+                {
+                    mCategoryList.clear();
+                    mCategoryList.addAll(categories);
+                    mUiHandler.obtainMessage(SelfMessage.SHOW_CATEGORY.ordinal()).sendToTarget();
+                }
             }
         });
-        if (isSyncLoad == true)
-            uiHandler.sendEmptyMessage(0);
-        else 
-        {
-            if (AppEngine.getInstance().getBootManager().isSplashShowing())
-            {
-                AppEngine.getInstance().getBootManager().addOnSplashFinishedCallback(new BootManager.OnSplashFinishedCallback() 
-                {
-                    @Override
-                    public void OnSplashFinished() 
-                    {
-                        if (mCategoryList == null || mCategoryList.size() == 0)
-                            mProgressDialog.show();
-                    }
-                });
-            }
-            else 
-            {
-                mProgressDialog.show();
-            }
-        }
+        mProgressDialog.show();
     }
-    
-    private Handler uiHandler = new Handler()
+
+    @Override
+    public boolean handleMessage(Message msg) 
     {
-        public void handleMessage(Message msg)
+        SelfMessage selfMsg = SelfMessage.values()[msg.what];
+        switch (selfMsg)
         {
-            super.handleMessage(msg);
-            if (mProgressDialog.isShowing())
-                mProgressDialog.dismiss();
-            if (mCategoryList != null)
-            {
-                mItemList.clear();
+            case SHOW_CATEGORY:
+                if (mProgressDialog.isShowing())
+                    mProgressDialog.dismiss();
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
                     HashMap<String, Object> item = new HashMap<String, Object>();
-                    item.put("name", mCategoryList.get(i).get("name"));
+                    item.put("name", mCategoryList.get(i).name);
                     mItemList.add(item);
                 }
                 mListViewAdapter.notifyDataSetChanged();
-            }
-            mHasUpdated = true;
+                mHasUpdated = true;
+                break;
         }
-    };
+        
+        return true;
+    }
 }
