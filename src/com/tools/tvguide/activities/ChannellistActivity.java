@@ -1,5 +1,6 @@
 package com.tools.tvguide.activities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,22 +64,11 @@ public class ChannellistActivity extends Activity implements Callback
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
-//                String channelId = mChannelList.get(position).id;
-//                String channelName = mChannelList.get(position).name;
-//                Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
-//                intent.putExtra("id", channelId);
-//                intent.putExtra("name", channelName);
-//                
-//                ArrayList<Channel> channelList = new ArrayList<Channel>();
-//                for (int i=0; i<mChannelList.size(); ++i)
-//                {
-//                    Channel channel = new Channel();
-//                    channel.id = mChannelList.get(i).id;
-//                    channel.name = mChannelList.get(i).name;
-//                    channelList.add(channel);
-//                }
-//                intent.putExtra("channel_list", (Serializable) channelList);
-//                startActivity(intent);
+                Intent intent = new Intent(ChannellistActivity.this, ChannelDetailActivity.class);
+                intent.putExtra("tvmao_id", mChannelList.get(position).tvmaoId);
+                intent.putExtra("name", mChannelList.get(position).name);
+                intent.putExtra("channel_list", (Serializable) mChannelList);
+                startActivity(intent);
             }
         });
         
