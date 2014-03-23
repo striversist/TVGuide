@@ -89,7 +89,7 @@ public class ChannellistActivity extends Activity implements Callback
         AppEngine.getInstance().getOnPlayingHtmlManager().getOnPlayingChannels(0, mCurrentCategory, new OnPlayingCallback() 
         {
             @Override
-            public void onPlayingChannelsLoaded(int requestId, List<Channel> channels, HashMap<String, String> programs) 
+            public void onChannelsLoaded(int requestId, List<Channel> channels) 
             {
                 if (channels != null)
                 {
@@ -97,19 +97,21 @@ public class ChannellistActivity extends Activity implements Callback
                     mChannelList.addAll(channels);
                     mUiHandler.obtainMessage(SelfMessage.Refresh_Channel_List.ordinal()).sendToTarget();
                 }
+                
+            }
+
+            @Override
+            public void onProgramsLoaded(int requestId, HashMap<String, String> programs) 
+            {
                 if (programs != null)
                 {
                     mOnPlayingPrograms.clear();
                     mOnPlayingPrograms.putAll(programs);
+                    mUiHandler.obtainMessage(SelfMessage.Refresh_On_Playing_Program_List.ordinal()).sendToTarget();
                 }
             }
         });
         mProgressDialog.show();
-    }
-    
-    private void updateOnPlayingProgramList()
-    {
-        mUiHandler.obtainMessage(SelfMessage.Refresh_On_Playing_Program_List.ordinal()).sendToTarget();
     }
 
     @Override
@@ -131,7 +133,6 @@ public class ChannellistActivity extends Activity implements Callback
                         mItemList.add(item);
                     }
                     mListAdapter.setItemList(mItemList);
-                    updateOnPlayingProgramList();
                 }
                 break;
             case Refresh_On_Playing_Program_List:

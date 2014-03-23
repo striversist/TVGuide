@@ -38,7 +38,8 @@ public class OnPlayingHtmlManager
     
     public interface OnPlayingCallback
     {
-        void onPlayingChannelsLoaded(int requestId, List<Channel> channels, HashMap<String, String> programs);  // programs: key(channel id), value(program name)
+        void onChannelsLoaded(int requestId, List<Channel> channels);
+        void onProgramsLoaded(int requestId, HashMap<String, String> programs);  // programs: key(channel id), value(program name)
     }
     
     public void getCategoryEntries(final int requestId, final CategoryEntriesCallback callback)
@@ -51,7 +52,7 @@ public class OnPlayingHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(CATEGORY_ENTRY_URL, CacheControl.Memory);
+                    Document doc = HtmlUtils.getDocument(CATEGORY_ENTRY_URL, CacheControl.Disk);
                     
                     // 返回结果
                     List<Category> categoryList = new ArrayList<Category>();
@@ -108,53 +109,23 @@ public class OnPlayingHtmlManager
                 try 
                 {
                     Document doc = null;
-                    if (category.tvmaoId != null && category.tvmaoId.trim().length() > 0)
-                    {
-                        List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
-                        pairs.add(new BasicNameValuePair("prov", category.tvmaoId));
-                        doc = HtmlUtils.getDocument(category.link, "utf-8", pairs, CacheControl.Memory);
-                    }
-                    else
-                    {
-                        doc = HtmlUtils.getDocument(category.link, CacheControl.Memory);
-                    }
-                    
-                    if (doc == null)
-                        return;
-                    
                     // 返回结果
                     List<Channel> channelList = new ArrayList<Channel>();
                     HashMap<String, String> programs = new HashMap<String, String>();
                     
-                    Elements onplayingElements = doc.select("table.playing tbody tr");
-                    for (int i=0; i<onplayingElements.size(); ++i)
-                    {
-                        Element onplayingElement = onplayingElements.get(i);
-                        Element channelElement = onplayingElement.select("td").first();
-                        if (channelElement != null)
-                        {
-                            if (channelElement.ownText().equals("频道"))
-                                continue;
-                            
-                            Element linkElement = channelElement.select("a").first();
-                            if (linkElement != null)
-                            {
-                                Channel channel = new Channel();
-                                channel.name = linkElement.ownText();
-                                channel.tvmaoId = HtmlUtils.filterTvmaoId(linkElement.attr("href"));
-                                channel.tvmaoLink = getAbsoluteUrl(linkElement.attr("href"));
-                                channelList.add(channel);
-                                
-                                Element programElement = channelElement.nextElementSibling();
-                                if (programElement != null)
-                                {
-                                    programs.put(channel.tvmaoId, programElement.text());
-                                }
-                            }
-                        }
-                    }
+                    // 尝试从缓存中加载
+                    doc = getDocumentByCategory(category, CacheControl.Disk);
+                    if (doc == null)
+                        return;
+                    getPlayingChannelPrograms(doc, channelList, programs);
+                    callback.onChannelsLoaded(requestId, channelList);
                     
-                    callback.onPlayingChannelsLoaded(requestId, channelList, programs);
+                    // 实时获取
+                    doc = getDocumentByCategory(category, CacheControl.Never);
+                    if (doc == null)
+                        return;
+                    getPlayingChannelPrograms(doc, channelList, programs);
+                    callback.onProgramsLoaded(requestId, programs);
                 } 
                 catch (IOException e) 
                 {
@@ -162,6 +133,57 @@ public class OnPlayingHtmlManager
                 }
             }
         }).start();
+    }
+    
+    private Document getDocumentByCategory(Category category, CacheControl control) throws IOException
+    {
+        Document doc = null;
+        if (category.tvmaoId != null && category.tvmaoId.trim().length() > 0)
+        {
+            List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+            pairs.add(new BasicNameValuePair("prov", category.tvmaoId));
+            doc = HtmlUtils.getDocument(category.link, "utf-8", pairs, control);
+        }
+        else
+        {
+            doc = HtmlUtils.getDocument(category.link, control);
+        }
+        
+        return doc;
+    }
+    
+    private void getPlayingChannelPrograms(Document doc, List<Channel> channels, HashMap<String, String> programs)
+    {
+        if (doc == null || channels == null || programs == null)
+            return;
+        
+        Elements onplayingElements = doc.select("table.playing tbody tr");
+        for (int i=0; i<onplayingElements.size(); ++i)
+        {
+            Element onplayingElement = onplayingElements.get(i);
+            Element channelElement = onplayingElement.select("td").first();
+            if (channelElement != null)
+            {
+                if (channelElement.ownText().equals("频道"))
+                    continue;
+                
+                Element linkElement = channelElement.select("a").first();
+                if (linkElement != null)
+                {
+                    Channel channel = new Channel();
+                    channel.name = linkElement.ownText();
+                    channel.tvmaoId = HtmlUtils.filterTvmaoId(linkElement.attr("href"));
+                    channel.tvmaoLink = getAbsoluteUrl(linkElement.attr("href"));
+                    channels.add(channel);
+                    
+                    Element programElement = channelElement.nextElementSibling();
+                    if (programElement != null)
+                    {
+                        programs.put(channel.tvmaoId, programElement.text());
+                    }
+                }
+            }
+        }
     }
     
     private String getAbsoluteUrlByOptionValue(String value)
