@@ -34,6 +34,7 @@ public class AppEngine
     private SearchWordsManager                      mSearchWordsManager;
     private SearchHtmlManager                       mSearchHtmlManager;
     private OnPlayingHtmlManager                    mOnPlayingHtmlManager;
+    private DiskCacheManager                        mDiskCacheManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -238,6 +239,17 @@ public class AppEngine
         if (mOnPlayingHtmlManager == null)
             mOnPlayingHtmlManager = new OnPlayingHtmlManager(mApplicationContext);
         return mOnPlayingHtmlManager;
+    }
+    
+    public DiskCacheManager getDiskCacheManager()
+    {
+        checkInitialized();
+        if (mDiskCacheManager == null)
+        {
+            mDiskCacheManager = new DiskCacheManager(mApplicationContext);
+            mShutterList.add(mDiskCacheManager);
+        }
+        return mDiskCacheManager;
     }
     
     public void prepareBeforeExit()
