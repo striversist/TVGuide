@@ -13,6 +13,7 @@ import com.tools.tvguide.utils.NetworkManager;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
@@ -22,7 +23,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class HotActivityTvsou extends Activity 
+public class HotActivityTvsou extends Activity implements Callback 
 {
     private ListView mListView;
     private ArrayList<ResultProgramAdapter.IListItem> mItemList;
@@ -30,6 +31,7 @@ public class HotActivityTvsou extends Activity
     private Handler mUpdateHandler;
     private MyProgressDialog mProgressDialog;
     private boolean mHasUpdated = false;
+    private Handler mUiHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -41,9 +43,11 @@ public class HotActivityTvsou extends Activity
         mItemList = new ArrayList<ResultProgramAdapter.IListItem>();
         mItemDataList = new ArrayList<ResultProgramAdapter.IListItem>();
         mProgressDialog = new MyProgressDialog(this);
+        mUiHandler = new Handler(this);
         
         mListView.setOnItemClickListener(new OnItemClickListener() 
         {
+            @SuppressWarnings("unchecked")
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
             {
@@ -105,27 +109,25 @@ public class HotActivityTvsou extends Activity
                         mItemDataList.add(contentItem);
                     }
                 }
-                uiHandler.sendEmptyMessage(0);
+                mUiHandler.sendEmptyMessage(0);
             }
         });
     }
-    
-    private Handler uiHandler = new Handler()
+
+    @Override
+    public boolean handleMessage(Message msg) 
     {
-        public void handleMessage(Message msg)
+        mProgressDialog.dismiss();
+        mItemList.clear();
+        if (mItemDataList.size() == 0)
+            Toast.makeText(HotActivityTvsou.this, getResources().getString(R.string.server_is_busy), Toast.LENGTH_LONG).show();
+        for (int i=0; i<mItemDataList.size(); ++i)
         {
-            super.handleMessage(msg);
-            mProgressDialog.dismiss();
-            mItemList.clear();
-            if (mItemDataList.size() == 0)
-                Toast.makeText(HotActivityTvsou.this, getResources().getString(R.string.server_is_busy), Toast.LENGTH_LONG).show();
-            for (int i=0; i<mItemDataList.size(); ++i)
-            {
-                mItemList.add(mItemDataList.get(i));
-            }
-            
-            mListView.setAdapter(new ResultProgramAdapter(HotActivityTvsou.this, mItemList));
-            mHasUpdated = true;
+            mItemList.add(mItemDataList.get(i));
         }
-    };
+        
+        mListView.setAdapter(new ResultProgramAdapter(HotActivityTvsou.this, mItemList));
+        mHasUpdated = true;
+        return true;
+    }
 }

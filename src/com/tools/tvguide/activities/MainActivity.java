@@ -16,12 +16,10 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends TabActivity implements OnStartedCallback
 {
-    private static final String TAG = "MainActivity";
     private TabHost         mTabHost;
     
     private RadioGroup      mTabGroup;

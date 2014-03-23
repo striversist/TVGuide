@@ -351,6 +351,7 @@ public class SearchActivity extends Activity implements Callback
                 }
             }
             
+            @SuppressWarnings("unchecked")
             @Override
             public void onProgramScheduleLoadeded(int requestId, int pageIndex, List<HashMap<String, Object>> scheduleList) 
             {

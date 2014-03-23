@@ -27,7 +27,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class CategorylistActivity extends Activity implements Callback 
 {
-    private static final String TAG = "CategorylistActivity";
     private ListView mCategoryListView;
     private SimpleAdapter mListViewAdapter;
     private List<HashMap<String, Object>> mItemList;

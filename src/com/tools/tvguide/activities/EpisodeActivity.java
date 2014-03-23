@@ -15,6 +15,7 @@ import com.tools.tvguide.views.SlidingMenuView.OnSlidingMenuSelectListener;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -25,7 +26,7 @@ import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
 
-public class EpisodeActivity extends Activity implements OnSlidingMenuSelectListener
+public class EpisodeActivity extends Activity implements OnSlidingMenuSelectListener, Callback
 {
     private List<HashMap<String, String>> mEpisodeEntryList;        // key: name, link
     private SlidingMenuView mSlidingMenuView;
@@ -35,9 +36,9 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     private ResultPageAdapter mPageAdapter;
     private enum Source {TVMAO, TVSOU};
     private Source mSource = Source.TVMAO;
+    private Handler mUiHandler;
     private enum SelfMessage {MSG_SHOW_PLOTS}
     
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -49,6 +50,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
         mProgramNameTV = (TextView) findViewById(R.id.episode_program_name_tv);
         mEpisodeEntryList = new ArrayList<HashMap<String,String>>();
         mPageAdapter = new ResultPageAdapter();
+        mUiHandler = new Handler(this);
         
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
@@ -77,7 +79,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
     @Override
     public void onItemSelect(int index, Object paramObject) 
     {
-        String url = (String)paramObject;
+//        String url = (String)paramObject;
         mViewPager.setCurrentItem(index);
         updateTab(index);
     }
@@ -98,8 +100,8 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
                 @Override
                 public void onEpisodeLoaded(int requestId, List<HashMap<String, String>> episodes) 
                 {
-                    Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodes);
-                    uiHandler.sendMessage(msg);
+                    Message msg = Message.obtain(mUiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodes);
+                    mUiHandler.sendMessage(msg);
                 }
             });
         }
@@ -115,16 +117,16 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
                 @Override
                 public void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodeList) 
                 {
-                    Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodeList);
-                    uiHandler.sendMessage(msg);
+                    Message msg = Message.obtain(mUiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodeList);
+                    mUiHandler.sendMessage(msg);
                 }
             });
         }
     }
     
-    @SuppressWarnings("unchecked")
     private void updateEpisodes()
     {
+        @SuppressWarnings("unchecked")
         List<HashMap<String, String>> episodes = (List<HashMap<String, String>>) getIntent().getSerializableExtra("episode_entry_list");
         if (episodes != null)
         {
@@ -147,7 +149,7 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
                 	if (entryList.size() > 0)
                 	{
 	                    mEpisodeEntryList.addAll(entryList);
-	                    uiHandler.post(new Runnable() 
+	                    mUiHandler.post(new Runnable() 
 	                    {
 	                        @Override
 	                        public void run() 
@@ -162,8 +164,8 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
                 @Override
                 public void onEpisodesLoaded(int requestId, List<HashMap<String, String>> episodeList) 
                 {
-                    Message msg = Message.obtain(uiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodeList);
-                    uiHandler.sendMessage(msg);
+                    Message msg = Message.obtain(mUiHandler, SelfMessage.MSG_SHOW_PLOTS.ordinal(), requestId, 0, episodeList);
+                    mUiHandler.sendMessage(msg);
                 }
             });
         }
@@ -212,34 +214,33 @@ public class EpisodeActivity extends Activity implements OnSlidingMenuSelectList
             }
         });
     }
-    
-    private Handler uiHandler = new Handler()
+
+    @Override
+    public boolean handleMessage(Message msg) 
     {
-        public void handleMessage(Message msg)
+        SelfMessage selfMsg = SelfMessage.values()[msg.what];
+        switch (selfMsg)
         {
-            super.handleMessage(msg);
-            SelfMessage selfMsg = SelfMessage.values()[msg.what];
-            switch (selfMsg)
-            {
-                case MSG_SHOW_PLOTS:
-                    int index = msg.arg1;
-                    List<HashMap<String, String>> episodes = (List<HashMap<String, String>>) msg.obj;
-                    LinearLayout layout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
-                    
-                    String plots = "";
-                    for (int i=0; i<episodes.size(); ++i)
-                    {
-                        plots += "<strong><big>" + episodes.get(i).get("title") + "</big></strong><br/>";
-                        plots += "　　" + episodes.get(i).get("plot") + "<br/><br/>";
-                    }
-                    ((TextView) layout.findViewById(R.id.program_tab_simpletext)).setText(Html.fromHtml(plots));
-                    if (mPageAdapter.getCount() > index)
-                    {
-	                    ((LinearLayout) mPageAdapter.getView(index)).removeAllViews();
-	                    ((LinearLayout) mPageAdapter.getView(index)).addView(layout);
-                    }
-                    break;
-            }
+            case MSG_SHOW_PLOTS:
+                int index = msg.arg1;
+                @SuppressWarnings("unchecked")
+                List<HashMap<String, String>> episodes = (List<HashMap<String, String>>) msg.obj;
+                LinearLayout layout = (LinearLayout) mInflater.inflate(R.layout.program_tab_simpletext, null);
+                
+                String plots = "";
+                for (int i=0; i<episodes.size(); ++i)
+                {
+                    plots += "<strong><big>" + episodes.get(i).get("title") + "</big></strong><br/>";
+                    plots += "　　" + episodes.get(i).get("plot") + "<br/><br/>";
+                }
+                ((TextView) layout.findViewById(R.id.program_tab_simpletext)).setText(Html.fromHtml(plots));
+                if (mPageAdapter.getCount() > index)
+                {
+                    ((LinearLayout) mPageAdapter.getView(index)).removeAllViews();
+                    ((LinearLayout) mPageAdapter.getView(index)).addView(layout);
+                }
+                break;
         }
-    };
+        return true;
+    }
 }

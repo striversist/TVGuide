@@ -68,7 +68,6 @@ import android.widget.Toast;
 
 public class ChannelDetailActivity extends Activity implements AlarmListener, Callback 
 {
-    private static final String TAG = "ChannelDetailActivity";
     private static boolean sHasShownFirstStartTips = false;
     private static boolean sUseLocalTime = false;
     private static int sRequestId = 0;
@@ -98,6 +97,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     private final int DEFAULT_MAX_DAYS = 7;
     private final String SEP = ":　";
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -448,7 +448,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         sRequestId++;
         mProgramList.clear();
         
-        UrlManager urlManager = AppEngine.getInstance().getUrlManager();
         AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, UrlManager.getWebChannelUrl(mChannelId, mCurrentSelectedDay), new ChannelDetailCallback() 
         {            
             @Override

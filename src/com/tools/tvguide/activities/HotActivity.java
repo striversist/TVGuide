@@ -169,6 +169,7 @@ public class HotActivity extends Activity implements Callback
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
                     {
+                        @SuppressWarnings("unchecked")
                         HashMap<String, String> programInfo = (HashMap<String, String>) parent.getItemAtPosition(position);
                         if (programInfo == null)
                             return;
