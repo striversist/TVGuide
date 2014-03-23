@@ -29,6 +29,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ChannellistActivity extends Activity implements Callback 
 {
+    private static int sRequest = 0;
     private ListView mChannelListView;
     private ChannellistAdapter mListAdapter;
     private TextView mTitltTextView;
@@ -86,11 +87,15 @@ public class ChannellistActivity extends Activity implements Callback
        
     private void updateChannelList()
     {
-        AppEngine.getInstance().getOnPlayingHtmlManager().getOnPlayingChannels(0, mCurrentCategory, new OnPlayingCallback() 
+        sRequest++;
+        AppEngine.getInstance().getOnPlayingHtmlManager().getOnPlayingChannels(sRequest, mCurrentCategory, new OnPlayingCallback() 
         {
             @Override
             public void onChannelsLoaded(int requestId, List<Channel> channels) 
             {
+                if (requestId != sRequest)
+                    return;
+                
                 if (channels != null)
                 {
                     mChannelList.clear();
@@ -103,6 +108,9 @@ public class ChannellistActivity extends Activity implements Callback
             @Override
             public void onProgramsLoaded(int requestId, HashMap<String, String> programs) 
             {
+                if (requestId != sRequest)
+                    return;
+                
                 if (programs != null)
                 {
                     mOnPlayingPrograms.clear();
