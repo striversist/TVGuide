@@ -41,7 +41,7 @@ public class DiskCacheManager implements Shutter
         }
     }
     
-    public String getString(String url)
+    public synchronized String getString(String key)
     {
         if (mDiskLruCache == null)
             return null;
@@ -49,8 +49,12 @@ public class DiskCacheManager implements Shutter
         String result = null;
         try 
         {
-            DiskLruCache.Editor editor = mDiskLruCache.edit(url);
-            result = editor.getString(0);
+            DiskLruCache.Editor editor = mDiskLruCache.edit(String.valueOf(key.hashCode()));
+            if (editor != null)
+            {
+                result = editor.getString(0);
+                editor.abort();
+            }
         } 
         catch (IOException e) 
         {
@@ -60,18 +64,21 @@ public class DiskCacheManager implements Shutter
         return result;
     }
     
-    public boolean setString(String key, String context)
+    public synchronized boolean setString(String key, String value)
     {
-        if (mDiskLruCache == null)
+        if (mDiskLruCache == null || key == null || value == null)
             return false;
         
         boolean result = false;
         try 
         {
-            DiskLruCache.Editor editor = mDiskLruCache.edit(key);
-            editor.set(0, context);
-            editor.commit();
-            result = true;
+            DiskLruCache.Editor editor = mDiskLruCache.edit(String.valueOf(key.hashCode()));
+            if (editor != null)
+            {
+                editor.set(0, value);
+                editor.commit();
+                result = true;
+            }
         } 
         catch (IOException e) 
         {

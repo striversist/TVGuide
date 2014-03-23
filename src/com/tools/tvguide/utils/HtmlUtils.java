@@ -35,7 +35,7 @@ public class HtmlUtils
         Document doc = null;
         if (cacheable)
         {
-            html = AppEngine.getInstance().getCacheManager().getHtml(url + getExtraKey(pairs));
+            html = AppEngine.getInstance().getDiskCacheManager().getString(url + getExtraKey(pairs));
         }
         
         if (html == null)
@@ -55,9 +55,9 @@ public class HtmlUtils
                 throw new IOException("Failed to get html from network");
             doc = Jsoup.parse(html);
             
-            if (cacheable)
+            if (cacheable && html != null)
             {
-                AppEngine.getInstance().getCacheManager().setHtml(url + getExtraKey(pairs), doc.html());
+                AppEngine.getInstance().getDiskCacheManager().setString(url + getExtraKey(pairs), html);
             }
         }
         else

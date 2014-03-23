@@ -167,6 +167,7 @@ public class MoreActivity extends Activity implements Callback
     private void clearCache()
     {
         AppEngine.getInstance().getCacheManager().clear();
+        AppEngine.getInstance().getDiskCacheManager().clearAll();
         Toast.makeText(MoreActivity.this, "缓存已清除", Toast.LENGTH_SHORT).show();
     }
     
