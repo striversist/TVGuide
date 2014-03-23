@@ -94,7 +94,6 @@ public class DiskCacheManager implements Shutter
         if (mDiskLruCache != null)
         {
             try {
-                mDiskLruCache.flush();
                 mDiskLruCache.close();
             } catch (IOException e) {
                 e.printStackTrace();
