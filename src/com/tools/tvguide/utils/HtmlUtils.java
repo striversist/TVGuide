@@ -11,25 +11,33 @@ import org.jsoup.nodes.Document;
 
 import com.tools.tvguide.components.UANetDataGetter;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.CacheManager;
 
 public class HtmlUtils 
 {
     public static Document getDocument(String url) throws IOException
     {
-        return getDocument(url, "utf-8", null);
+        return getDocument(url, "utf-8", null, true);
     }
     
     public static Document getDocument(String url, String charset) throws IOException
     {
-        return getDocument(url, charset, null);
+        return getDocument(url, charset, null, true);
     }
     
     public static Document getDocument(String url, String charset, List<BasicNameValuePair> pairs) throws IOException
     {
-        CacheManager cacheManager = AppEngine.getInstance().getCacheManager();
-        String html = cacheManager.getHtml(url);
-        Document doc;
+        return getDocument(url, charset, pairs, true);
+    }
+    
+    public static Document getDocument(String url, String charset, List<BasicNameValuePair> pairs, boolean cacheable) throws IOException
+    {
+        String html = null;
+        Document doc = null;
+        if (cacheable)
+        {
+            html = AppEngine.getInstance().getCacheManager().getHtml(url + getExtraKey(pairs));
+        }
+        
         if (html == null)
         {
             NetDataGetter getter = new UANetDataGetter(url);
@@ -46,13 +54,25 @@ public class HtmlUtils
             if (html == null)
                 throw new IOException("Failed to get html from network");
             doc = Jsoup.parse(html);
-            cacheManager.setHtml(url, doc.html());
+            
+            if (cacheable)
+            {
+                AppEngine.getInstance().getCacheManager().setHtml(url + getExtraKey(pairs), doc.html());
+            }
         }
         else
         {
             doc = Jsoup.parse(html);
         }
         return doc;
+    }
+    
+    private static String getExtraKey(List<BasicNameValuePair> pairs)
+    {
+        if (pairs == null)
+            return "";
+        
+        return "_" + String.valueOf(pairs.toString().hashCode());
     }
     
     public static String omitHtmlElement(String html)
