@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.tools.tvguide.utils.HtmlUtils;
+import com.tools.tvguide.utils.HtmlUtils.CacheControl;
 
 import android.content.Context;
 
@@ -79,7 +80,7 @@ public class ProgramHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(url);
+                    Document doc = HtmlUtils.getDocument(url, CacheControl.Memory);
                     String protocol = new URL(url).getProtocol();
                     String host = new URL(url).getHost();
                     String prefix = protocol + "://" + host;
@@ -150,7 +151,7 @@ public class ProgramHtmlManager
     {
         try 
         {
-            Document doc = HtmlUtils.getDocument(programUrl);
+            Document doc = HtmlUtils.getDocument(programUrl, CacheControl.Memory);
             String protocol = new URL(programUrl).getProtocol();
             String host = new URL(programUrl).getHost();
             String prefix = protocol + "://" + host;
@@ -245,7 +246,7 @@ public class ProgramHtmlManager
     {
         try 
         {
-            Document doc = HtmlUtils.getDocument(programUrl);
+            Document doc = HtmlUtils.getDocument(programUrl, CacheControl.Memory);
             String protocol = new URL(programUrl).getProtocol();
             String host = new URL(programUrl).getHost();
             String prefix = protocol + "://" + host;
@@ -288,7 +289,7 @@ public class ProgramHtmlManager
             // 返回结果
             String summary = "";
             String descriptionLink = programUrl + "/detail";
-            Document descriptionDoc = HtmlUtils.getDocument(descriptionLink);
+            Document descriptionDoc = HtmlUtils.getDocument(descriptionLink, CacheControl.Memory);
             Element descriptionElement = descriptionDoc.select("p.desc").first();
             if (descriptionElement != null)
             {
@@ -320,7 +321,7 @@ public class ProgramHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(hotUrl);
+                    Document doc = HtmlUtils.getDocument(hotUrl, CacheControl.Memory);
                     String protocol = new URL(hotUrl).getProtocol();
                     String host = new URL(hotUrl).getHost();
                     String prefix = protocol + "://" + host;

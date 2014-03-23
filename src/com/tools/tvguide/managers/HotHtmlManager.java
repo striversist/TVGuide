@@ -18,6 +18,7 @@ import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.HtmlUtils;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
+import com.tools.tvguide.utils.HtmlUtils.CacheControl;
 
 import android.content.Context;
 
@@ -343,7 +344,7 @@ public class HotHtmlManager
     
     private Document getDocument(String url) throws IOException
     {
-        return HtmlUtils.getDocument(url, "GBK");
+        return HtmlUtils.getDocument(url, "GBK", CacheControl.Memory);
     }
     
     /**

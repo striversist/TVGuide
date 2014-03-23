@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.utils.HtmlUtils;
+import com.tools.tvguide.utils.HtmlUtils.CacheControl;
 
 import android.content.Context;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class ChannelHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(channelUrl);
+                    Document doc = HtmlUtils.getDocument(channelUrl, CacheControl.Memory);
                     String protocol = new URL(channelUrl).getProtocol();
                     String host = new URL(channelUrl).getHost();
                     String prefix = protocol + "://" + host;

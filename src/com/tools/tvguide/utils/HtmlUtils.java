@@ -14,27 +14,25 @@ import com.tools.tvguide.managers.AppEngine;
 
 public class HtmlUtils 
 {
-    public static Document getDocument(String url) throws IOException
+    public enum CacheControl { Never, Memory, Disk }
+    
+    public static Document getDocument(String url, CacheControl control) throws IOException
     {
-        return getDocument(url, "utf-8", null, true);
+        return getDocument(url, "utf-8", null, control);
     }
     
-    public static Document getDocument(String url, String charset) throws IOException
+    public static Document getDocument(String url, String charset, CacheControl control) throws IOException
     {
-        return getDocument(url, charset, null, true);
+        return getDocument(url, charset, null, control);
     }
     
-    public static Document getDocument(String url, String charset, List<BasicNameValuePair> pairs) throws IOException
-    {
-        return getDocument(url, charset, pairs, true);
-    }
-    
-    public static Document getDocument(String url, String charset, List<BasicNameValuePair> pairs, boolean cacheable) throws IOException
+    public static Document getDocument(String url, String charset, List<BasicNameValuePair> pairs, CacheControl control) throws IOException
     {
         String html = null;
         Document doc = null;
-        if (cacheable)
-        {
+        if (control == CacheControl.Memory) {
+            html = AppEngine.getInstance().getCacheManager().getHtml(url + getExtraKey(pairs));
+        } else if (control == CacheControl.Disk) {
             html = AppEngine.getInstance().getDiskCacheManager().getString(url + getExtraKey(pairs));
         }
         
@@ -55,8 +53,9 @@ public class HtmlUtils
                 throw new IOException("Failed to get html from network");
             doc = Jsoup.parse(html);
             
-            if (cacheable && html != null)
-            {
+            if (control == CacheControl.Memory) {
+                AppEngine.getInstance().getCacheManager().setHtml(url + getExtraKey(pairs), html);
+            } else if (control == CacheControl.Disk) {
                 AppEngine.getInstance().getDiskCacheManager().setString(url + getExtraKey(pairs), html);
             }
         }

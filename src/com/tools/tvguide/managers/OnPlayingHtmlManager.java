@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 import com.tools.tvguide.data.Category;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.utils.HtmlUtils;
+import com.tools.tvguide.utils.HtmlUtils.CacheControl;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -50,7 +51,7 @@ public class OnPlayingHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(CATEGORY_ENTRY_URL);
+                    Document doc = HtmlUtils.getDocument(CATEGORY_ENTRY_URL, CacheControl.Memory);
                     
                     // 返回结果
                     List<Category> categoryList = new ArrayList<Category>();
@@ -111,11 +112,11 @@ public class OnPlayingHtmlManager
                     {
                         List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                         pairs.add(new BasicNameValuePair("prov", category.tvmaoId));
-                        doc = HtmlUtils.getDocument(category.link, "utf-8", pairs);
+                        doc = HtmlUtils.getDocument(category.link, "utf-8", pairs, CacheControl.Memory);
                     }
                     else
                     {
-                        doc = HtmlUtils.getDocument(category.link);
+                        doc = HtmlUtils.getDocument(category.link, CacheControl.Memory);
                     }
                     
                     if (doc == null)
