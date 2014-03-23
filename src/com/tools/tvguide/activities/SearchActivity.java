@@ -368,7 +368,7 @@ public class SearchActivity extends Activity implements Callback
                     for (int j=0; j<programList.size(); ++j)
                     {
                         Item item = new Item();
-                        item.id = channel.id;
+                        item.id = channel.tvmaoId;
                         item.name = channel.name;
                         item.time = programList.get(j).date + " " + programList.get(j).time;
                         item.title = programList.get(j).title;
