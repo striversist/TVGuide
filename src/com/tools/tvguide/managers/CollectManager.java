@@ -24,7 +24,7 @@ public class CollectManager implements Shutter
     private Context mContext;
     private boolean mSettingChanged = false;
     private LinkedHashMap<String, HashMap<String, Object>> mCollectChannels;
-    private String FILE_COLLECT_CHANNELS = "collect_channels.txt";
+    private String FILE_COLLECT_CHANNELS = "collect_web_channels.txt";
     
     public CollectManager(Context context)
     {

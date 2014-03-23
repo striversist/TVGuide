@@ -45,7 +45,7 @@ public class AlarmSettingActivity extends Activity
         public View getView(final int position, View convertView, ViewGroup parent) 
         {
             View view = super.getView(position, convertView, parent);
-            Button rmBtn = (Button)view.findViewById(R.id.collect_item_del_btn);
+            Button rmBtn = (Button)view.findViewById(R.id.del_btn);
             if (rmBtn != null)
             {
                 rmBtn.setText("删除");
@@ -127,8 +127,8 @@ public class AlarmSettingActivity extends Activity
     {
         mItemList = new ArrayList<HashMap<String, Object>>();
         mListViewAdapter = new MySimpleAdapter(AlarmSettingActivity.this, mItemList, R.layout.collect_list_item,
-                new String[]{"image", "name", "program", "button"}, 
-                new int[]{R.id.collect_item_logo, R.id.collect_item_channel, R.id.collect_item_program, R.id.collect_item_del_btn});
+                new String[]{"image", "name", "button"}, 
+                new int[]{R.id.channel_logo_niv, R.id.channel_name_tv, R.id.del_btn});
         mListViewAdapter.setViewBinder(new MyViewBinder());
         mListView.setAdapter(mListViewAdapter);
     }
