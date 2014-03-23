@@ -121,6 +121,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         
         mUiHandler = new Handler(this);
         mChannelId = getIntent().getStringExtra("tvmao_id");
+        if (mChannelId == null)
+            return;
+        
         mChannelName = getIntent().getStringExtra("name");
         mChannelList = (List<Channel>) getIntent().getSerializableExtra("channel_list");
         if (mChannelList == null)

@@ -250,7 +250,7 @@ public class CollectActivity extends Activity implements DragSortListener
             String name = mChannelList.get(i).name;
             
             HashMap<String, Object> item = new HashMap<String, Object>();            
-            item.put("id", id);
+            item.put("tvmao_id", id);
             item.put("name", name);
             mItemList.add(item);
         }
