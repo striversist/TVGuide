@@ -44,9 +44,9 @@ public class DiskCacheManager implements Shutter
     public String getString(String url)
     {
         if (mDiskLruCache == null)
-            return "";
+            return null;
         
-        String result = "";
+        String result = null;
         try 
         {
             DiskLruCache.Editor editor = mDiskLruCache.edit(url);
