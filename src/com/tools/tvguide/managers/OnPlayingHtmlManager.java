@@ -6,10 +6,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
+import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -110,9 +108,15 @@ public class OnPlayingHtmlManager
                 {
                     Document doc = null;
                     if (category.tvmaoId != null && category.tvmaoId.trim().length() > 0)
-                        doc = Jsoup.connect(category.link).data("prov", category.tvmaoId).timeout(20000).post();
+                    {
+                        List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                        pairs.add(new BasicNameValuePair("prov", category.tvmaoId));
+                        doc = HtmlUtils.getDocument(category.link, "utf-8", pairs);
+                    }
                     else
+                    {
                         doc = HtmlUtils.getDocument(category.link);
+                    }
                     
                     if (doc == null)
                         return;

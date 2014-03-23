@@ -1,9 +1,11 @@
 package com.tools.tvguide.utils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -15,10 +17,15 @@ public class HtmlUtils
 {
     public static Document getDocument(String url) throws IOException
     {
-        return getDocument(url, "utf-8");
+        return getDocument(url, "utf-8", null);
     }
     
     public static Document getDocument(String url, String charset) throws IOException
+    {
+        return getDocument(url, charset, null);
+    }
+    
+    public static Document getDocument(String url, String charset, List<BasicNameValuePair> pairs) throws IOException
     {
         CacheManager cacheManager = AppEngine.getInstance().getCacheManager();
         String html = cacheManager.getHtml(url);
@@ -28,7 +35,11 @@ public class HtmlUtils
             NetDataGetter getter = new UANetDataGetter(url);
             for (int i=0; i<2; ++i)
             {
-                html = getter.getStringData(charset);
+                if (pairs != null) {
+                    html = getter.getStringData(pairs, charset);
+                } else {
+                    html = getter.getStringData(charset);
+                }
                 if (html != null)
                     break;
             }
