@@ -51,7 +51,7 @@ public class AlarmSettingActivity extends Activity
                     @Override
                     public void onClick(View v) 
                     {
-                        String channelId = (String) mItemList.get(position).get("id");
+                        String channelId = (String) mItemList.get(position).get("tvmao_id");
                         String channelName = (String) mItemList.get(position).get("name");
                         String program = (String) mItemList.get(position).get("program");
                         String day = (String) mItemList.get(position).get("day");
@@ -141,7 +141,7 @@ public class AlarmSettingActivity extends Activity
             String day = entry.getValue().get("day");
             
             HashMap<String, Object> item = new HashMap<String, Object>();
-            item.put("id", channelId);
+            item.put("tvmao_id", channelId);
             item.put("name", channelName);
             item.put("program", program);
             item.put("day", day);
