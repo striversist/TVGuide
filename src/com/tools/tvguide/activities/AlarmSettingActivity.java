@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.utils.Utility;
-import com.tools.tvguide.utils.XmlParser;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -31,8 +29,6 @@ public class AlarmSettingActivity extends Activity
     private ListView mListView;
     private MySimpleAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
-    private HashMap<String, HashMap<String, Object>> mXmlChannelInfo;
-    private final String XML_ELEMENT_LOGO = "logo";
     
     private class MySimpleAdapter extends SimpleAdapter
     {
@@ -100,7 +96,6 @@ public class AlarmSettingActivity extends Activity
         setContentView(R.layout.activity_alarm_setting);
         
         mListView = (ListView) findViewById(R.id.alarm_setting_list_view);
-        mXmlChannelInfo = XmlParser.parseChannelInfo(this);
         createAndSetListViewAdapter();
         initAlarmList();
         
@@ -146,10 +141,6 @@ public class AlarmSettingActivity extends Activity
             String day = entry.getValue().get("day");
             
             HashMap<String, Object> item = new HashMap<String, Object>();
-            if (mXmlChannelInfo.get(channelId) != null)
-            {
-                item.put("image", Utility.getImage(AlarmSettingActivity.this, (String) mXmlChannelInfo.get(channelId).get(XML_ELEMENT_LOGO)));                        
-            }
             item.put("id", channelId);
             item.put("name", channelName);
             item.put("program", program);
