@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal" android:background="@drawable/shape_bottom_corner_no_top_line" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center|left"
+    android:descendantFocusability="blocksDescendants" xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.tools.tvguide.views.NetImageView android:id="@+id/channel_logo_niv" android:layout_width="wrap_content" android:layout_height="50sp" 
+            android:paddingLeft="10.0dip" android:layout_marginLeft="5.0dip" android:layout_marginTop="6.0dip" 
+            android:layout_marginBottom="6.0dip" />
+    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.0" android:orientation="vertical" >
+	    <TextView android:id="@+id/channel_name_tv" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+	              android:layout_marginLeft="10dp" android:textColor="@color/black" android:singleLine="true" android:textSize="17.0dip" />
+	    <TextView android:id="@+id/program_tv" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="10dp"
+	              android:layout_marginTop="8.0dip" android:textColor="@color/black" android:singleLine="true" android:ellipsize="marquee" android:textSize="13.0dip" />
+    </LinearLayout>
+    <Button android:id="@+id/del_btn" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+            android:background="@drawable/title_btn_right" android:text="@string/delete" android:textSize="16sp"
+            android:layout_gravity="center" />
+</LinearLayout>

@@ -126,9 +126,9 @@ public class AlarmSettingActivity extends Activity
     private void createAndSetListViewAdapter()
     {
         mItemList = new ArrayList<HashMap<String, Object>>();
-        mListViewAdapter = new MySimpleAdapter(AlarmSettingActivity.this, mItemList, R.layout.collect_list_item,
-                new String[]{"image", "name", "button"}, 
-                new int[]{R.id.channel_logo_niv, R.id.channel_name_tv, R.id.del_btn});
+        mListViewAdapter = new MySimpleAdapter(AlarmSettingActivity.this, mItemList, R.layout.alarm_list_item,
+                new String[]{"image", "name", "program", "button"}, 
+                new int[]{R.id.channel_logo_niv, R.id.channel_name_tv, R.id.program_tv, R.id.del_btn});
         mListViewAdapter.setViewBinder(new MyViewBinder());
         mListView.setAdapter(mListViewAdapter);
     }
