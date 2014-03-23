@@ -91,7 +91,7 @@ public class CategorylistActivity extends Activity implements Callback
         if (categoryName == null)
             return false;
         
-        if (userLocaion.contains(categoryName))
+        if (userLocaion != null && userLocaion.contains(categoryName))
             return true;
         
         return false;
