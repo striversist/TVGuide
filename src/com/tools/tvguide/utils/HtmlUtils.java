@@ -14,8 +14,6 @@ import com.tools.tvguide.managers.AppEngine;
 
 public class HtmlUtils 
 {
-    public enum CacheControl { Never, Memory, Disk }
-    
     public static Document getDocument(String url, CacheControl control) throws IOException
     {
         return getDocument(url, "utf-8", null, control);

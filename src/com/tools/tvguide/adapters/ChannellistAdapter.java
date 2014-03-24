@@ -8,6 +8,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.data.Category;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.views.NetImageView;
 
 import android.content.Context;
@@ -80,7 +81,10 @@ public class ChannellistAdapter extends BaseAdapter
         {
         	String logoUrl = UrlManager.getWebChannelLogoUrl(category.name, tvmaoId);
         	if (logoUrl != null)
+        	{
+        		channelLogoNetImageView.setCacheControl(CacheControl.Disk);
         		channelLogoNetImageView.loadImage(logoUrl);
+        	}
         }
         
         return convertView;

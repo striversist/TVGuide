@@ -9,16 +9,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.utils.HtmlUtils;
-import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
-import com.tools.tvguide.utils.HtmlUtils.CacheControl;
+import com.tools.tvguide.utils.CacheControl;
 
 import android.content.Context;
 

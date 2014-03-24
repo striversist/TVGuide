@@ -2,6 +2,7 @@ package com.tools.tvguide.views;
 
 import java.lang.ref.WeakReference;
 
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ public class NetImageView extends ImageView
     private ImageUrlAsyncTask mCurrentTask;
     private Bitmap mBitmap;
     private String mUrl;
+    private CacheControl mCacheControl = CacheControl.Memory;
     
     public static interface ImageLoadListener
     {
@@ -27,6 +29,11 @@ public class NetImageView extends ImageView
     public NetImageView(Context context, AttributeSet attrs) 
     {
         super(context, attrs);
+    }
+    
+    public void setCacheControl(CacheControl control)
+    {
+    	mCacheControl = control;
     }
 
     public void loadImage(String url)
@@ -86,7 +93,7 @@ public class NetImageView extends ImageView
         protected Bitmap doInBackground(String... urls) 
         {
             mTaskUrl = urls[0];
-            Bitmap bitmap = Utility.getNetworkImage(urls[0]);
+            Bitmap bitmap = Utility.getNetworkImage(urls[0], mCacheControl);
             return bitmap;
         }
         

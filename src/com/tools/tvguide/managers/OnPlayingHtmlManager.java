@@ -15,7 +15,7 @@ import org.jsoup.select.Elements;
 import com.tools.tvguide.data.Category;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.utils.HtmlUtils;
-import com.tools.tvguide.utils.HtmlUtils.CacheControl;
+import com.tools.tvguide.utils.CacheControl;
 
 import android.content.Context;
 import android.text.TextUtils;

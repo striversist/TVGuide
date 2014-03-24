@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.views.NetImageView;
 
 import android.content.Context;
@@ -57,6 +58,7 @@ public class ChannellistAdapter2 extends BaseAdapter
         NetImageView channelLogoNetImageView = (NetImageView) convertView.findViewById(R.id.channel_logo_niv);
         
         channelNameTextView.setText(channel.name);
+        channelLogoNetImageView.setCacheControl(CacheControl.Disk);
         channelLogoNetImageView.loadImage(channel.logoLink);
         
         return convertView;

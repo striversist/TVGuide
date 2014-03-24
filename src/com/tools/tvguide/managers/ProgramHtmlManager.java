@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.tools.tvguide.utils.HtmlUtils;
-import com.tools.tvguide.utils.HtmlUtils.CacheControl;
+import com.tools.tvguide.utils.CacheControl;
 
 import android.content.Context;
 

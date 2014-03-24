@@ -246,7 +246,7 @@ public class Utility
         return 0;
     }
     
-    public static Bitmap getNetworkImage(String url)
+    public static Bitmap getNetworkImage(String url, CacheControl control)
     {
     	if (url == null)
     		return null;
@@ -254,13 +254,19 @@ public class Utility
         Bitmap bitmap = null;
         try
         {
-        	bitmap = AppEngine.getInstance().getDiskCacheManager().getBitmap(guessFileNameByUrl(url));
-        	if (bitmap == null)
-        	{
+        	if (control == CacheControl.Memory) {
+        		bitmap = AppEngine.getInstance().getCacheManager().getBitmap(guessFileNameByUrl(url));
+        	} else if (control == CacheControl.Disk) {
+        		bitmap = AppEngine.getInstance().getDiskCacheManager().getBitmap(guessFileNameByUrl(url));
+        	}
+        	if (bitmap == null)	{
         		bitmap = BitmapFactory.decodeStream(new UANetDataGetter(url).getInputStream());
-        		if (bitmap != null)
-        		{
-        			AppEngine.getInstance().getDiskCacheManager().setBitmap(guessFileNameByUrl(url), bitmap);
+        		if (bitmap != null) {
+        			if (control == CacheControl.Memory) {
+        				AppEngine.getInstance().getCacheManager().setBitmap(guessFileNameByUrl(url), bitmap);
+        			} else if (control == CacheControl.Disk) {
+	        			AppEngine.getInstance().getDiskCacheManager().setBitmap(guessFileNameByUrl(url), bitmap);
+	        		}
         		}
         	}
         }

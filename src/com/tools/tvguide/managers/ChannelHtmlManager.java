@@ -12,8 +12,8 @@ import org.jsoup.select.Elements;
 
 import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
-import com.tools.tvguide.utils.HtmlUtils.CacheControl;
 
 import android.content.Context;
 import android.util.Log;

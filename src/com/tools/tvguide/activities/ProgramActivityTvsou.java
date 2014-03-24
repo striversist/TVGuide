@@ -11,6 +11,7 @@ import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.MyViewPagerIndicator;
 
@@ -207,7 +208,7 @@ public class ProgramActivityTvsou extends Activity
                     @Override
                     public void run() 
                     {
-                        mPicture = Utility.getNetworkImage(picLink);
+                        mPicture = Utility.getNetworkImage(picLink, CacheControl.Memory);
                         if (mPicture != null)
                             uiHandler.sendEmptyMessage(MSG_PICTURE_LOADED);
                     }

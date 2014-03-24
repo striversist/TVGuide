@@ -6,6 +6,7 @@ import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ProgramHtmlManager;
 import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.Utility;
 
 import android.os.Bundle;
@@ -131,7 +132,7 @@ public class ProgramActivity extends Activity
                         @Override
                         public void run() 
                         {
-                            mPicture = Utility.getNetworkImage(link);
+                            mPicture = Utility.getNetworkImage(link, CacheControl.Memory);
                             if (mPicture != null)
                             {
                                 AppEngine.getInstance().getCacheManager().setBitmap(link, mPicture);
