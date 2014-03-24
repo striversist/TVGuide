@@ -138,6 +138,7 @@ public class ChannellistActivity extends Activity implements Callback
                         HashMap<String, Object> item = new HashMap<String, Object>();
                         item.put("tvmao_id", mChannelList.get(i).tvmaoId);
                         item.put("name", mChannelList.get(i).name);
+                        item.put("category", mCurrentCategory);
                         mItemList.add(item);
                     }
                     mListAdapter.setItemList(mItemList);

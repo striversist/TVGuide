@@ -226,6 +226,41 @@ public class UrlManager
         return prefix + tvmaoId + "-w" + String.valueOf(day) + sufix;
     }
     
+    public static String getWebChannelLogoUrl(String categoryName, String tvmaoId)
+    {
+    	if (categoryName == null || tvmaoId == null)
+    		return null;
+    	
+    	// eg. http://static.tvmao.cn/channel/logo/CCTV1.jpg
+    	// eg. http://static.tvmao.cn/tvstation/logo/AHTV.gif
+    	String format = "http://static.tvmao.cn/%1$s/logo/%2$s.%3$s";
+    	String type = "";
+    	String id = "";
+    	String sufix = "";
+    	
+    	String idPart1 = "";
+    	String idPart2 = "";
+    	if (tvmaoId.contains("-")) {
+    		idPart1 = tvmaoId.split("-")[0];
+    		idPart2 = tvmaoId.split("-")[1];
+    	} else {
+    		idPart1 = tvmaoId;
+    		idPart2 = tvmaoId;
+    	}
+    	
+    	if (categoryName.contains("央视") || categoryName.contains("数字")) {
+    		type = "channel";
+    		id = idPart2;
+    		sufix = "jpg";
+    	} else {
+    		type = "tvstation";
+    		id = idPart1;
+    		sufix = "gif";
+    	}
+    	
+    	return String.format(format, type, id, sufix);
+    }
+    
     public static String tryToReplaceHostNameWithIP(String url)
     {
         if (url == null)

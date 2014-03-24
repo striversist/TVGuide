@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.data.Category;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.views.NetImageView;
@@ -72,6 +73,15 @@ public class ChannellistAdapter extends BaseAdapter
         String onplayingProgram = (String) item.get("program");
         if (onplayingProgram != null)
             onplayingProgramTextView.setText(onplayingProgram);
+        
+        String tvmaoId = (String) item.get("tvmao_id");
+        Category category = (Category) item.get("category");
+        if (tvmaoId != null && category != null && category.name != null)
+        {
+        	String logoUrl = UrlManager.getWebChannelLogoUrl(category.name, tvmaoId);
+        	if (logoUrl != null)
+        		channelLogoNetImageView.loadImage(logoUrl);
+        }
         
         return convertView;
     }
