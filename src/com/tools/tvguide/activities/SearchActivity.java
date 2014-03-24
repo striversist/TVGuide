@@ -214,6 +214,8 @@ public class SearchActivity extends Activity implements Callback
             public void onTabClick(int index, Object tag) 
             {
                 mViewPager.setCurrentItem(index);
+                if (mResultPagerAdapter != null && mResultPagerAdapter.getView(index) != null)
+                    mResultPagerAdapter.getView(index).requestFocus();  // 获取焦点，否则点击无效
             }
         });
         
@@ -224,6 +226,8 @@ public class SearchActivity extends Activity implements Callback
             {
                 MyViewPagerIndicator indicator = (MyViewPagerIndicator) mClassifyResultLayout.findViewById(R.id.indicator);
                 indicator.setCurrentTab(position);
+                if (mResultPagerAdapter != null && mResultPagerAdapter.getView(position) != null)
+                    mResultPagerAdapter.getView(position).requestFocus();   // 获取焦点，否则点击无效
             }
             
             @Override
