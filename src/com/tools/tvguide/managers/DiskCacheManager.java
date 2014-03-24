@@ -35,7 +35,7 @@ public class DiskCacheManager implements Shutter, Callback
         mContext = context;
         
         openDiskCache();
-        mExternalCachePath = mContext.getExternalCacheDir() + File.separator + mContext.getPackageName() + File.separator + "cache";
+        mExternalCachePath = mContext.getExternalCacheDir().getAbsolutePath();
         File cacheDir = new File(mExternalCachePath);
     	if (!cacheDir.exists())
     		cacheDir.mkdirs();
@@ -125,7 +125,7 @@ public class DiskCacheManager implements Shutter, Callback
     	ExternalBitmap externalBitmap = new ExternalBitmap();
     	externalBitmap.fileName = fileName;
     	externalBitmap.bitmap = bitmap;
-    	mHandler.obtainMessage(SelfMessage.Store_Bitmap.ordinal(), externalBitmap);
+    	mHandler.obtainMessage(SelfMessage.Store_Bitmap.ordinal(), externalBitmap).sendToTarget();
     }
     
     private void storeBitmap(String fileName, Bitmap bitmap)
