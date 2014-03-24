@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Handler.Callback;
-import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Message;
 
@@ -27,7 +26,7 @@ public class DiskCacheManager implements Shutter, Callback
     private String mExternalCachePath;
     private HandlerThread mHandlerThread;
     private Handler	mHandler;
-    private enum SelfMessage { Store_Bitmap };
+    private enum SelfMessage { Store_Bitmap, Clear_All };
     
     public DiskCacheManager(Context context)
     {
@@ -47,7 +46,8 @@ public class DiskCacheManager implements Shutter, Callback
     
     public void clearAll()
     {
-    	Utility.deleteFile(new File(mExternalCachePath));
+    	mHandler.removeMessages(SelfMessage.Store_Bitmap.ordinal());
+    	mHandler.obtainMessage(SelfMessage.Clear_All.ordinal()).sendToTarget();
         
         try {
         	if (mDiskLruCache == null)
@@ -192,6 +192,9 @@ public class DiskCacheManager implements Shutter, Callback
 			case Store_Bitmap:
 				ExternalBitmap externalBitmap = (ExternalBitmap) msg.obj;
 				storeBitmap(externalBitmap.fileName, externalBitmap.bitmap);
+				break;
+			case Clear_All:
+				Utility.deleteFile(new File(mExternalCachePath));
 				break;
 		}
 				

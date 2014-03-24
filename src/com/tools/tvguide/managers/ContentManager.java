@@ -197,7 +197,10 @@ public class ContentManager implements Shutter
         
         // 第一次启动时，频道都是最新的，所以不用再清除缓存
         if (!AppEngine.getInstance().getBootManager().isFirstStart())
+        {
             AppEngine.getInstance().getCacheManager().clear();
+            AppEngine.getInstance().getDiskCacheManager().clearAll();
+        }
     }
     
     private int getCurrentChannelVersion()
