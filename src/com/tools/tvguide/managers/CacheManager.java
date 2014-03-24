@@ -11,6 +11,8 @@ import java.io.StreamCorruptedException;
 import java.util.HashMap;
 import java.util.List;
 
+import com.tools.tvguide.utils.Utility;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
@@ -173,10 +175,10 @@ public class CacheManager
         File file2 = new File(mContext.getFilesDir() + File.separator + FILE_CACHED_CHANNELS);
         File file3 = new File(mContext.getFilesDir() + File.separator + FILE_ALL_TVMAO_IDS);
         File file4 = new File(mContext.getFilesDir() + File.separator + FILE_SEARCH_WORDS);
-        deleteFile(file1);
-        deleteFile(file2);
-        deleteFile(file3);
-        deleteFile(file4);
+        Utility.deleteFile(file1);
+        Utility.deleteFile(file2);
+        Utility.deleteFile(file3);
+        Utility.deleteFile(file4);
         mHtmlCache.evictAll();
         mBitmapCache.evictAll();
     }
@@ -200,26 +202,6 @@ public class CacheManager
     {
         if (key != null && bitmap != null)
             mBitmapCache.put(key, bitmap);
-    }
-    
-    private void deleteFile(File file)
-    {
-        if (file.exists())
-        {
-            if (file.isFile())
-            {
-                file.delete();
-            }
-            else if (file.isDirectory())
-            {
-                File files[] = file.listFiles();
-                for (int i=0; i<files.length; i++)
-                {
-                    this.deleteFile(file);
-                }
-            }
-            file.delete();
-        }
     }
     
     private Object loadObjectFromFile(String fileName)

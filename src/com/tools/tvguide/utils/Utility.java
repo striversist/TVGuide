@@ -1,8 +1,11 @@
 package com.tools.tvguide.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +15,7 @@ import java.util.Locale;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.UANetDataGetter;
+import com.tools.tvguide.managers.AppEngine;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -244,10 +248,21 @@ public class Utility
     
     public static Bitmap getNetworkImage(String url)
     {
+    	if (url == null)
+    		return null;
+    	
         Bitmap bitmap = null;
         try
         {
-            bitmap = BitmapFactory.decodeStream(new UANetDataGetter(url).getInputStream());
+        	bitmap = AppEngine.getInstance().getDiskCacheManager().getBitmap(guessFileNameByUrl(url));
+        	if (bitmap == null)
+        	{
+        		bitmap = BitmapFactory.decodeStream(new UANetDataGetter(url).getInputStream());
+        		if (bitmap != null)
+        		{
+        			AppEngine.getInstance().getDiskCacheManager().setBitmap(guessFileNameByUrl(url), bitmap);
+        		}
+        	}
         }
         catch (IOException e)
         {
@@ -255,6 +270,21 @@ public class Utility
         }
         
         return bitmap;
+    }
+    
+    public static String guessFileNameByUrl(String paramUrl)
+    {
+    	String result = "";
+    	try 
+    	{
+			URL url = new URL(paramUrl);
+			result = url.getPath().replace("/", "_");
+		} 
+    	catch (MalformedURLException e) 
+    	{
+			e.printStackTrace();
+		}
+    	return result;
     }
     
     public static String addUrlGetParam(String url, String paramName, String paramValue, boolean isFirstParam)
@@ -282,5 +312,27 @@ public class Utility
         }
         
         return newUrl;
+    }
+    
+    public static void deleteFile(File file)
+    {
+    	if (file == null)
+    		return;
+    	
+    	if (!file.exists()) {
+    		return;
+    	}
+    	
+        if (file.isFile()) {
+            file.delete();
+        } else if (file.isDirectory()) {
+            File files[] = file.listFiles();
+            if (files != null) {
+	            for (int i=0; i<files.length; i++) {
+	                deleteFile(files[i]);
+	            }
+            }
+            file.delete();
+        }
     }
 }
