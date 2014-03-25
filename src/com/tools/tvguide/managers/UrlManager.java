@@ -226,9 +226,9 @@ public class UrlManager
         return prefix + tvmaoId + "-w" + String.valueOf(day) + sufix;
     }
     
-    public static String getWebChannelLogoUrl(String categoryName, String tvmaoId)
+    public static String[] guessWebChannelLogoUrls(String tvmaoId)
     {
-    	if (categoryName == null || tvmaoId == null)
+    	if (tvmaoId == null)
     		return null;
     	
     	// eg. http://static.tvmao.cn/channel/logo/CCTV1.jpg
@@ -248,17 +248,22 @@ public class UrlManager
     		idPart2 = tvmaoId;
     	}
     	
-    	if (categoryName.contains("央视") || categoryName.contains("数字")) {
+    	String[] result = new String[2];
+    	{
     		type = "channel";
     		id = idPart2;
     		sufix = "jpg";
-    	} else {
+    		result[0] = String.format(format, type, id, sufix);
+    	} 
+    	
+    	{
     		type = "tvstation";
     		id = idPart1;
     		sufix = "gif";
+    		result[1] = String.format(format, type, id, sufix);
     	}
     	
-    	return String.format(format, type, id, sufix);
+    	return result;
     }
     
     public static String tryToReplaceHostNameWithIP(String url)

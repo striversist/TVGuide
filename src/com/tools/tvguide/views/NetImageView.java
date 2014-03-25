@@ -23,7 +23,7 @@ public class NetImageView extends ImageView
     
     public static interface ImageLoadListener
     {
-        void onImageLoaded(Bitmap bitmap);
+        void onImageLoaded(String url, Bitmap bitmap);
     }
     
     public NetImageView(Context context, AttributeSet attrs) 
@@ -36,44 +36,52 @@ public class NetImageView extends ImageView
     	mCacheControl = control;
     }
 
-    public void loadImage(String url)
+    public void loadImage(String... urls)
     {
-        if (url == null)
+        if (urls == null)
             return;
 
-        if (mUrl != null && mUrl.equals(url))
+        for (String url : urls) 
         {
-            setImageBitmap(mBitmap);
-            return;
-        }
-        
-        if (sCache.get(url) != null)
-        {
-            mBitmap = sCache.get(url);
-            setImageBitmap(mBitmap);
-            return;
-        }
-        
-        if (mCurrentTask != null)
-            mCurrentTask.cancel(true);
-
-        mUrl = url;
-        mCurrentTask = new ImageUrlAsyncTask(this, new ImageLoadListener() 
-        {
-            @Override
-            public void onImageLoaded(Bitmap bitmap) 
+        	if (mUrl != null && mUrl.equals(url))
             {
-                mBitmap = bitmap;
-                sCache.put(mUrl, bitmap);
-                mCurrentTask = null;
+                setImageBitmap(mBitmap);
+                return;
             }
-        });
-        mCurrentTask.execute(url);
+            
+            if (sCache.get(url) != null)
+            {
+                mBitmap = sCache.get(url);
+                setImageBitmap(mBitmap);
+                return;
+            }	
+		}
+        
+        execute(urls);
     }
     
     public String getUrl()
     {
         return mUrl;
+    }
+    
+    private void execute(String... urls)
+    {
+    	if (mCurrentTask != null)
+            mCurrentTask.cancel(true);
+    	
+    	mCurrentTask = new ImageUrlAsyncTask(this, new ImageLoadListener() 
+        {
+            @Override
+            public void onImageLoaded(String url, Bitmap bitmap) 
+            {
+                mBitmap = bitmap;
+                mUrl = url;
+                sCache.put(mUrl, bitmap);
+                mCurrentTask = null;
+            }
+        });
+        mCurrentTask.execute(urls);
     }
     
     private class ImageUrlAsyncTask extends AsyncTask<String, Void, Bitmap>
@@ -92,8 +100,14 @@ public class NetImageView extends ImageView
         @Override
         protected Bitmap doInBackground(String... urls) 
         {
-            mTaskUrl = urls[0];
-            Bitmap bitmap = Utility.getNetworkImage(urls[0], mCacheControl);
+        	Bitmap bitmap = null;
+            for (String url : urls) {
+        		bitmap = Utility.getNetworkImage(url, mCacheControl);
+        		if (bitmap != null) {
+        			mTaskUrl = url;
+        			break;
+        		}
+			}
             return bitmap;
         }
         
@@ -109,7 +123,7 @@ public class NetImageView extends ImageView
             }
             
             if (mListener != null)
-                mListener.onImageLoaded(bitmap);
+                mListener.onImageLoaded(mTaskUrl, bitmap);
         }
     }
 }

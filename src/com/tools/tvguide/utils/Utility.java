@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -318,6 +319,22 @@ public class Utility
         }
         
         return newUrl;
+    }
+    
+    public static boolean isUrlExist(String url)
+    {
+    	HttpURLConnection.setFollowRedirects(false);
+    	try {
+			HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+			con.setRequestMethod("HEAD");
+			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+//			e.printStackTrace();
+			return false;
+		}
     }
     
     public static void deleteFile(File file)

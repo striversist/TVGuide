@@ -76,14 +76,13 @@ public class ChannellistAdapter extends BaseAdapter
             onplayingProgramTextView.setText(onplayingProgram);
         
         String tvmaoId = (String) item.get("tvmao_id");
-        Category category = (Category) item.get("category");
-        if (tvmaoId != null && category != null && category.name != null)
+        if (tvmaoId != null)
         {
-        	String logoUrl = UrlManager.getWebChannelLogoUrl(category.name, tvmaoId);
-        	if (logoUrl != null)
+        	String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
+        	if (logoUrls != null)
         	{
         		channelLogoNetImageView.setCacheControl(CacheControl.Disk);
-        		channelLogoNetImageView.loadImage(logoUrl);
+        		channelLogoNetImageView.loadImage(logoUrls);
         	}
         }
         
