@@ -33,7 +33,7 @@ public class BootCompleteReceiver extends BroadcastReceiver
 	// 启动卸载监控器
 	private void startMonitor()
 	{
-		UninstallObserver.autoSetHttpRequestOnUninstall(mContext);
+		UninstallObserver.autoSetHttpRequestOnUninstall(mContext.getApplicationContext());
 	}
 	
 	// 重新计算闹铃时间
