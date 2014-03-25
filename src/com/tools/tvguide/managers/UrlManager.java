@@ -241,8 +241,8 @@ public class UrlManager
     	String idPart1 = "";
     	String idPart2 = "";
     	if (tvmaoId.contains("-")) {
-    		idPart1 = tvmaoId.split("-")[0];
-    		idPart2 = tvmaoId.split("-")[1];
+    		idPart1 = tvmaoId.split("-", 2)[0];
+    		idPart2 = tvmaoId.split("-", 2)[1];
     	} else {
     		idPart1 = tvmaoId;
     		idPart2 = tvmaoId;
