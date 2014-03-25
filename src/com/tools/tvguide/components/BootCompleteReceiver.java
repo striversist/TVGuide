@@ -1,6 +1,7 @@
 package com.tools.tvguide.components;
 
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.uninstall.UninstallObserver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,8 +33,7 @@ public class BootCompleteReceiver extends BroadcastReceiver
 	// 启动卸载监控器
 	private void startMonitor()
 	{
-	    AppEngine.getInstance().getServiceManager().init();
-	    AppEngine.getInstance().getServiceManager().startMonitor();
+		UninstallObserver.autoSetHttpRequestOnUninstall(mContext);
 	}
 	
 	// 重新计算闹铃时间

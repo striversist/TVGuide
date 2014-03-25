@@ -7,6 +7,7 @@ import com.tools.tvguide.components.ShortcutInstaller;
 import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.components.SplashDialog;
 import com.tools.tvguide.data.GlobalData;
+import com.tools.tvguide.uninstall.UninstallObserver;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
@@ -86,8 +87,7 @@ public class BootManager implements Shutter
         if (isFirstStart())
             new ShortcutInstaller(AppEngine.getInstance().getContext()).createShortCut();
         
-        AppEngine.getInstance().getServiceManager().init();
-        AppEngine.getInstance().getServiceManager().startMonitor();
+        UninstallObserver.autoSetHttpRequestOnUninstall(mContext.getApplicationContext());
         mPreference.edit().putLong(KEY_LAST_START_FLAG, System.currentTimeMillis()).commit();
     }
     

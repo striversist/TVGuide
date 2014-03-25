@@ -117,9 +117,9 @@
         </receiver>
 
         <service
-            android:name="com.tools.tvguide.remote.RemoteService"
+            android:name="com.tools.tvguide.uninstall.UninstallReportService"
             android:exported="false"
-            android:process=":remote" >
+            android:process=":uninstall" >
         </service>
 
     </application>

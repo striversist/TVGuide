@@ -29,8 +29,6 @@ public class AppEngine
     private HotHtmlManager                          mHotHtmlManager;
     private ChannelHtmlManager                      mChannelHtmlManager;
     private ProgramHtmlManager                      mProgramHtmlManager;
-    private UninstallMonitor                        mUninstallMonitor;
-    private ServiceManager                          mServiceManager;
     private SearchWordsManager                      mSearchWordsManager;
     private SearchHtmlManager                       mSearchHtmlManager;
     private OnPlayingHtmlManager                    mOnPlayingHtmlManager;
@@ -196,25 +194,6 @@ public class AppEngine
         if (mProgramHtmlManager == null)
             mProgramHtmlManager = new ProgramHtmlManager(mApplicationContext);
         return mProgramHtmlManager;
-    }
-    
-    public UninstallMonitor getUninstallMonitor()
-    {
-        checkInitialized();
-        if (mUninstallMonitor == null)
-        {
-            mUninstallMonitor = new UninstallMonitor(mApplicationContext);
-            mShutterList.add(mUninstallMonitor);
-        }
-        return mUninstallMonitor;
-    }
-    
-    public ServiceManager getServiceManager()
-    {
-        checkInitialized();
-        if (mServiceManager == null)
-            mServiceManager = new ServiceManager(mApplicationContext);
-        return mServiceManager;
     }
     
     public SearchWordsManager getSearchWordsManager()

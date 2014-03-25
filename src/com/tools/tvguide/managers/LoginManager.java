@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.managers.ContentManager.LoadListener;
+import com.tools.tvguide.uninstall.UninstallObserver;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
 
@@ -71,7 +72,7 @@ public class LoginManager
                             if (EnvironmentManager.enableACRA)
                                 ErrorReporter.getInstance().putCustomData("GUID", guid);
                             
-                            AppEngine.getInstance().getServiceManager().startMonitor();
+                            UninstallObserver.autoSetHttpRequestOnUninstall(mContext.getApplicationContext());
                         }
                     }
                     
