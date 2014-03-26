@@ -43,21 +43,20 @@ public class NetImageView extends ImageView
         if (urls == null)
             return;
 
-        for (String url : urls) 
+        // 针对第一个链接做优化处理
+    	if (mUrl != null && mUrl.equals(urls[0]))
         {
-        	if (mUrl != null && mUrl.equals(url))
-            {
-                setImageBitmap(mBitmap);
-                return;
-            }
-            
-            if (sCache.get(url) != null)
-            {
-                mBitmap = sCache.get(url);
-                setImageBitmap(mBitmap);
-                return;
-            }	
-		}
+            setImageBitmap(mBitmap);
+            return;
+        }
+        
+    	// 针对第一个链接做优化处理
+        if (sCache.get(urls[0]) != null)
+        {
+            mBitmap = sCache.get(urls[0]);
+            setImageBitmap(mBitmap);
+            return;
+        }	
         
         execute(urls);
     }
