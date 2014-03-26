@@ -2,12 +2,13 @@ package com.tools.tvguide.views;
 
 import java.lang.ref.WeakReference;
 
+import com.tools.tvguide.components.AsyncTask;
 import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+
 import android.support.v4.util.LruCache;
 import android.util.AttributeSet;
 import android.widget.ImageView;
