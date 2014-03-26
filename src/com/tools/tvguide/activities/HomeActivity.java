@@ -9,6 +9,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Category;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.BootManager.OnSplashFinishedCallback;
 import com.tools.tvguide.managers.OnPlayingHtmlManager.CategoryEntriesCallback;
 
 import android.app.Activity;
@@ -106,7 +107,23 @@ public class HomeActivity extends Activity implements Callback
                 }
             }
         });
-        mProgressDialog.show();
+        
+        if (AppEngine.getInstance().getBootManager().isSplashShowing())
+        {
+            AppEngine.getInstance().getBootManager().addOnSplashFinishedCallback(new OnSplashFinishedCallback() 
+            {
+                @Override
+                public void OnSplashFinished() 
+                {
+                    if (mCategoryList.isEmpty())
+                        mProgressDialog.show();
+                }
+            });
+        }
+        else if (mCategoryList.isEmpty())
+        {
+            mProgressDialog.show();
+        }
     }
 
     @Override
