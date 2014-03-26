@@ -69,7 +69,7 @@ public class NetDataGetter
 		}
 		catch (MalformedURLException e)
 		{
-			e.printStackTrace();
+//			e.printStackTrace();
 			return -1;
 		}
 		
@@ -137,7 +137,7 @@ public class NetDataGetter
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+//			e.printStackTrace();
 			return null;
 		}
 		
@@ -265,28 +265,28 @@ public class NetDataGetter
 		catch (UnsupportedEncodingException e1)
 		{
 			Log.e("Exception", "Set name pair failed!");
-			e1.printStackTrace();
+//			e1.printStackTrace();
 			client.getConnectionManager().shutdown();
 			return null;
 		}
 		catch (ClientProtocolException e)
 		{
 			Log.e("Exception", "Exec post protocol failed!");
-			e.printStackTrace();
+//			e.printStackTrace();
 			client.getConnectionManager().shutdown();
 			return null;
 		}
 		catch (IOException e)
 		{
 			Log.e("Exception", "Exec post IO failed!");
-			e.printStackTrace();
+//			e.printStackTrace();
 			client.getConnectionManager().shutdown();
 			return null;
 		}
 		catch (ParseException e)
 		{
 			Log.e("Error", "Entity parse failed");
-			e.printStackTrace();
+//			e.printStackTrace();
 			client.getConnectionManager().shutdown();
 			return null;
 		}
@@ -385,7 +385,7 @@ public class NetDataGetter
 		{
 			Log.e("NetDataGetter::getJSONsData", "recvData = " + recvData);
 			Log.e("getJSONsData", "create JSON failed " + e.toString());
-			e.printStackTrace();
+//			e.printStackTrace();
 			
 			return null;
 		}

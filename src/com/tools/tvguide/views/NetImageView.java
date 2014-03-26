@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 
 import android.support.v4.util.LruCache;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class NetImageView extends ImageView
@@ -118,8 +119,9 @@ public class NetImageView extends ImageView
             if (bitmap == null)
                 return;
             
-            if (mImageViewRef.get() != null && mTaskUrl.equals(mImageViewRef.get().getUrl()))
+            if (mImageViewRef.get() != null)
             {
+            	Log.d(TAG, "onPostExecute url=" + mTaskUrl);
                 mImageViewRef.get().setImageBitmap(bitmap);
             }
             
