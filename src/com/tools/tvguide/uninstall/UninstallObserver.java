@@ -21,7 +21,7 @@ public class UninstallObserver
 		String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
 		
 		String url = AppEngine.getInstance().getUrlManager().getUrl(UrlManager.ProxyUrl.Logout)
-					 + "&guid=" + guid + "&version=" + version;
+					 + "?uninstall=1" + "&guid=" + guid + "&version=" + version;
 		
 		setHttpRequestOnUninstall(context.getApplicationContext(), url);
 	}
