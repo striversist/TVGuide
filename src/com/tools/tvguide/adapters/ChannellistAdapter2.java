@@ -52,16 +52,35 @@ public class ChannellistAdapter2 extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup parent) 
     {
         Channel channel = mChannelList.get(position);
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.channellist_item2, parent, false);
+        ViewHolder holder = null;
+        if (convertView == null) 
+        {
+        	convertView = LayoutInflater.from(mContext).inflate(R.layout.channellist_item2, parent, false);
+        	TextView channelNameTextView = (TextView) convertView.findViewById(R.id.channel_name_tv);
+            NetImageView channelLogoNetImageView = (NetImageView) convertView.findViewById(R.id.channel_logo_niv);
+            
+            holder = new ViewHolder();
+            holder.channelNameTextView = channelNameTextView;
+            holder.channelLogoNetImageView = channelLogoNetImageView;
+            convertView.setTag(holder);
+        }
+        else
+        {
+        	holder = (ViewHolder) convertView.getTag();
+        }
         
-        TextView channelNameTextView = (TextView) convertView.findViewById(R.id.channel_name_tv);
-        NetImageView channelLogoNetImageView = (NetImageView) convertView.findViewById(R.id.channel_logo_niv);
-        
-        channelNameTextView.setText(channel.name);
-        channelLogoNetImageView.setCacheControl(CacheControl.Disk);
-        channelLogoNetImageView.loadImage(channel.logoLink);
+        holder.channelNameTextView.setText(channel.name);
+        holder.channelLogoNetImageView.setImageBitmap(null);
+        holder.channelLogoNetImageView.setCacheControl(CacheControl.Disk);
+        holder.channelLogoNetImageView.loadImage(channel.logoLink);
         
         return convertView;
+    }
+    
+    private class ViewHolder
+    {
+        TextView channelNameTextView;
+        NetImageView channelLogoNetImageView;
     }
 
 }
