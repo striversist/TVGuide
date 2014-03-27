@@ -21,24 +21,22 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.views.NetImageView;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
 public class CollectActivity extends Activity implements DragSortListener
@@ -66,10 +64,18 @@ public class CollectActivity extends Activity implements DragSortListener
         public View getView(int position, View convertView, ViewGroup parent) 
         {
             View view = super.getView(position, convertView, parent);
+            
+            NetImageView netImageView = (NetImageView) view.findViewById(R.id.channel_logo_niv);
+            String[] logoUrls = UrlManager.guessWebChannelLogoUrls((String) mItemList.get(position).get("tvmao_id"));
+            if (logoUrls != null) {
+                netImageView.loadImage(logoUrls);
+            }
+            
             Button rmBtn = (Button)view.findViewById(R.id.del_btn);
             if (rmBtn != null)
             {
             	assert (mChannelList != null);
+            	rmBtn.setText(getResources().getString(R.string.delete));
                 rmBtn.setTag(mChannelList.get(position));
                 rmBtn.setOnClickListener(new OnClickListener() 
                 {
@@ -127,29 +133,6 @@ public class CollectActivity extends Activity implements DragSortListener
         	mChannelList.add(position, channel);
         	mItemList.add(position, hashItem);
         	notifyDataSetChanged();
-        }
-    }
-    
-    private class MyViewBinder implements ViewBinder
-    {
-        public boolean setViewValue(View view, Object data,
-                String textRepresentation)
-        {
-            if((view instanceof ImageView) && (data instanceof Bitmap))
-            {
-                ImageView iv = (ImageView)view;
-                Bitmap bm = (Bitmap)data;
-                iv.setImageBitmap(bm);
-                return true;
-            }
-            else if (view instanceof Button)
-            {
-                Button btn = (Button)view;
-                btn.setText(getResources().getString(R.string.delete));
-                return true;
-            }
-            
-            return false;
         }
     }
     
@@ -222,7 +205,6 @@ public class CollectActivity extends Activity implements DragSortListener
         mListViewAdapter = new MySimpleAdapter(CollectActivity.this, mItemList, R.layout.collect_list_item,
                 new String[]{"image", "name", "button"}, 
                 new int[]{R.id.channel_logo_niv, R.id.channel_name_tv, R.id.del_btn});
-        mListViewAdapter.setViewBinder(new MyViewBinder());
         mChannelListView.setAdapter(mListViewAdapter);
     }
     
