@@ -51,9 +51,10 @@ public class NetImageView extends ImageView
         }
         
     	// 针对第一个链接做优化处理
-        if (sCache.get(urls[0]) != null)
+    	Bitmap bitmap = sCache.get(urls[0]);
+        if (bitmap != null)
         {
-            mBitmap = sCache.get(urls[0]);
+            mBitmap = bitmap;
             setImageBitmap(mBitmap);
             return;
         }
