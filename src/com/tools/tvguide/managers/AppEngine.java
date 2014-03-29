@@ -168,7 +168,10 @@ public class AppEngine
     {
     	checkInitialized();
     	if (mAdManager == null)
+    	{
     		mAdManager = new AdManager(mApplicationContext);
+    		mShutterList.add(mAdManager);
+    	}
     	return mAdManager;
     }
     

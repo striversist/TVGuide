@@ -59,7 +59,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback
             }
         }, delayTime);
         
-        AppEngine.getInstance().getAdManager().init();
+        AppEngine.getInstance().getAdManager().init(this);
     }
     
     private void config()

@@ -97,7 +97,7 @@
     <string name="action_settings">Settings</string>
     <string name="support_promotion">您的每一份支持都将投入到我们的项目预算中，用来支持我们开发更多更好的功能。同时也是对我们工作的肯定与鼓励。</string>
     <string name="current_point">您当前金币：%1$s</string>
-    <string name="get_point">获取金币</string>
+    <string name="earn_point">赚取金币</string>
     <string name="ps_hint">PS： 金币到账时间会有几分钟的延时哦！^_^</string>
     <string name="remove_ad">移除烦人的广告</string>
     <string name="x_points">%1$s 金币</string>
