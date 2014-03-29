@@ -58,6 +58,21 @@
                 <TextView android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/style_layout_textview" />
                 <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
             </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/more_support_us"
+                style="@style/style_preference_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:layout_marginTop="15.0dip"
+                android:background="@drawable/one_layout_select"
+                android:onClick="onClick" >
+                <TextView android:text="@string/support_us_remove_ad" android:drawableLeft="@drawable/star_big_full"
+                          android:drawablePadding="5sp" style="@style/style_layout_textview" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/more_clear_cache"

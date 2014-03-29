@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="bottom_tab_font_size">11.0dip</dimen>
     <dimen name="bottom_tab_height">48.0dip</dimen>
     <dimen name="sum_nav_row_height">45.0dip</dimen>
@@ -7,4 +8,7 @@
     <dimen name="slidingmenu_offset">100.0dip</dimen>
     <dimen name="list_padding">10.0dip</dimen>
     <dimen name="shadow_width">15.0dip</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
 </resources>

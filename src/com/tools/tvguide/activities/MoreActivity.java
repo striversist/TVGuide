@@ -1,6 +1,7 @@
 package com.tools.tvguide.activities;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.SupportActivity;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UpdateManager;
 import com.tools.tvguide.managers.UrlManager;
@@ -114,6 +115,10 @@ public class MoreActivity extends Activity implements Callback
                 break;
             case R.id.more_about:
                 showAbout();
+                break;
+            case R.id.more_support_us:
+                Intent supportIntent = new Intent(MoreActivity.this, SupportActivity.class);
+                startActivity(supportIntent);
                 break;
             case R.id.more_clear_cache:
                 clearCache();
