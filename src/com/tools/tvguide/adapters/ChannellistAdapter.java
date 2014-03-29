@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
-import com.tools.tvguide.data.Category;
-import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.views.NetImageView;
+import com.tools.tvguide.views.NetImageView.ImageLoadListener;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,14 +90,21 @@ public class ChannellistAdapter extends BaseAdapter
         if (onplayingProgram != null)
         	holder.onplayingProgramTextView.setText(onplayingProgram);
         
-        String tvmaoId = (String) item.get("tvmao_id");
+        final String tvmaoId = (String) item.get("tvmao_id");
         if (tvmaoId != null)
         {
         	String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
         	if (logoUrls != null)
         	{
         		holder.channelLogoNetImageView.setCacheControl(CacheControl.Disk);
-        		holder.channelLogoNetImageView.loadImage(logoUrls);
+        		holder.channelLogoNetImageView.loadImage(new ImageLoadListener()
+        		{
+                    @Override
+                    public void onImageLoaded(String url, Bitmap bitmap) {
+                        UrlManager.setWebChannelLogoUrl(tvmaoId, url);
+                    }
+        		}
+        		,logoUrls);
         	}
         }
         

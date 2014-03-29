@@ -3,6 +3,9 @@ package com.tools.tvguide.managers;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -50,10 +53,12 @@ public class UrlManager
     private static final String PATH_REPORT               = "/public/report.php";
     private static final String PATH_LOGOUT               = "/public/logout.php";
     
+    private static HashMap<String, String> sChannelLogoUrls = new HashMap<String, String>();
     private Context mContext;
     private ReentrantLock mLock                           = new ReentrantLock();
     private Condition mCondition;
     private boolean mHasInit                              = false;
+    
     public interface OnInitCompleteCallback
     {
         void OnInitComplete(int result);
@@ -226,6 +231,14 @@ public class UrlManager
         return prefix + tvmaoId + "-w" + String.valueOf(day) + sufix;
     }
     
+    public static void setWebChannelLogoUrl(String tvmaoId, String url)
+    {
+        if (tvmaoId == null || url == null)
+            return;
+        
+        sChannelLogoUrls.put(tvmaoId, url);
+    }
+    
     public static String[] guessWebChannelLogoUrls(String tvmaoId)
     {
     	if (tvmaoId == null)
@@ -248,22 +261,28 @@ public class UrlManager
     		idPart2 = tvmaoId;
     	}
     	
-    	String[] result = new String[2];
+        List<String> urlList = new ArrayList<String>();
+    	
+    	if (sChannelLogoUrls.containsKey(tvmaoId))
+    	{
+    	    urlList.add(sChannelLogoUrls.get(tvmaoId)); 
+    	}
+    	
     	{
     		type = "channel";
     		id = idPart2;
     		sufix = "jpg";
-    		result[0] = String.format(format, type, id, sufix);
+    		urlList.add(String.format(format, type, id, sufix));
     	} 
     	
     	{
     		type = "tvstation";
     		id = idPart1;
     		sufix = "gif";
-    		result[1] = String.format(format, type, id, sufix);
+    		urlList.add(String.format(format, type, id, sufix));
     	}
     	
-    	return result;
+    	return urlList.toArray(new String[0]);
     }
     
     public static String tryToReplaceHostNameWithIP(String url)

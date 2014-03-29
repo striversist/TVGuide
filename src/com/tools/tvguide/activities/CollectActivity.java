@@ -22,11 +22,13 @@ import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.views.NetImageView;
+import com.tools.tvguide.views.NetImageView.ImageLoadListener;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,9 +68,18 @@ public class CollectActivity extends Activity implements DragSortListener
             View view = super.getView(position, convertView, parent);
             
             NetImageView netImageView = (NetImageView) view.findViewById(R.id.channel_logo_niv);
-            String[] logoUrls = UrlManager.guessWebChannelLogoUrls((String) mItemList.get(position).get("tvmao_id"));
+            final String tvmaoId = (String) mItemList.get(position).get("tvmao_id");
+            String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
             if (logoUrls != null) {
-                netImageView.loadImage(logoUrls);
+                netImageView.loadImage(new ImageLoadListener()
+                {
+                    @Override
+                    public void onImageLoaded(String url, Bitmap bitmap) 
+                    {
+                        UrlManager.setWebChannelLogoUrl(tvmaoId, url);
+                    }
+                }
+                ,logoUrls);
             }
             
             Button rmBtn = (Button)view.findViewById(R.id.del_btn);

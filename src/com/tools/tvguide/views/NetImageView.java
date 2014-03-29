@@ -21,6 +21,7 @@ public class NetImageView extends ImageView
     private ImageUrlAsyncTask mCurrentTask;
     private Bitmap mBitmap;
     private String mUrl;
+    private ImageLoadListener mListener;
     private CacheControl mCacheControl = CacheControl.Memory;
     
     public static interface ImageLoadListener
@@ -37,8 +38,13 @@ public class NetImageView extends ImageView
     {
     	mCacheControl = control;
     }
-
+    
     public void loadImage(String... urls)
+    {
+        loadImage(null, urls);
+    }
+
+    public void loadImage(ImageLoadListener listener, String... urls)
     {
         if (urls == null)
             return;
@@ -59,6 +65,7 @@ public class NetImageView extends ImageView
             return;
         }
         
+        mListener = listener;
         execute(urls);
     }
     
@@ -81,6 +88,8 @@ public class NetImageView extends ImageView
                 mUrl = url;
                 sCache.put(mUrl, bitmap);
                 mCurrentTask = null;
+                if (mListener != null)
+                    mListener.onImageLoaded(url, bitmap);
             }
         });
         mCurrentTask.execute(urls);
