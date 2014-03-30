@@ -9,11 +9,12 @@
 	    <ListView android:id="@+id/channel_list" android:layout_width="fill_parent" android:layout_height="wrap_content" android:fadingEdge="none" android:padding="2.0dip" 
 	        android:scrollingCache="false" android:divider="@color/white" android:dividerHeight="0.0dip" android:choiceMode="singleChoice"
 	        android:layout_alignParentTop="true" android:layout_above="@id/adLayout" />
-	    <RelativeLayout
+	    <LinearLayout
             android:id="@+id/adLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" >
-        </RelativeLayout>
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal" >
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

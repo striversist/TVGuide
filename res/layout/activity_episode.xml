@@ -7,10 +7,11 @@
     <com.tools.tvguide.views.SlidingMenuView android:id="@+id/episode_slidingmenu" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/episode_top_ll" />
     <android.support.v4.view.ViewPager android:id="@+id/episode_viewpager" android:layout_width="fill_parent" android:layout_height="wrap_content" 
             android:layout_below="@id/episode_slidingmenu" android:layout_above="@id/adLayout" />
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/adLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-    </RelativeLayout>
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+    </LinearLayout>
 </RelativeLayout>

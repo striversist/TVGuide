@@ -29,12 +29,6 @@
             android:name="APP_CHANNEL"
             android:value="APP市场" />
 
-        <!-- AdMob -->
-        <activity
-            android:name="com.google.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
-        <!-- AdMob -->
-
         <activity
             android:name="com.tools.tvguide.activities.MainActivity"
             android:configChanges="orientation"

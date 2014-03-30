@@ -4,19 +4,16 @@ import cn.waps.AppConnect;
 import cn.waps.AppListener;
 import cn.waps.UpdatePointsNotifier;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
 import com.tools.tvguide.components.Shutter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 public class AdManager implements Shutter 
 {
 	public static final String TAG = "AdManager";
-	private static final String ADMOB_ID = "a15306e4c0310af";
 	public enum AdSize {MINI_SIZE, NORMAL_SIZE};
 	
 	private Context mContext;
@@ -58,21 +55,17 @@ public class AdManager implements Shutter
 		if (activity == null)
 			return false;
 		
-		RelativeLayout layout = (RelativeLayout) activity.findViewById(id);
+		LinearLayout layout = (LinearLayout) activity.findViewById(id);
 		if (layout == null)
 			return false;
 		
 		switch (size) 
 		{
 			case MINI_SIZE:
-			    AdView adViewMini = new AdView(activity, com.google.ads.AdSize.SMART_BANNER, ADMOB_ID);
-			    layout.addView(adViewMini);
-			    adViewMini.loadAd(new AdRequest());
+			    AppConnect.getInstance(activity).showMiniAd(activity, layout, 10);   // 10秒刷新一次
 				break;
 			case NORMAL_SIZE:
-			    AdView adView = new AdView(activity, com.google.ads.AdSize.BANNER, ADMOB_ID);
-                layout.addView(adView);
-                adView.loadAd(new AdRequest());
+			    AppConnect.getInstance(activity).showBannerAd(activity, layout);
 				break;
 		}
 		layout.setVisibility(View.VISIBLE);
