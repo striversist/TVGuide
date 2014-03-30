@@ -1,5 +1,7 @@
 package com.tools.tvguide;
 
+import java.math.BigDecimal;
+
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AdManager.GetPointsCallback;
 import com.tools.tvguide.managers.AdManager.SpendPointsCallback;
@@ -19,11 +21,17 @@ import android.widget.Toast;
 
 public class SupportActivity extends Activity implements Callback 
 {
-    private static final int REMOVE_AD_POINTS = 100;
+    private static final int REMOVE_AD_POINTS           = 300;
+    private static final int REMOVE_ONEDAY_AD_POINTS    = 10;
+    private static final int ONEDAY_MILLIS              = 24 * 3600 * 1000;
+    
     private TextView mPointsTextView;
+    private TextView mRemoveOnedayAdTextView;
+    private Button mRemoveOnedayAdButton;
     private Button mRemoveAdButton;
     
     private String mPointsFormatString;
+    private String mLeftHoursFormatString;
     private int mCurrentPoints = 0;
     
     private Handler mUiHandler;
@@ -41,14 +49,20 @@ public class SupportActivity extends Activity implements Callback
         setContentView(R.layout.activity_support);
         
         mPointsTextView = (TextView) findViewById(R.id.current_point_tv);
+        mRemoveOnedayAdTextView = (TextView) findViewById(R.id.remove_oneday_ad_tv);
         mRemoveAdButton = (Button) findViewById(R.id.remove_ad_btn);
+        mRemoveOnedayAdButton = (Button) findViewById(R.id.remove_oneday_ad_btn);
         mUiHandler = new Handler(this);
         
         mPointsFormatString = mPointsTextView.getText().toString();
         mPointsTextView.setText(String.format(mPointsFormatString, "..."));
+        
+        mLeftHoursFormatString = mRemoveOnedayAdTextView.getText().toString();
+        mRemoveOnedayAdButton.setText(String.valueOf(REMOVE_ONEDAY_AD_POINTS) + "金币");
         mRemoveAdButton.setText(String.valueOf(REMOVE_AD_POINTS) + "金币");
         
         updatePoints();
+        updateAdLeftTime();
     }
     
     @Override
@@ -56,6 +70,7 @@ public class SupportActivity extends Activity implements Callback
     {
         super.onResume();
         updatePoints();
+        updateAdLeftTime();
     }
 
     public void back(View view)
@@ -74,12 +89,28 @@ public class SupportActivity extends Activity implements Callback
                 showOffers();
                 break;
             case R.id.remove_ad_btn:
-                checkRemoveAd();
+                checkRemoveAd(REMOVE_AD_POINTS);
                 break;
             case R.id.restore_points_btn:
                 restorePoints();
                 break;
+            case R.id.remove_oneday_ad_btn:
+                checkRemoveAd(REMOVE_ONEDAY_AD_POINTS);
+                break;
         }
+    }
+    
+    private void updateAdLeftTime()
+    {
+        long leftTimeMs = AppEngine.getInstance().getAdManager().getDisableAdTillTime() - System.currentTimeMillis();
+        if (leftTimeMs <= 0)
+        {
+            mRemoveOnedayAdTextView.setText(String.format(mLeftHoursFormatString, ""));
+            return;
+        }
+        
+        int leftHours = new BigDecimal((double)leftTimeMs / 1000 / 3600).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();     // 四舍五入取整
+        mRemoveOnedayAdTextView.setText(String.format(mLeftHoursFormatString, "(剩" + String.valueOf(leftHours) + "小时)"));
     }
     
     private void updatePoints()
@@ -110,9 +141,9 @@ public class SupportActivity extends Activity implements Callback
         });
     }
     
-    private void checkRemoveAd()
+    private void checkRemoveAd(final int amount)
     {
-        if (mCurrentPoints < REMOVE_AD_POINTS)
+        if (mCurrentPoints < amount)
         {
             new AlertDialog.Builder(SupportActivity.this)
             .setTitle("提示")
@@ -140,7 +171,7 @@ public class SupportActivity extends Activity implements Callback
             dialog.setMessage("广告移除中，请稍等...");
             dialog.show();
             
-            AppEngine.getInstance().getAdManager().spendPoints(this, REMOVE_AD_POINTS, new SpendPointsCallback() {
+            AppEngine.getInstance().getAdManager().spendPoints(this, amount, new SpendPointsCallback() {
                 @Override
                 public void onUpdatePointsFailed(String error) {
                     dialog.dismiss();
@@ -150,12 +181,18 @@ public class SupportActivity extends Activity implements Callback
                 @Override
                 public void onUpdatePoints(String currencyName, int points) {
                     dialog.dismiss();
-                    AppEngine.getInstance().getAdManager().removeAd();
                     mUiHandler.obtainMessage(SelfMessage.UpdatePoints.ordinal(), points, 0).sendToTarget();
                     mPointsTextView.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(SupportActivity.this, "恭喜您！所有广告已移除！请重启程序！", Toast.LENGTH_LONG).show();
+                            if (amount == REMOVE_AD_POINTS) {
+                                AppEngine.getInstance().getAdManager().removeAd();
+                                Toast.makeText(SupportActivity.this, "所有广告已永久移除！请重启程序！", Toast.LENGTH_LONG).show();
+                            } else if (amount == REMOVE_ONEDAY_AD_POINTS) {
+                                AppEngine.getInstance().getAdManager().addDisableAddDuration(ONEDAY_MILLIS);
+                                updateAdLeftTime();
+                                Toast.makeText(SupportActivity.this, "成功关闭广告一天，请重启程序！", Toast.LENGTH_LONG).show();
+                            }                            
                         }
                     });
                 }

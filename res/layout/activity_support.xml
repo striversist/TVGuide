@@ -9,10 +9,10 @@
     <RelativeLayout android:id="@+id/promotion_rl" android:layout_width="fill_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="10dp" >
         <TextView android:id="@+id/promotion_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" 
-                android:layout_margin="20dp" android:textSize="18sp" android:textColor="@color/black" android:text="@string/support_promotion" />
+                android:layout_margin="15dp" android:textSize="18sp" android:textColor="@color/black" android:text="@string/support_promotion" />
         
         <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/promotion_tv" 
-                    android:layout_marginTop="30sp" android:gravity="center" >
+                    android:layout_marginTop="20sp" android:gravity="center" >
 	        <TextView android:id="@+id/current_point_hint_tv"  android:layout_width="wrap_content"
 	                android:layout_height="wrap_content" android:layout_margin="5dp" android:drawableLeft="@drawable/golden_coins"
 	                android:drawablePadding="5sp" android:textSize="19sp" android:textColor="@color/orange" android:text="@string/current_point_hint" /> 
@@ -30,19 +30,26 @@
     </RelativeLayout>
     
     <RelativeLayout android:id="@+id/remove_ad_rl" android:layout_width="fill_parent" android:layout_height="wrap_content" 
-                android:layout_marginTop="80dp" android:gravity="center" >
+                android:layout_marginTop="45dp" android:gravity="center" >
+        <TextView android:id="@+id/remove_oneday_ad_tv" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_margin="15dp" android:textSize="18sp" android:textColor="@color/light_blue" android:text="@string/remove_oneday_ad" />
+        <Button android:id="@+id/remove_oneday_ad_btn" android:layout_width="100sp" android:layout_height="40sp"
+                android:layout_alignParentRight="true"  android:layout_alignBaseline="@id/remove_oneday_ad_tv"
+                android:layout_margin="15dp" android:textSize="16sp" android:textColor="@color/black" 
+                android:text="@string/x_points" android:onClick="onClick" />
         <TextView android:id="@+id/remove_ad_tv" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_margin="20dp" android:textSize="18sp" android:textColor="@color/light_blue" android:text="@string/remove_ad" />
+                android:layout_below="@id/remove_oneday_ad_tv" android:layout_margin="15dp" 
+                android:textSize="18sp" android:textColor="@color/light_blue" android:text="@string/remove_ad" />
         <Button android:id="@+id/remove_ad_btn" android:layout_width="100sp" android:layout_height="40sp"
                 android:layout_alignParentRight="true"  android:layout_alignBaseline="@id/remove_ad_tv"
-                android:layout_margin="20dp" android:textSize="16sp" android:textColor="@color/black" 
+                android:layout_margin="15dp" android:textSize="16sp" android:textColor="@color/black" 
                 android:text="@string/x_points" android:onClick="onClick" />
         <TextView android:id="@+id/restore_points_tv" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_below="@id/remove_ad_tv" android:layout_margin="20dp" android:textSize="18sp" 
+                android:layout_below="@id/remove_ad_tv" android:layout_margin="15dp" android:textSize="18sp" 
                 android:textColor="@color/light_blue" android:text="@string/restore_points_hint" />
         <Button android:id="@+id/restore_points_btn" android:layout_width="100sp" android:layout_height="40sp"
                 android:layout_alignParentRight="true" android:layout_alignBaseline="@id/restore_points_tv"
-                android:layout_margin="20dp" android:textSize="16sp" android:textColor="@color/black" 
+                android:layout_margin="15dp" android:textSize="16sp" android:textColor="@color/black" 
                 android:text="@string/restore_points" android:onClick="onClick" />
     </RelativeLayout>
     

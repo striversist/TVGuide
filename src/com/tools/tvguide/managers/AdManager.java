@@ -8,12 +8,18 @@ import com.tools.tvguide.components.Shutter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.LinearLayout;
 
 public class AdManager implements Shutter 
 {
 	public static final String TAG = "AdManager";
+	
+    private static final String SHARE_PREFERENCES_NAME              = "admanager_settings";
+    private static final String DISABLE_AD_TILL_TIME_FLAG           = "key_disable_ad_till_time_flag";
+	
+    private SharedPreferences   mPreference;
 	public enum AdSize {MINI_SIZE, NORMAL_SIZE};
 	
 	private Context mContext;
@@ -34,11 +40,13 @@ public class AdManager implements Shutter
 	{
 		assert (context != null);
 		mContext = context;
+		mPreference = mContext.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 	
 	public void init(Activity activity)
 	{
 	    assert (activity != null);
+	    
 		// 初始化应用的发布ID和密钥，以及设置测试模式
 	    AppConnect.getInstance("09f277ca386ee99cb4c910e09f562112", "default", activity);
 	    AppConnect.getInstance(mContext).setCrashReport(false);
@@ -50,6 +58,9 @@ public class AdManager implements Shutter
 	public boolean addAdView(Activity activity, int id, AdSize size)
 	{
 	    if (!AppEngine.getInstance().getEnvironmentManager().isAdEnable())
+	        return false;
+	    
+	    if (System.currentTimeMillis() < getDisableAdTillTime())
 	        return false;
 	    
 		if (activity == null)
@@ -75,6 +86,29 @@ public class AdManager implements Shutter
 	public void removeAd()
 	{
 	    AppEngine.getInstance().getEnvironmentManager().setAdEnablePermanent(false);
+	}
+	
+	/**
+	 * 获取广告重新打开的时间（单位：毫秒）
+	 */
+	public long getDisableAdTillTime()
+	{
+	    return mPreference.getLong(DISABLE_AD_TILL_TIME_FLAG, 0L);
+	}
+	
+	/**
+	 * 增加屏蔽广告的时间（单位：毫秒）
+	 */
+	public void addDisableAddDuration(long duration)
+	{
+	    if (duration < 0)
+	        return;
+	    
+	    long time = getDisableAdTillTime();
+	    if (time == 0) { // 第一次
+	        time = System.currentTimeMillis();
+	    }
+	    mPreference.edit().putLong(DISABLE_AD_TILL_TIME_FLAG, time + duration).commit();
 	}
 	
 	/**
