@@ -39,6 +39,8 @@ public class DiskCacheManager implements Shutter, Callback
             File cacheDir = new File(mExternalCachePath);
             if (!cacheDir.exists())
                 cacheDir.mkdirs();
+        } else {
+            mExternalCachePath = mContext.getCacheDir().getAbsolutePath();      // 若没有外存，就使用手机cache替代
         }
         
     	mHandlerThread = new HandlerThread("DiskCacheThread");
