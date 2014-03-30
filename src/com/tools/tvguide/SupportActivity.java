@@ -88,7 +88,7 @@ public class SupportActivity extends Activity implements Callback
     
     private void updatePoints(final UpdatePointsCallback callback)
     {
-        AppEngine.getInstance().getAdManager().getPointsAsync(new GetPointsCallback() 
+        AppEngine.getInstance().getAdManager().getPointsAsync(this, new GetPointsCallback() 
         {
             @Override
             public void onUpdatePointsFailed(String error) {

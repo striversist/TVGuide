@@ -102,12 +102,12 @@ public class AdManager implements Shutter
 	    });
 	}
 	
-	public void getPointsAsync(final GetPointsCallback callback)
+	public void getPointsAsync(Activity activity, final GetPointsCallback callback)
 	{
-	    if (callback == null)
+	    if (activity == null || callback == null)
 	        return;
 	    
-	    AppConnect.getInstance(mContext).getPoints(new UpdatePointsNotifier() 
+	    AppConnect.getInstance(activity).getPoints(new UpdatePointsNotifier() 
 	    {
             @Override
             public void getUpdatePointsFailed(String error) {
@@ -121,12 +121,12 @@ public class AdManager implements Shutter
         });
 	}
 	
-	public void spendPoints(int amount, final SpendPointsCallback callback )
+	public void spendPoints(Activity activity, int amount, final SpendPointsCallback callback)
 	{
-	    if (amount <= 0 || callback == null)
+	    if (activity == null || amount <= 0 || callback == null)
 	        return;
 	    
-	    AppConnect.getInstance(mContext).spendPoints(amount, new UpdatePointsNotifier() {
+	    AppConnect.getInstance(activity).spendPoints(amount, new UpdatePointsNotifier() {
             
             @Override
             public void getUpdatePointsFailed(String error) {
