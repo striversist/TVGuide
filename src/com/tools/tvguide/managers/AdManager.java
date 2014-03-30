@@ -81,7 +81,7 @@ public class AdManager implements Shutter
 	
 	public void removeAd()
 	{
-	    AppEngine.getInstance().getEnvironmentManager().setAdEnable(false);
+	    AppEngine.getInstance().getEnvironmentManager().setAdEnablePermanent(false);
 	}
 	
 	/**
