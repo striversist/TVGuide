@@ -1,9 +1,7 @@
 package com.tools.tvguide;
 
-import cn.waps.AppConnect;
-
+import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AdManager.GetPointsCallback;
-import com.tools.tvguide.managers.AdManager.SpendPointsCallback;
 import com.tools.tvguide.managers.AppEngine;
 
 import android.os.Bundle;
@@ -14,23 +12,26 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SupportActivity extends Activity implements OnClickListener, Callback 
+public class SupportActivity extends Activity implements Callback 
 {
     private static final int REMOVE_AD_POINTS = 100;
     private TextView mPointsTextView;
-    private Button mGetPointsButton;
     private Button mRemoveAdButton;
     
     private String mPointsFormatString;
     private int mCurrentPoints = 0;
     
     private Handler mUiHandler;
-    private enum SelfMessage { UpdatePoints };
+    private enum SelfMessage { UpdatePoints, UpdatePointsFail };
+    
+    private interface UpdatePointsCallback
+    {
+        void onUpdatePoints(boolean success);
+    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -39,15 +40,11 @@ public class SupportActivity extends Activity implements OnClickListener, Callba
         setContentView(R.layout.activity_support);
         
         mPointsTextView = (TextView) findViewById(R.id.current_point_tv);
-        mGetPointsButton = (Button) findViewById(R.id.get_point_btn);
         mRemoveAdButton = (Button) findViewById(R.id.remove_ad_btn);
         mUiHandler = new Handler(this);
         
         mPointsFormatString = mPointsTextView.getText().toString();
         mPointsTextView.setText(String.format(mPointsFormatString, "加载中..."));
-        
-        mGetPointsButton.setOnClickListener(this);
-        mRemoveAdButton.setOnClickListener(this);
         mRemoveAdButton.setText(String.valueOf(REMOVE_AD_POINTS) + "金币");
         
         updatePoints();
@@ -67,25 +64,7 @@ public class SupportActivity extends Activity implements OnClickListener, Callba
             finish();
         }
     }
-    
-    private void updatePoints()
-    {
-        AppEngine.getInstance().getAdManager().getPointsAsync(new GetPointsCallback() 
-        {
-            @Override
-            public void onUpdatePointsFailed(String error) {
-                Toast.makeText(SupportActivity.this, "出错啦：" + error, Toast.LENGTH_LONG).show();
-            }
-            
-            @Override
-            public void onUpdatePoints(String currencyName, int points) {
-                mCurrentPoints = points;
-                mUiHandler.obtainMessage(SelfMessage.UpdatePoints.ordinal(), points, 0).sendToTarget();
-            }
-        });
-    }
 
-    @Override
     public void onClick(View v) 
     {
         switch (v.getId())
@@ -96,7 +75,38 @@ public class SupportActivity extends Activity implements OnClickListener, Callba
             case R.id.remove_ad_btn:
                 checkRemoveAd();
                 break;
+            case R.id.restore_points_btn:
+                restorePoints();
+                break;
         }
+    }
+    
+    private void updatePoints()
+    {
+        updatePoints(null);
+    }
+    
+    private void updatePoints(final UpdatePointsCallback callback)
+    {
+        AppEngine.getInstance().getAdManager().getPointsAsync(new GetPointsCallback() 
+        {
+            @Override
+            public void onUpdatePointsFailed(String error) {
+                mUiHandler.obtainMessage(SelfMessage.UpdatePointsFail.ordinal(), error).sendToTarget();
+                if (callback != null) {
+                    callback.onUpdatePoints(false);
+                }
+            }
+            
+            @Override
+            public void onUpdatePoints(String currencyName, int points) {
+                mCurrentPoints = points;
+                mUiHandler.obtainMessage(SelfMessage.UpdatePoints.ordinal(), points, 0).sendToTarget();
+                if (callback != null) {
+                    callback.onUpdatePoints(true);
+                }
+            }
+        });
     }
     
     private void checkRemoveAd()
@@ -125,24 +135,33 @@ public class SupportActivity extends Activity implements OnClickListener, Callba
         } 
         else 
         {
-            AppEngine.getInstance().getAdManager().spendPoints(REMOVE_AD_POINTS, new SpendPointsCallback() {
-                @Override
-                public void onUpdatePointsFailed(String error) {
-                    Toast.makeText(SupportActivity.this, "去除广告出错：" + error, Toast.LENGTH_LONG).show();
-                }
-                
-                @Override
-                public void onUpdatePoints(String currencyName, int points) {
-                    updatePoints();
-                    Toast.makeText(SupportActivity.this, "恭喜您！所有广告已移除！请重启程序！", Toast.LENGTH_LONG).show();
-                }
-            });
+            AppEngine.getInstance().getAdManager().removeAd();
+            Toast.makeText(SupportActivity.this, "恭喜您！所有广告已移除！请重启程序！", Toast.LENGTH_LONG).show();
         }
     }
     
     private void showOffers()
     {
         AppEngine.getInstance().getAdManager().showOffers(this);
+    }
+    
+    private void restorePoints()
+    {
+        final MyProgressDialog dialog = new MyProgressDialog(this);
+        dialog.setMessage("恢复金币中，请稍等...");
+        dialog.show();
+        updatePoints(new UpdatePointsCallback() {
+            @Override
+            public void onUpdatePoints(final boolean success) {
+                dialog.dismiss();
+                mPointsTextView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SupportActivity.this, "恢复金币" + (success ? "成功" : "失败") + "!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -153,6 +172,9 @@ public class SupportActivity extends Activity implements OnClickListener, Callba
         {
             case UpdatePoints:
                 mPointsTextView.setText(String.format(mPointsFormatString, String.valueOf(msg.arg1)));
+                break;
+            case UpdatePointsFail:
+                Toast.makeText(SupportActivity.this, "出错啦：" + (String) msg.obj, Toast.LENGTH_LONG).show();
                 break;
         }
 

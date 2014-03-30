@@ -99,7 +99,9 @@
     <string name="current_point">您当前金币：%1$s</string>
     <string name="earn_point">赚取金币</string>
     <string name="ps_hint">PS： 金币到账时间会有几分钟的延时哦！^_^</string>
-    <string name="remove_ad">移除烦人的广告</string>
+    <string name="remove_ad">移除烦人的广告：</string>
     <string name="x_points">%1$s 金币</string>
+    <string name="restore_points">恢复金币</string>
+    <string name="restore_points_hint">重装本软件时请点击：</string>
 
 </resources>

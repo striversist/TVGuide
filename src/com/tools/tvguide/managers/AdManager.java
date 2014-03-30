@@ -3,7 +3,6 @@ package com.tools.tvguide.managers;
 import cn.waps.AppConnect;
 import cn.waps.AppListener;
 import cn.waps.UpdatePointsNotifier;
-import cn.waps.ac;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
@@ -21,7 +20,6 @@ public class AdManager implements Shutter
 	public enum AdSize {MINI_SIZE, NORMAL_SIZE};
 	
 	private Context mContext;
-	private Activity mMainActivity;
 	
 	public interface GetPointsCallback
 	{
@@ -44,10 +42,9 @@ public class AdManager implements Shutter
 	public void init(Activity activity)
 	{
 	    assert (activity != null);
-	    mMainActivity = activity;
 		// 初始化应用的发布ID和密钥，以及设置测试模式
-	    AppConnect.getInstance("09f277ca386ee99cb4c910e09f562112", "default", mMainActivity);
-	    AppConnect.getInstance(mMainActivity).setCrashReport(false);
+	    AppConnect.getInstance("09f277ca386ee99cb4c910e09f562112", "default", activity);
+	    AppConnect.getInstance(mContext).setCrashReport(false);
 	}
 	
 	/**
@@ -82,6 +79,11 @@ public class AdManager implements Shutter
 		return true;
 	}
 	
+	public void removeAd()
+	{
+	    AppEngine.getInstance().getEnvironmentManager().setAdEnable(false);
+	}
+	
 	/**
 	 * 显示积分墙
 	 */
@@ -90,8 +92,8 @@ public class AdManager implements Shutter
 	    if (activity == null)
 	        return;
 	    
-	    AppConnect.getInstance(mMainActivity).showOffers(mMainActivity);
-	    AppConnect.getInstance(mMainActivity).setOffersCloseListener(new AppListener()
+	    AppConnect.getInstance(mContext).showOffers(activity);
+	    AppConnect.getInstance(mContext).setOffersCloseListener(new AppListener()
 	    {
 	        @Override
 	        public void onOffersClose()
@@ -105,7 +107,7 @@ public class AdManager implements Shutter
 	    if (callback == null)
 	        return;
 	    
-	    AppConnect.getInstance(mMainActivity).getPoints(new UpdatePointsNotifier() 
+	    AppConnect.getInstance(mContext).getPoints(new UpdatePointsNotifier() 
 	    {
             @Override
             public void getUpdatePointsFailed(String error) {
@@ -124,7 +126,7 @@ public class AdManager implements Shutter
 	    if (amount <= 0 || callback == null)
 	        return;
 	    
-	    AppConnect.getInstance(mMainActivity).spendPoints(amount, new UpdatePointsNotifier() {
+	    AppConnect.getInstance(mContext).spendPoints(amount, new UpdatePointsNotifier() {
             
             @Override
             public void getUpdatePointsFailed(String error) {
@@ -141,6 +143,6 @@ public class AdManager implements Shutter
     @Override
     public void onShutDown() 
     {
-        AppConnect.getInstance(mMainActivity).close();
+        AppConnect.getInstance(mContext).close();
     }
 }
