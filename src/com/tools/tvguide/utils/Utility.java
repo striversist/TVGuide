@@ -1,8 +1,13 @@
 package com.tools.tvguide.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -13,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.UANetDataGetter;
@@ -21,6 +28,8 @@ import com.tools.tvguide.managers.AppEngine;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -357,5 +366,75 @@ public class Utility
             }
             file.delete();
         }
+    }
+    
+    public static boolean saveSharedPreferencesToFile(String prefName, File dst) {
+        boolean res = false;
+        ObjectOutputStream output = null;
+        try {
+            output = new ObjectOutputStream(new FileOutputStream(dst));
+            SharedPreferences pref = AppEngine.getInstance().getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE);
+            output.writeObject(pref.getAll());
+
+            res = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (output != null) {
+                    output.flush();
+                    output.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return res;
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static boolean loadSharedPreferencesFromFile(String prefName, File src) {
+        boolean res = false;
+        ObjectInputStream input = null;
+        try {
+            input = new ObjectInputStream(new FileInputStream(src));
+                Editor prefEdit = AppEngine.getInstance().getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).edit();
+                prefEdit.clear();
+                Map<String, ?> entries = (Map<String, ?>) input.readObject();
+                for (Entry<String, ?> entry : entries.entrySet()) {
+                    Object v = entry.getValue();
+                    String key = entry.getKey();
+
+                    if (v instanceof Boolean)
+                        prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
+                    else if (v instanceof Float)
+                        prefEdit.putFloat(key, ((Float) v).floatValue());
+                    else if (v instanceof Integer)
+                        prefEdit.putInt(key, ((Integer) v).intValue());
+                    else if (v instanceof Long)
+                        prefEdit.putLong(key, ((Long) v).longValue());
+                    else if (v instanceof String)
+                        prefEdit.putString(key, ((String) v));
+                }
+                prefEdit.commit();
+            res = true;         
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return res;
     }
 }

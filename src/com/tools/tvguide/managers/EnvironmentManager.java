@@ -1,6 +1,9 @@
 package com.tools.tvguide.managers;
 
+import java.io.File;
+
 import com.tools.tvguide.components.Shutter;
+import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,6 +35,8 @@ public class EnvironmentManager implements Shutter
     
 	public void init()
 	{
+	    loadExternalPreference();
+	    
 	    mPreference = mContext.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	    mIsChannelDetailFromWeb = mPreference.getBoolean(CHANNEL_DETAIL_FROM_WEB_FLAG, true);
 	    mIsAdEnable = mPreference.getBoolean(AD_ENABLE_FLAG, true);
@@ -76,6 +81,18 @@ public class EnvironmentManager implements Shutter
 	{
 	    mHotSource = source;
 	}
+	
+	private void saveExternalPrefernce()
+	{
+	    File file = new File(mContext.getExternalFilesDir(null), SHARE_PREFERENCES_NAME);
+	    Utility.saveSharedPreferencesToFile(SHARE_PREFERENCES_NAME, file);
+	}
+	
+	private void loadExternalPreference()
+	{
+	    File file = new File(mContext.getExternalFilesDir(null), SHARE_PREFERENCES_NAME);
+	    Utility.loadSharedPreferencesFromFile(SHARE_PREFERENCES_NAME, file);
+	}
 
     @Override
     public void onShutDown() 
@@ -84,5 +101,6 @@ public class EnvironmentManager implements Shutter
         mPreference.edit().putBoolean(AD_ENABLE_FLAG, mIsAdEnable).commit();
         mPreference.edit().putBoolean(AD_ENABLE_PERMANENT_FLAG, mIsAdEnable).commit();
         mPreference.edit().putString(HOT_SOURCE_FLAG, mHotSource).commit();
+        saveExternalPrefernce();
     }
 }
