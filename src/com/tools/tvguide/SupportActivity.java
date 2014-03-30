@@ -2,6 +2,7 @@ package com.tools.tvguide;
 
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.managers.AdManager.GetPointsCallback;
+import com.tools.tvguide.managers.AdManager.SpendPointsCallback;
 import com.tools.tvguide.managers.AppEngine;
 
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public class SupportActivity extends Activity implements Callback
         mUiHandler = new Handler(this);
         
         mPointsFormatString = mPointsTextView.getText().toString();
-        mPointsTextView.setText(String.format(mPointsFormatString, "加载中..."));
+        mPointsTextView.setText(String.format(mPointsFormatString, "..."));
         mRemoveAdButton.setText(String.valueOf(REMOVE_AD_POINTS) + "金币");
         
         updatePoints();
@@ -135,8 +136,30 @@ public class SupportActivity extends Activity implements Callback
         } 
         else 
         {
-            AppEngine.getInstance().getAdManager().removeAd();
-            Toast.makeText(SupportActivity.this, "恭喜您！所有广告已移除！请重启程序！", Toast.LENGTH_LONG).show();
+            final MyProgressDialog dialog = new MyProgressDialog(this);
+            dialog.setMessage("广告移除中，请稍等...");
+            dialog.show();
+            
+            AppEngine.getInstance().getAdManager().spendPoints(this, REMOVE_AD_POINTS, new SpendPointsCallback() {
+                @Override
+                public void onUpdatePointsFailed(String error) {
+                    dialog.dismiss();
+                    mUiHandler.obtainMessage(SelfMessage.UpdatePointsFail.ordinal(), error).sendToTarget();
+                }
+                
+                @Override
+                public void onUpdatePoints(String currencyName, int points) {
+                    dialog.dismiss();
+                    AppEngine.getInstance().getAdManager().removeAd();
+                    mUiHandler.obtainMessage(SelfMessage.UpdatePoints.ordinal(), points, 0).sendToTarget();
+                    mPointsTextView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(SupportActivity.this, "恭喜您！所有广告已移除！请重启程序！", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });   
         }
     }
     
