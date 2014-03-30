@@ -48,7 +48,7 @@ public class AdManager implements Shutter
 	    assert (activity != null);
 	    
 		// 初始化应用的发布ID和密钥，以及设置测试模式
-	    AppConnect.getInstance("09f277ca386ee99cb4c910e09f562112", "default", activity);
+	    AppConnect.getInstance("1fc85ef0cd8d2b0206b2cb481cd25d69", "default", activity);
 	    AppConnect.getInstance(mContext).setCrashReport(false);
 	}
 	
