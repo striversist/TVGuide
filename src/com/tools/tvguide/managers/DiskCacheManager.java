@@ -34,11 +34,13 @@ public class DiskCacheManager implements Shutter, Callback
         mContext = context;
         
         openDiskCache();
-        mExternalCachePath = mContext.getExternalCacheDir().getAbsolutePath();
-        File cacheDir = new File(mExternalCachePath);
-    	if (!cacheDir.exists())
-    		cacheDir.mkdirs();
-    	
+        if (mContext.getExternalCacheDir() != null) {
+            mExternalCachePath = mContext.getExternalCacheDir().getAbsolutePath();
+            File cacheDir = new File(mExternalCachePath);
+            if (!cacheDir.exists())
+                cacheDir.mkdirs();
+        }
+        
     	mHandlerThread = new HandlerThread("DiskCacheThread");
     	mHandlerThread.start();
     	mHandler = new Handler(mHandlerThread.getLooper(), this);
@@ -114,6 +116,9 @@ public class DiskCacheManager implements Shutter, Callback
     	if (fileName == null)
     		return null;
     	
+    	if (mExternalCachePath == null)
+    	    return null;
+    	
     	return BitmapFactory.decodeFile(mExternalCachePath + File.separator + fileName);
     }
     
@@ -132,6 +137,9 @@ public class DiskCacheManager implements Shutter, Callback
     {
     	if (fileName == null || bitmap == null)
     		return;
+    	
+    	if (mExternalCachePath == null)
+    	    return;
     	
     	File f = new File(mExternalCachePath + File.separator + fileName);
 		if (f.exists()) {
@@ -194,7 +202,9 @@ public class DiskCacheManager implements Shutter, Callback
 				storeBitmap(externalBitmap.fileName, externalBitmap.bitmap);
 				break;
 			case Clear_All:
-				Utility.deleteFile(new File(mExternalCachePath));
+			    if (mExternalCachePath != null) {
+			        Utility.deleteFile(new File(mExternalCachePath));
+			    }
 				break;
 		}
 				
