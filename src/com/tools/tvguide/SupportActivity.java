@@ -157,7 +157,7 @@ public class SupportActivity extends Activity implements Callback
                 mPointsTextView.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(SupportActivity.this, "恢复金币" + (success ? "成功" : "失败") + "!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SupportActivity.this, "恢复金币" + (success ? "成功" : "失败") + " ！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
