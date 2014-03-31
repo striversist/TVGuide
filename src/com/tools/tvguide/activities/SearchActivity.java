@@ -1,6 +1,7 @@
 package com.tools.tvguide.activities;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.tools.tvguide.adapters.ResultProgramAdapter.Item;
 import com.tools.tvguide.adapters.ResultProgramAdapter.IListItem;
 import com.tools.tvguide.adapters.ResultProgramAdapter.LabelItem;
 import com.tools.tvguide.adapters.ResultProgramAdapter.ContentItem;
+import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.Program;
@@ -21,9 +23,13 @@ import com.tools.tvguide.data.SearchResultCategory;
 import com.tools.tvguide.data.SearchResultDataEntry;
 import com.tools.tvguide.data.SearchResultCategory.Type;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.managers.SearchHtmlManager.SearchResultCallback;
 import com.tools.tvguide.managers.SearchWordsManager;
 import com.tools.tvguide.utils.HtmlUtils;
+import com.tools.tvguide.utils.NetDataGetter;
+import com.tools.tvguide.utils.NetworkManager;
+import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.MyViewPagerIndicator;
 import com.tools.tvguide.views.SearchHotwordsView;
 
@@ -428,6 +434,30 @@ public class SearchActivity extends Activity implements Callback
         }
     }
     
+    private void reportSearchToProxy()
+    {
+        new Handler(NetworkManager.getInstance().getNetworkThreadLooper()).post(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Report) 
+                             + "?type=search";
+                url = Utility.addUrlGetParam(url, "keyword", mKeyword, false);
+                NetDataGetter getter;
+                try 
+                {
+                    getter = new DefaultNetDataGetter(url);
+                    getter.getStringData();
+                } 
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
     private void showInputKeyboard()
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -481,6 +511,7 @@ public class SearchActivity extends Activity implements Callback
                 mContentLayout.removeAllViews();
                 mContentLayout.addView(mClassifyResultLayout, mCenterLayoutParams);
                 updateHistorySearch();
+                reportSearchToProxy();
                 break;
             case MSG_SHOW_CHANNEL:
                 int tabIndex = getCategoryTypeIndex(SearchResultCategory.Type.Channel);
