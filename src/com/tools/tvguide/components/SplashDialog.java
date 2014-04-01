@@ -19,7 +19,7 @@ public class SplashDialog extends Dialog implements OnDismissListener
     private SplashImageView         mSplashImage               = null;
     private boolean                 mIsNotified                = false;
 
-    private long                    iTimeUp_ms                 = 2000;
+    private long                    iTimeUp_ms                 = 1200;
     private long                    mStartTime                 = 0;
     private static final int        MSG_SPLASH_START           = 0;
     private static final int        MSG_SPLASH_TO_REMOVE       = 1;
