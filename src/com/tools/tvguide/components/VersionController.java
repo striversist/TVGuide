@@ -40,7 +40,8 @@ public class VersionController
             mCurrentVersionCode = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionCode;
             mCurrentVersionName = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName;
             ApplicationInfo appInfo = mContext.getPackageManager().getApplicationInfo(mContext.getPackageName(), PackageManager.GET_META_DATA);
-            mAppChannelName = appInfo.metaData.getString("APP_CHANNEL");
+            if (appInfo.metaData != null)
+                mAppChannelName = appInfo.metaData.getString("APP_CHANNEL");
         }
 	    catch (NameNotFoundException e) 
         {
