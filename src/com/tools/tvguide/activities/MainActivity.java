@@ -6,6 +6,8 @@ import com.tools.tvguide.managers.BootManager.OnStartedCallback;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -18,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-public class MainActivity extends TabActivity implements OnStartedCallback
+public class MainActivity extends TabActivity implements OnStartedCallback, Callback
 {
     private TabHost         mTabHost;
     
@@ -29,7 +31,9 @@ public class MainActivity extends TabActivity implements OnStartedCallback
     private String          mStringSearch;
     private String          mStringAbout;
     private String          mStringMore;
-    private ImageView        mNewMsg;
+    private ImageView       mNewMsg;
+    private Handler         mUiHandler;
+    private enum SelfMessage { New_Msg_Update };
     
     private long mExitTime;
     
@@ -38,6 +42,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback
     {
 //        Log.d(TAG, "onCreate this = " + this);
         super.onCreate(savedInstanceState);
+        mUiHandler = new Handler(this);
         
         // Must be set first
         AppEngine.getInstance().setContext(this);
@@ -198,8 +203,29 @@ public class MainActivity extends TabActivity implements OnStartedCallback
     {
         if (needUpdate)
         {
-            if (!TextUtils.equals(mTabHost.getCurrentTabTag(), mStringMore))    // 当前Tab没有被选中时
-                mNewMsg.setVisibility(View.VISIBLE);
+            if (mTabHost == null || mNewMsg == null)    // 未初始化完成
+            {
+                Message msg = mUiHandler.obtainMessage(SelfMessage.New_Msg_Update.ordinal());
+                mUiHandler.sendMessageDelayed(msg, 1000);
+            }
+            
         }
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) 
+    {
+        SelfMessage selfMsg = SelfMessage.values()[msg.what];
+        switch (selfMsg)
+        {
+            case New_Msg_Update:
+                if (mTabGroup == null || mNewMsg == null)
+                    break;
+                if (!TextUtils.equals(mTabHost.getCurrentTabTag(), mStringMore)) {   // 当前Tab没有被选中时
+                    mNewMsg.setVisibility(View.VISIBLE);
+                }
+                break;
+        }
+        return true;
     }
 }
