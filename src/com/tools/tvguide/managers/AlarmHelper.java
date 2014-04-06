@@ -18,14 +18,13 @@ import java.util.Map.Entry;
 
 import com.tools.tvguide.components.CallAlarmReceiver;
 import com.tools.tvguide.components.Shutter;
+import com.tools.tvguide.data.AlarmData;
 import com.tools.tvguide.utils.Utility;
 
-import android.R.integer;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class AlarmHelper implements Shutter
 {
@@ -38,6 +37,7 @@ public class AlarmHelper implements Shutter
     private String FILE_ALARM_HELPER = "alarm_settings.txt";
     private final int MIN_DAY = 1;  // 本周一
     private final int MAX_DAY = 14; // 下周日
+    private List<AlarmData> mAlarmDataList = new ArrayList<AlarmData>();
     
     public interface AlarmListener
     {
@@ -215,6 +215,46 @@ public class AlarmHelper implements Shutter
             }
         }
         return false;
+    }
+    
+    public boolean addAlarmData(AlarmData alarmData)
+    {
+        if (alarmData == null)
+            return false;
+        
+        boolean addNew = true;
+        for (int i=0; i<mAlarmDataList.size(); ++i) {
+            if (mAlarmDataList.get(i).getAlarmId() == alarmData.getAlarmId()) {
+                mAlarmDataList.set(i, alarmData);
+                addNew = false;
+            }
+        }
+        if (addNew) {
+            mAlarmDataList.add(alarmData);
+        }
+        
+        return true;
+    }
+    
+    public AlarmData removeAlarmData(AlarmData alarmData)
+    {
+        if (alarmData == null)
+            return null;
+        
+        AlarmData result = null;
+        int removeIndex = -1;
+        for (int i=0; i<mAlarmDataList.size(); ++i) {
+            if (mAlarmDataList.get(i).getAlarmId() == alarmData.getAlarmId()) {
+                removeIndex = i;
+                break;
+            }
+        }
+        
+        if (removeIndex >= 0) {
+            result = mAlarmDataList.remove(removeIndex);
+        }
+        
+        return result;
     }
     
     @Override

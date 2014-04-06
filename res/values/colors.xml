@@ -24,4 +24,5 @@
     <color name="comment_detail_text_color_dark">#ff4b5159</color>
     <color name="normal_color_download_num">#ff666666</color>
     <color name="comment_detail_write_commen_color">#cc4b5159</color>
+    <color name="lightgray">#ffdddddd</color>
 </resources>

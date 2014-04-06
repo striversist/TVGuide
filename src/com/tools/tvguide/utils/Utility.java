@@ -210,6 +210,37 @@ public class Utility
         return hostDay;
     }
     
+    public static int getCalendarDayOfWeek(int weekday)
+    {
+        assert(weekday >=1 && weekday <=7);
+        int result = 0;
+        switch (weekday) {
+            case 1:
+                result = Calendar.MONDAY;
+                break;
+            case 2:
+                result = Calendar.TUESDAY;
+                break;
+            case 3:
+                result = Calendar.WEDNESDAY;
+                break;
+            case 4:
+                result = Calendar.THURSDAY;
+                break;
+            case 5:
+                result = Calendar.FRIDAY;
+                break;
+            case 6:
+                result = Calendar.SATURDAY;
+                break;
+            case 7:
+                result = Calendar.SUNDAY;
+                break;
+        }
+        
+        return result;
+    }
+    
     public static long getMillisSinceWeekBegin()
     {
         int nowWeekday = getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));

@@ -104,4 +104,10 @@
         <item name="android:divider">@color/divider_gray</item>
         <item name="android:dividerHeight">0.5dip</item>
     </style>
+    <style name="style_alarm_checkbox">
+        <item name="android:textSize">15.0sp</item>
+        <item name="android:textColor">@color/dark_blue</item>
+        <item name="android:paddingLeft">30.0sp</item>
+        <item name="android:button">@drawable/checkbox_select</item>
+    </style>
 </resources>

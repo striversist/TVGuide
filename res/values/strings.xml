@@ -105,5 +105,28 @@
     <string name="x_points">%1$s 金币</string>
     <string name="restore_points">恢复金币</string>
     <string name="restore_points_hint">重装本软件时请点击：</string>
+    <string name="title_activity_advance_alarm">AdvanceAlarmActivity</string>
+    <string name="weekly">每周</string>
+    <string name="daily">每天</string>
+    <string name="once">一次</string>
+    <string name="week1">周一</string>
+    <string name="week2">周二</string>
+    <string name="week3">周三</string>
+    <string name="week4">周四</string>
+    <string name="week5">周五</string>
+    <string name="week6">周六</string>
+    <string name="week7">周日</string>
+    <string name="weekhint">选择每周几进行提醒:</string>
+    <string name="program">节目:</string>
+    <string name="time">时间:</string>
+    <string name="tvchannel">电视台:</string>
+    <string name="promptrate">提醒频率:</string>
+    <string name="datehint">设置提醒日期:</string>
+    <string name="timehint">设置提醒时间:</string>
+    <string name="savealarm">保存闹铃</string>
+    <string name="advance5m">提前5分钟</string>
+    <string name="advance10m">提前10分钟</string>
+    <string name="advance30m">提前30分钟</string>
+    <string name="noalarm">没有添加节目提醒</string>
 
 </resources>

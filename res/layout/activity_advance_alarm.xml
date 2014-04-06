@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:background="@color/light_dark_bg" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" android:background="@drawable/abs__ab_transparent_dark_holo" android:paddingLeft="25.0sp" android:paddingTop="8.0sp" android:paddingRight="15.0sp" android:paddingBottom="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:textSize="15.0sp" android:textColor="@color/black" android:layout_width="60.0sp" android:layout_height="wrap_content" android:text="@string/program" />
+
+            <TextView
+                android:id="@+id/alarm_program_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="@color/darkgray"
+                android:textSize="15.0sp" />
+
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="5.0sp">
+            <TextView android:textSize="15.0sp" android:textColor="@color/black" android:layout_width="60.0sp" android:layout_height="wrap_content" android:text="@string/time" />
+
+            <TextView
+                android:id="@+id/alarm_program_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="@color/darkgray"
+                android:textSize="15.0sp" />
+
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="5.0sp">
+            <TextView android:textSize="15.0sp" android:textColor="@color/black" android:layout_width="60.0sp" android:layout_height="wrap_content" android:text="@string/tvchannel" />
+
+            <TextView
+                android:id="@+id/alarm_channel_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textColor="@color/darkgray"
+                android:textSize="15.0sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <ScrollView android:id="@+id/scrollView1" android:layout_width="fill_parent" android:layout_height="0.0sp" android:layout_weight="1.0">
+        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:textSize="15.0sp" android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/textView1" android:background="@color/lightgray" android:padding="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/promptrate" />
+            <LinearLayout android:paddingLeft="25.0sp" android:paddingTop="8.0sp" android:paddingRight="15.0sp" android:paddingBottom="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <CheckBox android:id="@+id/alarm_mode_once_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/once" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                <CheckBox android:id="@+id/alarm_mode_daily_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/daily" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                <CheckBox android:id="@+id/alarm_mode_weekly_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/weekly" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:id="@+id/alarm_week_ll" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="15.0sp" android:textColor="@color/black" android:gravity="center_vertical" android:id="@+id/textView1" android:background="@color/lightgray" android:padding="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/weekhint" />
+                <LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:paddingTop="8.0sp" android:paddingBottom="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:layout_width="25.0sp" android:layout_height="wrap_content" android:src="@drawable/mm_left_arrow" />
+                    <HorizontalScrollView android:id="@+id/alarm_week_hsv" android:scrollbars="none" android:layout_width="0.0sp" android:layout_height="wrap_content" android:layout_weight="1.0">
+                        <LinearLayout android:orientation="horizontal" android:id="@+id/alarm_week_ll" android:layout_width="wrap_content" android:layout_height="fill_parent">
+                            <CheckBox android:id="@+id/alarm_week1_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/week1" style="@style/style_alarm_checkbox" />
+                            <CheckBox android:id="@+id/alarm_week2_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/week2" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                            <CheckBox android:id="@+id/alarm_week3_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/week3" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                            <CheckBox android:id="@+id/alarm_week4_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/week4" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                            <CheckBox android:id="@+id/alarm_week5_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/week5" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                            <CheckBox android:id="@+id/alarm_week6_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/week6" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                            <CheckBox android:id="@+id/alarm_week7_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/week7" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                    <ImageView android:id="@+id/imageView1" android:layout_width="15.0sp" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/alarm_date_ll"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView android:textSize="15.0sp" android:textColor="@color/black" android:gravity="center_vertical" android:background="@color/lightgray" android:padding="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/datehint" />
+                <TextView android:id="@+id/alarm_date_setting_tv" android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:paddingLeft="25.0sp" android:paddingTop="8.0sp" android:paddingRight="8.0sp" android:paddingBottom="8.0sp" 
+                        android:background="@drawable/date_text_select" android:textSize="17.0sp" android:textColor="@color/dark_blue"
+                        android:text="2013-09-16" android:clickable="true" android:onClick="onClick" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/alarm_time_ll"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView android:textSize="15.0sp" android:textColor="@color/black" android:background="@color/lightgray" android:padding="8.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/timehint" />
+                <TextView android:id="@+id/alarm_time_setting_tv" android:layout_width="fill_parent" android:layout_height="wrap_content" 
+                    android:paddingLeft="25.0sp" android:paddingTop="8.0sp" android:paddingRight="8.0sp" android:paddingBottom="8.0sp" 
+                    android:textSize="17.0sp" android:textColor="@color/dark_blue" android:background="@drawable/date_text_select"
+                    android:text="08:30" android:clickable="true" android:onClick="onClick" />
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:background="@drawable/split_horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+            <HorizontalScrollView android:padding="8.0sp" android:scrollbars="none" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <LinearLayout android:id="@+id/alarm_advance_ll" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="fill_parent">
+                    <CheckBox android:textColor="@color/darkgray" android:id="@+id/alarm_advance5_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/advance5m" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                    <CheckBox android:textColor="@color/darkgray" android:id="@+id/alarm_advance10_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/advance10m" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                    <CheckBox android:textColor="@color/darkgray" android:id="@+id/alarm_advance30_cb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20.0sp" android:text="@string/advance30m" style="@style/style_alarm_checkbox" android:onClick="onClick" />
+                </LinearLayout>
+            </HorizontalScrollView>
+            <Button android:id="@+id/save_alarm_btn" android:textSize="18.0sp" android:textColor="@color/white" android:gravity="center" 
+                    android:background="@drawable/big_button_select" android:paddingTop="7.0sp" android:paddingBottom="7.0sp" 
+                    android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="20.0sp"
+                    android:layout_marginLeft="15.0sp" android:layout_marginRight="15.0sp" android:layout_marginBottom="25.0sp" 
+                    android:text="@string/ok" android:onClick="onClick" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
