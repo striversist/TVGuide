@@ -14,15 +14,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.tools.tvguide.AdvanceAlarmActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannelDetailListAdapter;
 import com.tools.tvguide.adapters.DateAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.adapters.DateAdapter.DateData;
-import com.tools.tvguide.components.AlarmSettingDialog;
 import com.tools.tvguide.components.DefaultNetDataGetter;
-import com.tools.tvguide.components.AlarmSettingDialog.OnAlarmSettingListener;
 import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.AlarmData;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
@@ -187,16 +187,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     }
     
     @Override
-    public void onAlarmed(HashMap<String, Object> info) 
+    public void onAlarmed(AlarmData alarmData) 
     {
-        if (info == null)
+        if (alarmData == null)
             return;
         
-        String programString = (String) info.get("program");
-        if (programString == null)
-            return;
-        
-        Program program = convertToProgram(programString);
+        Program program = alarmData.getRelatedProgram();
         if (program != null && mListViewAdapter != null)
             mListViewAdapter.removeAlarmProgram(program);
     }
@@ -323,26 +319,35 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         
                         final Program program = mListViewAdapter.getProgram(position);
                         
-                        String hour = program.time.split(":")[0];
-                        String minute = program.time.split(":")[1];
+//                        String hour = program.time.split(":")[0];
+//                        String minute = program.time.split(":")[1];
                         
-                        AlarmSettingDialog alarmSettingDialog = new AlarmSettingDialog(ChannelDetailActivity.this, mCurrentSelectedDay, Integer.parseInt(hour),
-                                        Integer.parseInt(minute), mChannelId, mChannelName, getProgramString(program.time, program.title));
+//                        AlarmSettingDialog alarmSettingDialog = new AlarmSettingDialog(ChannelDetailActivity.this, mCurrentSelectedDay, Integer.parseInt(hour),
+//                                        Integer.parseInt(minute), mChannelId, mChannelName, getProgramString(program.time, program.title));
+//                        
+//                        alarmSettingDialog.setAlarmSettingListener(new OnAlarmSettingListener() 
+//                        {
+//                            @Override
+//                            public void onAlarmSetted(boolean success) 
+//                            {
+//                                if (success)
+//                                    mListViewAdapter.addAlarmProgram(program);
+//                                else
+//                                    mListViewAdapter.removeAlarmProgram(program);
+//                            }
+//                        });
+//                        alarmSettingDialog.show();
                         
-                        alarmSettingDialog.setAlarmSettingListener(new OnAlarmSettingListener() 
-                        {
-                            @Override
-                            public void onAlarmSetted(boolean success) 
-                            {
-                                if (success)
-                                    mListViewAdapter.addAlarmProgram(program);
-                                else
-                                    mListViewAdapter.removeAlarmProgram(program);
-                            }
-                        });
+                        Intent intent = new Intent(ChannelDetailActivity.this, AdvanceAlarmActivity.class);
+                        Channel channel = new Channel();
+                        channel.tvmaoId = mChannelId;
+                        channel.name = mChannelName;
+                        
+                        intent.putExtra("channel", channel);
+                        intent.putExtra("program", program);
+                        startActivity(intent);
                         
                         dialog.dismiss();
-                        alarmSettingDialog.show();
                     }
                 }).create();
                 settingDialog.show();
@@ -645,8 +650,8 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                 for (int i=0; i<programList.size(); ++i)
                 {
                     Program program = programList.get(i);
-                    if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, getProgramString(program.time, program.title), mCurrentSelectedDay))
-                        mListViewAdapter.addAlarmProgram(program);
+//                    if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, getProgramString(program.time, program.title), mCurrentSelectedDay))
+//                        mListViewAdapter.addAlarmProgram(program);
                 }
                 
                 // 标注正在播放的节目

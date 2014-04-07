@@ -43,4 +43,9 @@ public class Program implements Serializable
         this.trailer = program.trailer;
         this.link = program.link;
     }
+    
+    public String getFullName()
+    {
+        return time + ":" + title;
+    }
 }

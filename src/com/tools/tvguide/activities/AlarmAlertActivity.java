@@ -3,6 +3,10 @@ package com.tools.tvguide.activities;
 import java.util.HashMap;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.data.AlarmData;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
+import com.tools.tvguide.data.AlarmData.AlarmMode;
 import com.tools.tvguide.managers.AppEngine;
 
 import android.app.Activity;
@@ -36,15 +40,16 @@ public class AlarmAlertActivity extends Activity
         
         mVibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
         
+        final AlarmData alarmData = (AlarmData) getIntent().getSerializableExtra("alarm_data");
+        if (alarmData == null)
+            return;
+
         startMakingNoisy();
-        
-        final String channelId = getIntent().getStringExtra("channel_id") == null ? "" : getIntent().getStringExtra("channel_id");
-        final String channelName = getIntent().getStringExtra("channel_name") == null ? "" : getIntent().getStringExtra("channel_name");
-        final String program = getIntent().getStringExtra("program") == null ? "" : getIntent().getStringExtra("program");
-        final String day = getIntent().getStringExtra("day") == null ? "1" : getIntent().getStringExtra("day");
+        final Channel channel = alarmData.getRelatedChannel();
+        final Program program = alarmData.getRelatedProgram();
         AlertDialog dialog = new AlertDialog.Builder(AlarmAlertActivity.this).setIcon(R.drawable.clock)
-                .setTitle(channelName)
-                .setMessage(program)
+                .setTitle(channel.name)
+                .setMessage(program.getFullName())
                 .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
                 {
                     @Override
@@ -54,13 +59,10 @@ public class AlarmAlertActivity extends Activity
                         if (AppEngine.getInstance().getContext() == null)
                             AppEngine.getInstance().setContext(AlarmAlertActivity.this);    // 需要设置，否则会有空指针的异常
                         
-                        HashMap<String, Object> info = new HashMap<String, Object>();
-                        info.put("channel_id", channelId);
-                        info.put("channel_name", channelName);
-                        info.put("program", program);
-                        info.put("day", day);
-                        AppEngine.getInstance().getAlarmHelper().notifyAlarmListeners(info);
-                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program, Integer.valueOf(day).intValue());
+                        AppEngine.getInstance().getAlarmHelper().notifyAlarmListeners(alarmData);
+                        if (alarmData.getMode() == AlarmMode.Once) {
+                            AppEngine.getInstance().getAlarmHelper().removeAlarmData(alarmData);
+                        }
                         AlarmAlertActivity.this.finish();
                     }
                 }).create();

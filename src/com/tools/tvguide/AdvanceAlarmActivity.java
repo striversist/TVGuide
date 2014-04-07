@@ -12,6 +12,7 @@ import com.tools.tvguide.data.AlarmData.AlarmMode;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AppEngine;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -409,11 +410,11 @@ public class AdvanceAlarmActivity extends Activity
         
         AlarmData alarmData = null;
         if (mAlarmModeOnceCheckBox.isChecked()) {
-            alarmData = new AlarmData(getApplicationContext(), mProgram, mChannel, AlarmMode.Once);
+            alarmData = new AlarmData(mProgram, mChannel, AlarmMode.Once);
         } else if (mAlarmModeDailyCheckBox.isChecked()) {
-            alarmData = new AlarmData(getApplicationContext(), mProgram, mChannel, AlarmMode.Daily);
+            alarmData = new AlarmData(mProgram, mChannel, AlarmMode.Daily);
         } else if (mAlarmModeWeeklyCheckBox.isChecked()) {
-            alarmData = new AlarmData(getApplicationContext(), mProgram, mChannel, AlarmMode.Weekly);
+            alarmData = new AlarmData(mProgram, mChannel, AlarmMode.Weekly);
             List<Boolean> weekList = new ArrayList<Boolean>(7);
             for (int i=0; i<mAlarmWeekCheckBoxList.size(); ++i) {
                 weekList.add(mAlarmWeekCheckBoxList.get(i).isChecked());
@@ -424,9 +425,12 @@ public class AdvanceAlarmActivity extends Activity
         alarmData.setStartTime(mAlarmDateString + " " + mAlarmTimeString);
         alarmData.setAdvanceMinuteList(advanceMinuteList);
         
-        // For test:
+        // TODO: for test, remove in the future
         long nextAlarmTime = alarmData.getNextAlarmTriggerTime();
         Log.d("", "" + nextAlarmTime);
+        
+        AppEngine.getInstance().getAlarmHelper().addAlarmData(alarmData);
+        finish();
     }
 }
 

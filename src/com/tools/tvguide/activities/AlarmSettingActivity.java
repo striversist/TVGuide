@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.data.AlarmData;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AppEngine;
 
@@ -51,12 +54,8 @@ public class AlarmSettingActivity extends Activity
                     @Override
                     public void onClick(View v) 
                     {
-                        String channelId = (String) mItemList.get(position).get("tvmao_id");
-                        String channelName = (String) mItemList.get(position).get("name");
-                        String program = (String) mItemList.get(position).get("program");
-                        String day = (String) mItemList.get(position).get("day");
-                        
-                        AppEngine.getInstance().getAlarmHelper().removeAlarm(channelId, channelName, program, Integer.valueOf(day));
+                        AlarmData alarmData = (AlarmData) mItemList.get(position).get("alarm_data");
+                        AppEngine.getInstance().getAlarmHelper().removeAlarmData(alarmData);
                         mItemList.remove(position);
                         mListViewAdapter.notifyDataSetChanged();
                     }
@@ -131,22 +130,34 @@ public class AlarmSettingActivity extends Activity
     private void initAlarmList()
     {
         mItemList.clear();
-        Iterator<Entry<String, HashMap<String, String>>> iter = AppEngine.getInstance().getAlarmHelper().getAllRecords().entrySet().iterator();
-        while (iter.hasNext())
-        {
-            Map.Entry<String, HashMap<String, String>> entry = (Map.Entry<String, HashMap<String, String>>) iter.next();
-            String channelId = entry.getValue().get("channel_id");
-            String channelName = entry.getValue().get("channel_name");
-            String program = entry.getValue().get("program");
-            String day = entry.getValue().get("day");
+//        Iterator<Entry<String, HashMap<String, String>>> iter = AppEngine.getInstance().getAlarmHelper().getAllRecords().entrySet().iterator();
+//        while (iter.hasNext())
+//        {
+//            Map.Entry<String, HashMap<String, String>> entry = (Map.Entry<String, HashMap<String, String>>) iter.next();
+//            String channelId = entry.getValue().get("channel_id");
+//            String channelName = entry.getValue().get("channel_name");
+//            String program = entry.getValue().get("program");
+//            String day = entry.getValue().get("day");
+//            
+//            HashMap<String, Object> item = new HashMap<String, Object>();
+//            item.put("tvmao_id", channelId);
+//            item.put("name", channelName);
+//            item.put("program", program);
+//            item.put("day", day);
+//            mItemList.add(item);
+//        }
+        List<AlarmData> allRecords = AppEngine.getInstance().getAlarmHelper().getAllRecords();
+        for (AlarmData alarmData : allRecords) {
+            Channel channel = alarmData.getRelatedChannel();
+            Program program = alarmData.getRelatedProgram();
             
             HashMap<String, Object> item = new HashMap<String, Object>();
-            item.put("tvmao_id", channelId);
-            item.put("name", channelName);
-            item.put("program", program);
-            item.put("day", day);
+            item.put("alarm_data", alarmData);
+            item.put("name", channel.name);
+            item.put("program", program.time + ":" + program.title);
             mItemList.add(item);
         }
+        
         mListViewAdapter.notifyDataSetChanged();
     }
 }

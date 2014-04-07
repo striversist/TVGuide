@@ -11,14 +11,11 @@ import java.util.Locale;
 
 import com.tools.tvguide.utils.Utility;
 
-import android.content.Context;
-
 public class AlarmData implements Serializable 
 {
     private static final long serialVersionUID = 1L;
     public enum AlarmMode { Once, Daily, Weekly }
     
-    private Context     mContext;
     private Program     mRelatedProgram;
     private Channel     mRelatedChannel;
     private AlarmMode   mMode;
@@ -27,14 +24,12 @@ public class AlarmData implements Serializable
     private List<Boolean> mWeekList                 = new ArrayList<Boolean>();        // Mode: Weekly
     private List<Integer> mAdvanceMinuteSortedList  = new ArrayList<Integer>();         // 提前几分钟(如5, 15, 30)，从小到大排序
     
-    public AlarmData(Context context, Program relatedProgram, Channel relatedChannel, AlarmMode mode)
+    public AlarmData(Program relatedProgram, Channel relatedChannel, AlarmMode mode)
     {
-        assert (context != null);
         assert (relatedProgram != null);
         assert (relatedChannel != null);
         assert (mode != null);
         
-        mContext = context;
         mRelatedProgram = relatedProgram;
         mRelatedChannel = relatedChannel;
         mMode = mode;
@@ -44,7 +39,14 @@ public class AlarmData implements Serializable
     {
         assert (relatedProgram != null);
         assert (relatedChannel != null);
-        return relatedProgram.hashCode() + relatedChannel.hashCode();
+        String tvmaoId = relatedChannel.tvmaoId;
+        String time = relatedProgram.time;
+        String title = relatedProgram.title;
+        if (tvmaoId != null && time != null && title != null) {
+            return tvmaoId.hashCode() + time.hashCode() + title.hashCode();
+        }
+        
+        return -1;
     }
     
     public int getAlarmId()
