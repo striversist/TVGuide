@@ -2,10 +2,8 @@ package com.tools.tvguide.activities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.AlarmData;
@@ -130,22 +128,6 @@ public class AlarmSettingActivity extends Activity
     private void initAlarmList()
     {
         mItemList.clear();
-//        Iterator<Entry<String, HashMap<String, String>>> iter = AppEngine.getInstance().getAlarmHelper().getAllRecords().entrySet().iterator();
-//        while (iter.hasNext())
-//        {
-//            Map.Entry<String, HashMap<String, String>> entry = (Map.Entry<String, HashMap<String, String>>) iter.next();
-//            String channelId = entry.getValue().get("channel_id");
-//            String channelName = entry.getValue().get("channel_name");
-//            String program = entry.getValue().get("program");
-//            String day = entry.getValue().get("day");
-//            
-//            HashMap<String, Object> item = new HashMap<String, Object>();
-//            item.put("tvmao_id", channelId);
-//            item.put("name", channelName);
-//            item.put("program", program);
-//            item.put("day", day);
-//            mItemList.add(item);
-//        }
         List<AlarmData> allRecords = AppEngine.getInstance().getAlarmHelper().getAllRecords();
         for (AlarmData alarmData : allRecords) {
             Channel channel = alarmData.getRelatedChannel();

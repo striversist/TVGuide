@@ -1,7 +1,5 @@
 package com.tools.tvguide.activities;
 
-import java.util.HashMap;
-
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.AlarmData;
 import com.tools.tvguide.data.Channel;
