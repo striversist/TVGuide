@@ -13,6 +13,7 @@ import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.wptools.ad;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -30,9 +31,14 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Intent;
 
 public class AdvanceAlarmActivity extends Activity 
 {
+    public static final int Result_Code_Success = 100;
+    public static final int Result_Code_Cancelled = 0;
+    private static final String Split_Token = " ";
+    
     // 标题栏
     private TextView    mProgramTitleTextView;
     private TextView    mProgramTimeTextView;
@@ -169,13 +175,45 @@ public class AdvanceAlarmActivity extends Activity
     private void init()
     {
         updateTitle();
-        SimpleDateFormat sdf = new SimpleDateFormat(GlobalData.DATE_FORMAT, Locale.ENGLISH);
-        mAlarmDateString = sdf.format(Calendar.getInstance().getTime());
-        mAlarmTimeString = mProgram.time;
+        if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannel, mProgram)) {
+            AlarmData alarmData = AppEngine.getInstance().getAlarmHelper().getAlarmData(AlarmData.makeAlarmId(mProgram, mChannel));
+            String alarmStartTime = alarmData.getStartTime();
+            mAlarmDateString = alarmStartTime.split(Split_Token)[0];
+            mAlarmTimeString = alarmStartTime.split(Split_Token)[1];
+            switch (alarmData.getMode()) {
+                case Once:
+                    mAlarmModeOnceCheckBox.performClick();
+                    break;
+                case Daily:
+                    mAlarmModeDailyCheckBox.performClick();
+                    break;
+                case Weekly:
+                    mAlarmModeWeeklyCheckBox.performClick();
+                    List<Boolean> weekList = alarmData.getWeekList();
+                    for (int i=0; i<weekList.size(); ++i) {
+                        mAlarmWeekCheckBoxList.get(i).setChecked(weekList.get(i).booleanValue());
+                    }
+                    break;
+            }
+            List<Integer> advanceMinuteList = alarmData.getAdvanceMinuteList();
+            for (Integer advanceMinute : advanceMinuteList) {
+                if (advanceMinute == 5) {
+                    mAdvance5CheckBox.setChecked(true);
+                } else if (advanceMinute == 10) {
+                    mAdvance10CheckBox.setChecked(true);
+                } else if (advanceMinute == 30) {
+                    mAdvance30CheckBox.setChecked(true);
+                }
+            }
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat(GlobalData.DATE_FORMAT, Locale.ENGLISH);
+            mAlarmDateString = sdf.format(Calendar.getInstance().getTime());
+            mAlarmTimeString = mProgram.time;
+            mAlarmModeOnceCheckBox.performClick();            
+        }
+        
         mAlarmDateSettingTextView.setText(mAlarmDateString);
         mAlarmTimeSettingTextView.setText(mAlarmTimeString);
-        
-        mAlarmModeOnceCheckBox.performClick();
     }
     
     private void updateTitle()
@@ -371,7 +409,7 @@ public class AdvanceAlarmActivity extends Activity
             } else {
                 try {
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(new SimpleDateFormat(GlobalData.FULL_TIME_FORMAT, Locale.ENGLISH).parse(mAlarmDateString + " " + mAlarmTimeString));
+                    calendar.setTime(new SimpleDateFormat(GlobalData.FULL_TIME_FORMAT, Locale.ENGLISH).parse(mAlarmDateString + Split_Token + mAlarmTimeString));
                     if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
                         Toast.makeText(this, "闹钟时间已过期，请重新设置！", Toast.LENGTH_LONG).show();
                         return false;
@@ -389,7 +427,12 @@ public class AdvanceAlarmActivity extends Activity
     
     private void saveAlarm()
     {
+        Intent data = new Intent();
+        data.putExtra("program", mProgram);
+        
         if (isAlarmCanceled()) {
+            AppEngine.getInstance().getAlarmHelper().removeAlarmData(AlarmData.makeAlarmId(mProgram, mChannel));
+            setResult(Result_Code_Cancelled, data);
             finish();
             return;
         }
@@ -422,7 +465,7 @@ public class AdvanceAlarmActivity extends Activity
             alarmData.setWeekList(weekList);
         }
         
-        alarmData.setStartTime(mAlarmDateString + " " + mAlarmTimeString);
+        alarmData.setStartTime(mAlarmDateString + Split_Token + mAlarmTimeString);
         alarmData.setAdvanceMinuteList(advanceMinuteList);
         
         // TODO: for test, remove in the future
@@ -430,6 +473,10 @@ public class AdvanceAlarmActivity extends Activity
         Log.d("", "" + nextAlarmTime);
         
         AppEngine.getInstance().getAlarmHelper().addAlarmData(alarmData);
+        
+        data.putExtra("alarm_data", alarmData);
+        setResult(Result_Code_Success, data);
+        
         finish();
     }
 }

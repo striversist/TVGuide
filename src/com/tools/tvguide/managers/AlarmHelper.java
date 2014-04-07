@@ -116,6 +116,25 @@ public class AlarmHelper implements Shutter
         return true;
     }
     
+    public AlarmData getAlarmData(int alarmId)
+    {
+        for (AlarmData alarmData : mAlarmDataList) {
+            if (alarmData.getAlarmId() == alarmId) {
+                return alarmData;
+            }
+        }
+        return null;
+    }
+    
+    public AlarmData removeAlarmData(int alarmId)
+    {
+        AlarmData alarmData = getAlarmData(alarmId);
+        if (alarmData == null)
+            return null;
+        
+        return removeAlarmData(alarmData);
+    }
+    
     public AlarmData removeAlarmData(AlarmData alarmData)
     {
         if (alarmData == null)

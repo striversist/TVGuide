@@ -104,6 +104,11 @@ public class AlarmData implements Serializable
         return false;
     }
     
+    public List<Boolean> getWeekList()
+    {
+        return mWeekList;
+    }
+    
     public boolean setAdvanceMinuteList(List<Integer> advanceList)
     {
         if (advanceList != null) {
@@ -113,6 +118,11 @@ public class AlarmData implements Serializable
             return true;
         }
         return false;
+    }
+    
+    public List<Integer> getAdvanceMinuteList()
+    {
+        return mAdvanceMinuteSortedList;
     }
     
     /**

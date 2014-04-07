@@ -68,6 +68,7 @@ import android.widget.Toast;
 
 public class ChannelDetailActivity extends Activity implements AlarmListener, Callback 
 {
+    private static final int RequestCode = 100;
     private static boolean sHasShownFirstStartTips = false;
     private static boolean sUseLocalTime = false;
     private static int sRequestId = 0;
@@ -95,7 +96,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM, MSG_UPDATE_DATELIST};
     private final int TIMER_SCHEDULE_PERIOD = 3 * 60 * 1000;        // 3 minute
     private final int DEFAULT_MAX_DAYS = 7;
-    private final String SEP = ":　";
 
     @SuppressWarnings("unchecked")
     @Override
@@ -241,6 +241,23 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         }
     }
     
+    @Override  
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)  
+    {
+        if (requestCode != RequestCode)
+            return;
+        
+        Program program = (Program) data.getSerializableExtra("program");
+        if (program == null)
+            return;
+        
+        if (resultCode == AdvanceAlarmActivity.Result_Code_Cancelled) {  // 取消了闹钟
+            mListViewAdapter.removeAlarmProgram(program);
+        } else {
+            mListViewAdapter.addAlarmProgram(program);
+        }
+    }
+    
     private void initViews()
     {
         mChannelNameTextView = (TextView) findViewById(R.id.channeldetail_channel_name_tv);
@@ -318,26 +335,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                         foldDateListView();
         
                         final Program program = mListViewAdapter.getProgram(position);
-                        
-//                        String hour = program.time.split(":")[0];
-//                        String minute = program.time.split(":")[1];
-                        
-//                        AlarmSettingDialog alarmSettingDialog = new AlarmSettingDialog(ChannelDetailActivity.this, mCurrentSelectedDay, Integer.parseInt(hour),
-//                                        Integer.parseInt(minute), mChannelId, mChannelName, getProgramString(program.time, program.title));
-//                        
-//                        alarmSettingDialog.setAlarmSettingListener(new OnAlarmSettingListener() 
-//                        {
-//                            @Override
-//                            public void onAlarmSetted(boolean success) 
-//                            {
-//                                if (success)
-//                                    mListViewAdapter.addAlarmProgram(program);
-//                                else
-//                                    mListViewAdapter.removeAlarmProgram(program);
-//                            }
-//                        });
-//                        alarmSettingDialog.show();
-                        
                         Intent intent = new Intent(ChannelDetailActivity.this, AdvanceAlarmActivity.class);
                         Channel channel = new Channel();
                         channel.tvmaoId = mChannelId;
@@ -345,7 +342,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                         
                         intent.putExtra("channel", channel);
                         intent.putExtra("program", program);
-                        startActivity(intent);
+                        startActivityForResult(intent, RequestCode);
                         
                         dialog.dismiss();
                     }
@@ -614,22 +611,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     	return Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
     }
     
-    private String getProgramString(String time, String title)
+    private Channel getCurrentChannel()
     {
-        return time + SEP + title;
-    }
-    
-    private Program convertToProgram(String programString)
-    {
-        String[] parts = programString.split(SEP);
-        if (parts.length == 2)
-        {
-            Program program = new Program();
-            program.time = parts[0];
-            program.title = parts[1];
-            return program;
-        }
-        return null;
+        Channel channel = new Channel();
+        channel.tvmaoId = mChannelId;
+        channel.name = mChannelName;
+        return channel;
     }
 
     @Override
@@ -650,8 +637,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                 for (int i=0; i<programList.size(); ++i)
                 {
                     Program program = programList.get(i);
-//                    if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(mChannelId, mChannelName, getProgramString(program.time, program.title), mCurrentSelectedDay))
-//                        mListViewAdapter.addAlarmProgram(program);
+                    if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(getCurrentChannel(), program)) {
+                        mListViewAdapter.addAlarmProgram(program);
+                    }
                 }
                 
                 // 标注正在播放的节目
