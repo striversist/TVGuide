@@ -154,6 +154,9 @@ public class AlarmData implements Serializable
     {
         List<Long> advanceTriggerList = getAdvanceTriggerList(originTriggerTime);
         for (int i=advanceTriggerList.size()-1; i>=0; --i) {
+        	if (mMode == AlarmMode.Once) {
+        		return advanceTriggerList.get(i);	// 若设置为一次闹钟，则过期后马上闹铃
+        	}
             if (advanceTriggerList.get(i) > System.currentTimeMillis()) {   // 还未闹
                 return advanceTriggerList.get(i);
             }
