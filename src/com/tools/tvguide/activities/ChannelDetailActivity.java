@@ -187,14 +187,22 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     }
     
     @Override
-    public void onAlarmed(AlarmData alarmData) 
+    public void onAlarmed(final AlarmData alarmData) 
     {
         if (alarmData == null)
             return;
         
-        Program program = alarmData.getRelatedProgram();
-        if (program != null && mListViewAdapter != null)
-            mListViewAdapter.removeAlarmProgram(program);
+        if (mProgramListView != null) {
+        	mProgramListView.post(new Runnable() {
+				@Override
+				public void run() {
+					Program program = alarmData.getRelatedProgram();
+			        if (program != null && mListViewAdapter != null) {
+			            mListViewAdapter.removeAlarmProgram(program);
+			        }
+				}
+			});
+        }
     }
     
     public void back(View view)
@@ -247,6 +255,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         if (requestCode != RequestCode)
             return;
         
+        if (data == null)
+        	return;
+        
         Program program = (Program) data.getSerializableExtra("program");
         if (program == null)
             return;
@@ -254,7 +265,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         if (resultCode == AdvanceAlarmActivity.Result_Code_Cancelled) {  // 取消了闹钟
             mListViewAdapter.removeAlarmProgram(program);
         } else {
-            mListViewAdapter.addAlarmProgram(program);
+        	Channel channel = new Channel();
+        	channel.tvmaoId = mChannelId;
+        	channel.name = mChannelName;
+        	if (AppEngine.getInstance().getAlarmHelper().isAlarmSet(channel, program)) {
+        		mListViewAdapter.addAlarmProgram(program);
+        	}
         }
     }
     

@@ -112,7 +112,8 @@ public class ChannelDetailListAdapter extends BaseAdapter
         {
             if (mItemList.get(i).getType() == ItemType.Content)
             {
-                if (((Program)mItemList.get(i).getTag()).equals(program))
+                if (((Program)mItemList.get(i).getTag()).equals(program)
+                		&& !mAlarmProgramList.contains(program))
                 {
                     mAlarmProgramList.add(program);
                     notifyDataSetChanged();
