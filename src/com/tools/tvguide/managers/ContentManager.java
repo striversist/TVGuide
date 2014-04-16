@@ -70,91 +70,6 @@ public class ContentManager implements Shutter
         return false;
     }
     
-    public boolean loadNowTimeFromProxy(final StringBuffer result, final LoadListener listener)
-    {
-        mUpdateHandler.post(new Runnable()
-        {
-            public void run()
-            {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Query) + "?nowtime";
-                try 
-                {
-                    NetDataGetter getter = new DefaultNetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    if (jsonRoot != null)
-                    {
-                        String time = jsonRoot.getString("nowtime");
-                        
-                        if (result.length() > 0)
-                            result.delete(0, result.length()-1);
-                        
-                        result.append(time);
-                    }
-                    listener.onLoadFinish(LoadListener.SUCCESS);
-                }
-                catch (MalformedURLException e) 
-                {
-                    listener.onLoadFinish(LoadListener.FAIL);
-                    e.printStackTrace();
-                }
-                catch (JSONException e) 
-                {
-                    listener.onLoadFinish(LoadListener.FAIL);
-                    e.printStackTrace();
-                }
-            }
-        });
-        return false;
-    }
-    
-    public void loadAllTvmaoIdFromProxy(final HashMap<String, String> result, final LoadListener listener)
-    {
-        mUpdateHandler.post(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                boolean success = false;
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Query) + "?all_tvmao_id";
-                try 
-                {
-                    NetDataGetter getter = new DefaultNetDataGetter(url);
-                    JSONObject jsonRoot = getter.getJSONsObject();
-                    if (jsonRoot != null)
-                    {
-                        JSONArray idArray = jsonRoot.getJSONArray("all_tvmao_id");
-                        if (idArray != null)
-                        {
-                            for (int i=0; i<idArray.length(); ++i)
-                            {
-                                String id = idArray.getJSONObject(i).getString("id");
-                                String tvmaoId = idArray.getJSONObject(i).getString("tvmao_id");
-                                
-                                result.put(id, tvmaoId);
-                            }
-                            success = true;
-                        }
-                    }
-                    
-                    if (success)
-                        listener.onLoadFinish(LoadListener.SUCCESS);
-                    else
-                        listener.onLoadFinish(LoadListener.FAIL);
-                }
-                catch (MalformedURLException e) 
-                {
-                    listener.onLoadFinish(LoadListener.FAIL);
-                    e.printStackTrace();
-                }
-                catch (JSONException e) 
-                {
-                    listener.onLoadFinish(LoadListener.FAIL);
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-    
     public boolean loadPopSearch(final int num, final List<String> result, final LoadListener listener)
     {
         mUpdateHandler.post(new Runnable() 
@@ -201,14 +116,6 @@ public class ContentManager implements Shutter
             }
         });
         return false;
-    }
-    
-    public String getTvmaoId(String channelId)
-    {
-        HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
-        if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(tvmaoIdMap))  // Success
-            return tvmaoIdMap.get(channelId);
-        return null;
     }
 
     @Override

@@ -2,12 +2,9 @@ package com.tools.tvguide.managers;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URLEncoder;
-import java.util.HashMap;
 
 import org.acra.ErrorReporter;
 import org.json.JSONException;
@@ -15,7 +12,6 @@ import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.data.GlobalData;
-import com.tools.tvguide.managers.ContentManager.LoadListener;
 import com.tools.tvguide.uninstall.UninstallObserver;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.Utility;
@@ -119,25 +115,7 @@ public class LoginManager
     }
     
     private void doWork()
-    {
-        // 从后台获取所有tvmao id信息，便于之后使用
-        if (AppEngine.getInstance().getEnvironmentManager().isChannelDetailFromWeb())
-        {
-            if (AppEngine.getInstance().getCacheManager().loadAllTvmaoIds(new HashMap<String, String>()) == false)
-            {
-                final HashMap<String, String> tvmaoIdMap = new HashMap<String, String>();
-                AppEngine.getInstance().getContentManager().loadAllTvmaoIdFromProxy(tvmaoIdMap, new ContentManager.LoadListener() 
-                {
-                    @Override
-                    public void onLoadFinish(int status) 
-                    {
-                        if (status == LoadListener.SUCCESS)
-                            AppEngine.getInstance().getCacheManager().saveAllTvmaoIds(tvmaoIdMap);
-                    }
-                });
-            }
-        }
-        
+    {   
         if (AppEngine.getInstance().getSearchWordsManager().needUpdate())
             AppEngine.getInstance().getSearchWordsManager().updatePopSearch(null);
     }
