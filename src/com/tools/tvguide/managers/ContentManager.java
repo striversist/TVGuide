@@ -1,22 +1,20 @@
 package com.tools.tvguide.managers;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.components.Shutter;
-import com.tools.tvguide.data.Channel;
-import com.tools.tvguide.data.Program;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
-import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -43,6 +41,33 @@ public class ContentManager implements Shutter
         mContext = context;
         mUpdateHandler = new Handler(NetworkManager.getInstance().getNetworkThreadLooper());
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    }
+    
+    public boolean loadNowTimeFromNetwork(final StringBuffer result, final LoadListener listener)
+    {
+    	mUpdateHandler.post(new Runnable()
+        {
+            public void run()
+            {
+            	URL url;
+				try {
+					url = new URL("http://m.bjtime.cn");
+					URLConnection uc = url.openConnection();
+					uc.setConnectTimeout(15 * 1000);
+					uc.connect();
+					long ld = uc.getDate(); 	// 取得网站日期时间
+					result.append(ld);
+					listener.onLoadFinish(LoadListener.SUCCESS);
+				} catch (MalformedURLException e) {
+					listener.onLoadFinish(LoadListener.FAIL);
+					e.printStackTrace();
+				} catch (IOException e) {
+					listener.onLoadFinish(LoadListener.FAIL);
+					e.printStackTrace();
+				}
+            }
+        });
+        return false;
     }
     
     public boolean loadNowTimeFromProxy(final StringBuffer result, final LoadListener listener)

@@ -2,14 +2,11 @@ package com.tools.tvguide.activities;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -520,32 +517,25 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
             return;
         }
         
-        // 使用Proxy时间
-        AppEngine.getInstance().getContentManager().loadNowTimeFromProxy(buffer, new ContentManager.LoadListener() 
+        // 使用网络时间
+        AppEngine.getInstance().getContentManager().loadNowTimeFromNetwork(buffer, new ContentManager.LoadListener() 
         {    
             @Override
             public void onLoadFinish(int status) 
             {
-                try 
-                {
-                    Date date = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(buffer.toString());
-                    String currentTime = String.valueOf(date.getHours()) + ":" + String.valueOf(date.getMinutes());
-                    resetOnplayingProgramByTime(currentTime);
-                    
-                    // 优化：判断下次是否使用本地时间替代网络时间，以加快“正在播出”节目的显示
-                    long proxyHour = date.getHours();
-                    long proxyMinute = date.getMinutes();
-                    int localHour = Calendar.getInstance().getTime().getHours();
-                    int localMinute = Calendar.getInstance().getTime().getMinutes();
-                    if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
-                    	sUseLocalTime = true;
-                    
-                    mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
-                } 
-                catch (ParseException e) 
-                {
-                    e.printStackTrace();
-                }
+                Date date = new Date(Long.valueOf(buffer.toString()));
+				String currentTime = String.valueOf(date.getHours()) + ":" + String.valueOf(date.getMinutes());
+				resetOnplayingProgramByTime(currentTime);
+				
+				// 优化：判断下次是否使用本地时间替代网络时间，以加快“正在播出”节目的显示
+				long proxyHour = date.getHours();
+				long proxyMinute = date.getMinutes();
+				int localHour = Calendar.getInstance().getTime().getHours();
+				int localMinute = Calendar.getInstance().getTime().getMinutes();
+				if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
+					sUseLocalTime = true;
+				
+				mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
             }
         });
     }
