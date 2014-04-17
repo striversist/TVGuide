@@ -13,7 +13,6 @@ import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.wptools.ad;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +31,8 @@ import android.app.TimePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 
 public class AdvanceAlarmActivity extends Activity 
 {
@@ -317,7 +318,7 @@ public class AdvanceAlarmActivity extends Activity
         }
         
         if (Build.VERSION.SDK_INT >= 11) {
-            new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new OnDateSetListener() {
+            DatePickerDialog dialog = new DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar calendar = Calendar.getInstance();
@@ -325,7 +326,9 @@ public class AdvanceAlarmActivity extends Activity
                     mAlarmDateString = new SimpleDateFormat(GlobalData.DATE_FORMAT, Locale.ENGLISH).format(calendar.getTime());
                     mAlarmDateSettingTextView.setText(mAlarmDateString);
                 }
-            }, year, month, dayOfMonth).show();
+            }, year, month, dayOfMonth);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
         } else {
             new DatePickerDialog(this, new OnDateSetListener() {
                 @Override
@@ -356,7 +359,7 @@ public class AdvanceAlarmActivity extends Activity
         }
         
         if (Build.VERSION.SDK_INT >= 11) {
-            new TimePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new OnTimeSetListener() {
+            TimePickerDialog dialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, new OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     Calendar calendar = Calendar.getInstance();
@@ -365,7 +368,9 @@ public class AdvanceAlarmActivity extends Activity
                     mAlarmTimeString = new SimpleDateFormat(GlobalData.TIME_FORMAT, Locale.ENGLISH).format(calendar.getTime());
                     mAlarmTimeSettingTextView.setText(mAlarmTimeString);
                 }
-            }, hourOfDay, minute, true).show();
+            }, hourOfDay, minute, true);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
         } else {
             new TimePickerDialog(this, new OnTimeSetListener() {
                 @Override
