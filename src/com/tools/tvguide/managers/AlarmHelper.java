@@ -62,7 +62,7 @@ public class AlarmHelper implements Shutter
         mListeners.remove(listener);
     }
     
-    public void resetAllAlarms()
+    public synchronized void resetAllAlarms()
     {
         for (AlarmData alarmData : mAlarmDataList) {
             removeAlarmData(alarmData);
