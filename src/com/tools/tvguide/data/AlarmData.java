@@ -263,16 +263,22 @@ public class AlarmData implements Serializable
                     break;
                 
                 Calendar weekCalendar = Calendar.getInstance();
+                weekCalendar.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
+                weekCalendar.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
+                
+                // 计算下一次闹钟的星期数
                 int weekToday = Utility.getProxyDay(weekCalendar.get(Calendar.DAY_OF_WEEK));
                 int nextWeekday = findMostCloseWeekDay(weekToday);
                 if (nextWeekday < 0)  // 未找到
                     break;
                 
+                // 设置calendar到下一次闹钟的星期数
                 long originWeekMillis = weekCalendar.getTimeInMillis();
                 weekCalendar.set(Calendar.DAY_OF_WEEK, Utility.getCalendarDayOfWeek(nextWeekday));
-                if (weekCalendar.getTimeInMillis() < originWeekMillis) {    // 时间往前了，需要加一周
+                if (weekCalendar.getTimeInMillis() < originWeekMillis) {    // 时间往前了一周，需要补一周
                     weekCalendar.setTimeInMillis(weekCalendar.getTimeInMillis() + GlobalData.ONE_WEEK_MS);
                 }
+                
                 nextTriggerTime = findMostProperAlarmTime(weekCalendar.getTimeInMillis());
                 
                 if (nextTriggerTime < 0) {  // 闹钟时间已过
@@ -282,7 +288,7 @@ public class AlarmData implements Serializable
                     
                     originWeekMillis = weekCalendar.getTimeInMillis();
                     weekCalendar.set(Calendar.DAY_OF_WEEK, Utility.getCalendarDayOfWeek(nextWeekday));
-                    if (weekCalendar.getTimeInMillis() <= originWeekMillis) {    // 时间往前了，需要加一周（注意：也不能相等）
+                    if (weekCalendar.getTimeInMillis() <= originWeekMillis) {    // 时间往前了一周，需要补一周（注意：这里相等也需要补一周）
                         weekCalendar.setTimeInMillis(weekCalendar.getTimeInMillis() + GlobalData.ONE_WEEK_MS);
                     }
                     nextTriggerTime = findMostProperAlarmTime(weekCalendar.getTimeInMillis());
