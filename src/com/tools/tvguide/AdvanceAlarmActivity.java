@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,6 +37,7 @@ import android.graphics.drawable.ColorDrawable;
 
 public class AdvanceAlarmActivity extends Activity 
 {
+    private static final String TAG = "AdvanceAlarmActivity";
     public static final int Result_Code_Success = 100;
     public static final int Result_Code_Cancelled = 0;
     private static final String Split_Token = " ";
@@ -475,7 +477,8 @@ public class AdvanceAlarmActivity extends Activity
         
         // TODO: for test, remove in the future
         long nextAlarmTime = alarmData.getNextAlarmTriggerTime();
-        Log.d("", "" + nextAlarmTime);
+        String date = new SimpleDateFormat(GlobalData.FULL_TIME_FORMAT, Locale.ENGLISH).format(new Date(nextAlarmTime));
+        Log.d(TAG, "下次闹钟时间：" + date);
         
         AppEngine.getInstance().getAlarmHelper().addAlarmData(alarmData);
         
