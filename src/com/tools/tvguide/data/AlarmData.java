@@ -133,8 +133,8 @@ public class AlarmData implements Serializable
     private List<Long> getAdvanceTriggerList(long orignTriggerTime)
     {
         List<Long> result = new ArrayList<Long>();
-        result.add(Long.valueOf(orignTriggerTime));
-        if (mAdvanceMinuteSortedList == null) {
+        if (mAdvanceMinuteSortedList == null || mAdvanceMinuteSortedList.isEmpty()) {   // 没有选择提前
+            result.add(Long.valueOf(orignTriggerTime));
             return result;
         }
         
@@ -240,6 +240,7 @@ public class AlarmData implements Serializable
         SimpleDateFormat sdf = new SimpleDateFormat(GlobalData.FULL_TIME_FORMAT, Locale.ENGLISH);
         try {
             startCalendar.setTime(sdf.parse(mAlarmStartTime));
+            startCalendar.set(Calendar.SECOND, 0);
         } catch (ParseException e) {
             e.printStackTrace();
             return -1;
@@ -253,6 +254,7 @@ public class AlarmData implements Serializable
                 Calendar dailyCalendar = Calendar.getInstance();
                 dailyCalendar.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
                 dailyCalendar.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
+                dailyCalendar.set(Calendar.SECOND, 0);
                 nextTriggerTime = findMostProperAlarmTime(dailyCalendar.getTimeInMillis());
                 if (nextTriggerTime < 0) {  // 未找到
                     nextTriggerTime = findMostProperAlarmTime(dailyCalendar.getTimeInMillis() + GlobalData.ONE_DAY_MS);
@@ -265,6 +267,7 @@ public class AlarmData implements Serializable
                 Calendar weekCalendar = Calendar.getInstance();
                 weekCalendar.set(Calendar.HOUR_OF_DAY, startCalendar.get(Calendar.HOUR_OF_DAY));
                 weekCalendar.set(Calendar.MINUTE, startCalendar.get(Calendar.MINUTE));
+                weekCalendar.set(Calendar.SECOND, 0);
                 
                 // 计算下一次闹钟的星期数
                 int weekToday = Utility.getProxyDay(weekCalendar.get(Calendar.DAY_OF_WEEK));

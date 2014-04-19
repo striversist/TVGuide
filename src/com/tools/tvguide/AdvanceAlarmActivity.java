@@ -417,6 +417,7 @@ public class AdvanceAlarmActivity extends Activity
                 try {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(new SimpleDateFormat(GlobalData.FULL_TIME_FORMAT, Locale.ENGLISH).parse(mAlarmDateString + Split_Token + mAlarmTimeString));
+                    calendar.set(Calendar.SECOND, 0);
                     if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
                         Toast.makeText(this, "闹钟时间已过期，请重新设置！", Toast.LENGTH_LONG).show();
                         return false;
@@ -479,6 +480,7 @@ public class AdvanceAlarmActivity extends Activity
         long nextAlarmTime = alarmData.getNextAlarmTriggerTime();
         String date = new SimpleDateFormat(GlobalData.FULL_TIME_FORMAT, Locale.ENGLISH).format(new Date(nextAlarmTime));
         Log.d(TAG, "下次闹钟时间：" + date);
+        Toast.makeText(this, "下次闹钟时间：" + date, Toast.LENGTH_LONG).show();
         
         AppEngine.getInstance().getAlarmHelper().addAlarmData(alarmData);
         
