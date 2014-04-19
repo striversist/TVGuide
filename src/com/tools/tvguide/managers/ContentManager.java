@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -19,7 +18,6 @@ import com.tools.tvguide.utils.NetworkManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
-
 
 public class ContentManager implements Shutter
 {
@@ -51,7 +49,7 @@ public class ContentManager implements Shutter
             {
             	URL url;
 				try {
-					url = new URL("http://m.bjtime.cn");
+					url = new URL("http://m.tvmao.com");
 					URLConnection uc = url.openConnection();
 					uc.setConnectTimeout(15 * 1000);
 					uc.connect();
