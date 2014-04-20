@@ -633,7 +633,9 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         {
             case MSG_UPDATE_PROGRAMS:
                 mItemDataList.clear();
-                mProgressDialog.dismiss();
+                if (mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
                 List<Program> programList = new ArrayList<Program>();
                 programList.addAll(mProgramList);
                 mListViewAdapter = new ChannelDetailListAdapter(ChannelDetailActivity.this, programList);
