@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.tools.tvguide.AdvanceAlarmActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.AlarmData;
 import com.tools.tvguide.data.Channel;
@@ -15,10 +16,13 @@ import com.tools.tvguide.managers.AppEngine;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -106,6 +110,19 @@ public class AlarmSettingActivity extends Activity
         initAlarmList();
     };
     
+    @Override  
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)  
+    {
+        if (data == null)
+            return;
+             
+        int position = requestCode;
+        if (resultCode == AdvanceAlarmActivity.Result_Code_Cancelled) {  // 取消了闹钟
+            mItemList.remove(position);
+            mListViewAdapter.notifyDataSetChanged();
+        } 
+    }
+    
     public void back(View view)
     {
         if (view instanceof Button)
@@ -141,5 +158,24 @@ public class AlarmSettingActivity extends Activity
         }
         
         mListViewAdapter.notifyDataSetChanged();
+        
+        mListView.setOnItemClickListener(new OnItemClickListener() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, Object> item = (HashMap<String, Object>) parent.getItemAtPosition(position);
+                AlarmData alarmData = (AlarmData) item.get("alarm_data");
+                if (alarmData == null)
+                    return;
+                
+                final Channel channel = alarmData.getRelatedChannel();
+                final Program program = alarmData.getRelatedProgram();
+                Intent intent = new Intent(AlarmSettingActivity.this, AdvanceAlarmActivity.class);
+                
+                intent.putExtra("channel", channel);
+                intent.putExtra("program", program);
+                startActivityForResult(intent, position);
+            }
+        });
     }
 }
