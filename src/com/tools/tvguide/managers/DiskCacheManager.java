@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.tools.tvguide.components.Shutter;
+import com.tools.tvguide.data.TimeStampString;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
@@ -111,6 +112,55 @@ public class DiskCacheManager implements Shutter, Callback
         }
         
         return result;
+    }
+    
+    public synchronized boolean setTimeStampHtml(String key, TimeStampString timeStampString) {
+    	if (mDiskLruCache == null && !openDiskCache())
+			return false;
+
+        if (key == null || timeStampString == null)
+            return false;
+        
+        boolean result = false;
+        try 
+        {
+            DiskLruCache.Editor editor = mDiskLruCache.edit(String.valueOf(key.hashCode()));
+            if (editor != null)
+            {
+                editor.set(0, timeStampString.getString());
+                editor.set(1, String.valueOf(timeStampString.getDate()));
+                editor.commit();
+                result = true;
+            }
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+        
+    	return result;
+    }
+    
+    public synchronized TimeStampString getTimeStampString(String key) {
+    	if (mDiskLruCache == null && !openDiskCache())
+    		return null;
+        
+        TimeStampString timeStampString = new TimeStampString();
+        try 
+        {
+            DiskLruCache.Editor editor = mDiskLruCache.edit(String.valueOf(key.hashCode()));
+            if (editor != null)
+            {
+            	timeStampString.setString(editor.getString(0));
+            	timeStampString.setDate(Long.valueOf(editor.getString(1)));
+                editor.abort();
+            }
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+        return timeStampString;
     }
     
     public Bitmap getBitmap(String fileName)
