@@ -34,7 +34,7 @@ public class ChannelHtmlManager
         void onDateLoaded(int requestId, List<ChannelDate> channelDateList);
     }
     
-    public void getChannelDetailAsync(final int requestId, final String channelUrl, final ChannelDetailCallback callback)
+    public void getChannelDetailFromFullWebAsync(final int requestId, final String channelUrl, final ChannelDetailCallback callback)
     {
         assert (callback != null);
         new Thread(new Runnable() 
@@ -194,6 +194,61 @@ public class ChannelHtmlManager
                     
                     callback.onDateLoaded(requestId, retDateList);
                     
+                }
+                catch (MalformedURLException e) 
+                {
+                    e.printStackTrace();
+                }
+                catch (IOException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    
+    public void getChannelDetailFromSimpleWebAsync(final int requestId, final String channelUrl, final ChannelDetailCallback callback)
+    {
+        assert (callback != null);
+        new Thread(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                try 
+                {
+                    Document doc = HtmlUtils.getDocument(channelUrl, CacheControl.Memory);
+                    String protocol = new URL(channelUrl).getProtocol();
+                    String host = new URL(channelUrl).getHost();
+                    String prefix = protocol + "://" + host;
+                 
+                    // -------------- 获取节目信息 --------------
+                    // 返回结果
+                    List<Program> retProgramList = new ArrayList<Program>();
+                    Elements programs = doc.select("table[class=timetable] tbody tr");
+                    for (int i=0; i<programs.size(); ++i)
+                    {
+                        Elements tdElements = programs.get(i).select("td");
+                        if (tdElements.size() == 2) {
+                            Element timeElement = tdElements.get(0);
+                            Element titleElement = tdElements.get(1);
+                            
+                            if (timeElement.text().contains("时间") && titleElement.text().contains("节目")) {  // header
+                                continue;
+                            }
+                            
+                            Program addProgram = new Program();
+                            addProgram.time = timeElement.text();
+                            addProgram.title = titleElement.text();
+                            
+                            Element linkElement = titleElement.select("a").first();
+                            if (linkElement != null) {
+                                addProgram.link = prefix + linkElement.attr("href");
+                            }
+                            retProgramList.add(addProgram);
+                        }
+                    }
+                    callback.onProgramsLoaded(requestId, retProgramList);
                 }
                 catch (MalformedURLException e) 
                 {

@@ -463,7 +463,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         sRequestId++;
         mProgramList.clear();
         
-        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailAsync(sRequestId, UrlManager.getWebChannelUrl(mChannelId, mCurrentSelectedDay), new ChannelDetailCallback() 
+        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailFromFullWebAsync(sRequestId, UrlManager.getWebChannelUrl(mChannelId, mCurrentSelectedDay), new ChannelDetailCallback() 
         {            
             @Override
             public void onProgramsLoaded(int requestId, List<Program> programList) 
