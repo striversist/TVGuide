@@ -16,6 +16,7 @@ import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 public class ChannelHtmlManager 
@@ -207,12 +208,17 @@ public class ChannelHtmlManager
         }).start();
     }
     
-    public void getChannelDetailFromSimpleWebAsync(final int requestId, final String channelUrl, final ChannelDetailCallback callback)
+    public void getChannelDetailFromSimpleWebAsync(final int requestId, final String channelUrl, 
+    		final ChannelDetailCallback callback) {
+    	getChannelDetailFromSimpleWebAsync(requestId, channelUrl, callback, null);
+    }
+    
+    public void getChannelDetailFromSimpleWebAsync(final int requestId, final String channelUrl, 
+    		final ChannelDetailCallback callback, Handler handler)
     {
         assert (callback != null);
-        new Thread(new Runnable() 
-        {
-            @Override
+        Runnable runnable = new Runnable() {
+        	@Override
             public void run() 
             {
                 try 
@@ -259,6 +265,11 @@ public class ChannelHtmlManager
                     e.printStackTrace();
                 }
             }
-        }).start();
+		};
+		if (handler != null) {
+			handler.post(runnable);
+		} else {
+			new Thread(runnable).start();
+		}
     }
 }
