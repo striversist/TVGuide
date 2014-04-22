@@ -102,6 +102,7 @@ public class DiskCacheManager implements Shutter, Callback
             if (editor != null)
             {
                 editor.set(0, value);
+                editor.set(1, "");
                 editor.commit();
                 result = true;
             }
@@ -152,7 +153,11 @@ public class DiskCacheManager implements Shutter, Callback
             if (editor != null)
             {
             	timeStampString.setString(editor.getString(0));
-            	timeStampString.setDate(Long.valueOf(editor.getString(1)));
+            	long date = 0;
+            	if (editor.getString(1) != null) {
+            	    date = Long.valueOf(editor.getString(1));
+            	}
+            	timeStampString.setDate(date);
                 editor.abort();
             }
         } 
@@ -232,7 +237,7 @@ public class DiskCacheManager implements Shutter, Callback
     	
     	try 
         {
-            mDiskLruCache = DiskLruCache.open(mContext.getCacheDir(), DISK_CACHE_VERSION, 1, DISK_CACHE_MAX_SIZE);
+            mDiskLruCache = DiskLruCache.open(mContext.getCacheDir(), DISK_CACHE_VERSION, 2, DISK_CACHE_MAX_SIZE);
             if (mDiskLruCache != null)
             	return true;
         } 

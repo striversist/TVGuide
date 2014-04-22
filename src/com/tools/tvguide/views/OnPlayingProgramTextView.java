@@ -31,19 +31,8 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
     private Handler mUiHandler;
     private enum SelfMessage { Update_OnPlaying_Program }
     
-    public OnPlayingProgramTextView(Context context) {
-        super(context);
-        initHandler();
-    }
-    
     public OnPlayingProgramTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initHandler();
-    }
-    
-    public OnPlayingProgramTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        initHandler();
     }
     
     private void initHandler() {
@@ -88,9 +77,10 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
         if (tvmaoId == null || day < 0)
             return false;
         
+        initHandler();
         mTvmaoId = tvmaoId;
         mDay = day;
-        String channelUrl = UrlManager.getWebChannelUrl(tvmaoId, day);
+        String channelUrl = UrlManager.getSimpleWebChannelUrl(tvmaoId, day);
         AppEngine.getInstance().getChannelHtmlManager().getChannelDetailFromSimpleWebAsync(0, channelUrl, 
                 new ChannelDetailCallback() {
             

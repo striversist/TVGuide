@@ -231,6 +231,14 @@ public class UrlManager
         return prefix + tvmaoId + "-w" + String.valueOf(day) + sufix;
     }
     
+    public static String getSimpleWebChannelUrl(String tvmaoId, int day)
+    {        
+        // eg. http://m.tvmao.com/program/CCTV-CCTV1-w6.html
+        String prefix = "http://m.tvmao.com/program/";
+        String sufix = ".html";
+        return prefix + tvmaoId + "-w" + String.valueOf(day) + sufix;
+    }
+    
     public static void setWebChannelLogoUrl(String tvmaoId, String url)
     {
         if (tvmaoId == null || url == null)
