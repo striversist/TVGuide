@@ -1,6 +1,7 @@
 package com.tools.tvguide.views;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.tools.tvguide.data.ChannelDate;
@@ -9,6 +10,7 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ChannelHtmlManager.ChannelDetailCallback;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.ProgramUtil;
+import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.os.Handler;
@@ -21,7 +23,7 @@ import android.widget.TextView;
 public class OnPlayingProgramTextView extends TextView implements Callback {
 
     private static final String TAG = "OnPlayingProgramTextView";
-    private String mChannelUrl;
+    private String mTvmaoId;
     private int mDay;
     private List<Program> mProgramList = new ArrayList<Program>();
     private HandlerThread mHandlerThread;
@@ -54,6 +56,27 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
             mWorkerHandler = new Handler(mHandlerThread.getLooper());
         }
     }
+    
+    /**
+     * 在设置了tvmaoId和day的情况下，直接update
+     * @return
+     */
+    public boolean update() {
+        if (mTvmaoId == null || mDay == 0)
+            return false;
+        return update(mTvmaoId, mDay);
+    }
+    
+    /**
+     * 设置对应的频道id，更新当天的正在播放的节目
+     * @param tvmaoId
+     * @return
+     */
+    public boolean update(String tvmaoId) {
+        if (tvmaoId == null)
+            return false;
+        return update(tvmaoId, Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)));
+    }
 
     /**
      * 设置对应的频道id和天数
@@ -65,9 +88,10 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
         if (tvmaoId == null || day < 0)
             return false;
         
-        mChannelUrl = UrlManager.getWebChannelUrl(tvmaoId, day);
+        mTvmaoId = tvmaoId;
         mDay = day;
-        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailFromSimpleWebAsync(0, mChannelUrl, 
+        String channelUrl = UrlManager.getWebChannelUrl(tvmaoId, day);
+        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailFromSimpleWebAsync(0, channelUrl, 
                 new ChannelDetailCallback() {
             
             @Override
@@ -91,16 +115,6 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
         }, mWorkerHandler);
         
         return true;
-    }
-    
-    /**
-     * 在设置了tvmaoId和day的情况下，直接update
-     * @return
-     */
-    public boolean update() {
-        if (mChannelUrl == null || mDay == 0)
-            return false;
-        return update(mChannelUrl, mDay);
     }
 
     @Override
