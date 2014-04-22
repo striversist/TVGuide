@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.tools.tvguide.components.Shutter;
-import com.tools.tvguide.data.TimeStampString;
+import com.tools.tvguide.data.TimestampString;
 import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
@@ -114,7 +114,7 @@ public class DiskCacheManager implements Shutter, Callback
         return result;
     }
     
-    public synchronized boolean setTimeStampHtml(String key, TimeStampString timeStampString) {
+    public synchronized boolean setTimestampString(String key, TimestampString timeStampString) {
     	if (mDiskLruCache == null && !openDiskCache())
 			return false;
 
@@ -141,11 +141,11 @@ public class DiskCacheManager implements Shutter, Callback
     	return result;
     }
     
-    public synchronized TimeStampString getTimeStampString(String key) {
+    public synchronized TimestampString getTimestampString(String key) {
     	if (mDiskLruCache == null && !openDiskCache())
     		return null;
         
-        TimeStampString timeStampString = new TimeStampString();
+        TimestampString timeStampString = new TimestampString();
         try 
         {
             DiskLruCache.Editor editor = mDiskLruCache.edit(String.valueOf(key.hashCode()));

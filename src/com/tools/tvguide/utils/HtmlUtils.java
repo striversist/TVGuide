@@ -1,7 +1,10 @@
 package com.tools.tvguide.utils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +12,10 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import android.text.TextUtils;
+
 import com.tools.tvguide.components.UANetDataGetter;
+import com.tools.tvguide.data.TimestampString;
 import com.tools.tvguide.managers.AppEngine;
 
 public class HtmlUtils 
@@ -28,10 +34,16 @@ public class HtmlUtils
     {
         String html = null;
         Document doc = null;
+        String key = url + getExtraKey(pairs);
         if (control == CacheControl.Memory) {
-            html = AppEngine.getInstance().getCacheManager().getHtml(url + getExtraKey(pairs));
+            html = AppEngine.getInstance().getCacheManager().getHtml(key);
         } else if (control == CacheControl.Disk) {
-            html = AppEngine.getInstance().getDiskCacheManager().getString(url + getExtraKey(pairs));
+            html = AppEngine.getInstance().getDiskCacheManager().getString(key);
+        } else if (control == CacheControl.DiskToday) {
+        	TimestampString tString = AppEngine.getInstance().getDiskCacheManager().getTimestampString(key);
+        	if (!isExpired(tString.getDate())) {
+        		html = tString.getString();
+        	}
         }
         
         if (html == null)
@@ -52,9 +64,12 @@ public class HtmlUtils
             doc = Jsoup.parse(html);
             
             if (control == CacheControl.Memory) {
-                AppEngine.getInstance().getCacheManager().setHtml(url + getExtraKey(pairs), html);
+                AppEngine.getInstance().getCacheManager().setHtml(key, html);
             } else if (control == CacheControl.Disk) {
-                AppEngine.getInstance().getDiskCacheManager().setString(url + getExtraKey(pairs), html);
+                AppEngine.getInstance().getDiskCacheManager().setString(key, html);
+            } else if (control == CacheControl.DiskToday) {
+            	TimestampString tString = new TimestampString(System.currentTimeMillis(), html);
+            	AppEngine.getInstance().getDiskCacheManager().setTimestampString(key, tString);
             }
         }
         else
@@ -107,4 +122,16 @@ public class HtmlUtils
         
         return id;
     }
+    
+    private static boolean isExpired(long date) {
+		return isTheSameDay(date, System.currentTimeMillis());
+	}
+    
+    private static boolean isTheSameDay(long date1, long date2) {
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+		String date1String = sf.format(new Date(date1));
+		String date2String = sf.format(new Date(date2));
+		
+		return TextUtils.equals(date1String, date2String);
+	}
 }
