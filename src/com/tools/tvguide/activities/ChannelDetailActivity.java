@@ -511,10 +511,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
         // 使用本地时间
         if (sUseLocalTime)
         {
-        	int localHour = Calendar.getInstance().getTime().getHours();
-            int localMinute = Calendar.getInstance().getTime().getMinutes();
-            String localTime = String.valueOf(localHour) + ":" + String.valueOf(localMinute);
-            Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, localTime);
+            Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, System.currentTimeMillis());
             if (onPlayingProgram != null) {
                 mOnPlayingProgram.copy(onPlayingProgram);
             }

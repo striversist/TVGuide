@@ -1,11 +1,36 @@
 package com.tools.tvguide.utils;
 
+import java.util.Calendar;
 import java.util.List;
 
 import com.tools.tvguide.data.Program;
 
 public class ProgramUtil {
 
+    /**
+     * 根据date，从programList中获取正在播放的program
+     * @param programList
+     * @param date
+     * @return
+     */
+    public static Program getOnplayingProgramByTime(List<Program> programList, long date) {
+        if (programList == null)
+            return null;
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+        String minute = String.valueOf(calendar.get(Calendar.MINUTE));
+        String time = hour + ":" + minute;
+        return getOnplayingProgramByTime(programList, time);
+    }
+    
+    /**
+     * 根据指定time，从programList中获取正在播放的program
+     * @param programList
+     * @param time: 格式为：HH:mm
+     * @return
+     */
     public static Program getOnplayingProgramByTime(List<Program> programList,
             String time) {
         if (programList == null || time == null)

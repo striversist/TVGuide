@@ -223,7 +223,7 @@ public class ChannelHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(channelUrl, CacheControl.Memory);
+                    Document doc = HtmlUtils.getDocument(channelUrl, CacheControl.DiskToday);
                     String protocol = new URL(channelUrl).getProtocol();
                     String host = new URL(channelUrl).getHost();
                     String prefix = protocol + "://" + host;
