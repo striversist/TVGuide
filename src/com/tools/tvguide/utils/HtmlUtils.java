@@ -116,7 +116,7 @@ public class HtmlUtils
             Matcher weekMatcher = weekPattern.matcher(id);
             if (weekMatcher.find())
             {
-                id = weekMatcher.group(1);  
+                id = weekMatcher.group(1);
             }
         }
         
@@ -124,7 +124,7 @@ public class HtmlUtils
     }
     
     private static boolean isExpired(long date) {
-		return isTheSameDay(date, System.currentTimeMillis());
+		return !isTheSameDay(date, System.currentTimeMillis());
 	}
     
     private static boolean isTheSameDay(long date1, long date2) {

@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -78,6 +79,12 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
             return false;
         
         initHandler();
+        if (TextUtils.equals(mTvmaoId, tvmaoId) && mDay == day) {
+            if (!mProgramList.isEmpty()) {
+                updateOnPlayingProgram();
+            }
+        }
+        
         mTvmaoId = tvmaoId;
         mDay = day;
         String channelUrl = UrlManager.getSimpleWebChannelUrl(tvmaoId, day);
@@ -89,13 +96,7 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
                 if (programList != null) {
                     mProgramList.clear();
                     mProgramList.addAll(programList);
-                    
-                    Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
-                            System.currentTimeMillis());
-                    if (onPlayingProgram != null) {
-                        mUiHandler.obtainMessage(SelfMessage.Update_OnPlaying_Program.ordinal(), onPlayingProgram)
-                                .sendToTarget();
-                    }
+                    updateOnPlayingProgram();
                 }
             }
             
@@ -106,6 +107,15 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
         
         return true;
     }
+    
+    private void updateOnPlayingProgram() {
+        Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
+                System.currentTimeMillis());
+        if (onPlayingProgram != null) {
+            mUiHandler.obtainMessage(SelfMessage.Update_OnPlaying_Program.ordinal(), onPlayingProgram)
+                    .sendToTarget();
+        }
+    }
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -113,7 +123,7 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
         switch (selfMsg) {
             case Update_OnPlaying_Program:
                 Program onplayingProgram = (Program) msg.obj;
-                setText(onplayingProgram.time + ": " + onplayingProgram.title);
+                setText("正在播出：" + onplayingProgram.time + ": " + onplayingProgram.title);
                 break;
         }
         return false;

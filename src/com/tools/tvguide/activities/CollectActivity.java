@@ -23,6 +23,7 @@ import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.views.NetImageView;
 import com.tools.tvguide.views.NetImageView.ImageLoadListener;
+import com.tools.tvguide.views.OnPlayingProgramTextView;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -80,6 +81,11 @@ public class CollectActivity extends Activity implements DragSortListener
                     }
                 }
                 ,logoUrls);
+            }
+            
+            OnPlayingProgramTextView onPlayingProgramTextView = (OnPlayingProgramTextView) view.findViewById(R.id.on_playing_program_tv);
+            if (onPlayingProgramTextView != null) {
+                onPlayingProgramTextView.update(tvmaoId);
             }
             
             Button rmBtn = (Button)view.findViewById(R.id.del_btn);
