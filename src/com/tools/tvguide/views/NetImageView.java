@@ -22,7 +22,7 @@ public class NetImageView extends ImageView
     private Bitmap mBitmap;
     private String mUrl;
     private ImageLoadListener mListener;
-    private CacheControl mCacheControl = CacheControl.Memory;
+    private CacheControl mCacheControl = CacheControl.Disk;
     
     public static interface ImageLoadListener
     {
