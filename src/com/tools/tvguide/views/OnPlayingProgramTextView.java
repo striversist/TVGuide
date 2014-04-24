@@ -26,6 +26,7 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
     private static final String TAG = "OnPlayingProgramTextView";
     private String mTvmaoId;
     private int mDay;
+    private int mRequestId = 0;
     private List<Program> mProgramList = new ArrayList<Program>();
     private HandlerThread mHandlerThread;
     private Handler mWorkerHandler;
@@ -87,12 +88,15 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
         
         mTvmaoId = tvmaoId;
         mDay = day;
+        mRequestId++;
         String channelUrl = UrlManager.getSimpleWebChannelUrl(tvmaoId, day);
-        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailFromSimpleWebAsync(0, channelUrl, 
+        AppEngine.getInstance().getChannelHtmlManager().getChannelDetailFromSimpleWebAsync(mRequestId, channelUrl, 
                 new ChannelDetailCallback() {
             
             @Override
             public void onProgramsLoaded(int requestId, List<Program> programList) {
+                if (requestId != mRequestId)    // 在回调之前已经被改变，则Cancel之前的操作
+                    return;
                 if (programList != null) {
                     mProgramList.clear();
                     mProgramList.addAll(programList);
@@ -102,6 +106,8 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
             
             @Override
             public void onDateLoaded(int requestId, List<ChannelDate> channelDateList) {
+                if (requestId != mRequestId)    // 在回调之前已经被改变，则Cancel之前的操作
+                    return;
             }
         }, mWorkerHandler);
         
