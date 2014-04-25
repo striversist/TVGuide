@@ -10,8 +10,12 @@ import org.acra.ErrorReporter;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.acra.collector.CrashReportData;
+import org.acra.sender.ReportSender;
+import org.acra.sender.ReportSenderException;
 
 import android.app.Application;
+import android.util.Log;
 
 @ReportsCrashes(
     formKey = "",
@@ -37,7 +41,8 @@ import android.app.Application;
 
 public class MyApplication extends Application
 {
-	public static MyApplication sInstance = null;
+    private static final String TAG = "MyApplication";
+	private static MyApplication sInstance = null;
 	
 	public static MyApplication getInstance()
 	{
@@ -45,7 +50,8 @@ public class MyApplication extends Application
 		return sInstance;
 	}
 	
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public void onCreate()
 	{
 		super.onCreate();
@@ -81,6 +87,15 @@ public class MyApplication extends Application
 			// 渠道
 			if (AppEngine.getInstance().getUpdateManager().getAppChannelName() != null)
 			    ErrorReporter.getInstance().putCustomData("APP_CHANNEL", AppEngine.getInstance().getUpdateManager().getAppChannelName());
+
+			if (EnvironmentManager.enableACRALog) {
+    			ErrorReporter.getInstance().addReportSender(new ReportSender() {
+                    @Override
+                    public void send(CrashReportData reportData) throws ReportSenderException {
+                        Log.e(TAG, reportData.toString());
+                    }
+                });
+			}
 		}
 	}
 }

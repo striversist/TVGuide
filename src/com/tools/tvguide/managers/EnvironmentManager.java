@@ -12,6 +12,7 @@ public class EnvironmentManager implements Shutter
 {
     public static final boolean isDevelopMode          = false;
     public static final boolean enableACRA             = true;
+    public static final boolean enableACRALog          = false;
     public static final boolean enableUninstallReport  = true;
     
     private Context mContext;
