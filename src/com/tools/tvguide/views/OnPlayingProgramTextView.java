@@ -14,37 +14,30 @@ import com.tools.tvguide.utils.Utility;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Handler.Callback;
 import android.os.HandlerThread;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-public class OnPlayingProgramTextView extends TextView implements Callback {
+public class OnPlayingProgramTextView extends TextView {
 
     private static final String TAG = "OnPlayingProgramTextView";
+    private static HandlerThread sHandlerThread;
+    private static Handler sWorkerHandler;
     private String mTvmaoId;
     private int mDay;
     private int mRequestId = 0;
     private List<Program> mProgramList = new ArrayList<Program>();
-    private HandlerThread mHandlerThread;
-    private Handler mWorkerHandler;
-    private Handler mUiHandler;
-    private enum SelfMessage { Update_OnPlaying_Program }
     
     public OnPlayingProgramTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
     
     private void initHandler() {
-        if (mUiHandler == null) {
-            mUiHandler = new Handler(this);
-        }
-        if (mWorkerHandler == null || mHandlerThread == null) {
-            mHandlerThread = new HandlerThread(TAG);
-            mHandlerThread.start();
-            mWorkerHandler = new Handler(mHandlerThread.getLooper());
+        if (sWorkerHandler == null || sHandlerThread == null) {
+            sHandlerThread = new HandlerThread(TAG);
+            sHandlerThread.start();
+            sWorkerHandler = new Handler(sHandlerThread.getLooper());
         }
     }
     
@@ -109,29 +102,21 @@ public class OnPlayingProgramTextView extends TextView implements Callback {
                 if (requestId != mRequestId)    // 在回调之前已经被改变，则Cancel之前的操作
                     return;
             }
-        }, mWorkerHandler);
+        }, sWorkerHandler);
         
         return true;
     }
     
     private void updateOnPlayingProgram() {
-        Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
+        final Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
                 System.currentTimeMillis());
         if (onPlayingProgram != null) {
-            mUiHandler.obtainMessage(SelfMessage.Update_OnPlaying_Program.ordinal(), onPlayingProgram)
-                    .sendToTarget();
+            post(new Runnable() { 
+                @Override
+                public void run() {
+                    setText("正在播出：" + onPlayingProgram.time + ": " + onPlayingProgram.title);
+                }
+            });
         }
-    }
-
-    @Override
-    public boolean handleMessage(Message msg) {
-        SelfMessage selfMsg = SelfMessage.values()[msg.what];
-        switch (selfMsg) {
-            case Update_OnPlaying_Program:
-                Program onplayingProgram = (Program) msg.obj;
-                setText("正在播出：" + onplayingProgram.time + ": " + onplayingProgram.title);
-                break;
-        }
-        return false;
     }
 }
