@@ -108,15 +108,25 @@ public class OnPlayingProgramTextView extends TextView {
     }
     
     private void updateOnPlayingProgram() {
-        final Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
-                System.currentTimeMillis());
-        if (onPlayingProgram != null) {
-            post(new Runnable() { 
-                @Override
-                public void run() {
-                    setText("正在播出：" + onPlayingProgram.time + ": " + onPlayingProgram.title);
+        // 由于getOnplayingProgramByTime操作比较耗时，故不放在UI线程中
+        sWorkerHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                final Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
+                        System.currentTimeMillis());
+                if (onPlayingProgram != null) {
+                    setTextOnUI("正在播出：" + onPlayingProgram.time + ": " + onPlayingProgram.title);
                 }
-            });
-        }
+            }
+        });
+    }
+    
+    private void setTextOnUI(final String text) {
+        post(new Runnable() { 
+            @Override
+            public void run() {
+                setText(text);
+            }
+        });
     }
 }

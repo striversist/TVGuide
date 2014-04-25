@@ -9,6 +9,7 @@ public class ProgramUtil {
 
     /**
      * 根据date，从programList中获取正在播放的program
+     * 该API比较耗时（可能有十几ms），不建议在UI线程中大量调用
      * @param programList
      * @param date
      * @return
