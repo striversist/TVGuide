@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Map.Entry;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -44,6 +46,8 @@ import android.widget.Toast;
 
 public class CollectActivity extends Activity implements DragSortListener
 {
+    private final int TIMER_SCHEDULE_PERIOD = 1 * 60 * 1000;        // 1 minute
+    private Timer mTimer;
     private static boolean sHasShownTips = false;
     private DragSortListView mChannelListView;
     private DragSortController mController;
@@ -190,6 +194,19 @@ public class CollectActivity extends Activity implements DragSortListener
         
         createAndSetListViewAdapter();
         report();
+        
+        mTimer = new Timer(true);
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mChannelListView.post(new Runnable() {  
+                    @Override
+                    public void run() {
+                        updateChannelListView();
+                    }
+                });
+            }
+        }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
     }
     
     @Override
