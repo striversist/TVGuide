@@ -13,11 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -260,31 +256,31 @@ public class Utility
      * 比较时间，两者必须是：HH:mm的格式
      * @param time1
      * @param time2
-     * @return 1(time1 > time2); 0(time1 == time2); -1(time1 < time2)
+     * @return 1(time1 > time2); 0(time1 == time2); -1(time1 < time2)；其它值(failed input)
      */
     public static int compareTime(String time1, String time2)
     {
         assert(time1 != null && time2 != null);
-        
-        try 
-        {
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            Date date1 = df.parse(time1);
-            Date date2 = df.parse(time2);
-            
-            if (date1.getTime() > date2.getTime())
-                return 1;
-            else if (date1.getTime() < date2.getTime())
-                return -1;
-            else
-                return 0;
-        } 
-        catch (ParseException e) 
-        {
-            e.printStackTrace();
+        String[] time1SplitArray = time1.split(":");
+        if (time1SplitArray.length != 2) {
+            return -2;
         }
-        
-        return 0;
+        String[] time2SplitArray = time2.split(":");
+        if (time2SplitArray.length != 2) {
+            return -2;
+        }
+        String hour1 = time1SplitArray[0];
+        String minute1= time1SplitArray[1];
+        String hour2 = time2SplitArray[0];
+        String minute2 = time2SplitArray[1];
+        int result = Integer.valueOf(hour1) * 60 + Integer.valueOf(minute1) - Integer.valueOf(hour2) * 60 - Integer.valueOf(minute2);
+        if (result > 0) {
+            return 1;
+        } else if (result < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
     
     public static Bitmap getNetworkImage(String url, CacheControl control)
