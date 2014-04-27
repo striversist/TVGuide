@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-public class CollectListAdapter extends BaseAdapter {
+public class CollectListAdapter extends BaseAdapter implements OnClickListener {
     
     private static final String KEY_TVMAO_ID = "tvmao_id";
     private static final String KEY_NAME = "name";
@@ -50,6 +50,7 @@ public class CollectListAdapter extends BaseAdapter {
         for (HashMap<String, String> item : mItemList) {
             item.remove(KEY_ON_PLAYING_PROGRAM);
         }
+        notifyDataSetChanged();
     }
     
     public Object remove(int position) {
@@ -94,22 +95,33 @@ public class CollectListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        final HashMap<String, String> item = mItemList.get(position);
+        ViewHolder holder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.collect_list_item, parent, false);
+            TextView channelNameTextView = (TextView) convertView.findViewById(R.id.channel_name_tv);
+            NetImageView channelLogoNetImageView = (NetImageView) convertView.findViewById(R.id.channel_logo_niv);
+            OnPlayingProgramTextView onplayingProgramTextView = (OnPlayingProgramTextView) convertView.findViewById(R.id.on_playing_program_tv);
+            
+            holder = new ViewHolder();
+            holder.channelNameTextView = channelNameTextView;
+            holder.channelLogoNetImageView = channelLogoNetImageView;
+            holder.onPlayingProgramTextView = onplayingProgramTextView;
+            holder.rmButton = (Button) convertView.findViewById(R.id.del_btn);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+            holder.channelLogoNetImageView.setImageBitmap(null);
         }
         
-        final HashMap<String, String> item = mItemList.get(position);
-        
-        TextView channelNameTextView = (TextView) convertView.findViewById(R.id.channel_name_tv);
         if (item.containsKey(KEY_NAME)) {
-            channelNameTextView.setText(item.get(KEY_NAME));
+            holder.channelNameTextView.setText(item.get(KEY_NAME));
         }
         
-        NetImageView netImageView = (NetImageView) convertView.findViewById(R.id.channel_logo_niv);
         final String tvmaoId = item.get(KEY_TVMAO_ID);
         String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
         if (logoUrls != null) {
-            netImageView.loadImage(new ImageLoadListener() {
+            holder.channelLogoNetImageView.loadImage(new ImageLoadListener() {
                 @Override
                 public void onImageLoaded(String url, Bitmap bitmap) {
                     UrlManager.setWebChannelLogoUrl(tvmaoId, url);
@@ -117,11 +129,10 @@ public class CollectListAdapter extends BaseAdapter {
             } ,logoUrls);
         }
         
-        OnPlayingProgramTextView onPlayingProgramTextView = (OnPlayingProgramTextView) convertView.findViewById(R.id.on_playing_program_tv);
         if (item.containsKey(KEY_ON_PLAYING_PROGRAM)) {
-            onPlayingProgramTextView.setText(item.get(KEY_ON_PLAYING_PROGRAM));
+            holder.onPlayingProgramTextView.setText(item.get(KEY_ON_PLAYING_PROGRAM));
         } else {
-            onPlayingProgramTextView.update(tvmaoId, new UpdateCallback() {
+            holder.onPlayingProgramTextView.update(tvmaoId, new UpdateCallback() {
                 @Override
                 public void onUpdate(TextView textView, final String text) {
                     if (textView == null)
@@ -136,21 +147,26 @@ public class CollectListAdapter extends BaseAdapter {
             });
         }
         
-        Button rmBtn = (Button) convertView.findViewById(R.id.del_btn);
-        rmBtn.setText(mContext.getResources().getString(R.string.delete));
-        rmBtn.setTag(Integer.valueOf(position));
-        rmBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position = (Integer) view.getTag();
-                if (mRemoveCallback != null) {
-                    mRemoveCallback.onRemove(position, mItemList.remove(position));
-                }
-                notifyDataSetChanged();
-            }
-        });
+        holder.rmButton.setText(mContext.getResources().getString(R.string.delete));
+        holder.rmButton.setTag(Integer.valueOf(position));
+        holder.rmButton.setOnClickListener(this);
         
         return convertView;
     }
 
+    @Override
+    public void onClick(View view) {
+        int position = (Integer) view.getTag();
+        if (mRemoveCallback != null) {
+            mRemoveCallback.onRemove(position, mItemList.remove(position));
+        }
+        notifyDataSetChanged();
+    }
+
+    private class ViewHolder {
+        TextView channelNameTextView;
+        OnPlayingProgramTextView onPlayingProgramTextView;
+        NetImageView channelLogoNetImageView;
+        Button rmButton;
+    }
 }
