@@ -29,6 +29,10 @@ public class OnPlayingProgramTextView extends TextView {
     private int mRequestId = 0;
     private List<Program> mProgramList = new ArrayList<Program>();
     
+    public interface UpdateCallback {
+        public void onUpdate(TextView textView, String text);
+    }
+    
     public OnPlayingProgramTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -48,7 +52,7 @@ public class OnPlayingProgramTextView extends TextView {
     public boolean update() {
         if (mTvmaoId == null || mDay == 0)
             return false;
-        return update(mTvmaoId, mDay);
+        return update(mTvmaoId, mDay, null);
     }
     
     /**
@@ -56,10 +60,10 @@ public class OnPlayingProgramTextView extends TextView {
      * @param tvmaoId
      * @return
      */
-    public boolean update(String tvmaoId) {
+    public boolean update(String tvmaoId, UpdateCallback callback) {
         if (tvmaoId == null)
             return false;
-        return update(tvmaoId, Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)));
+        return update(tvmaoId, Utility.getProxyDay(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)), callback);
     }
 
     /**
@@ -68,14 +72,14 @@ public class OnPlayingProgramTextView extends TextView {
      * @param day
      * @return
      */
-    public boolean update(String tvmaoId, int day) {
+    public boolean update(String tvmaoId, int day, final UpdateCallback callback) {
         if (tvmaoId == null || day < 0)
             return false;
         
         initHandler();
         if (TextUtils.equals(mTvmaoId, tvmaoId) && mDay == day) {
             if (!mProgramList.isEmpty()) {
-                updateOnPlayingProgram();
+                updateOnPlayingProgram(callback);
             }
         }
         
@@ -93,7 +97,7 @@ public class OnPlayingProgramTextView extends TextView {
                 if (programList != null) {
                     mProgramList.clear();
                     mProgramList.addAll(programList);
-                    updateOnPlayingProgram();
+                    updateOnPlayingProgram(callback);
                 }
             }
             
@@ -107,7 +111,7 @@ public class OnPlayingProgramTextView extends TextView {
         return true;
     }
     
-    private void updateOnPlayingProgram() {
+    private void updateOnPlayingProgram(final UpdateCallback callback) {
         // 由于getOnplayingProgramByTime操作比较耗时，故不放在UI线程中
         sWorkerHandler.post(new Runnable() {
             @Override
@@ -115,7 +119,11 @@ public class OnPlayingProgramTextView extends TextView {
                 final Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, 
                         System.currentTimeMillis());
                 if (onPlayingProgram != null) {
-                    setTextOnUI("正在播出：" + onPlayingProgram.time + ": " + onPlayingProgram.title);
+                    String text = "正在播出：" + onPlayingProgram.time + ": " + onPlayingProgram.title;
+                    setTextOnUI(text);
+                    if (callback != null) {
+                        callback.onUpdate(OnPlayingProgramTextView.this, text);
+                    }
                 }
             }
         });

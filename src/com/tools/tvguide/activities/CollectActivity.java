@@ -17,29 +17,22 @@ import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DragSortListener;
 import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.CollectListAdapter;
+import com.tools.tvguide.adapters.CollectListAdapter.RemoveItemCallback;
 import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
-import com.tools.tvguide.views.NetImageView;
-import com.tools.tvguide.views.NetImageView.ImageLoadListener;
-import com.tools.tvguide.views.OnPlayingProgramTextView;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
@@ -51,7 +44,7 @@ public class CollectActivity extends Activity implements DragSortListener
     private static boolean sHasShownTips = false;
     private DragSortListView mChannelListView;
     private DragSortController mController;
-    private MySimpleAdapter mListViewAdapter;
+    private CollectListAdapter mListViewAdapter;
     private ArrayList<HashMap<String, Object>> mItemList;
     private List<Channel> mChannelList;
     private ArrayList<String> mReportList;
@@ -59,103 +52,6 @@ public class CollectActivity extends Activity implements DragSortListener
     private LinearLayout mContentLayout;
     private LinearLayout mNoCollectLayout;
     private LinearLayout.LayoutParams mCenterLayoutParams;
-        
-    private class MySimpleAdapter extends SimpleAdapter
-    {
-        public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) 
-        {
-            super(context, data, resource, from, to);
-        }
-        
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) 
-        {
-            View view = super.getView(position, convertView, parent);
-            
-            NetImageView netImageView = (NetImageView) view.findViewById(R.id.channel_logo_niv);
-            final String tvmaoId = (String) mItemList.get(position).get("tvmao_id");
-            String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
-            if (logoUrls != null) {
-                netImageView.loadImage(new ImageLoadListener()
-                {
-                    @Override
-                    public void onImageLoaded(String url, Bitmap bitmap) 
-                    {
-                        UrlManager.setWebChannelLogoUrl(tvmaoId, url);
-                    }
-                }
-                ,logoUrls);
-            }
-            
-            OnPlayingProgramTextView onPlayingProgramTextView = (OnPlayingProgramTextView) view.findViewById(R.id.on_playing_program_tv);
-            if (onPlayingProgramTextView != null) {
-                onPlayingProgramTextView.update(tvmaoId);
-            }
-            
-            Button rmBtn = (Button)view.findViewById(R.id.del_btn);
-            if (rmBtn != null)
-            {
-            	assert (mChannelList != null);
-            	rmBtn.setText(getResources().getString(R.string.delete));
-                rmBtn.setTag(mChannelList.get(position));
-                rmBtn.setOnClickListener(new OnClickListener() 
-                {
-                    @Override
-                    public void onClick(View v) 
-                    {
-                    	Channel bindChannel = (Channel) v.getTag();
-                        
-                        for (int i=0; i<mChannelList.size(); ++i)
-                        {
-                            if (mChannelList.get(i).tvmaoId.equals(bindChannel.tvmaoId))
-                            {
-                                AppEngine.getInstance().getCollectManager().removeCollectChannel(mChannelList.get(i).tvmaoId);
-                                mChannelList.remove(i);
-                                mItemList.remove(i);
-                            }
-                        }
-                        mListViewAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-            return view;
-        }
-        
-        @Override
-        public Object getItem(int position)
-        {
-        	return mItemList.get(position);
-        }
-        
-        public Object remove(int position)
-        {
-        	if (position < 0 || position >= getCount())
-        		return null;
-        	
-        	Object removeObject = getItem(position);
-        	mChannelList.remove(position);
-        	mItemList.remove(position);
-        	notifyDataSetChanged();
-        	
-        	return removeObject;
-        }
-        
-        @SuppressWarnings("unchecked")
-		public void add(int position, Object item)
-        {
-        	if (position < 0 || position > getCount() || item == null)
-        		return;
-        	
-        	HashMap<String, Object> hashItem = (HashMap<String, Object>) item;
-        	Channel channel = new Channel();
-        	channel.tvmaoId = (String) hashItem.get("tvmao_id");
-        	channel.name = (String) hashItem.get("name");
-        	
-        	mChannelList.add(position, channel);
-        	mItemList.add(position, hashItem);
-        	notifyDataSetChanged();
-        }
-    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -199,12 +95,14 @@ public class CollectActivity extends Activity implements DragSortListener
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                mChannelListView.post(new Runnable() {  
-                    @Override
-                    public void run() {
-                        updateChannelListView();
-                    }
-                });
+                if (mChannelListView != null && mChannelListView.isShown()) {
+                    mChannelListView.post(new Runnable() {  
+                        @Override
+                        public void run() {
+                            mListViewAdapter.updateOnPlayingProgram();
+                        }
+                    });
+                }
             }
         }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
     }
@@ -232,13 +130,36 @@ public class CollectActivity extends Activity implements DragSortListener
             }
         }
     };
+    
+    @Override
+    protected void onDestroy() {
+        mTimer.cancel();
+        super.onDestroy();
+    }
 
     private void createAndSetListViewAdapter()
     {
         mItemList = new ArrayList<HashMap<String, Object>>();
-        mListViewAdapter = new MySimpleAdapter(CollectActivity.this, mItemList, R.layout.collect_list_item,
-                new String[]{"image", "name", "button"}, 
-                new int[]{R.id.channel_logo_niv, R.id.channel_name_tv, R.id.del_btn});
+        initChannelList();
+        List<HashMap<String, String>> itemList = new ArrayList<HashMap<String,String>>();
+        for (Channel channel : mChannelList) {
+            HashMap<String, String> item = new HashMap<String, String>();
+            item.put("tvmao_id", channel.tvmaoId);
+            item.put("name", channel.name);
+            itemList.add(item);
+        }
+        mListViewAdapter = new CollectListAdapter(this, itemList);
+        mListViewAdapter.setOnRemoveListener(new RemoveItemCallback() {
+            @Override
+            public void onRemove(int position, HashMap<String, String> item) {
+                mChannelList.remove(position);
+                String tvmaoId = item.get("tvmao_id");
+                if (tvmaoId != null) {
+                    AppEngine.getInstance().getCollectManager().removeCollectChannel(tvmaoId);
+                }
+            }
+        });
+        
         mChannelListView.setAdapter(mListViewAdapter);
     }
     
@@ -326,7 +247,8 @@ public class CollectActivity extends Activity implements DragSortListener
         return controller;
     }
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void drop(int from, int to) 
 	{
 		CollectManager manager = AppEngine.getInstance().getCollectManager();
@@ -338,8 +260,13 @@ public class CollectActivity extends Activity implements DragSortListener
 		}
 		
 		Object dragObject = mListViewAdapter.remove(from);
-		if (dragObject != null)
-			mListViewAdapter.add(to, dragObject);
+		if (dragObject != null) {
+		    Channel channel = mChannelList.remove(from);
+            mChannelList.add(to, channel);
+		    
+		    HashMap<String, String> item = (HashMap<String, String>) dragObject;
+            mListViewAdapter.add(to, item);
+		}
 	}
 
 	@Override
