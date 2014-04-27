@@ -36,6 +36,7 @@ public class CollectManager implements Shutter
     {
         mCollectChannels.put(id, info);
         mSettingChanged = true;
+        saveCollectChannels();
     }
     
     public void addCollectChannel(int position, String id, HashMap<String, Object> info)
@@ -74,6 +75,7 @@ public class CollectManager implements Shutter
 	        mCollectChannels.clear();
 	        mCollectChannels.putAll(newCollectChannels);
     	}
+    	saveCollectChannels();
     }
     
     public HashMap<String, Object> removeCollectChannel(String id)
@@ -81,6 +83,7 @@ public class CollectManager implements Shutter
     	HashMap<String, Object> removeChannelInfo = mCollectChannels.get(id);
         mCollectChannels.remove(id);
         mSettingChanged = true;
+        saveCollectChannels();
         return removeChannelInfo;
     }
     
