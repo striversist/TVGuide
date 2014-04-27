@@ -51,13 +51,13 @@ public class AlarmHelper implements Shutter
             mListeners.get(i).onAlarmed(alarmData);
     }
     
-    public void addAlarmListener(AlarmListener listener)
+    public synchronized void addAlarmListener(AlarmListener listener)
     {
         assert (listener != null);
         mListeners.add(listener);
     }
     
-    public void removeAlarmListener(AlarmListener listener)
+    public synchronized void removeAlarmListener(AlarmListener listener)
     {
         assert (listener != null);
         mListeners.remove(listener);
