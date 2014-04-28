@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
-import com.tools.tvguide.adapters.ChannellistAdapter2;
+import com.tools.tvguide.adapters.SearchChannellistAdapter;
 import com.tools.tvguide.adapters.HotProgramListAdapter;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
@@ -531,7 +531,7 @@ public class SearchActivity extends Activity implements Callback
                             startActivity(intent);
                         }
                     });
-                    channelListView.setAdapter(new ChannellistAdapter2(SearchActivity.this, mChannelList));
+                    channelListView.setAdapter(new SearchChannellistAdapter(SearchActivity.this, mChannelList));
                     setPageAdapterView(tabIndex, channelLayout);
                 }
                 break;

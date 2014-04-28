@@ -1,7 +1,6 @@
 package com.tools.tvguide.adapters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
@@ -16,12 +15,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class ChannellistAdapter2 extends BaseAdapter
+public class SearchChannellistAdapter extends BaseAdapter
 {
     private Context mContext;
     private List<Channel> mChannelList = new ArrayList<Channel>();
     
-    public ChannellistAdapter2(Context context, List<Channel> channelList)
+    public SearchChannellistAdapter(Context context, List<Channel> channelList)
     {
         assert (context != null);
         assert (mChannelList != null);
