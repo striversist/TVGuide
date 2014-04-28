@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
+import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.NetImageView;
 import com.tools.tvguide.views.OnPlayingProgramTextView;
 import com.tools.tvguide.views.NetImageView.ImageLoadListener;
@@ -27,6 +29,7 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
     private static final String KEY_TVMAO_ID = "tvmao_id";
     private static final String KEY_NAME = "name";
     private static final String KEY_ON_PLAYING_PROGRAM = "onplaying_program";
+    private static final String KEY_CHANNEL_LOGO = "image";
     private Context mContext;
     private RemoveItemCallback mRemoveCallback;
     private List<HashMap<String, Object>> mItemList = new ArrayList<HashMap<String, Object>>();
@@ -123,19 +126,38 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
             holder.channelLogoNetImageView.setImageBitmap(null);
         }
         
+        final String tvmaoId = (String)item.get(KEY_TVMAO_ID);
+        
         if (item.containsKey(KEY_NAME)) {
             holder.channelNameTextView.setText((String)item.get(KEY_NAME));
         }
         
-        final String tvmaoId = (String)item.get(KEY_TVMAO_ID);
-        String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
-        if (logoUrls != null) {
-            holder.channelLogoNetImageView.loadImage(new ImageLoadListener() {
-                @Override
-                public void onImageLoaded(String url, Bitmap bitmap) {
-                    UrlManager.setWebChannelLogoUrl(tvmaoId, url);
+        if (item.containsKey(KEY_CHANNEL_LOGO)) {
+            holder.channelLogoNetImageView.setImageBitmap((Bitmap)item.get(KEY_CHANNEL_LOGO));
+        } else {
+            String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
+            if (logoUrls != null) {
+                boolean found = false;
+                for (String logoUrl : logoUrls) {
+                    Bitmap bitmap = AppEngine.getInstance().getDiskCacheManager().getBitmap(Utility.guessFileNameByUrl(logoUrl));
+                    if (bitmap != null) {   // 本地存在
+                        holder.channelLogoNetImageView.setImageBitmap(bitmap);
+                        item.put(tvmaoId, bitmap);
+                        found = true;
+                        break;
+                    }
                 }
-            } ,logoUrls);
+                
+                if (!found) {
+                    holder.channelLogoNetImageView.loadImage(new ImageLoadListener() {
+                        @Override
+                        public void onImageLoaded(String url, Bitmap bitmap) {
+                            UrlManager.setWebChannelLogoUrl(tvmaoId, url);
+                            item.put(tvmaoId, bitmap);
+                        }
+                    } ,logoUrls);
+                }
+            }
         }
         
         if (item.containsKey(KEY_ON_PLAYING_PROGRAM)) {
