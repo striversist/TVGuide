@@ -1,7 +1,6 @@
 package com.tools.tvguide.managers;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -122,16 +121,14 @@ public class UpdateManager
     {
         try
         {
-            if (new File(FILE_GUID).exists()) {
-                FileReader reader = new FileReader(mContext.getFileStreamPath(FILE_GUID));
-                BufferedReader bufferedReader = new BufferedReader(reader);
-                mGuid = bufferedReader.readLine();
-                bufferedReader.close();
-            }
+            FileReader reader = new FileReader(mContext.getFileStreamPath(FILE_GUID));
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            mGuid = bufferedReader.readLine();
+            bufferedReader.close();
         } 
         catch (FileNotFoundException e) 
         {
-            e.printStackTrace();
+//            e.printStackTrace();
         } 
         catch (IOException e) 
         {

@@ -1,6 +1,5 @@
 package com.tools.tvguide.managers;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -199,17 +198,15 @@ public class AlarmHelper implements Shutter
     {
         try
         {
-            if (new File(FILE_ALARM_HELPER).exists()) {
-                FileInputStream fis = mContext.openFileInput(FILE_ALARM_HELPER);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                Object obj = ois.readObject();
-                if (obj instanceof List<?>)
-                {
-                    mAlarmDataList =  (ArrayList<AlarmData>) obj;
-                }
-                ois.close();
-                fis.close();
+            FileInputStream fis = mContext.openFileInput(FILE_ALARM_HELPER);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Object obj = ois.readObject();
+            if (obj instanceof List<?>)
+            {
+                mAlarmDataList =  (ArrayList<AlarmData>) obj;
             }
+            ois.close();
+            fis.close();
         }
         catch (StreamCorruptedException e)
         {
@@ -217,7 +214,7 @@ public class AlarmHelper implements Shutter
         }
         catch (FileNotFoundException e)
         {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         catch (IOException e)
         {
