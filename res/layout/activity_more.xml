@@ -74,7 +74,7 @@
                 <ImageView android:id="@+id/more_support_us_red_dot" android:layout_width="24.0dip" android:layout_height="24.0dip"
                         android:layout_marginTop="-4.0dip" android:gravity="center" android:background="@drawable/more_update_new"
                         android:scaleType="fitXY" android:layout_toRightOf="@id/star_tv" 
-                        android:textColor="@color/white" android:visibility="visible" android:contentDescription="@null" />
+                        android:textColor="@color/white" android:visibility="invisible" android:contentDescription="@null" />
                 <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" 
                         android:contentDescription="@null" android:layout_centerVertical="true" android:layout_alignParentRight="true" />
             </RelativeLayout>
