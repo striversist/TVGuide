@@ -50,10 +50,6 @@ public class MoreActivity extends Activity implements Callback
         mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
         mSupportRedDot = (ImageView) findViewById(R.id.more_support_us_red_dot);
         mUiHandler = new Handler(this);
-        
-        if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMoreSupportUs) == 0) { // 从未点击过
-            mSupportRedDot.setVisibility(View.VISIBLE);
-        }
     }
     
     @Override
@@ -71,6 +67,12 @@ public class MoreActivity extends Activity implements Callback
                     mUiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
             }
         });
+        
+        if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMoreSupportUs) == 0) { // 从未点击过
+            mSupportRedDot.setVisibility(View.VISIBLE);
+        } else if (mSupportRedDot.getVisibility() == View.VISIBLE) {
+            mSupportRedDot.setVisibility(View.INVISIBLE);
+        }
     }
     
     private void createDialogs()
