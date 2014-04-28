@@ -149,9 +149,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
     protected void onDestroy() 
     {
         super.onDestroy();
-        AppEngine.getInstance().prepareBeforeExit();
-        doOnDestroy();
-    };
+    }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) 
@@ -166,6 +164,13 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
             else
             {
                 finish();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppEngine.getInstance().prepareBeforeExit();
+                        doOnDestroy();
+                    }
+                }, 1000);
             }
             return true;
         }
