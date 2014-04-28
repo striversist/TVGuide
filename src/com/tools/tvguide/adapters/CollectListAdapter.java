@@ -163,6 +163,7 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
         if (item.containsKey(KEY_ON_PLAYING_PROGRAM)) {
             holder.onPlayingProgramTextView.setText((String)item.get(KEY_ON_PLAYING_PROGRAM));
         } else {
+            holder.onPlayingProgramTextView.setText("");
             holder.onPlayingProgramTextView.update(tvmaoId, new UpdateCallback() {
                 @Override
                 public void onUpdate(TextView textView, final String text) {
