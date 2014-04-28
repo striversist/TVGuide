@@ -2,8 +2,8 @@
 <LinearLayout android:orientation="horizontal" android:background="@drawable/shape_bottom_corner_no_top_line" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center|left"
     android:descendantFocusability="blocksDescendants" xmlns:android="http://schemas.android.com/apk/res/android">
     <com.tools.tvguide.views.NetImageView android:id="@+id/channel_logo_niv" android:layout_width="60sp" android:layout_height="50sp" 
-            android:paddingLeft="10.0dip" android:layout_marginLeft="5.0dip" android:layout_marginTop="6.0dip" 
-            android:layout_marginBottom="6.0dip" />
+            android:paddingLeft="10.0dip" android:layout_marginLeft="5.0dip" android:layout_marginTop="10.0dip" 
+            android:layout_marginBottom="10.0dip" />
     <LinearLayout android:orientation="vertical" android:layout_width="0dip" android:layout_height="wrap_content" 
             android:layout_marginTop="4.0dip" android:layout_marginLeft="10dp" android:paddingLeft="8.0dip" android:layout_weight="1" >
 	    <TextView android:id="@+id/channel_name_tv" android:layout_width="fill_parent" android:layout_height="wrap_content" 
