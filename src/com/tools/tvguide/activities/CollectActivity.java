@@ -45,7 +45,6 @@ public class CollectActivity extends Activity implements DragSortListener
     private DragSortListView mChannelListView;
     private DragSortController mController;
     private CollectListAdapter mListViewAdapter;
-    private ArrayList<HashMap<String, Object>> mItemList;
     private List<Channel> mChannelList;
     private ArrayList<String> mReportList;
     private LayoutInflater mInflater;
@@ -113,7 +112,7 @@ public class CollectActivity extends Activity implements DragSortListener
         super.onResume();
         updateChannelListView();
         
-        if (mItemList.isEmpty())
+        if (mChannelList.isEmpty())
         {
             mContentLayout.removeAllViews();
             mContentLayout.addView(mNoCollectLayout, mCenterLayoutParams);
@@ -123,7 +122,7 @@ public class CollectActivity extends Activity implements DragSortListener
             mContentLayout.removeAllViews();
             mContentLayout.addView(mChannelListView);
             // Show tips: long press to sort
-            if (mItemList.size() > 1 && sHasShownTips == false)
+            if (mChannelList.size() > 1 && sHasShownTips == false)
             {
                 Toast.makeText(this, getResources().getString(R.string.long_press_sort_tips), Toast.LENGTH_LONG).show();
                 sHasShownTips = true;
@@ -139,11 +138,10 @@ public class CollectActivity extends Activity implements DragSortListener
 
     private void createAndSetListViewAdapter()
     {
-        mItemList = new ArrayList<HashMap<String, Object>>();
         initChannelList();
-        List<HashMap<String, String>> itemList = new ArrayList<HashMap<String,String>>();
+        List<HashMap<String, Object>> itemList = new ArrayList<HashMap<String, Object>>();
         for (Channel channel : mChannelList) {
-            HashMap<String, String> item = new HashMap<String, String>();
+            HashMap<String, Object> item = new HashMap<String, Object>();
             item.put("tvmao_id", channel.tvmaoId);
             item.put("name", channel.name);
             itemList.add(item);
@@ -151,9 +149,9 @@ public class CollectActivity extends Activity implements DragSortListener
         mListViewAdapter = new CollectListAdapter(this, itemList);
         mListViewAdapter.setOnRemoveListener(new RemoveItemCallback() {
             @Override
-            public void onRemove(int position, HashMap<String, String> item) {
+            public void onRemove(int position, HashMap<String, Object> item) {
                 mChannelList.remove(position);
-                String tvmaoId = item.get("tvmao_id");
+                String tvmaoId = (String)item.get("tvmao_id");
                 if (tvmaoId != null) {
                     AppEngine.getInstance().getCollectManager().removeCollectChannel(tvmaoId);
                 }
@@ -180,7 +178,7 @@ public class CollectActivity extends Activity implements DragSortListener
     private void updateChannelListView()
     {
         initChannelList();
-        mItemList.clear();
+        List<HashMap<String, Object>> itemList = new ArrayList<HashMap<String,Object>>();
         for (int i=0; i<mChannelList.size(); ++i)
         { 
             String id = mChannelList.get(i).tvmaoId;
@@ -189,9 +187,9 @@ public class CollectActivity extends Activity implements DragSortListener
             HashMap<String, Object> item = new HashMap<String, Object>();            
             item.put("tvmao_id", id);
             item.put("name", name);
-            mItemList.add(item);
+            itemList.add(item);
         }
-        mListViewAdapter.notifyDataSetChanged();
+        mListViewAdapter.update(itemList);
     }
     
     private void report()
@@ -264,7 +262,7 @@ public class CollectActivity extends Activity implements DragSortListener
 		    Channel channel = mChannelList.remove(from);
             mChannelList.add(to, channel);
 		    
-		    HashMap<String, String> item = (HashMap<String, String>) dragObject;
+		    HashMap<String, Object> item = (HashMap<String, Object>) dragObject;
             mListViewAdapter.add(to, item);
 		}
 	}

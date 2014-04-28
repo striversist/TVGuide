@@ -29,13 +29,13 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
     private static final String KEY_ON_PLAYING_PROGRAM = "onplaying_program";
     private Context mContext;
     private RemoveItemCallback mRemoveCallback;
-    private List<HashMap<String, String>> mItemList = new ArrayList<HashMap<String, String>>();
+    private List<HashMap<String, Object>> mItemList = new ArrayList<HashMap<String, Object>>();
     
     public interface RemoveItemCallback {
-        public void onRemove(int position, HashMap<String, String> item);
+        public void onRemove(int position, HashMap<String, Object> item);
     }
     
-    public CollectListAdapter(Context context, List<HashMap<String, String>> data) {
+    public CollectListAdapter(Context context, List<HashMap<String, Object>> data) {
         assert (context != null);
         assert (data != null);
         
@@ -43,11 +43,20 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
         mItemList.addAll(data);
     }
     
+    public void update(List<HashMap<String, Object>> itemList) {
+        if (itemList == null)
+            return;
+        
+        mItemList.clear();
+        mItemList.addAll(itemList);
+        notifyDataSetChanged();
+    }
+    
     public void updateOnPlayingProgram() {
         if (mItemList == null) 
             return;
         
-        for (HashMap<String, String> item : mItemList) {
+        for (HashMap<String, Object> item : mItemList) {
             item.remove(KEY_ON_PLAYING_PROGRAM);
         }
         notifyDataSetChanged();
@@ -64,7 +73,7 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
         return removeObject;
     }
     
-    public void add(int position, HashMap<String, String> item) {
+    public void add(int position, HashMap<String, Object> item) {
         if (position < 0 || position > getCount() || item == null)
             return;
         
@@ -95,7 +104,7 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final HashMap<String, String> item = mItemList.get(position);
+        final HashMap<String, Object> item = mItemList.get(position);
         ViewHolder holder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.collect_list_item, parent, false);
@@ -115,10 +124,10 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
         }
         
         if (item.containsKey(KEY_NAME)) {
-            holder.channelNameTextView.setText(item.get(KEY_NAME));
+            holder.channelNameTextView.setText((String)item.get(KEY_NAME));
         }
         
-        final String tvmaoId = item.get(KEY_TVMAO_ID);
+        final String tvmaoId = (String)item.get(KEY_TVMAO_ID);
         String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
         if (logoUrls != null) {
             holder.channelLogoNetImageView.loadImage(new ImageLoadListener() {
@@ -130,7 +139,7 @@ public class CollectListAdapter extends BaseAdapter implements OnClickListener {
         }
         
         if (item.containsKey(KEY_ON_PLAYING_PROGRAM)) {
-            holder.onPlayingProgramTextView.setText(item.get(KEY_ON_PLAYING_PROGRAM));
+            holder.onPlayingProgramTextView.setText((String)item.get(KEY_ON_PLAYING_PROGRAM));
         } else {
             holder.onPlayingProgramTextView.update(tvmaoId, new UpdateCallback() {
                 @Override
