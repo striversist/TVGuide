@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.tools.tvguide.R;
+import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.CacheControl;
+import com.tools.tvguide.utils.Utility;
 import com.tools.tvguide.views.NetImageView;
 import com.tools.tvguide.views.NetImageView.ImageLoadListener;
 
@@ -96,15 +98,27 @@ public class ChannellistAdapter extends BaseAdapter
         	String[] logoUrls = UrlManager.guessWebChannelLogoUrls(tvmaoId);
         	if (logoUrls != null)
         	{
-        		holder.channelLogoNetImageView.setCacheControl(CacheControl.Disk);
-        		holder.channelLogoNetImageView.loadImage(new ImageLoadListener()
-        		{
-                    @Override
-                    public void onImageLoaded(String url, Bitmap bitmap) {
-                        UrlManager.setWebChannelLogoUrl(tvmaoId, url);
+        	    boolean found = false;
+                for (String logoUrl : logoUrls) {
+                    Bitmap bitmap = AppEngine.getInstance().getDiskCacheManager().getBitmap(Utility.guessFileNameByUrl(logoUrl));
+                    if (bitmap != null) {   // 本地存在
+                        holder.channelLogoNetImageView.setImageBitmap(bitmap);
+                        found = true;
+                        break;
                     }
-        		}
-        		,logoUrls);
+                }
+                
+                if (!found) {
+            		holder.channelLogoNetImageView.setCacheControl(CacheControl.Disk);
+            		holder.channelLogoNetImageView.loadImage(new ImageLoadListener()
+            		{
+                        @Override
+                        public void onImageLoaded(String url, Bitmap bitmap) {
+                            UrlManager.setWebChannelLogoUrl(tvmaoId, url);
+                        }
+            		}
+            		,logoUrls);
+                }
         	}
         }
         
