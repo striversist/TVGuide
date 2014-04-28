@@ -15,7 +15,7 @@
                 android:background="@drawable/one_layout_select"
                 android:onClick="onClick" >
                 <TextView android:text="@string/alarm" android:drawableLeft="@drawable/more_menu_alarms" style="@style/style_layout_textview" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" android:contentDescription="@null" />
             </LinearLayout>
             
             <LinearLayout
@@ -31,8 +31,8 @@
                 <TextView android:id="@+id/more_version_check" android:text="@string/version_check" android:drawableLeft="@drawable/more_menu_checkupdates" style="@style/style_layout_textview" />
                 <ImageView android:id="@+id/more_update_new_icon" android:textColor="@color/white" android:gravity="center" android:layout_gravity="center" 
                               android:background="@drawable/more_update_new" android:visibility="invisible" android:layout_width="24.0dip" 
-                              android:layout_height="24.0dip" android:scaleType="fitXY" android:layout_marginTop="-8.0dip" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                              android:layout_height="24.0dip" android:scaleType="fitXY" android:layout_marginTop="-8.0dip" android:contentDescription="@null" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" android:contentDescription="@null" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/more_feedback"
@@ -44,7 +44,7 @@
                 android:background="@drawable/mid_layout_select"
                 android:onClick="onClick" >
                 <TextView android:text="@string/issue_title" android:drawableLeft="@drawable/more_menu_issue" style="@style/style_layout_textview" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" android:contentDescription="@null" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/more_about"
@@ -56,10 +56,10 @@
                 android:background="@drawable/bottom_layout_select"
                 android:onClick="onClick" >
                 <TextView android:text="@string/about" android:drawableLeft="@drawable/info_menu" style="@style/style_layout_textview" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" android:contentDescription="@null" />
             </LinearLayout>
             
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/more_support_us"
                 style="@style/style_preference_layout"
                 android:layout_width="fill_parent"
@@ -69,10 +69,15 @@
                 android:layout_marginTop="15.0dip"
                 android:background="@drawable/one_layout_select"
                 android:onClick="onClick" >
-                <TextView android:text="@string/support_us_remove_ad" android:drawableLeft="@drawable/star_big_full"
-                          android:drawablePadding="5sp" style="@style/style_layout_textview" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
-            </LinearLayout>
+                <TextView android:id="@+id/star_tv" android:text="@string/support_us_remove_ad" android:drawableLeft="@drawable/star_big_full"
+                        android:drawablePadding="5sp" style="@style/style_layout_textview" />
+                <ImageView android:id="@+id/more_support_us_red_dot" android:layout_width="24.0dip" android:layout_height="24.0dip"
+                        android:layout_marginTop="-4.0dip" android:gravity="center" android:background="@drawable/more_update_new"
+                        android:scaleType="fitXY" android:layout_toRightOf="@id/star_tv" 
+                        android:textColor="@color/white" android:visibility="visible" android:contentDescription="@null" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" 
+                        android:contentDescription="@null" android:layout_centerVertical="true" android:layout_alignParentRight="true" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/more_clear_cache"
@@ -85,7 +90,7 @@
                 android:background="@drawable/top_layout_select"
                 android:onClick="onClick" >
                 <TextView android:text="@string/clear_cache" android:drawableLeft="@drawable/more_menu_clearcache" style="@style/style_layout_textview" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" android:contentDescription="@null" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/more_quit"
@@ -97,7 +102,7 @@
                 android:background="@drawable/bottom_layout_select"
                 android:onClick="onClick" >
                 <TextView android:text="@string/quit" android:drawableLeft="@drawable/more_menu_quit" style="@style/style_layout_textview" />
-                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" />
+                <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/mm_submenu_normal" android:contentDescription="@null" />
             </LinearLayout>
             
         </LinearLayout>

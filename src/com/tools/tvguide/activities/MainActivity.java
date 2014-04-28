@@ -3,6 +3,7 @@ package com.tools.tvguide.activities;
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.BootManager.OnStartedCallback;
+import com.tools.tvguide.managers.StatManager.ClickModule;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+@SuppressWarnings("deprecation")
 public class MainActivity extends TabActivity implements OnStartedCallback, Callback
 {
     private TabHost         mTabHost;
@@ -130,12 +132,17 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
                         break;
                     case R.id.tab_more:
                         mTabHost.setCurrentTabByTag(mStringMore);
+                        AppEngine.getInstance().getStatManager().clickModule(ClickModule.TabMore);
                         break;
                     default:
                         break;
                 }
             }
         });
+        
+        if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMore) == 0) { // 一次没有点击过
+            mNewMsg.setVisibility(View.VISIBLE);
+        }
     }
     
     @Override

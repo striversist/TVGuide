@@ -33,6 +33,7 @@ public class AppEngine
     private SearchHtmlManager                       mSearchHtmlManager;
     private OnPlayingHtmlManager                    mOnPlayingHtmlManager;
     private DiskCacheManager                        mDiskCacheManager;
+    private StatManager                             mStatManager;
     
     /********************************* Manager定义区，所有受AppEngine管理的Manger统一定义 **********************************/
     
@@ -232,6 +233,16 @@ public class AppEngine
             mShutterList.add(mDiskCacheManager);
         }
         return mDiskCacheManager;
+    }
+    
+    public StatManager getStatManager()
+    {
+        checkInitialized();
+        if (mStatManager == null)
+        {
+            mStatManager = new StatManager(mApplicationContext);
+        }
+        return mStatManager;
     }
     
     public void prepareBeforeExit()

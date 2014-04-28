@@ -5,6 +5,7 @@ import com.tools.tvguide.SupportActivity;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UpdateManager;
 import com.tools.tvguide.managers.UrlManager;
+import com.tools.tvguide.managers.StatManager.ClickModule;
 import com.tools.tvguide.components.PackageInstaller;
 
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class MoreActivity extends Activity implements Callback
     private Dialog mDownloaDialog;
     private TextView mCheckTextView;
     private ImageView mUpdateNewIcon;
+    private ImageView mSupportRedDot;
     private Handler mUiHandler;
     private enum SelfMessage {Msg_Need_Update, Msg_No_Need_Update};
     private enum TextStatus {State_Check, State_Upgrade};
@@ -46,7 +48,12 @@ public class MoreActivity extends Activity implements Callback
         mCheckTextView.setTag(TextStatus.State_Check);
         
         mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
+        mSupportRedDot = (ImageView) findViewById(R.id.more_support_us_red_dot);
         mUiHandler = new Handler(this);
+        
+        if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMoreSupportUs) == 0) { // 从未点击过
+            mSupportRedDot.setVisibility(View.VISIBLE);
+        }
     }
     
     @Override
@@ -117,6 +124,7 @@ public class MoreActivity extends Activity implements Callback
                 showAbout();
                 break;
             case R.id.more_support_us:
+                AppEngine.getInstance().getStatManager().clickModule(ClickModule.TabMoreSupportUs);
                 Intent supportIntent = new Intent(MoreActivity.this, SupportActivity.class);
                 startActivity(supportIntent);
                 break;
