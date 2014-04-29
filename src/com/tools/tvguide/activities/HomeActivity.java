@@ -181,7 +181,8 @@ public class HomeActivity extends Activity implements Callback
             }
         }
         
-        if (!hatCategoryList.isEmpty())
+        String appChannel = AppEngine.getInstance().getUpdateManager().getAppChannelName();
+        if (!hatCategoryList.isEmpty() && !TextUtils.equals(appChannel, "安卓市场"))    // 安卓市场有政策限制，不能加港澳台分类
         {
             Category hatCategory = new Category();
             hatCategory.name = "港澳台";
@@ -199,7 +200,7 @@ public class HomeActivity extends Activity implements Callback
         }
         
         // 将“海外”放到最后
-        if (overseaCategory != null) {
+        if (overseaCategory != null && !TextUtils.equals(appChannel, "安卓市场")) {     // 安卓市场有政策限制，不能加海外频道
             overseaCategory.name = overseaCategory.name + "频道";
             result.add(overseaCategory);
         }
