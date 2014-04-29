@@ -154,9 +154,10 @@ public class HomeActivity extends Activity implements Callback
         if (categoryList == null)
             return null;
         
-        List<Category> newCategoryList      = new ArrayList<Category>();
+        List<Category> result               = new ArrayList<Category>();
         List<Category> hatCategoryList      = new ArrayList<Category>();       // 港澳台频道
         List<Category> localCategoryList    = new ArrayList<Category>();       // 各省频道
+        Category overseaCategory = null;    // 海外频道
         
         for (int i=0; i<categoryList.size(); ++i)
         {
@@ -164,11 +165,15 @@ public class HomeActivity extends Activity implements Callback
             if (TextUtils.equals(name, "央视") || TextUtils.equals(name, "卫视") || TextUtils.equals(name, "数字"))
             {
                 categoryList.get(i).name = categoryList.get(i).name + "频道";
-                newCategoryList.add(categoryList.get(i));
+                result.add(categoryList.get(i));
             }
             else if (TextUtils.equals(name, "香港") || TextUtils.equals(name, "澳门") || TextUtils.equals(name, "台湾"))
             {
                 hatCategoryList.add(categoryList.get(i));
+            }
+            else if (TextUtils.equals(name, "海外"))
+            {
+                overseaCategory = categoryList.get(i);
             }
             else
             {
@@ -182,7 +187,7 @@ public class HomeActivity extends Activity implements Callback
             hatCategory.name = "港澳台";
             hatCategory.next = Category.Next.CategoryList;
             hatCategory.categoryList = hatCategoryList;
-            newCategoryList.add(hatCategory);
+            result.add(hatCategory);
         }
         if (!localCategoryList.isEmpty())
         {
@@ -190,9 +195,15 @@ public class HomeActivity extends Activity implements Callback
             localCategory.name = "各省频道";
             localCategory.next = Category.Next.CategoryList;
             localCategory.categoryList = localCategoryList;
-            newCategoryList.add(localCategory);
+            result.add(localCategory);
         }
         
-        return newCategoryList;
+        // 将“海外”放到最后
+        if (overseaCategory != null) {
+            overseaCategory.name = overseaCategory.name + "频道";
+            result.add(overseaCategory);
+        }
+        
+        return result;
     }
 }
