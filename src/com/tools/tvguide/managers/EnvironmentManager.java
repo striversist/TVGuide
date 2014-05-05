@@ -76,6 +76,7 @@ public class EnvironmentManager implements Shutter
 	public void setAdEnablePermanent(boolean enable)
 	{
 	    mIsAdEnablePermanent = enable;
+	    mPreference.edit().putBoolean(AD_ENABLE_PERMANENT_FLAG, mIsAdEnablePermanent).commit();
 	}
 	
 	public void setHotSource(String source)
@@ -100,7 +101,7 @@ public class EnvironmentManager implements Shutter
     {
         mPreference.edit().putBoolean(CHANNEL_DETAIL_FROM_WEB_FLAG, mIsChannelDetailFromWeb).commit();
         mPreference.edit().putBoolean(AD_ENABLE_FLAG, mIsAdEnable).commit();
-        mPreference.edit().putBoolean(AD_ENABLE_PERMANENT_FLAG, mIsAdEnable).commit();
+        mPreference.edit().putBoolean(AD_ENABLE_PERMANENT_FLAG, mIsAdEnablePermanent).commit();
         mPreference.edit().putString(HOT_SOURCE_FLAG, mHotSource).commit();
         saveExternalPrefernce();
     }
