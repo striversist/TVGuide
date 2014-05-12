@@ -89,7 +89,7 @@ public class AlarmHelper implements Shutter
         return false;
     }
     
-    public boolean addAlarmData(AlarmData alarmData)
+    public synchronized boolean addAlarmData(AlarmData alarmData)
     {
         if (alarmData == null)
             return false;
@@ -135,7 +135,7 @@ public class AlarmHelper implements Shutter
         return removeAlarmData(alarmData);
     }
     
-    public AlarmData removeAlarmData(AlarmData alarmData)
+    public synchronized AlarmData removeAlarmData(AlarmData alarmData)
     {
         if (alarmData == null)
             return null;
