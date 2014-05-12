@@ -525,22 +525,26 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
             @Override
             public void onLoadFinish(int status) 
             {
-                Date date = new Date(Long.valueOf(buffer.toString()));
-				String currentTime = String.valueOf(date.getHours()) + ":" + String.valueOf(date.getMinutes());
-				Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, currentTime);
-	            if (onPlayingProgram != null) {
-	                mOnPlayingProgram.copy(onPlayingProgram);
-	            }
-				
-				// 优化：判断下次是否使用本地时间替代网络时间，以加快“正在播出”节目的显示
-				long proxyHour = date.getHours();
-				long proxyMinute = date.getMinutes();
-				int localHour = Calendar.getInstance().getTime().getHours();
-				int localMinute = Calendar.getInstance().getTime().getMinutes();
-				if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
-					sUseLocalTime = true;
-				
-				mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
+                try {
+                    Date date = new Date(Long.valueOf(buffer.toString()));
+    				String currentTime = String.valueOf(date.getHours()) + ":" + String.valueOf(date.getMinutes());
+    				Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, currentTime);
+    	            if (onPlayingProgram != null) {
+    	                mOnPlayingProgram.copy(onPlayingProgram);
+    	            }
+    				
+    				// 优化：判断下次是否使用本地时间替代网络时间，以加快“正在播出”节目的显示
+    				long proxyHour = date.getHours();
+    				long proxyMinute = date.getMinutes();
+    				int localHour = Calendar.getInstance().getTime().getHours();
+    				int localMinute = Calendar.getInstance().getTime().getMinutes();
+    				if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
+    					sUseLocalTime = true;
+    				
+    				mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
