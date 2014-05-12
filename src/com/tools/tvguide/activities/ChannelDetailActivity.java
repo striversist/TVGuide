@@ -514,6 +514,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
             Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, System.currentTimeMillis());
             if (onPlayingProgram != null) {
                 mOnPlayingProgram.copy(onPlayingProgram);
+                mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
             }
             return;
         }
