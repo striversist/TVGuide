@@ -57,10 +57,15 @@ public class DiskCacheManager implements Shutter, Callback
         try {
         	if (mDiskLruCache == null)
                 return;
+        	if (mDiskLruCache.isClosed()) {    // delete不能在closed状态下进行
+        	    openDiskCache();
+        	}
             mDiskLruCache.delete();
             mDiskLruCache = null;
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
         }
     }
     
