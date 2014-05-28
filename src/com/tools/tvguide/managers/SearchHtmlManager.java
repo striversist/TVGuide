@@ -7,10 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import android.content.Context;
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
+import android.util.Log;
 
 import com.tools.tvguide.components.UANetDataGetter;
 import com.tools.tvguide.data.Channel;
@@ -18,10 +24,8 @@ import com.tools.tvguide.data.Program;
 import com.tools.tvguide.data.SearchResultCategory;
 import com.tools.tvguide.data.SearchResultCategory.Type;
 import com.tools.tvguide.data.SearchResultDataEntry;
+import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
-
-import android.content.Context;
-import android.util.Log;
 
 public class SearchHtmlManager 
 {
@@ -51,7 +55,15 @@ public class SearchHtmlManager
             {
                 try 
                 {
-                    Document doc = Jsoup.connect(QUERY_URL).data("key", keyword).data("submit", "搜索").timeout(20000).post();
+                    Document doc = null;
+                    if (Build.VERSION.SDK_INT > VERSION_CODES.FROYO) {
+                        doc = Jsoup.connect(QUERY_URL).data("key", keyword).data("submit", "搜索").timeout(20000).post();
+                    } else {
+                        List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
+                        pairs.add(new BasicNameValuePair("key", keyword));
+                        pairs.add(new BasicNameValuePair("submit", "搜索"));
+                        doc = HtmlUtils.getDocument(QUERY_URL, "UTF-8", pairs, CacheControl.Never);
+                    }
                     String protocol = new URL(QUERY_URL).getProtocol();
                     String host = new URL(QUERY_URL).getHost();
                     String prefix = protocol + "://" + host;
