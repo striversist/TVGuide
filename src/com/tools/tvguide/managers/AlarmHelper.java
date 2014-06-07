@@ -26,7 +26,7 @@ public class AlarmHelper implements Shutter
     public static final String TAG = "AlarmHelper";
     private Context mContext;
     private boolean mSettingChanged = false;
-    private List<AlarmListener> mListeners;
+    private List<AlarmListener> mListeners = new ArrayList<AlarmHelper.AlarmListener>();
     private String FILE_ALARM_HELPER = "advance_alarm_settings.txt";
     
     private List<AlarmData> mAlarmDataList = new ArrayList<AlarmData>();
@@ -40,26 +40,32 @@ public class AlarmHelper implements Shutter
     {
         assert(context != null);
         mContext = context;
-        mListeners = new ArrayList<AlarmHelper.AlarmListener>();
         loadAlarmSettings();
     }
     
     public void notifyAlarmListeners(AlarmData alarmData)
     {
-        for (int i=0; i<mListeners.size(); ++i)
-            mListeners.get(i).onAlarmed(alarmData);
+        synchronized (mListeners) {
+            for (int i=0; i<mListeners.size(); ++i) {
+                mListeners.get(i).onAlarmed(alarmData);
+            }
+        }
     }
     
-    public synchronized void addAlarmListener(AlarmListener listener)
+    public void addAlarmListener(AlarmListener listener)
     {
         assert (listener != null);
-        mListeners.add(listener);
+        synchronized (mListeners) {
+            mListeners.add(listener);
+        }
     }
     
-    public synchronized void removeAlarmListener(AlarmListener listener)
+    public void removeAlarmListener(AlarmListener listener)
     {
         assert (listener != null);
-        mListeners.remove(listener);
+        synchronized (mListeners) {
+            mListeners.remove(listener);   
+        }
     }
     
     public synchronized void resetAllAlarms()
