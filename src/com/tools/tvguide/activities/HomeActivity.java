@@ -90,6 +90,14 @@ public class HomeActivity extends Activity implements Callback
         if (mHasUpdated && (mCategoryList == null || mCategoryList.size() == 0))
             update();
     }
+    
+    @Override
+    protected void onDestroy() {
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        super.onDestroy();
+    }
 
     private void update()
     {
@@ -133,8 +141,9 @@ public class HomeActivity extends Activity implements Callback
         switch (selfMsg)
         {
             case SHOW_CATEGORY:
-                if (mProgressDialog.isShowing())
+                if (mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
+                }
                 for (int i=0; i<mCategoryList.size(); ++i)
                 {
                     HashMap<String, Object> item = new HashMap<String, Object>();
