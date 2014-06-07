@@ -75,6 +75,14 @@ public class ChannellistActivity extends Activity implements Callback
         
         AppEngine.getInstance().getAdManager().addAdView(ChannellistActivity.this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
+    
+    @Override
+    protected void onDestroy() {
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        super.onDestroy();
+    }
 
     public void back(View view)
     {
@@ -131,7 +139,9 @@ public class ChannellistActivity extends Activity implements Callback
             case Refresh_Channel_List:
                 if (mChannelList != null)
                 {
-                    mProgressDialog.dismiss();
+                    if (mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
+                    }
                     mItemList.clear();
                     for(int i=0; i<mChannelList.size(); ++i)
                     {
