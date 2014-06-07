@@ -1,15 +1,17 @@
 package com.tools.tvguide.managers;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.tools.tvguide.components.VersionController;
 import com.tools.tvguide.managers.UpdateManager.IOCompleteCallback.CheckResult;
-
-import android.content.Context;
 
 public class UpdateManager 
 {
@@ -35,20 +37,7 @@ public class UpdateManager
     public void setGUID(String guid)
     {
         mGuid = guid;
-        try 
-        {
-            FileOutputStream fos = mContext.openFileOutput(FILE_GUID, Context.MODE_PRIVATE);
-            fos.write(mGuid.getBytes());
-            fos.close();
-        } 
-        catch (FileNotFoundException e) 
-        {
-            e.printStackTrace();
-        } 
-        catch (IOException e) 
-        {
-            e.printStackTrace();
-        }
+        store();
     }
     
     public String getGUID()
@@ -117,21 +106,56 @@ public class UpdateManager
         return mVersionController.getAppChannelName();
     }
     
-    private void load()
-    {
-        try
-        {
-            FileReader reader = new FileReader(mContext.getFileStreamPath(FILE_GUID));
+    private void load() {
+        try {
+            String guidInternalPath = mContext.getFilesDir() + File.separator + FILE_GUID;
+            String guidExternalPath = null;
+            String guidPath = guidInternalPath;
+            if (mContext.getExternalFilesDir(null) != null) {
+                guidExternalPath = mContext.getExternalFilesDir(null).getAbsolutePath() + File.separator + FILE_GUID;
+            }
+            if (TextUtils.isEmpty(guidExternalPath) || !new File(guidExternalPath).exists()) {
+                guidPath = guidInternalPath;
+            } else {
+                guidPath = guidExternalPath;
+            }
+            FileReader reader = new FileReader(new File(guidPath));
             BufferedReader bufferedReader = new BufferedReader(reader);
             mGuid = bufferedReader.readLine();
             bufferedReader.close();
-        } 
-        catch (FileNotFoundException e) 
-        {
-//            e.printStackTrace();
-        } 
-        catch (IOException e) 
-        {
+        } catch (FileNotFoundException e) {
+            // e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void store() {
+        try {
+            String guidInternalPath = mContext.getFilesDir() + File.separator + FILE_GUID;
+            String guidExternalPath = null;
+            if (mContext.getExternalFilesDir(null) != null) {   // 优先存入sdcard
+                guidExternalPath = mContext.getExternalFilesDir(null).getAbsolutePath() + File.separator + FILE_GUID;
+            }
+            // 写入内部存储
+            if (!TextUtils.isEmpty(guidInternalPath)) {
+                FileOutputStream fos = mContext.openFileOutput(FILE_GUID, Context.MODE_PRIVATE);
+                fos.write(mGuid.getBytes());
+                fos.close();
+            }
+            // 写入sdcard
+            if (!TextUtils.isEmpty(guidExternalPath)) {
+                File guidExternalFile = new File(guidExternalPath);
+                if (!guidExternalFile.exists()) {
+                    guidExternalFile.createNewFile();
+                }
+                FileOutputStream fos = new FileOutputStream(guidExternalFile);
+                fos.write(mGuid.getBytes());
+                fos.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
