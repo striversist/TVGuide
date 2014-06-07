@@ -24,7 +24,7 @@ public class UrlManager
     public static final String URL_HOT_TVCOLUMN         = "http://m.tvmao.com/hot/tvcolumn/default/week";
     public static final String URL_HOT_MOVIE            = "http://m.tvmao.com/hot/movie/default/week";
     public static final String DEV_IP                   = "192.168.1.100";
-    public static final String REAL_HOST                = "bigeyecow.oicp.net";
+    public static final String REAL_HOST                = "striversist.oicp.net";
     
     public static final String ACRA_PROXY_REAL          = "http://" + REAL_HOST + ":59840/acra-tvguide/_design/acra-storage/_update/report";
     public static final String ACRA_PROXY_DEV           = "http://" + DEV_IP + ":5984/acra-tvguide/_design/acra-storage/_update/report";
