@@ -106,6 +106,11 @@ public class OnPlayingProgramTextView extends TextView {
                 if (requestId != mRequestId)    // 在回调之前已经被改变，则Cancel之前的操作
                     return;
             }
+
+            @Override
+            public void onError(int requestId, String errorMsg) {
+                
+            }
         }, sWorkerHandler);
         
         return true;

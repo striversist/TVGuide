@@ -494,6 +494,26 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                     }
                 });
             }
+
+            @Override
+            public void onError(int requestId, String errorMsg) {
+                mUiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mProgressDialog.isShowing()) {
+                            mProgressDialog.dismiss();
+                        }
+                        
+                        String tips = "获取数据失败，请稍后重试";
+                        Toast failToast = Toast.makeText(getApplicationContext(), tips, Toast.LENGTH_LONG);
+                        failToast.setGravity(Gravity.CENTER, 0, 0);
+                        SpannableString ss = new SpannableString(tips);
+                        ss.setSpan(new RelativeSizeSpan((float) 1.2), 0, tips.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        failToast.setText(ss);
+                        failToast.show();
+                    }
+                });
+            }
         });
         
         mProgressDialog.show();

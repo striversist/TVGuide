@@ -33,6 +33,7 @@ public class ChannelHtmlManager
     {
         void onProgramsLoaded(int requestId, List<Program> programList);
         void onDateLoaded(int requestId, List<ChannelDate> channelDateList);
+        void onError(int requestId, String errorMsg);
     }
     
     public void getChannelDetailFromFullWebAsync(final int requestId, final String channelUrl, final ChannelDetailCallback callback)
@@ -199,10 +200,12 @@ public class ChannelHtmlManager
                 catch (MalformedURLException e) 
                 {
                     e.printStackTrace();
+                    callback.onError(requestId, e.toString());
                 }
                 catch (IOException e) 
                 {
                     e.printStackTrace();
+                    callback.onError(requestId, e.toString());
                 }
             }
         }).start();
