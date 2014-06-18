@@ -90,6 +90,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     private int mCurrentSelectedDay;
     private int mMaxDays;
     private List<ResultProgramAdapter.IListItem> mItemDataList;
+    private boolean mAlarmCanSetTipsShown = false;
     
     private enum SelfMessage {MSG_UPDATE_PROGRAMS, MSG_UPDATE_ONPLAYING_PROGRAM, MSG_UPDATE_DATELIST};
     private final int TIMER_SCHEDULE_PERIOD = 3 * 60 * 1000;        // 3 minute
@@ -382,8 +383,6 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                 }
             }
         });
-        
-        Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
     }
     
     private void toggleDateListView()
@@ -473,6 +472,10 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                 mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_PROGRAMS.ordinal());
                 updateOnplayingProgram();
                 reportVisitToProxy();
+                if (!mAlarmCanSetTipsShown) {
+                    mAlarmCanSetTipsShown = true;
+                    Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
+                }
             }
             
             @Override
