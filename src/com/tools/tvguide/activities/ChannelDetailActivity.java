@@ -41,6 +41,7 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.os.Vibrator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -474,7 +475,12 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                 reportVisitToProxy();
                 if (!mAlarmCanSetTipsShown) {
                     mAlarmCanSetTipsShown = true;
-                    Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
+                    mUiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ChannelDetailActivity.this, getResources().getString(R.string.alarm_tips_can_set), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
             
@@ -508,18 +514,23 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                         }
                         
                         String tips = "获取数据失败，请稍后重试";
-                        Toast failToast = Toast.makeText(getApplicationContext(), tips, Toast.LENGTH_LONG);
-                        failToast.setGravity(Gravity.CENTER, 0, 0);
-                        SpannableString ss = new SpannableString(tips);
-                        ss.setSpan(new RelativeSizeSpan((float) 1.2), 0, tips.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                        failToast.setText(ss);
-                        failToast.show();
+                        getCenterToast(tips, (float)1.2).show();
                     }
                 });
             }
         });
         
         mProgressDialog.show();
+    }
+    
+    @SuppressLint("ShowToast")
+    private Toast getCenterToast(String text, float textSize) {
+        Toast centerToast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        centerToast.setGravity(Gravity.CENTER, 0, 0);
+        SpannableString ss = new SpannableString(text);
+        ss.setSpan(new RelativeSizeSpan((float) textSize), 0, text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        centerToast.setText(ss);
+        return centerToast;
     }
     
     private void updateOnplayingProgram()
@@ -598,12 +609,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
     private void showFirstStartTips()
     {
         String tips = ">>> 试试向右滑动 >>>";
-        Toast tryToast = Toast.makeText(this, tips, Toast.LENGTH_LONG);
-        tryToast.setGravity(Gravity.NO_GRAVITY, 0, 0);
-        SpannableString ss = new SpannableString(tips);
-        ss.setSpan(new RelativeSizeSpan((float) 1.5), 0, tips.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        tryToast.setText(ss);
-        tryToast.show();
+        getCenterToast(tips, (float)1.5).show();
         sHasShownFirstStartTips = true;
     }
         
