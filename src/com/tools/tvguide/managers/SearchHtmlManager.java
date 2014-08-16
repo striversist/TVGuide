@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.tools.tvguide.components.UANetDataGetter;
 import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.data.SearchResultCategory;
 import com.tools.tvguide.data.SearchResultCategory.Type;
@@ -57,7 +58,7 @@ public class SearchHtmlManager
                 {
                     Document doc = null;
                     if (Build.VERSION.SDK_INT > VERSION_CODES.FROYO) {
-                        doc = Jsoup.connect(QUERY_URL).data("key", keyword).data("submit", "搜索").timeout(20000).post();
+                        doc = Jsoup.connect(QUERY_URL).userAgent(GlobalData.ChromeUserAgent).data("key", keyword).data("submit", "搜索").timeout(20000).post();
                     } else {
                         List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
                         pairs.add(new BasicNameValuePair("key", keyword));
