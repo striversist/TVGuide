@@ -49,6 +49,8 @@ public class HtmlUtils
         if (html == null)
         {
             NetDataGetter getter = new UANetDataGetter(url);
+            // FIXME: 为防止tvmao 403 forbidden
+            getter.setHeader("Referer", "http://www.tvmao.com/program/CCTV-CCTV1-w1.html");
             for (int i=0; i<2; ++i)
             {
                 if (pairs != null) {
