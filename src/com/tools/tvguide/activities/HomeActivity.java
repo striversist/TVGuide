@@ -5,26 +5,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.components.MyProgressDialog;
-import com.tools.tvguide.data.Category;
-import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.BootManager.OnSplashFinishedCallback;
-import com.tools.tvguide.managers.OnPlayingHtmlManager.CategoryEntriesCallback;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.tools.tvguide.R;
+import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Category;
+import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.BootManager.OnSplashFinishedCallback;
+import com.tools.tvguide.managers.OnPlayingHtmlManager.CategoryEntriesCallback;
 
 public class HomeActivity extends Activity implements Callback 
 {
@@ -110,7 +109,6 @@ public class HomeActivity extends Activity implements Callback
                 {
                     mCategoryList.clear();
                     mCategoryList.addAll(categories);
-                    mCategoryList = classifyCategory(mCategoryList);
                     mUiHandler.obtainMessage(SelfMessage.SHOW_CATEGORY.ordinal()).sendToTarget();
                 }
             }
@@ -156,64 +154,5 @@ public class HomeActivity extends Activity implements Callback
         }
         
         return true;
-    }
-    
-    private List<Category> classifyCategory(List<Category> categoryList)
-    {
-        if (categoryList == null)
-            return null;
-        
-        List<Category> result               = new ArrayList<Category>();
-        List<Category> hatCategoryList      = new ArrayList<Category>();       // 港澳台频道
-        List<Category> localCategoryList    = new ArrayList<Category>();       // 各省频道
-        Category overseaCategory = null;    // 海外频道
-        
-        for (int i=0; i<categoryList.size(); ++i)
-        {
-            String name = categoryList.get(i).name;
-            if (TextUtils.equals(name, "央视") || TextUtils.equals(name, "卫视") || TextUtils.equals(name, "数字"))
-            {
-                categoryList.get(i).name = categoryList.get(i).name + "频道";
-                result.add(categoryList.get(i));
-            }
-            else if (TextUtils.equals(name, "香港") || TextUtils.equals(name, "澳门") || TextUtils.equals(name, "台湾"))
-            {
-                hatCategoryList.add(categoryList.get(i));
-            }
-            else if (TextUtils.equals(name, "海外"))
-            {
-                overseaCategory = categoryList.get(i);
-            }
-            else
-            {
-                localCategoryList.add(categoryList.get(i));
-            }
-        }
-        
-        String appChannel = AppEngine.getInstance().getUpdateManager().getAppChannelName();
-        if (!hatCategoryList.isEmpty() && !TextUtils.equals(appChannel, "安卓市场"))    // 安卓市场有政策限制，不能加港澳台分类
-        {
-            Category hatCategory = new Category();
-            hatCategory.name = "港澳台";
-            hatCategory.next = Category.Next.CategoryList;
-            hatCategory.categoryList = hatCategoryList;
-            result.add(hatCategory);
-        }
-        if (!localCategoryList.isEmpty())
-        {
-            Category localCategory = new Category();
-            localCategory.name = "各省频道";
-            localCategory.next = Category.Next.CategoryList;
-            localCategory.categoryList = localCategoryList;
-            result.add(localCategory);
-        }
-        
-        // 将“海外”放到最后
-        if (overseaCategory != null && !TextUtils.equals(appChannel, "安卓市场")) {     // 安卓市场有政策限制，不能加海外频道
-            overseaCategory.name = overseaCategory.name + "频道";
-            result.add(overseaCategory);
-        }
-        
-        return result;
     }
 }

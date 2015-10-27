@@ -22,7 +22,7 @@ import android.text.TextUtils;
 
 public class OnPlayingHtmlManager 
 {
-    public static final String CATEGORY_ENTRY_URL = "http://m.tvmao.com/program/playing/cctv";
+    public static final String CATEGORY_ENTRY_URL = "http://m.tvmao.com/program/playing";
     private Context mContext;
     
     public OnPlayingHtmlManager(Context context)
@@ -57,31 +57,46 @@ public class OnPlayingHtmlManager
                     // 返回结果
                     List<Category> categoryList = new ArrayList<Category>();
                     
-                    Elements topMenuElements = doc.select("dl.chntypetab dd");
-                    for (int i=0; i<topMenuElements.size(); ++i)
-                    {
-                        Element linkElement = topMenuElements.get(i).select("a").first();
-                        if (linkElement != null)
-                        {
-                            Category category = new Category();
-                            category.name = linkElement.ownText().replace("?", "");   // 因tvmao出错而产生多余的符号，需删除
-                            category.link = getAbsoluteUrl(linkElement.attr("href"));
-                            categoryList.add(category);
-                        }
-                    }
+                    // 央视、卫视、数字
+                    Category cctv = new Category();
+                    cctv.name = "央视频道";
+                    cctv.link = getAbsoluteUrl("/program/playing/cctv/");
+                    cctv.tvmaoId = "cctv";
+                    categoryList.add(cctv);
                     
-                    Elements optionElements = doc.select("select[name=prov] option");
-                    for (int i=0; i<optionElements.size(); ++i)
-                    {
-                        Element optionElement = optionElements.get(i);
-                        String value = optionElement.attr("value");
-                        if (TextUtils.equals(value, "0"))   // 自动
-                            continue;
+                    Category satellite = new Category();
+                    satellite.name = "卫视频道";
+                    satellite.link = getAbsoluteUrl("/program/playing/satellite/");
+                    satellite.tvmaoId = "satellite";
+                    categoryList.add(satellite);
+                    
+                    Category digital = new Category();
+                    digital.name = "数字频道";
+                    digital.link = getAbsoluteUrl("/program/playing/digital/");
+                    digital.tvmaoId = "digital";
+                    categoryList.add(digital);
+                    
+                    // 其它地区
+                    Elements others = doc.select("form[name=locchg] ul li a");
+                    for (int i=0; i<others.size(); ++i) {
+                        Element other = others.get(i);
+                        String name = other.ownText();
+                        String tvmaoId = other.attr("prov");
+                        if (TextUtils.equals(tvmaoId, "HK")) {
+                            tvmaoId = "honkong";
+                        } else if (TextUtils.equals(tvmaoId, "TW")) {
+                            tvmaoId = "taiwan";
+                        } else if (TextUtils.equals(tvmaoId, "MO")) {
+                            tvmaoId = "macau";
+                        } else if (TextUtils.equals(tvmaoId, "US")) {
+                            tvmaoId = "foreign";
+                        }
+                        String link = getAbsoluteUrl(CATEGORY_ENTRY_URL + "/" + tvmaoId);
                         
                         Category category = new Category();
-                        category.name = optionElement.ownText();
-                        category.tvmaoId = optionElement.attr("value");
-                        category.link = getAbsoluteUrlByOptionValue(optionElement.attr("value"));
+                        category.name = name;
+                        category.tvmaoId = tvmaoId;
+                        category.link = link;
                         categoryList.add(category);
                     }
                     
