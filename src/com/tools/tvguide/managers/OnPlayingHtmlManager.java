@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.tools.tvguide.data.Category;
-import com.tools.tvguide.data.Channel;
-import com.tools.tvguide.utils.HtmlUtils;
-import com.tools.tvguide.utils.CacheControl;
-
 import android.content.Context;
 import android.text.TextUtils;
+
+import com.tools.tvguide.data.Category;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.utils.CacheControl;
+import com.tools.tvguide.utils.HtmlUtils;
 
 public class OnPlayingHtmlManager 
 {
@@ -152,18 +151,7 @@ public class OnPlayingHtmlManager
     
     private Document getDocumentByCategory(Category category, CacheControl control) throws IOException
     {
-        Document doc = null;
-        if (category.tvmaoId != null && category.tvmaoId.trim().length() > 0)
-        {
-            List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
-            pairs.add(new BasicNameValuePair("prov", category.tvmaoId));
-            doc = HtmlUtils.getDocument(category.link, "utf-8", pairs, control);
-        }
-        else
-        {
-            doc = HtmlUtils.getDocument(category.link, control);
-        }
-        
+        Document doc = HtmlUtils.getDocument(category.link, control);
         return doc;
     }
     
@@ -176,12 +164,13 @@ public class OnPlayingHtmlManager
         for (int i=0; i<onplayingElements.size(); ++i)
         {
             Element onplayingElement = onplayingElements.get(i);
+            if (TextUtils.equals(onplayingElement.attr("class"), "trhld")) {
+                // 无效信息
+                continue;
+            }
             Element channelElement = onplayingElement.select("td").first();
             if (channelElement != null)
-            {
-                if (channelElement.ownText().equals("频道"))
-                    continue;
-                
+            {          
                 Element linkElement = channelElement.select("a").first();
                 if (linkElement != null)
                 {
@@ -191,11 +180,20 @@ public class OnPlayingHtmlManager
                     channel.tvmaoLink = getAbsoluteUrl(linkElement.attr("href"));
                     channels.add(channel);
                     
-                    Element programElement = channelElement.nextElementSibling();
-                    if (programElement != null)
-                    {
-                        programs.put(channel.tvmaoId, programElement.text());
+                    Element timeElement = channelElement.nextElementSibling();
+                    Element programElement = null;
+                    String text = "";
+                    if (timeElement != null) {
+                        programElement = timeElement.nextElementSibling();
+                        text = timeElement.text() + " ";
+                    } else {
+                        programElement = channelElement.nextElementSibling();
                     }
+                    if (programElement != null) {
+                        text += programElement.text();
+                    }
+                    
+                    programs.put(channel.tvmaoId, text);
                 }
             }
         }
