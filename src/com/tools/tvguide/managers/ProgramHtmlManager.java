@@ -277,7 +277,7 @@ public class ProgramHtmlManager
             // -------------- 获取图片链接 --------------
             // 返回结果
             String picLink = null;
-            Element imgElement = doc.select("table.mtblmetainfo td.td1 img").first();
+            Element imgElement = doc.select("div[class=bg_deepgray] div[class=bg_light] img").first();
             if (imgElement != null)
             {
                 picLink = imgElement.attr("src");
@@ -288,18 +288,19 @@ public class ProgramHtmlManager
             // -------------- 获取剧情概要 --------------
             // 返回结果
             String summary = "";
-            String descriptionLink = programUrl + "/detail";
-            Document descriptionDoc = HtmlUtils.getDocument(descriptionLink, CacheControl.Memory);
-            Element descriptionElement = descriptionDoc.select("p.desc").first();
-            if (descriptionElement != null)
-            {
-                final int MaxLines = 1000;
-                int i = 0;
-                Element nextElement = descriptionElement.nextElementSibling();
-                while (nextElement.nodeName().equals("p") && (i++ < MaxLines))
-                {
-                    summary += nextElement.text() + "\n";
-                    nextElement = nextElement.nextElementSibling();
+            Elements descriptionElements = doc.select("div.section p");
+            if (descriptionElements != null) {
+                Element descriptionElement = descriptionElements.first();
+                if (descriptionElement != null) {
+                    summary += descriptionElement.ownText() + "\n";
+                    final int MaxLines = 1000;
+                    int i = 0;
+                    Element nextElement = descriptionElement.nextElementSibling();
+                    while (nextElement != null && nextElement.nodeName().equals("p") && (i++ < MaxLines))
+                    {
+                        summary += nextElement.text() + "\n";
+                        nextElement = nextElement.nextElementSibling();
+                    }
                 }
             }
             
