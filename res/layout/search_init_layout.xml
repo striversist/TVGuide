@@ -13,7 +13,9 @@
     
     <TextView android:textSize="16.0sp" android:textColor="@color/comment_detail_text_color_dark" 
            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="13.0dip" 
-           android:layout_marginTop="13.0dip" android:text="@string/pop_search" android:lineSpacingExtra="5.0dip" />
+           android:layout_marginTop="13.0dip" android:text="@string/pop_search" android:lineSpacingExtra="5.0dip"
+           android:visibility="gone" />
     <com.tools.tvguide.views.SearchHotwordsView android:id="@+id/search_hotwords_view" 
-           android:layout_width="fill_parent" android:layout_height="wrap_content" />
+           android:layout_width="fill_parent" android:layout_height="wrap_content"
+           android:visibility="gone" />
 </LinearLayout>
