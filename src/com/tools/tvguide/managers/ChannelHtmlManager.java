@@ -5,28 +5,78 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
 import com.tools.tvguide.data.ChannelDate;
+import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
 
-import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
-
+@SuppressLint("SetJavaScriptEnabled")
 public class ChannelHtmlManager 
 {
+    public static final String TAG = ChannelHtmlManager.class.getSimpleName();
     private Context mContext;
+    private WebView mWebView;
+    private LoadListener mLoadListener = new LoadListener();
+    private Handler mUiHandler;
+    
+    interface ILoadListener {
+        public void processHTML(String html);
+    }
+    class LoadListener implements ILoadListener {
+        private ILoadListener mListener;
+        public void setLoadListener(ILoadListener listener) {
+            mListener = listener;
+        }
+        @JavascriptInterface
+        public void processHTML(String html) {
+            if (mListener != null) {
+                mListener.processHTML(html);
+            }
+        }
+    }
     
     public ChannelHtmlManager(Context context)
     {
         assert (context != null);
         mContext = context;
+        mWebView = new WebView(mContext);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setUserAgentString(GlobalData.ChromeUserAgent);
+        mWebView.addJavascriptInterface(mLoadListener, "HTMLOUT");
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            }
+
+            public void onPageFinished(WebView view, String url) {
+                view.loadUrl("javascript:window.HTMLOUT.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+            }
+        });
+        mUiHandler = new Handler(Looper.getMainLooper());
     }
     
     public interface ChannelDetailCallback
@@ -46,10 +96,12 @@ public class ChannelHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(channelUrl, CacheControl.Memory);
+                    Document doc = loadHTMLDocument(channelUrl);
                     String protocol = new URL(channelUrl).getProtocol();
                     String host = new URL(channelUrl).getHost();
                     String prefix = protocol + "://" + host;
+                    
+                    Log.d(TAG, "getChannelDetailFromFullWebAsync: get html size " + doc.html().length());
                  
                     // -------------- 获取节目信息 --------------
                     // 返回结果
@@ -202,11 +254,6 @@ public class ChannelHtmlManager
                     e.printStackTrace();
                     callback.onError(requestId, e.toString());
                 }
-                catch (IOException e) 
-                {
-                    e.printStackTrace();
-                    callback.onError(requestId, e.toString());
-                }
             }
         }).start();
     }
@@ -274,5 +321,38 @@ public class ChannelHtmlManager
 		} else {
 			new Thread(runnable).start();
 		}
+    }
+    
+    private Document loadHTMLDocument(String url) {
+        final CountDownLatch signal = new CountDownLatch(1);
+        final StringBuffer buffer = new StringBuffer();
+        ILoadListener listener = new ILoadListener() {
+            @Override
+            public void processHTML(String html) {
+                if (html == null) {
+                    html = "";
+                }
+                buffer.append(html);
+                signal.countDown();
+            }
+        };
+        loadHTMLStringFromWebView(url, listener);
+        try {
+            signal.await(120000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "loadHTMLDocument exception: " + e.getMessage());
+        }
+        return Jsoup.parse(buffer.toString());
+    }
+    
+    private void loadHTMLStringFromWebView(final String url, final ILoadListener listener) {
+        mUiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mLoadListener.setLoadListener(listener);
+                mWebView.stopLoading();
+                mWebView.loadUrl(url);
+            }
+        });
     }
 }

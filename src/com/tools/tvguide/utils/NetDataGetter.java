@@ -195,7 +195,6 @@ public class NetDataGetter
                     String value = entry.getValue();
                     post.setHeader(key, value);
                 }
-                post.addHeader("Accept-Encoding", "gzip");
                 response = client.execute(post);
             }
             // GET
@@ -210,7 +209,6 @@ public class NetDataGetter
                     String value = entry.getValue();
                     get.setHeader(key, value);
                 }
-                get.addHeader("Accept-Encoding", "gzip");
                 response = client.execute(get);
             }
         	
