@@ -1,6 +1,5 @@
 package com.tools.tvguide.managers;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.data.TimestampString;
-import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -110,7 +108,7 @@ public class ChannelHtmlManager
                     Elements programs = doc.select("ul[id=pgrow] li");
                     if (programs.size() > 0) {
                         TimestampString tString = new TimestampString(System.currentTimeMillis(), doc.html());
-                        AppEngine.getInstance().getDiskCacheManager().setTimestampString(channelUrl, tString);
+                        AppEngine.getInstance().getDiskCacheManager().setTimestampString(makeKey_webview(channelUrl), tString);
                     }
                     for (int i=0; i<programs.size(); ++i) {
                         // 过滤结果
@@ -276,8 +274,8 @@ public class ChannelHtmlManager
             public void run() 
             {
                 try 
-                {
-                    Document doc = HtmlUtils.getDocument(channelUrl, CacheControl.DiskToday);
+                {   
+                    Document doc = loadHTMLDocument(channelUrl);
                     String protocol = new URL(channelUrl).getProtocol();
                     String host = new URL(channelUrl).getHost();
                     String prefix = protocol + "://" + host;
@@ -285,7 +283,11 @@ public class ChannelHtmlManager
                     // -------------- 获取节目信息 --------------
                     // 返回结果
                     List<Program> retProgramList = new ArrayList<Program>();
-                    Elements programs = doc.select("table[class=timetable] tbody tr");
+                    Elements programs = doc.select("table.timetable tr");
+                    if (programs.size() > 0) {
+                        TimestampString tString = new TimestampString(System.currentTimeMillis(), doc.html());
+                        AppEngine.getInstance().getDiskCacheManager().setTimestampString(makeKey_webview(channelUrl), tString);
+                    }
                     for (int i=0; i<programs.size(); ++i) {
                         Elements tdElements = programs.get(i).select("td");
                         if (tdElements.size() == 2) {
@@ -313,10 +315,6 @@ public class ChannelHtmlManager
                 {
                     e.printStackTrace();
                 }
-                catch (IOException e) 
-                {
-                    e.printStackTrace();
-                }
             }
 		};
 		if (handler != null) {
@@ -326,8 +324,12 @@ public class ChannelHtmlManager
 		}
     }
     
+    private String makeKey_webview(String url) {
+        return url + "_from_webview";
+    }
+    
     private Document loadHTMLDocument(String url) {
-        TimestampString tString = AppEngine.getInstance().getDiskCacheManager().getTimestampString(url);
+        TimestampString tString = AppEngine.getInstance().getDiskCacheManager().getTimestampString(makeKey_webview(url));
         if (tString != null && !HtmlUtils.isExpired(tString.getDate())) {
             return Jsoup.parse(tString.getString());
         }
