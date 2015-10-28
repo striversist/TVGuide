@@ -18,6 +18,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -107,8 +108,10 @@ public class ChannelHtmlManager
                     // 返回结果
                     List<Program> retProgramList = new ArrayList<Program>();
                     Elements programs = doc.select("ul[id=pgrow] li");
-                    for (int i=0; i<programs.size(); ++i)
-                    {
+                    if (programs.size() > 0) {
+                        AppEngine.getInstance().getCacheManager().setHtml(channelUrl, doc.html());
+                    }
+                    for (int i=0; i<programs.size(); ++i) {
                         // 过滤结果
                         String time = "";
                         String title = "";
@@ -282,8 +285,7 @@ public class ChannelHtmlManager
                     // 返回结果
                     List<Program> retProgramList = new ArrayList<Program>();
                     Elements programs = doc.select("table[class=timetable] tbody tr");
-                    for (int i=0; i<programs.size(); ++i)
-                    {
+                    for (int i=0; i<programs.size(); ++i) {
                         Elements tdElements = programs.get(i).select("td");
                         if (tdElements.size() == 2) {
                             Element timeElement = tdElements.get(0);
@@ -324,6 +326,10 @@ public class ChannelHtmlManager
     }
     
     private Document loadHTMLDocument(String url) {
+        String html = AppEngine.getInstance().getCacheManager().getHtml(url);
+        if (!TextUtils.isEmpty(html)) {
+            return Jsoup.parse(html);
+        }
         final CountDownLatch signal = new CountDownLatch(1);
         final StringBuffer buffer = new StringBuffer();
         ILoadListener listener = new ILoadListener() {
