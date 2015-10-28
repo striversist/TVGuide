@@ -126,7 +126,7 @@ public class HtmlUtils {
         return id;
     }
 
-    private static boolean isExpired(long date) {
+    public static boolean isExpired(long date) {
         return !isTheSameDay(date, System.currentTimeMillis());
     }
 
