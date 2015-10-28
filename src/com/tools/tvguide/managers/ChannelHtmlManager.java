@@ -18,7 +18,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -27,6 +26,7 @@ import android.webkit.WebViewClient;
 import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.data.TimestampString;
 import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
 
@@ -109,7 +109,8 @@ public class ChannelHtmlManager
                     List<Program> retProgramList = new ArrayList<Program>();
                     Elements programs = doc.select("ul[id=pgrow] li");
                     if (programs.size() > 0) {
-                        AppEngine.getInstance().getCacheManager().setHtml(channelUrl, doc.html());
+                        TimestampString tString = new TimestampString(System.currentTimeMillis(), doc.html());
+                        AppEngine.getInstance().getDiskCacheManager().setTimestampString(channelUrl, tString);
                     }
                     for (int i=0; i<programs.size(); ++i) {
                         // 过滤结果
@@ -326,9 +327,9 @@ public class ChannelHtmlManager
     }
     
     private Document loadHTMLDocument(String url) {
-        String html = AppEngine.getInstance().getCacheManager().getHtml(url);
-        if (!TextUtils.isEmpty(html)) {
-            return Jsoup.parse(html);
+        TimestampString tString = AppEngine.getInstance().getDiskCacheManager().getTimestampString(url);
+        if (tString != null && !HtmlUtils.isExpired(tString.getDate())) {
+            return Jsoup.parse(tString.getString());
         }
         final CountDownLatch signal = new CountDownLatch(1);
         final StringBuffer buffer = new StringBuffer();
