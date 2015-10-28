@@ -60,6 +60,7 @@ public class ChannelHtmlManager
         mWebView = new WebView(mContext);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setUserAgentString(GlobalData.ChromeUserAgent);
+        mWebView.getSettings().setBlockNetworkImage(true);
         mWebView.addJavascriptInterface(mLoadListener, "HTMLOUT");
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
