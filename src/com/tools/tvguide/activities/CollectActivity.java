@@ -1,17 +1,25 @@
 package com.tools.tvguide.activities;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Map.Entry;
 
-import org.apache.http.message.BasicNameValuePair;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
@@ -19,23 +27,9 @@ import com.mobeta.android.dslv.DragSortListView.DragSortListener;
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.CollectListAdapter;
 import com.tools.tvguide.adapters.CollectListAdapter.RemoveItemCallback;
-import com.tools.tvguide.components.DefaultNetDataGetter;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
-import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.utils.NetDataGetter;
-
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 public class CollectActivity extends Activity implements DragSortListener
 {
@@ -46,7 +40,6 @@ public class CollectActivity extends Activity implements DragSortListener
     private DragSortController mController;
     private CollectListAdapter mListViewAdapter;
     private List<Channel> mChannelList;
-    private ArrayList<String> mReportList;
     private LayoutInflater mInflater;
     private LinearLayout mContentLayout;
     private LinearLayout mNoCollectLayout;
@@ -60,7 +53,6 @@ public class CollectActivity extends Activity implements DragSortListener
         
         mChannelListView = (DragSortListView)findViewById(R.id.collect_channel_list_view);
         mChannelList = new ArrayList<Channel>();
-        mReportList = new ArrayList<String>();
         mInflater = LayoutInflater.from(this);
         mContentLayout = (LinearLayout)findViewById(R.id.collect_content_layout);
         mNoCollectLayout = (LinearLayout)mInflater.inflate(R.layout.center_text_tips_layout, null);
@@ -88,7 +80,6 @@ public class CollectActivity extends Activity implements DragSortListener
         });
         
         createAndSetListViewAdapter();
-        report();
         
         mTimer = new Timer(true);
         mTimer.schedule(new TimerTask() {
@@ -190,49 +181,6 @@ public class CollectActivity extends Activity implements DragSortListener
             itemList.add(item);
         }
         mListViewAdapter.update(itemList);
-    }
-    
-    private void report()
-    {
-        mReportList.clear();
-        Iterator<Entry<String, HashMap<String, Object>>> iter = AppEngine.getInstance().getCollectManager().getCollectChannels().entrySet().iterator();
-        while (iter.hasNext())
-        {
-            Map.Entry<String, HashMap<String, Object>> entry = (Map.Entry<String, HashMap<String,Object>>)iter.next();
-            mReportList.add(entry.getKey());
-        }
-        if (mReportList.size() == 0)
-            return;
-        new Thread(new Runnable() 
-        {
-            @Override
-            public void run() 
-            {
-                String url = AppEngine.getInstance().getUrlManager().tryToGetDnsedUrl(UrlManager.ProxyUrl.Report) + "?type=collect";
-                try 
-                {
-                    NetDataGetter getter = new DefaultNetDataGetter(url);
-                    List<BasicNameValuePair> pairs = new ArrayList<BasicNameValuePair>();
-                    //String test = "{\"channels\":[\"cctv1\", \"cctv3\"]}";
-                    String idArray = "[";
-                    for (int i=0; i<mReportList.size(); ++i)
-                    {
-                        idArray += "\"" + mReportList.get(i) + "\"";
-                        if (i < (mReportList.size() - 1))
-                        {
-                            idArray += ",";
-                        }
-                    }
-                    idArray += "]";
-                    pairs.add(new BasicNameValuePair("channels", "{\"channels\":" + idArray + "}"));
-                    getter.getJSONsObject(pairs);
-                } 
-                catch (MalformedURLException e) 
-                {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
     
     private DragSortController buildController(DragSortListView dslv) 
