@@ -20,9 +20,8 @@ public class UrlManager
     public static final String URL_CHINAZ_IP            = "http://ip.chinaz.com";
     public static final String URL_IPCN                 = "http://www.ip.cn";
     public static final String URL_PUB_HOT              = "http://m.tvsou.com/juqing.asp";
-    public static final String URL_HOT_DRAMA            = "http://m.tvmao.com/hot/drama/default/week";
-    public static final String URL_HOT_TVCOLUMN         = "http://m.tvmao.com/hot/tvcolumn/default/week";
-    public static final String URL_HOT_MOVIE            = "http://m.tvmao.com/hot/movie/default/week";
+    public static final String URL_WWW_HOME             = "http://www.tvmao.com";
+    public static final String URL_M_HOME               = "http://m.tvmao.com";
     public static final String DEV_IP                   = "192.168.1.100";
     public static final String REAL_HOST                = "striversist.oicp.net";
     

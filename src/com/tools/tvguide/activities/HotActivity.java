@@ -9,6 +9,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.HotProgramListAdapter;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.data.ProgramType;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.managers.ProgramHtmlManager.HotProgramsCallback;
@@ -105,17 +106,18 @@ public class HotActivity extends Activity implements Callback
     private void update()
     {
         final TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
-        String hotUrl = "";
+        String hotUrl = UrlManager.URL_WWW_HOME;
+        ProgramType type = ProgramType.Drama;
         switch (curIndex)
         {
             case Drama:
-                hotUrl = UrlManager.URL_HOT_DRAMA;
+                type = ProgramType.Drama;
                 break;
             case Tvcolumn:
-                hotUrl = UrlManager.URL_HOT_TVCOLUMN;
+                type = ProgramType.Tvcolumn;
                 break;
             case Movie:
-                hotUrl = UrlManager.URL_HOT_MOVIE;
+                type = ProgramType.Movie;
                 break;
         }
 
@@ -125,7 +127,7 @@ public class HotActivity extends Activity implements Callback
             return;
         }
         
-        AppEngine.getInstance().getProgramHtmlManager().getHotProgramsAsync(0, hotUrl, new HotProgramsCallback() 
+        AppEngine.getInstance().getProgramHtmlManager().getHotProgramsAsync(0, hotUrl, type, new HotProgramsCallback() 
         {
             @Override
             public void onProgramsLoaded(int requestId, List<HashMap<String, String>> programInfoList) 
@@ -178,9 +180,8 @@ public class HotActivity extends Activity implements Callback
                         String link = programInfo.get("link");
                         
                         TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
-                        if (curIndex == TabIndex.Drama || curIndex == TabIndex.Movie)
-                            link = link.replace("m.tvmao.com", "www.tvmao.com");
-                        else if (curIndex == TabIndex.Tvcolumn)
+                        if (curIndex == TabIndex.Drama || curIndex == TabIndex.Movie
+                                || curIndex == TabIndex.Tvcolumn)
                             link = link.replace("www.tvmao.com", "m.tvmao.com");
                         
                         Intent intent = new Intent(HotActivity.this, ProgramActivity.class);

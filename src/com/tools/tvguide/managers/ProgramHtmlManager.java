@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import android.content.Context;
 
+import com.tools.tvguide.data.ProgramType;
 import com.tools.tvguide.utils.CacheControl;
 import com.tools.tvguide.utils.HtmlUtils;
 
@@ -319,7 +320,8 @@ public class ProgramHtmlManager
         }
     }
     
-    public void getHotProgramsAsync(final int requestId, final String hotUrl, final HotProgramsCallback callback)
+    public void getHotProgramsAsync(final int requestId, final String hotUrl,
+            final ProgramType type, final HotProgramsCallback callback)
     {
         assert (callback != null);
         new Thread(new Runnable() 
@@ -329,7 +331,7 @@ public class ProgramHtmlManager
             {
                 try 
                 {
-                    Document doc = HtmlUtils.getDocument(hotUrl, CacheControl.Memory);
+                    Document doc = HtmlUtils.getDocument(hotUrl, CacheControl.DiskToday);
                     String protocol = new URL(hotUrl).getProtocol();
                     String host = new URL(hotUrl).getHost();
                     String prefix = protocol + "://" + host;
@@ -337,71 +339,17 @@ public class ProgramHtmlManager
                     // -------------- 获取整个列表 --------------
                     // 返回结果
                     List<HashMap<String, String>> programList = new ArrayList<HashMap<String,String>>();
-                    Elements tableElements = doc.select("div.clear table");
-                    for (int i=0; i<tableElements.size(); ++i)
-                    {
-                        HashMap<String, String> programInfo = new HashMap<String, String>();
-                        Element tableElement = tableElements.get(i);
-
-                        // -------------- 获取Program名称和链接 --------------
-                        // 返回结果
-                        String programLink = "";
-                        String programName = "";
-                        Element programLinkElement = tableElement.select("tbody td.td2 a").first();
-                        if (programLinkElement != null)
-                        {
-                            programLink = programLinkElement.attr("href");
-                            if (!programLink.contains(protocol + "://"))    // not absolute path
-                                programLink = prefix + programLink;
-                            programInfo.put("link", programLink);
-                            
-                            programName = programLinkElement.text();
-                            programInfo.put("name", programName);
-                        }
-                        
-                        // -------------- 获取Profile --------------
-                        // 返回结果
-                        String profile = "";
-                        Element profileElement = tableElement.select("tbody td.td2 div").first();
-                        if (profileElement != null)
-                        {
-                            String tmpProfile = HtmlUtils.omitHtmlElement(profileElement.html());
-                            
-                            // 去除空行
-                            String lines[] = tmpProfile.split("\n");
-                            for (int t=0; t<lines.length; ++t)
-                            {
-                                String line = lines[t].trim();
-                                if (line.length() > 0)   // 不是空行
-                                {
-                                    if (line.equals(programName) 
-                                        || line.contains("评论") 
-                                        || line.contains("更多"))    // 除去某些行
-                                        continue;
-                                    
-                                    if (line.equals("主演:") || line.equals("主演："))   // 解决“主演：”和演员名不在同一行的问题
-                                        profile += line + " ";
-                                    else
-                                        profile += line + "\n";
-                                }
-                            }
-                            
-                            programInfo.put("profile", profile);
-                        }
-                        
-                        // -------------- 获取图片链接 --------------
-                        // 返回结果
-                        String picLink = null;
-                        Element imgElement = tableElement.select("tbody td.td1 img").first();
-                        if (imgElement != null)
-                        {
-                            picLink = imgElement.attr("src");
-                            programInfo.put("picture_link", picLink);
-                        }
-                        
-                        programList.add(programInfo);
+                    switch (type) {
+                        case Tvcolumn:
+                            programList = parseHotTvcolumn(prefix, doc);
+                            break;
+                        case Drama:
+                            programList = parseHotDrama(prefix, doc);
+                            break;
+                        case Movie:
+                            programList = parseHotMovie(prefix, doc);
+                            break;
                     }
-                    
                     callback.onProgramsLoaded(requestId, programList);
                 }
                 catch (IOException e) 
@@ -410,6 +358,69 @@ public class ProgramHtmlManager
                 }
             }
         }).start();
+    }
+    
+    private List<HashMap<String, String>> parseHotTvcolumn(String linkPrefix, Document doc) {
+        List<HashMap<String, String>> programList = new ArrayList<HashMap<String,String>>();
+        Elements programElements = doc.select("ul[class=mt10 clear tvclst] li");
+        if (programElements == null) {
+            return programList;
+        }
+        return parseProgramDetail(linkPrefix, programElements);
+    }
+    
+    private List<HashMap<String, String>> parseHotDrama(String linkPrefix, Document doc) {
+        List<HashMap<String, String>> programList = new ArrayList<HashMap<String,String>>();
+        Elements programElements = doc.select("ul[class=tv_fixed tvli] li");
+        if (programElements == null) {
+            return programList;
+        }
+        return parseProgramDetail(linkPrefix, programElements);
+    }
+    
+    private List<HashMap<String, String>> parseHotMovie(String linkPrefix, Document doc) {
+        List<HashMap<String, String>> programList = new ArrayList<HashMap<String,String>>();
+        Elements programElements = doc.select("ul[class=libd clear mb10 mt10] li");
+        if (programElements == null) {
+            return programList;
+        }
+        return parseProgramDetail(linkPrefix, programElements);
+    } 
+    
+    private List<HashMap<String, String>> parseProgramDetail(String linkPrefix, Elements programElements) {
+        List<HashMap<String, String>> programList = new ArrayList<HashMap<String,String>>();
+        for (Element programElement : programElements) {
+            HashMap<String, String> programInfo = new HashMap<String, String>();
+            // -------------- 获取名称, 链接, 图片 --------------
+            Elements links = programElement.select("a");
+            if (links != null) {
+                String name = links.first().attr("title");
+                String link = links.first().attr("href");
+                if (!link.contains("://"))    // not absolute path
+                    link = linkPrefix + link;
+                programInfo.put("name", name);
+                programInfo.put("link", link);
+                
+                // 图片链接
+                Elements imgs = programElement.select("img");
+                if (imgs != null) {
+                    String imgSrc = imgs.first().attr("src");
+                    programInfo.put("picture_link", imgSrc);
+                }
+            }
+            
+            // -------------- 获取Profile --------------
+            String profile = "";
+            Elements profileElements = programElement.select("p");
+            if (profileElements != null) {
+                for (Element profileElement : profileElements) {
+                    profile += profileElement.text() + "\n";
+                }
+            }
+            programInfo.put("profile", profile);
+            programList.add(programInfo);
+        }
+        return programList;
     }
 }
 
