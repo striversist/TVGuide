@@ -31,7 +31,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
     private String          mStringHome;
     private String          mStringCollect;
     private String          mStringSearch;
-    private String          mStringAbout;
+    private String          mStringHot;
     private String          mStringMore;
     private ImageView       mNewMsg;
     private Handler         mUiHandler;
@@ -78,7 +78,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
         mStringHome     = getResources().getString(R.string.category_home);
         mStringCollect  = getResources().getString(R.string.category_collect);
         mStringSearch   = getResources().getString(R.string.category_search);
-        mStringAbout    = getResources().getString(R.string.category_hot);
+        mStringHot      = getResources().getString(R.string.category_hot);
         mStringMore     = getResources().getString(R.string.category_more);
         mNewMsg         = (ImageView) findViewById(R.id.new_msg_tv);
        
@@ -96,13 +96,13 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
         
         if (AppEngine.getInstance().getEnvironmentManager().isHotFromTvmao())
         {
-            mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
+            mTabHost.addTab(mTabHost.newTabSpec(mStringHot)
                     .setIndicator(getResources().getString(R.string.category_hot))
                     .setContent(new Intent(this, HotActivity.class)));
         }
         else
         {
-            mTabHost.addTab(mTabHost.newTabSpec(mStringAbout)
+            mTabHost.addTab(mTabHost.newTabSpec(mStringHot)
                     .setIndicator(getResources().getString(R.string.category_hot))
                     .setContent(new Intent(this, HotActivityTvsou.class)));
         }
@@ -128,7 +128,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
                         mTabHost.setCurrentTabByTag(mStringSearch);
                         break;
                     case R.id.tab_hot:
-                        mTabHost.setCurrentTabByTag(mStringAbout);
+                        mTabHost.setCurrentTabByTag(mStringHot);
                         break;
                     case R.id.tab_more:
                         mTabHost.setCurrentTabByTag(mStringMore);
