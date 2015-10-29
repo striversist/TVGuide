@@ -11,10 +11,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.tools.tvguide.utils.HtmlUtils;
-import com.tools.tvguide.utils.CacheControl;
-
 import android.content.Context;
+
+import com.tools.tvguide.utils.CacheControl;
+import com.tools.tvguide.utils.HtmlUtils;
 
 public class ProgramHtmlManager 
 {
@@ -118,16 +118,23 @@ public class ProgramHtmlManager
                         for (int i=0; i<titleElements.size(); ++i)
                         {
                             Element titleElement = titleElements.get(i);
-                            Element plotElement = titleElement.siblingElements().first();
+                            Element plotElement = titleElement.nextElementSibling();
                             
                             if (titleElement != null && plotElement != null)
                             {
                                 String title = titleElement.text().trim();
-                                String plot = "";
+                                String omit = "在线观看";
+                                if (title.contains(omit)) {
+                                    title = title.substring(0, title.indexOf(omit));
+                                }
                                 
-                                Elements pargphs = plotElement.select("p");
-                                for (int j=0; j<pargphs.size(); ++j)
-                                    plot += pargphs.get(j).text().trim() + "\n\n";
+                                String plot = plotElement.text() + "\n";
+                                while (plotElement.nextElementSibling() != null
+                                        && plotElement.nextElementSibling().nodeName().equals("p")) {
+                                    plotElement = plotElement.nextElementSibling();
+                                    plot += plotElement.text() + "\n";
+                                }
+                                plot += "\n";
                                 
                                 HashMap<String, String> episode = new HashMap<String, String>();
                                 episode.put("title", title);
