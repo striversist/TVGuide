@@ -259,25 +259,42 @@ public class ProgramHtmlManager
             String host = new URL(programUrl).getHost();
             String prefix = protocol + "://" + host;
             
+            ProgramType type = ProgramType.Tvcolumn;
+            if (programUrl.contains("tvcolumn")) {
+                type = ProgramType.Tvcolumn;
+            } else if (programUrl.contains("drama")) {
+                type = ProgramType.Drama;
+            } else if (programUrl.contains("movie")) {
+                type = ProgramType.Movie;
+            }
+            
             // -------------- 获取Profile --------------
             // 返回结果
             String profile = "";
-            Elements profileElements = doc.select("table.mtblmetainfo table.obj_meta tbody tr");
-            for (int i=0; i<profileElements.size(); ++i)
-            {
-                Element profileElement = profileElements.get(i);
-                String key = "";
-                String value = "";
-                
-                Element keyElement = profileElement.select("td").first();
-                if (keyElement != null)
-                    key = keyElement.ownText();
-                
-                Element valueElement = profileElement.select("td span").first();
-                if (valueElement != null)
-                    value = valueElement.ownText();
-                
-                profile += key + value + "\n";
+            if (type == ProgramType.Tvcolumn) {
+                Elements profileElements = doc.select("table.mtblmetainfo table.obj_meta tbody tr");
+                for (int i=0; i<profileElements.size(); ++i) {
+                    Element profileElement = profileElements.get(i);
+                    String key = "";
+                    String value = "";
+                    
+                    Element keyElement = profileElement.select("td").first();
+                    if (keyElement != null)
+                        key = keyElement.ownText();
+                    
+                    Element valueElement = profileElement.select("td span").first();
+                    if (valueElement != null)
+                        value = valueElement.ownText();
+                    
+                    profile += key + value + "\n";
+                }
+            } else if (type == ProgramType.Drama) {
+                Elements pElements = doc.select("div[class=bg_deepgray] div.bg_light div.blank p");
+                if (pElements != null) {
+                    for (Element p : pElements) {
+                        profile += p.ownText() + "\n";
+                    }
+                }
             }
             
             callback.onProfileLoaded(requestId, profile);
@@ -285,7 +302,7 @@ public class ProgramHtmlManager
             // -------------- 获取图片链接 --------------
             // 返回结果
             String picLink = null;
-            Element imgElement = doc.select("div[class=bg_deepgray] div[class=bg_light] img").first();
+            Element imgElement = doc.select("div[class=bg_deepgray] div.bg_light img").first();
             if (imgElement != null)
             {
                 picLink = imgElement.attr("src");
@@ -296,19 +313,26 @@ public class ProgramHtmlManager
             // -------------- 获取剧情概要 --------------
             // 返回结果
             String summary = "";
-            Elements descriptionElements = doc.select("div.section p");
-            if (descriptionElements != null) {
-                Element descriptionElement = descriptionElements.first();
-                if (descriptionElement != null) {
-                    summary += descriptionElement.ownText() + "\n";
-                    final int MaxLines = 1000;
-                    int i = 0;
-                    Element nextElement = descriptionElement.nextElementSibling();
-                    while (nextElement != null && nextElement.nodeName().equals("p") && (i++ < MaxLines))
-                    {
-                        summary += nextElement.text() + "\n";
-                        nextElement = nextElement.nextElementSibling();
+            if (type == ProgramType.Tvcolumn) {
+                Elements summaryElements = doc.select("div.section p");
+                if (summaryElements != null) {
+                    Element descriptionElement = summaryElements.first();
+                    if (descriptionElement != null) {
+                        summary += descriptionElement.ownText() + "\n";
+                        final int MaxLines = 1000;
+                        int i = 0;
+                        Element nextElement = descriptionElement.nextElementSibling();
+                        while (nextElement != null && nextElement.nodeName().equals("p") && (i++ < MaxLines))
+                        {
+                            summary += nextElement.text() + "\n";
+                            nextElement = nextElement.nextElementSibling();
+                        }
                     }
+                }
+            } else if (type == ProgramType.Drama) {
+                Elements summaryElements = doc.select("div[class=bg_deepgray] div.bg_light div[class=desc less_c]");
+                if (summaryElements != null) {
+                    summary = summaryElements.first().ownText() + "\n";
                 }
             }
             

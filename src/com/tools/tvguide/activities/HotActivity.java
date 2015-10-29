@@ -180,9 +180,12 @@ public class HotActivity extends Activity implements Callback
                         String link = programInfo.get("link");
                         
                         TabIndex curIndex = TabIndex.values()[mViewPager.getCurrentItem()];
-                        if (curIndex == TabIndex.Drama || curIndex == TabIndex.Movie
-                                || curIndex == TabIndex.Tvcolumn)
+                        if (curIndex == TabIndex.Tvcolumn) {
                             link = link.replace("www.tvmao.com", "m.tvmao.com");
+                        } else if (curIndex == TabIndex.Drama
+                                || curIndex == TabIndex.Movie) {
+                            link = link.replace("m.tvmao.com", "www.tvmao.com");
+                        }
                         
                         Intent intent = new Intent(HotActivity.this, ProgramActivity.class);
                         Program program = new Program();
