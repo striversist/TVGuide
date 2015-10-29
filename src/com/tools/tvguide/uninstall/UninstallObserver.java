@@ -1,6 +1,7 @@
 package com.tools.tvguide.uninstall;
 
 import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.EnvironmentManager;
 import com.tools.tvguide.managers.UrlManager;
 
 import android.content.ComponentName;
@@ -17,6 +18,8 @@ public class UninstallObserver
 	
 	public static void autoSetHttpRequestOnUninstall(Context context)
 	{
+	    if (!EnvironmentManager.enableUninstallReport)
+	        return;
 		String guid = AppEngine.getInstance().getUpdateManager().getGUID();
 		String version = AppEngine.getInstance().getUpdateManager().getCurrentVersionName();
 		
@@ -26,7 +29,7 @@ public class UninstallObserver
 		setHttpRequestOnUninstall(context.getApplicationContext(), url);
 	}
 	
-	public static int setHttpRequestOnUninstall(Context context, String url)
+	private static int setHttpRequestOnUninstall(Context context, String url)
 	{
 		if (context == null || url == null)
 			return -1;
