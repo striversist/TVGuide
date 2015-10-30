@@ -117,11 +117,11 @@
         </service>
 
         <activity
-            android:name="com.tools.tvguide.SupportActivity"
+            android:name="com.tools.tvguide.activities.SupportActivity"
             android:label="@string/title_activity_support" >
         </activity>
         <activity
-            android:name="com.tools.tvguide.AdvanceAlarmActivity"
+            android:name="com.tools.tvguide.activities.AdvanceAlarmActivity"
             android:label="@string/title_activity_advance_alarm" >
         </activity>
     </application>

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tools.tvguide.AdvanceAlarmActivity;
 import com.tools.tvguide.R;
 import com.tools.tvguide.data.AlarmData;
 import com.tools.tvguide.data.Channel;
