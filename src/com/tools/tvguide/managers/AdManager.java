@@ -7,6 +7,7 @@ import cn.waps.UpdatePointsNotifier;
 import com.tools.tvguide.components.Shutter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -50,6 +51,8 @@ public class AdManager implements Shutter
 		// 初始化应用的发布ID和密钥，以及设置测试模式
 	    AppConnect.getInstance("1fc85ef0cd8d2b0206b2cb481cd25d69", "default", activity);
 	    AppConnect.getInstance(mContext).setCrashReport(false);
+	    AppConnect.getInstance(mContext).initPopAd(mContext);
+	    AppConnect.getInstance(mContext).setPopAdBack(true);
 	}
 	
 	/**
@@ -81,6 +84,17 @@ public class AdManager implements Shutter
 		}
 		layout.setVisibility(View.VISIBLE);
 		return true;
+	}
+	
+	public void showPopAd(Context context) {
+	    AppConnect.getInstance(mContext).showPopAd(context);
+	}
+	
+	public void dissmissPopAd(Context context) {
+	    Dialog popDialog = AppConnect.getInstance(mContext).getPopAdDialog();
+	    if (popDialog != null && popDialog.isShowing()) {
+	        popDialog.dismiss();
+	    }
 	}
 	
 	public void removeAd()
