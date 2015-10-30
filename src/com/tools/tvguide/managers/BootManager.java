@@ -25,12 +25,12 @@ public class BootManager implements Shutter
     private boolean             mShowSplash                                 = !EnvironmentManager.isDevelopMode;
     private SharedPreferences   mPreference;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
-    private static final String KEY_FIRST_START_FLAG                        = "key_first_start_flag";
-    private static final String KEY_LAST_START_FLAG                         = "key_last_start_flag";
+    private static final String KEY_STARTUP_TIMES                           = "key_startup_times";
+    private static final String KEY_LAST_STARTUP_TIME                       = "key_last_startup_time_flag";
     private List<OnSplashFinishedCallback> mOnSplashFinishedCallbackList;
-    private OnStartedCallback  mOnStartedCallback;
+    private OnStartedCallback   mOnStartedCallback;
     private boolean             mIsSplashShowing                            = false;
-    private boolean             mIsFirstStart;
+    private int                 mStartupTimes;
     private enum SelfMessage {Msg_Need_Update};
     
     public interface OnSplashFinishedCallback
@@ -50,7 +50,9 @@ public class BootManager implements Shutter
         mPreference = context.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
         GlobalData.UserAgent = getUserAgentInternal();
         mOnSplashFinishedCallbackList = new ArrayList<BootManager.OnSplashFinishedCallback>();
-        mIsFirstStart = mPreference.getBoolean(KEY_FIRST_START_FLAG, true);
+        mStartupTimes = mPreference.getInt(KEY_STARTUP_TIMES, 0);
+        mPreference.edit().putInt(KEY_STARTUP_TIMES, ++mStartupTimes).commit();
+        mPreference.edit().putLong(KEY_LAST_STARTUP_TIME, System.currentTimeMillis()).commit();
     }
     
     public void start(OnStartedCallback callback)
@@ -88,7 +90,6 @@ public class BootManager implements Shutter
             new ShortcutInstaller(AppEngine.getInstance().getContext()).createShortCut();
         
         UninstallObserver.autoSetHttpRequestOnUninstall(mContext.getApplicationContext());
-        mPreference.edit().putLong(KEY_LAST_START_FLAG, System.currentTimeMillis()).commit();
     }
     
     public void addOnSplashFinishedCallback(final OnSplashFinishedCallback callback)
@@ -107,12 +108,12 @@ public class BootManager implements Shutter
     
     public boolean isFirstStart()
     {
-        return mIsFirstStart;
+        return mStartupTimes == 1;
     }
     
     public long getLastStartTime()
     {
-        return mPreference.getLong(KEY_LAST_START_FLAG, 0);
+        return mPreference.getLong(KEY_LAST_STARTUP_TIME, 0);
     }
     
     public boolean isShowSplash()
@@ -163,10 +164,7 @@ public class BootManager implements Shutter
     }
     
     @Override
-    public void onShutDown()
-    {
-        if (isFirstStart())
-            mPreference.edit().putBoolean(KEY_FIRST_START_FLAG, false).commit();
+    public void onShutDown() {
     }
     
     private void checkNetwork()
