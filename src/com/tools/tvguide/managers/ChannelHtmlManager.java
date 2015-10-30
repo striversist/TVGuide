@@ -13,8 +13,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -342,11 +344,14 @@ public class ChannelHtmlManager
         return Jsoup.parse(buffer.toString());
     }
     
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void loadHTMLStringFromWebView(final String url, final ILoadListener listener) {
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                mWebView.removeJavascriptInterface("HTMLOUT");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    mWebView.removeJavascriptInterface("HTMLOUT");
+                } 
                 mWebView.stopLoading();
                 
                 mWebView.addJavascriptInterface(listener, "HTMLOUT");
