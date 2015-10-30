@@ -22,11 +22,13 @@ import com.tools.tvguide.data.AlarmData;
 import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.data.ChannelDate;
 import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AdManager.AdSize;
 import com.tools.tvguide.managers.AlarmHelper.AlarmListener;
 import com.tools.tvguide.managers.ChannelHtmlManager.ChannelDetailCallback;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.EnvironmentManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -147,6 +149,11 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
                 updateOnplayingProgram();
             }
         }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
+        
+        if (AppEngine.getInstance().getBootManager().getStartupTimes() 
+                > EnvironmentManager.CHANNEL_DETAIL_AD_THRESHOLD) {
+            AppEngine.getInstance().getAdManager().addAdView(this, R.id.adLayout, AdSize.NORMAL_SIZE);
+        }
     }
     
     @Override

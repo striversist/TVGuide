@@ -111,6 +111,10 @@ public class BootManager implements Shutter
         return mStartupTimes == 1;
     }
     
+    public int getStartupTimes() {
+        return mStartupTimes;
+    }
+    
     public long getLastStartTime()
     {
         return mPreference.getLong(KEY_LAST_STARTUP_TIME, 0);
