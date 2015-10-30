@@ -1,8 +1,9 @@
 package com.tools.tvguide.managers;
 
-import com.tools.tvguide.wptools.AppConnect;
-import com.tools.tvguide.wptools.AppListener;
-import com.tools.tvguide.wptools.UpdatePointsNotifier;
+import cn.waps.AppConnect;
+import cn.waps.AppListener;
+import cn.waps.UpdatePointsNotifier;
+
 import com.tools.tvguide.components.Shutter;
 
 import android.app.Activity;
