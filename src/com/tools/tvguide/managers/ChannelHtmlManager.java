@@ -40,18 +40,6 @@ public class ChannelHtmlManager
         @JavascriptInterface
         public void processHTML(String html);
     }
-    class LoadListener implements ILoadListener {
-        private ILoadListener mListener;
-        public void setLoadListener(ILoadListener listener) {
-            mListener = listener;
-        }
-        @JavascriptInterface
-        public void processHTML(String html) {
-            if (mListener != null) {
-                mListener.processHTML(html);
-            }
-        }
-    }
     
     public ChannelHtmlManager(Context context)
     {
