@@ -34,10 +34,10 @@ public class ChannelHtmlManager
     public static final String TAG = ChannelHtmlManager.class.getSimpleName();
     private Context mContext;
     private WebView mWebView;
-    private LoadListener mLoadListener = new LoadListener();
     private Handler mUiHandler;
     
     interface ILoadListener {
+        @JavascriptInterface
         public void processHTML(String html);
     }
     class LoadListener implements ILoadListener {
@@ -61,7 +61,6 @@ public class ChannelHtmlManager
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setUserAgentString(GlobalData.ChromeUserAgent);
         mWebView.getSettings().setBlockNetworkImage(true);
-        mWebView.addJavascriptInterface(mLoadListener, "HTMLOUT");
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -359,8 +358,10 @@ public class ChannelHtmlManager
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                mLoadListener.setLoadListener(listener);
+                mWebView.removeJavascriptInterface("HTMLOUT");
                 mWebView.stopLoading();
+                
+                mWebView.addJavascriptInterface(listener, "HTMLOUT");
                 mWebView.loadUrl(url);
             }
         });
