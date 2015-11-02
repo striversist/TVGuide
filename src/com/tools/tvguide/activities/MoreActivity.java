@@ -158,7 +158,7 @@ public class MoreActivity extends Activity implements Callback
         AlertDialog dialog = new AlertDialog.Builder(MoreActivity.this)
             .setIcon(R.drawable.application)
             .setTitle(getResources().getString(R.string.app_name))
-            .setMessage("作者：大眼牛工作室\n邮箱：bigeyecow@qq.com\n版权：©2013-2014")
+            .setMessage("作者：大眼牛工作室\n邮箱：bigeyecow@qq.com\n版权：©2015-2016")
             .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() 
             {
                 @Override
