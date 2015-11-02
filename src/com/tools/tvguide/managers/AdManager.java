@@ -57,6 +57,7 @@ public class AdManager implements Shutter
 	    AppConnect.getInstance(mContext).setCrashReport(false);
 	    AppConnect.getInstance(mContext).initPopAd(mContext);
 	    AppConnect.getInstance(mContext).setPopAdBack(true);
+	    AppConnect.getInstance(mContext).initUninstallAd(mContext);
 	}
 	
 	/**
