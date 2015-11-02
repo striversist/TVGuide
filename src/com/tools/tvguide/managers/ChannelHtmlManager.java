@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -37,11 +36,6 @@ public class ChannelHtmlManager
     private Context mContext;
     private WebView mWebView;
     private Handler mUiHandler;
-    
-    interface ILoadListener {
-        @JavascriptInterface
-        public void processHTML(String html);
-    }
     
     public ChannelHtmlManager(Context context)
     {
