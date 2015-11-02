@@ -49,7 +49,11 @@ public class AdManager implements Shutter
 	    assert (activity != null);
 	    
 		// 初始化应用的发布ID和密钥，以及设置测试模式
-	    AppConnect.getInstance("1fc85ef0cd8d2b0206b2cb481cd25d69", "default", activity);
+	    // 方式1：通过代码设置APP_ID, APP_PID
+//	    AppConnect.getInstance("1fc85ef0cd8d2b0206b2cb481cd25d69", "default", activity);
+	    // 方式2：从AndroidManifest.xml中读取
+	    AppConnect.getInstance(activity);
+	    
 	    AppConnect.getInstance(mContext).setCrashReport(false);
 	    AppConnect.getInstance(mContext).initPopAd(mContext);
 	    AppConnect.getInstance(mContext).setPopAdBack(true);
