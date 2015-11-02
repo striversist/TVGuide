@@ -1,17 +1,16 @@
 package com.tools.tvguide.managers;
 
-import cn.waps.AppConnect;
-import cn.waps.AppListener;
-import cn.waps.UpdatePointsNotifier;
-
-import com.tools.tvguide.components.Shutter;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.tools.tvguide.ad.AppConnect;
+import com.tools.tvguide.ad.AppListener;
+import com.tools.tvguide.ad.UpdatePointsListener;
+import com.tools.tvguide.components.Shutter;
 
 public class AdManager implements Shutter 
 {
@@ -153,7 +152,7 @@ public class AdManager implements Shutter
 	    if (activity == null || callback == null)
 	        return;
 	    
-	    AppConnect.getInstance(activity).getPoints(new UpdatePointsNotifier() 
+	    AppConnect.getInstance(activity).getPoints(new UpdatePointsListener() 
 	    {
             @Override
             public void getUpdatePointsFailed(String error) {
@@ -172,7 +171,7 @@ public class AdManager implements Shutter
 	    if (activity == null || amount <= 0 || callback == null)
 	        return;
 	    
-	    AppConnect.getInstance(activity).spendPoints(amount, new UpdatePointsNotifier() {
+	    AppConnect.getInstance(activity).spendPoints(amount, new UpdatePointsListener() {
             
             @Override
             public void getUpdatePointsFailed(String error) {
