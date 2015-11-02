@@ -163,14 +163,8 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
             }
             else
             {
+                AppEngine.getInstance().prepareBeforeExit();
                 finish();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        AppEngine.getInstance().prepareBeforeExit();
-                        doOnDestroy();
-                    }
-                }, 1000);
             }
             return true;
         }
