@@ -185,6 +185,10 @@ public class AdManager implements Shutter
             }
         });
 	}
+	
+	public void showFeedback(Activity activity) {
+	    AppConnect.getInstance(mContext).showFeedback(activity);
+	}
 
     @Override
     public void onShutDown() 

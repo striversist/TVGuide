@@ -1,25 +1,25 @@
 package com.tools.tvguide.activities;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.UpdateManager;
-import com.tools.tvguide.managers.UrlManager;
-import com.tools.tvguide.managers.StatManager.ClickModule;
-import com.tools.tvguide.components.PackageInstaller;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tools.tvguide.R;
+import com.tools.tvguide.components.PackageInstaller;
+import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.StatManager.ClickModule;
+import com.tools.tvguide.managers.UpdateManager;
+import com.tools.tvguide.managers.UrlManager;
 
 public class MoreActivity extends Activity implements Callback 
 {
@@ -118,8 +118,9 @@ public class MoreActivity extends Activity implements Callback
                     upgrade();
                 break;
             case R.id.more_feedback:
-                Intent feedbackIntent = new Intent(MoreActivity.this, FeedbackActivity.class);
-                startActivity(feedbackIntent);
+//                Intent feedbackIntent = new Intent(MoreActivity.this, FeedbackActivity.class);
+//                startActivity(feedbackIntent);
+                AppEngine.getInstance().getAdManager().showFeedback(this);
                 break;
             case R.id.more_about:
                 showAbout();
