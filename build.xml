@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="jar_builder" basedir="." default="build" >
+
+    <!--
+         这个build.xml是整个项目编译的入口，build_common.xml是具体的编译实现
+         （为了修改和删除代码，所以脚本会让实现的逻辑在temp空间内进行，而不影响正式的代码）
+    -->
+    
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="lib/ant-contrib-1.0b3.jar" />
+        </classpath>
+    </taskdef>
+
+    <property file="ant.properties" />
+    
+    <target name="clean">
+        <delete dir="bin" />
+        <mkdir dir="bin" />
+    </target>
+
+    <target name="pre-build">
+        <delete dir="bin/tmp" />
+        <mkdir dir="bin/tmp" />
+        <copy todir="bin/tmp" filtering="true">
+            <fileset dir=".">
+                <exclude name="**/.svn/**" />
+                <exclude name="**/.settings/**" />
+                <exclude name="**/gen/**" />
+                <exclude name="**/.git/**" />
+                <exclude name="**/.idea/**" />
+                <exclude name="**/out/**" />
+                <exclude name="**/bin/**" />
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="build_debug">
+        <ant antfile="build_common.xml" dir="bin/tmp" target="compile_debug"/>
+    </target>
+    
+    <target name="build_release">
+        <ant antfile="build_common.xml" dir="bin/tmp" target="compile_release"/>
+    </target>
+    
+    <target name="post-build">
+    </target>
+    
+    <target name="build" depends="clean">
+        <antcall target="pre-build" />
+        <antcall target="build_debug" />
+        <antcall target="build_release" />
+        <antcall target="post-build" />
+    </target>
+</project>
