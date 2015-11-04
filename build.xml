@@ -13,7 +13,7 @@
         </classpath>
     </taskdef>
 
-    <property file="ant.properties" />
+    <property file="local.properties" />
     
     <target name="clean">
         <delete dir="bin" />
