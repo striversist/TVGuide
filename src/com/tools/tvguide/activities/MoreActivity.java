@@ -6,9 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,19 +15,18 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.components.PackageInstaller;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.StatManager.ClickModule;
-import com.tools.tvguide.managers.UpdateManager;
 import com.tools.tvguide.managers.UrlManager;
+import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
+import com.umeng.update.UpdateStatus;
 
-public class MoreActivity extends Activity implements Callback 
+public class MoreActivity extends Activity implements UmengUpdateListener 
 {
     private Dialog mCheckingDialog;
-    private Dialog mInfoDialog;
-    private Dialog mDownloaDialog;
     private TextView mCheckTextView;
     private ImageView mUpdateNewIcon;
     private ImageView mSupportRedDot;
-    private Handler mUiHandler;
-    private enum SelfMessage {Msg_Need_Update, Msg_No_Need_Update};
     private enum TextStatus {State_Check, State_Upgrade};
     
     @Override
@@ -48,25 +44,13 @@ public class MoreActivity extends Activity implements Callback
         
         mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
         mSupportRedDot = (ImageView) findViewById(R.id.more_support_us_red_dot);
-        mUiHandler = new Handler(this);
+        UmengUpdateAgent.setUpdateListener(this);
     }
     
     @Override
     protected void onResume()
     {
         super.onResume();
-        AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
-        {
-            @Override
-            public void OnIOComplete(CheckResult result) 
-            {
-                if (result == CheckResult.Need_Update)
-                    mUiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
-                else
-                    mUiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
-            }
-        });
-        
         if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMoreSupportUs) == 0) { // 从未点击过
             mSupportRedDot.setVisibility(View.VISIBLE);
         } else if (mSupportRedDot.getVisibility() == View.VISIBLE) {
@@ -85,18 +69,6 @@ public class MoreActivity extends Activity implements Callback
                 public void onClick(DialogInterface dialog, int which) 
                 {
                     
-                }
-            })
-            .create();
-        
-        mInfoDialog = new AlertDialog.Builder(MoreActivity.this)
-            .setTitle("提示")
-            .setMessage("已经是最新版本，无需更新")
-            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which) 
-                {
                 }
             })
             .create();
@@ -142,16 +114,7 @@ public class MoreActivity extends Activity implements Callback
     private void checkNewVersion()
     {
         mCheckingDialog.show();
-        AppEngine.getInstance().getUpdateManager().checkUpdate(new UpdateManager.IOCompleteCallback() 
-        {
-            public void OnIOComplete(CheckResult result) 
-            {
-                if (result == CheckResult.Need_Update)
-                    mUiHandler.obtainMessage(SelfMessage.Msg_Need_Update.ordinal()).sendToTarget();
-                else
-                    mUiHandler.obtainMessage(SelfMessage.Msg_No_Need_Update.ordinal()).sendToTarget();
-            }
-        });
+        UmengUpdateAgent.update(this);
     }
     
     private void showAbout()
@@ -193,59 +156,23 @@ public class MoreActivity extends Activity implements Callback
     }
 
     @Override
-    public boolean handleMessage(Message msg) 
-    {
-        SelfMessage selfMsg = SelfMessage.values()[msg.what];
-        switch (selfMsg)
-        {
-            case Msg_Need_Update:
-                if (mCheckingDialog.isShowing())
-                {
-                    mCheckingDialog.dismiss();
-                    
-                    String downloadMsg;
-                    if (AppEngine.getInstance().getUpdateManager().getLatestVersionName() != null)
-                        downloadMsg = "发现最新版本(" + AppEngine.getInstance().getUpdateManager().getLatestVersionName() + "), 是否需要更新？";
-                    else
-                        downloadMsg = "发现最新版本，是否需要更新？";
-                    
-                    mDownloaDialog = new AlertDialog.Builder(MoreActivity.this)
-                        .setTitle("下载")
-                        .setMessage(downloadMsg)
-                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) 
-                            {
-                            }
-                        })
-                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) 
-                            {
-                                upgrade();
-                            }
-                        })
-                        .create();
-                    mDownloaDialog.show();
-                }
-                mUpdateNewIcon.setVisibility(View.VISIBLE);
-                String upgradeFormat = getResources().getString(R.string.version_upgrade);
-                String upgradeInfo = String.format(upgradeFormat, AppEngine.getInstance().getUpdateManager().getCurrentVersionName(), 
-                                                    AppEngine.getInstance().getUpdateManager().getLatestVersionName());
-                mCheckTextView.setText(upgradeInfo);
-                mCheckTextView.setTag(TextStatus.State_Upgrade);
-                break;
-            case Msg_No_Need_Update:
-                if (mCheckingDialog.isShowing())
-                {
-                    mCheckingDialog.dismiss();
-                    mInfoDialog.show();
-                }
-                mUpdateNewIcon.setVisibility(View.INVISIBLE);
-                break;
+    public void onUpdateReturned(int updateStatus, UpdateResponse updateInfo) {
+        if (mCheckingDialog.isShowing())
+            mCheckingDialog.dismiss();
+        
+        switch (updateStatus) {
+        case UpdateStatus.Yes: // has update
+            UmengUpdateAgent.showUpdateDialog(this, updateInfo);
+            break;
+        case UpdateStatus.No: // has no update
+            Toast.makeText(this, "没有更新", Toast.LENGTH_SHORT).show();
+            break;
+        case UpdateStatus.NoneWifi: // none wifi
+            Toast.makeText(this, "没有wifi连接， 只在wifi下更新", Toast.LENGTH_SHORT).show();
+            break;
+        case UpdateStatus.Timeout: // time out
+            Toast.makeText(this, "超时", Toast.LENGTH_SHORT).show();
+            break;
         }
-        return false;
     }
 }
