@@ -14,7 +14,7 @@ public class EnvironmentManager implements Shutter
     public static final boolean enableACRA             = true;
     public static final boolean enableACRALog          = false;
     public static final boolean enableUninstallReport  = false;
-    public static final int CHANNEL_DETAIL_AD_THRESHOLD = 3;
+    public static final int AD_OPEN_AFTER_STARTUP_TIMES = 3;
     
     private Context mContext;
     private boolean mIsChannelDetailFromWeb;

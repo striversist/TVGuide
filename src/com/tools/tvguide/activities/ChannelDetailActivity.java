@@ -150,10 +150,7 @@ public class ChannelDetailActivity extends Activity implements AlarmListener, Ca
             }
         }, TIMER_SCHEDULE_PERIOD, TIMER_SCHEDULE_PERIOD);
         
-        if (AppEngine.getInstance().getBootManager().getStartupTimes() 
-                > EnvironmentManager.CHANNEL_DETAIL_AD_THRESHOLD) {
-            AppEngine.getInstance().getAdManager().addAdView(this, R.id.adLayout, AdSize.NORMAL_SIZE);
-        }
+        AppEngine.getInstance().getAdManager().addAdView(this, R.id.adLayout, AdSize.NORMAL_SIZE);
     }
     
     @Override

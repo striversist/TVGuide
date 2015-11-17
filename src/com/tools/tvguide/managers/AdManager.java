@@ -67,6 +67,10 @@ public class AdManager implements Shutter
 	    if (!AppEngine.getInstance().getEnvironmentManager().isAdEnable())
 	        return false;
 	    
+        if (AppEngine.getInstance().getBootManager().getStartupTimes() 
+                <= EnvironmentManager.AD_OPEN_AFTER_STARTUP_TIMES) 
+            return false;
+	    
 	    if (System.currentTimeMillis() < getDisableAdTillTime())
 	        return false;
 	    
