@@ -1,52 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="TVGuide" basedir="." default="compile_release">
+<project name="build_common" basedir="." default="build_release">
 
     <!-- 系统属性，请不要擅自修改 -->
     <property environment="env"/>
-    <!-- 导入工程描述文件 -->
-    <property file="project.properties"/>
-    <!-- 设置proguard混淆描述文件 --> 
-    <property name="proguard.config" location="proguard.cfg"/>
-    <!-- 文件编码设置 -->
-    <property name="encoding" value="UTF-8"/>
-    <!-- 导入android sdk中自带的默认build文件 -->
-    <import file="${sdk.dir}/tools/ant/build.xml" />
-    <!-- 引入XML助手 -->
-    <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
+    <property file="ant.properties"/>
 
-    <target name="compile_debug">
-        <echo>Nothing to do</echo>
+    <import file="build_local_properties.xml"/>
+
+    <!-- 时间 -->
+    <tstamp>
+        <format property="output.file.build.date" pattern="yyMMdd"/>
+    </tstamp>
+    <property environment="env" />
+    <echo message="XZ_BN:${env.XZ_BN}"/>
+    <condition property="build_no" value="01" else="${env.XZ_BN}">
+   	    <os family="windows" />
+    </condition>
+
+    <!-- 编译环境配置，如果是本地，设置sdk.local.dir的值 -->
+    <condition property="sdk.dir" value="${env.ANDROIDSDK_LINUX_R19}" else="${sdk.local.dir}">
+        <istrue value="${isCI}"/>
+    </condition>
+
+    <loadproperties srcFile="project.properties"/>
+
+    <!-- version-tag: 1 -->
+    <import file="${sdk.dir}/tools/ant/build.xml"/>
+
+    <!-- 生成debug -->
+    <target name="build_debug">
+        <antcall target="debug" />
     </target>
 
-    <property name="final.out.dir" location=".." />
-    
-    <target name="compile_release">
-        <echo>sdk.dir=${sdk.dir}</echo>
-        <echo>market_channels=${market_channels}</echo>
-        <echo>basedir=${basedir}</echo>
-        <echo>out.absolute.dir=${out.absolute.dir}</echo>
-        <echo>ant.project.name=${ant.project.name}</echo>
-        <echo>final.out.dir=${final.out.dir}</echo>
-        
-        <for list="${market_channels}" delimiter="," param="channel">
-            <sequential>
-                <!-- 清理工程 -->
-                <antcall target="clean"/>
-                <echo>@{channel}</echo>
-                <xmltask source="./AndroidManifest.xml" dest="./AndroidManifest.xml" encoding="utf-8" >
-                    <attr path="//manifest/application/meta-data[@android:name='APP_PID']" attr="android:value" value="@{channel}" />
-                    <copy path="//manifest/@android:versionCode" property="android.version.code"/>
-                    <copy path="//manifest/@android:versionName" property="android.version.name"/>
-                </xmltask>
-                <echo message="android.version.code=${android.version.code}" />
-                <echo message="android.version.name=${android.version.name}" />
-                <!-- 开始编译 -->
-                <antcall target="release"/>
-                <copy file="${out.absolute.dir}/${ant.project.name}-release.apk" tofile="${final.out.dir}/${ant.project.name}_${android.version.name}_@{channel}.apk" overwrite="true"/>
-            </sequential>
-        </for>
-        
+    <!-- 生成release -->
+    <target name="build_release">
+        <antcall target="release" />
     </target>
-    
-</project>
+
+    <property name="manifest.versionCode" value="android:versionCode=&quot;${output.file.build.date}&quot;"/>
+    <property name="manifest.versionName" value="android:versionName=&quot;${output.file.build.date}.${build_no}&quot;"/>
+
+    <!-- 编译后APP的名字 -->
+    <property name="out.build.apk.name" value="tvguide"/>
+    <property name="apk.release.name" value="bin/build_common-release.apk"/>
+    <property name="apk.debug.name" value="bin/build_common-debug.apk"/>
+    <property name="mapping.name" value="bin/proguard/mapping.txt"/>
+    <!-- 构建前准备-->        
+    <target name="-pre-build">
+        <echo>编译前替换manifest中的版本号</echo>
+        <replaceregexp file="AndroidManifest.xml"
+                       match="android:versionCode\s*=\s*&quot;([^&quot;]*)&quot;"
+                       replace="${manifest.versionCode}"
+                       byline="false" encoding="utf-8"/>
+        <replaceregexp file="AndroidManifest.xml"
+                       match="android:versionName\s*=\s*&quot;(.*)&quot;"
+                       replace="${manifest.versionName}"
+                       byline="false" encoding="utf-8"/>
+	</target>
+
+    <!-- 构建后重命名-->
+    <target name="-post-build">
+        <echo> 编译完成后重命名APK </echo>
+        <if condition="${proguard.enabled}">
+            <then>
+                <echo>重命名release模式</echo>
+                <move file="${apk.release.name}"
+                      tofile="../bin/${out.build.apk.name}_${output.file.build.date}.${build_no}_release.apk" />
+                <move file="${mapping.name}"
+                      tofile="../bin/${out.build.apk.name}_${output.file.build.date}.${build_no}_mapping.txt"/>
+            </then>
+            <else>
+                <echo>重命名debug模式</echo>
+                <move file="${apk.debug.name}"
+                      tofile="../bin/${out.build.apk.name}_${output.file.build.date}.${build_no}_debug.apk" />
+            </else>
+        </if>
+
+        <echo>删除多余的文件 ...</echo>
+        <delete includeemptydirs="true" dir="."/>
+    </target>
+</project>	

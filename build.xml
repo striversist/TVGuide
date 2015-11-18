@@ -1,29 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<project name="tvguide" default="build_app_release">
+    <!-- The project.properties file is created and updated by the 'android'
+         tool, as well as ADT.
 
-<project name="jar_builder" basedir="." default="build" >
+         This contains project specific properties such as project target, and library
+         dependencies. Lower level build properties are stored in ant.properties
+         (or in .classpath for Eclipse projects).
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems. -->
+    <!--<loadproperties srcFile="project.properties"/>-->
 
     <!--
-         这个build.xml是整个项目编译的入口，build_common.xml是具体的编译实现
-         （为了修改和删除代码，所以脚本会让实现的逻辑在temp空间内进行，而不影响正式的代码）
+        Import per project custom build rules if present at the root of the project.
+        This is the place to put custom intermediary targets such as:
+            -pre-build
+            -pre-compile
+            -post-compile (This is typically used for code obfuscation.
+                           Compiled code location: ${out.classes.absolute.dir}
+                           If this is not done in place, override ${out.dex.input.absolute.dir})
+            -post-package
+            -post-build
+            -pre-clean
     -->
-    
-    <taskdef resource="net/sf/antcontrib/antlib.xml">
-        <classpath>
-            <pathelement location="lib/ant-contrib-1.0b3.jar" />
-        </classpath>
-    </taskdef>
+    <import file="custom_rules.xml" optional="true"/>
 
-    <property file="local.properties" />
-    
-    <target name="clean">
+    <!-- 编译release app -->
+    <target name="build_app_release" depends="pre-build">
+        <antcall target="clean_bin"/>
+        <ant antfile="build_common.xml" dir="temp"/>
+    </target>
+
+    <!-- 编译debug app -->
+    <target name="build_app_debug" depends="pre-build">
+        <antcall target="clean_bin"/>
+        <ant antfile="build_common.xml" dir="temp" target="build_debug"/>
+    </target>
+
+    <!-- clean并生成bin -->
+    <target name="clean_bin">
         <delete dir="bin" />
         <mkdir dir="bin" />
     </target>
 
+    <!-- build前copy目录到temp -->
     <target name="pre-build">
-        <delete dir="bin/tmp" />
-        <mkdir dir="bin/tmp" />
-        <copy todir="bin/tmp" filtering="true">
+        <delete dir="temp" />
+        <mkdir dir="temp" />
+        <copy todir="temp" filtering="true">
             <fileset dir=".">
                 <exclude name="**/.svn/**" />
                 <exclude name="**/.settings/**" />
@@ -32,25 +56,8 @@
                 <exclude name="**/.idea/**" />
                 <exclude name="**/out/**" />
                 <exclude name="**/bin/**" />
+                <exclude name="**/temp/**" />
             </fileset>
         </copy>
-    </target>
-    
-    <target name="build_debug">
-        <ant antfile="build_common.xml" dir="bin/tmp" target="compile_debug"/>
-    </target>
-    
-    <target name="build_release">
-        <ant antfile="build_common.xml" dir="bin/tmp" target="compile_release"/>
-    </target>
-    
-    <target name="post-build">
-    </target>
-    
-    <target name="build" depends="clean">
-        <antcall target="pre-build" />
-        <antcall target="build_debug" />
-        <antcall target="build_release" />
-        <antcall target="post-build" />
     </target>
 </project>

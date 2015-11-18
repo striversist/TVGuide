@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="properties" default="">
+
+    <!--
+         这个文件是设置本地的编译参数，开发自己做了修改后，不要提交到git上了
+    -->
+
+    <!-- android 环境变量，本地自行配置  -->
+    <property name="sdk.local.dir" value="D:\Program Files\adt-bundle-windows-x86_64-20131030\sdk\"/>
+
+</project>
