@@ -1,5 +1,6 @@
 package com.tools.tvguide.utils;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.EnvironmentManager;
@@ -58,6 +59,7 @@ public class MyApplication extends Application
 		sInstance = this;
 		
 		AppEngine.getInstance().setApplicationContext(getApplicationContext());
+		CrashReport.initCrashReport(getApplicationContext(), "900012517", false);
 		if (EnvironmentManager.enableACRA)
 		{
 			ACRA.init(this);

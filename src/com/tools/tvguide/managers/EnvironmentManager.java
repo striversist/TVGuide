@@ -11,7 +11,7 @@ import android.content.SharedPreferences;
 public class EnvironmentManager implements Shutter
 {
     public static final boolean isDevelopMode          = false;
-    public static final boolean enableACRA             = true;
+    public static final boolean enableACRA             = false;
     public static final boolean enableACRALog          = false;
     public static final boolean enableUninstallReport  = false;
     public static final int AD_OPEN_AFTER_STARTUP_TIMES = 3;
