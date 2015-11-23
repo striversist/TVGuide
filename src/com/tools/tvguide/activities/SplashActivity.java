@@ -15,7 +15,7 @@ import android.view.ViewGroup.LayoutParams;
 public class SplashActivity extends BaseActivity {
 
     public static final String TAG = SplashActivity.class.getSimpleName();
-    private static final int SPLASH_DURATION = 2000;    // ms
+    private static final int SPLASH_DURATION = 1500;    // ms
     private SplashImageView mSplashImage;
     
     @Override
