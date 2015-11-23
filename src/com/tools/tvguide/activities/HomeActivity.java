@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +24,7 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.BootManager.OnSplashFinishedCallback;
 import com.tools.tvguide.managers.OnPlayingHtmlManager.CategoryEntriesCallback;
 
-public class HomeActivity extends Activity implements Callback 
+public class HomeActivity extends BaseActivity implements Callback 
 {
     private static final String TAG = "HomeActivity";
     private ListView mCategoryListView;

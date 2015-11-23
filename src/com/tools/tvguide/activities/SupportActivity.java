@@ -2,28 +2,24 @@ package com.tools.tvguide.activities;
 
 import java.math.BigDecimal;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.R.id;
-import com.tools.tvguide.R.layout;
-import com.tools.tvguide.R.string;
-import com.tools.tvguide.components.MyProgressDialog;
-import com.tools.tvguide.managers.AdManager.GetPointsCallback;
-import com.tools.tvguide.managers.AdManager.SpendPointsCallback;
-import com.tools.tvguide.managers.AppEngine;
-
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SupportActivity extends Activity implements Callback 
+import com.tools.tvguide.R;
+import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.managers.AdManager.GetPointsCallback;
+import com.tools.tvguide.managers.AdManager.SpendPointsCallback;
+import com.tools.tvguide.managers.AppEngine;
+
+public class SupportActivity extends BaseActivity implements Callback 
 {
     private static final int REMOVE_AD_POINTS           = 300;
     private static final int REMOVE_ONEDAY_AD_POINTS    = 10;

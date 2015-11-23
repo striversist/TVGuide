@@ -4,15 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.adapters.ResultPageAdapter;
-import com.tools.tvguide.managers.AdManager.AdSize;
-import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.HotHtmlManager.EpisodeDetailCallback;
-import com.tools.tvguide.managers.ProgramHtmlManager.ProgramEpisodesCallback;
-import com.tools.tvguide.views.SlidingMenuView;
-import com.tools.tvguide.views.SlidingMenuView.OnSlidingMenuSelectListener;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -23,10 +15,17 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.app.Activity;
-import android.content.Intent;
 
-public class EpisodeActivity extends Activity implements OnSlidingMenuSelectListener, Callback
+import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.HotHtmlManager.EpisodeDetailCallback;
+import com.tools.tvguide.managers.ProgramHtmlManager.ProgramEpisodesCallback;
+import com.tools.tvguide.views.SlidingMenuView;
+import com.tools.tvguide.views.SlidingMenuView.OnSlidingMenuSelectListener;
+
+public class EpisodeActivity extends BaseActivity implements OnSlidingMenuSelectListener, Callback
 {
     private List<HashMap<String, String>> mEpisodeEntryList;        // key: name, link
     private SlidingMenuView mSlidingMenuView;

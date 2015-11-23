@@ -1,13 +1,5 @@
 package com.tools.tvguide.activities;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.data.AlarmData;
-import com.tools.tvguide.data.Channel;
-import com.tools.tvguide.data.Program;
-import com.tools.tvguide.data.AlarmData.AlarmMode;
-import com.tools.tvguide.managers.AppEngine;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.DialogInterface;
@@ -18,7 +10,14 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.KeyEvent;
 
-public class AlarmAlertActivity extends Activity 
+import com.tools.tvguide.R;
+import com.tools.tvguide.data.AlarmData;
+import com.tools.tvguide.data.AlarmData.AlarmMode;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AppEngine;
+
+public class AlarmAlertActivity extends BaseActivity 
 {
 	private MediaPlayer mMediaPlayer;
 	private Vibrator	mVibrator;

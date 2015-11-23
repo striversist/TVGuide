@@ -4,6 +4,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.BootManager.OnStartedCallback;
 import com.tools.tvguide.managers.StatManager.ClickModule;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 import android.os.Bundle;
@@ -68,6 +69,18 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
         }, delayTime);
         
         AppEngine.getInstance().getAdManager().init(this);
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onResume(this);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPause(this);
     }
     
     private void config()

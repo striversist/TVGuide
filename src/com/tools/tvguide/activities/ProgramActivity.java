@@ -1,20 +1,10 @@
 package com.tools.tvguide.activities;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.adapters.ResultPageAdapter;
-import com.tools.tvguide.data.Program;
-import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.ProgramHtmlManager;
-import com.tools.tvguide.managers.AdManager.AdSize;
-import com.tools.tvguide.utils.CacheControl;
-import com.tools.tvguide.utils.Utility;
-
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class ProgramActivity extends Activity 
+import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.ProgramHtmlManager;
+import com.tools.tvguide.utils.CacheControl;
+import com.tools.tvguide.utils.Utility;
+
+public class ProgramActivity extends BaseActivity 
 {
     private static int sRequestId;
     private String mTitle;

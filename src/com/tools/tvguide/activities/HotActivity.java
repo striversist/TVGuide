@@ -5,33 +5,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.HotProgramListAdapter;
 import com.tools.tvguide.adapters.ResultPageAdapter;
 import com.tools.tvguide.data.Program;
 import com.tools.tvguide.data.ProgramType;
 import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.managers.ProgramHtmlManager.HotProgramsCallback;
+import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.views.MyViewPagerIndicator;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.app.Activity;
-import android.content.Intent;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-
-public class HotActivity extends Activity implements Callback 
+public class HotActivity extends BaseActivity implements Callback 
 {
     private LayoutInflater mInflater;
     private ViewPager mViewPager;

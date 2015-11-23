@@ -1,6 +1,5 @@
 package com.tools.tvguide.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -21,7 +20,7 @@ import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
 
-public class MoreActivity extends Activity implements UmengUpdateListener 
+public class MoreActivity extends BaseActivity implements UmengUpdateListener 
 {
     private Dialog mCheckingDialog;
     private TextView mCheckTextView;

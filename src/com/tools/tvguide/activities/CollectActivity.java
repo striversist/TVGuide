@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,7 +30,7 @@ import com.tools.tvguide.data.Channel;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.CollectManager;
 
-public class CollectActivity extends Activity implements DragSortListener
+public class CollectActivity extends BaseActivity implements DragSortListener
 {
     private final int TIMER_SCHEDULE_PERIOD = 1 * 60 * 1000;        // 1 minute
     private Timer mTimer;

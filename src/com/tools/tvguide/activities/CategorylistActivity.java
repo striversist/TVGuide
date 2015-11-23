@@ -5,27 +5,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.components.MyProgressDialog;
-import com.tools.tvguide.data.Category;
-import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.AdManager.AdSize;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.app.Activity;
-import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class CategorylistActivity extends Activity implements Callback 
+import com.tools.tvguide.R;
+import com.tools.tvguide.components.MyProgressDialog;
+import com.tools.tvguide.data.Category;
+import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.managers.AppEngine;
+
+public class CategorylistActivity extends BaseActivity implements Callback 
 {
     private ListView mCategoryListView;
     private SimpleAdapter mListViewAdapter;

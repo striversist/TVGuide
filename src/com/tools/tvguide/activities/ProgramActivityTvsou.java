@@ -6,23 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.adapters.ResultPageAdapter;
-import com.tools.tvguide.managers.AdManager.AdSize;
-import com.tools.tvguide.managers.AppEngine;
-import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
-import com.tools.tvguide.utils.CacheControl;
-import com.tools.tvguide.utils.Utility;
-import com.tools.tvguide.views.MyViewPagerIndicator;
-
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -33,7 +23,16 @@ import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class ProgramActivityTvsou extends Activity 
+import com.tools.tvguide.R;
+import com.tools.tvguide.adapters.ResultPageAdapter;
+import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.managers.AppEngine;
+import com.tools.tvguide.managers.HotHtmlManager.ProgramDetailCallback;
+import com.tools.tvguide.utils.CacheControl;
+import com.tools.tvguide.utils.Utility;
+import com.tools.tvguide.views.MyViewPagerIndicator;
+
+public class ProgramActivityTvsou extends BaseActivity 
 {
     private static int smRequestId = 0;
     private String mName;

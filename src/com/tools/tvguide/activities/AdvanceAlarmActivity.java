@@ -8,16 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.R.id;
-import com.tools.tvguide.R.layout;
-import com.tools.tvguide.data.AlarmData;
-import com.tools.tvguide.data.AlarmData.AlarmMode;
-import com.tools.tvguide.data.Channel;
-import com.tools.tvguide.data.GlobalData;
-import com.tools.tvguide.data.Program;
-import com.tools.tvguide.managers.AppEngine;
-
+import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,17 +26,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.TimePickerDialog.OnTimeSetListener;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 
-public class AdvanceAlarmActivity extends Activity 
+import com.tools.tvguide.R;
+import com.tools.tvguide.data.AlarmData;
+import com.tools.tvguide.data.AlarmData.AlarmMode;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.GlobalData;
+import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AppEngine;
+
+public class AdvanceAlarmActivity extends BaseActivity 
 {
     private static final String TAG = "AdvanceAlarmActivity";
     public static final int Result_Code_Success = 100;

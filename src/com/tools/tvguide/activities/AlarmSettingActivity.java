@@ -5,21 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.tools.tvguide.R;
-import com.tools.tvguide.data.AlarmData;
-import com.tools.tvguide.data.Channel;
-import com.tools.tvguide.data.Program;
-import com.tools.tvguide.managers.AdManager.AdSize;
-import com.tools.tvguide.managers.AppEngine;
-
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -28,7 +20,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 
-public class AlarmSettingActivity extends Activity 
+import com.tools.tvguide.R;
+import com.tools.tvguide.data.AlarmData;
+import com.tools.tvguide.data.Channel;
+import com.tools.tvguide.data.Program;
+import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.managers.AppEngine;
+
+public class AlarmSettingActivity extends BaseActivity 
 {
     private ListView mListView;
     private MySimpleAdapter mListViewAdapter;

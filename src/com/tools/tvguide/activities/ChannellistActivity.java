@@ -5,29 +5,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ChannellistAdapter;
 import com.tools.tvguide.components.MyProgressDialog;
 import com.tools.tvguide.data.Category;
 import com.tools.tvguide.data.Channel;
-import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.AdManager.AdSize;
+import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.OnPlayingHtmlManager.OnPlayingCallback;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.app.Activity;
-import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-
-public class ChannellistActivity extends Activity implements Callback 
+public class ChannellistActivity extends BaseActivity implements Callback 
 {
     private static int sRequest = 0;
     private ListView mChannelListView;

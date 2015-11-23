@@ -4,6 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.adapters.ResultProgramAdapter;
 import com.tools.tvguide.components.MyProgressDialog;
@@ -11,19 +22,7 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.HotHtmlManager;
 import com.tools.tvguide.utils.NetworkManager;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.app.Activity;
-import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.Toast;
-
-public class HotActivityTvsou extends Activity implements Callback 
+public class HotActivityTvsou extends BaseActivity implements Callback 
 {
     private ListView mListView;
     private ArrayList<ResultProgramAdapter.IListItem> mItemList;
