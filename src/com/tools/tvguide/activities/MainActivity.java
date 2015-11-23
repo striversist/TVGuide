@@ -54,7 +54,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
         
         // 延缓MainActivity组件的初始化（显示），否则在闪屏之前背景会闪出一下，影响体验
         int delayTime = 0;
-        if (AppEngine.getInstance().getBootManager().isShowSplash())
+        if (AppEngine.getInstance().getBootManager().isSplashEnabled())
             delayTime = 500;
         else
             delayTime = 0;

@@ -3,14 +3,8 @@ package com.tools.tvguide.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tools.tvguide.components.ShortcutInstaller;
-import com.tools.tvguide.components.Shutter;
-import com.tools.tvguide.components.SplashDialog;
-import com.tools.tvguide.data.GlobalData;
-import com.tools.tvguide.uninstall.UninstallObserver;
-import com.tools.tvguide.utils.Utility;
-
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
@@ -18,11 +12,17 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.tools.tvguide.activities.SplashActivity;
+import com.tools.tvguide.components.ShortcutInstaller;
+import com.tools.tvguide.components.Shutter;
+import com.tools.tvguide.data.GlobalData;
+import com.tools.tvguide.uninstall.UninstallObserver;
+import com.tools.tvguide.utils.Utility;
+
 public class BootManager implements Shutter
 {
     private Context             mContext;
-    private SplashDialog        mSplashDialog;
-    private boolean             mShowSplash                                 = !EnvironmentManager.isDevelopMode;
+    private boolean             mIsSplashEnabled                            = !EnvironmentManager.isDevelopMode;
     private SharedPreferences   mPreference;
     private static final String SHARE_PREFERENCES_NAME                      = "boot_settings";
     private static final String KEY_STARTUP_TIMES                           = "key_startup_times";
@@ -64,7 +64,7 @@ public class BootManager implements Shutter
     
     public void start()
     {
-        if (mShowSplash)
+        if (mIsSplashEnabled)
             showSplash();
         
         checkNetwork();
@@ -120,15 +120,16 @@ public class BootManager implements Shutter
         return mPreference.getLong(KEY_LAST_STARTUP_TIME, 0);
     }
     
-    public boolean isShowSplash()
+    public boolean isSplashEnabled()
     {
-        return mShowSplash;
+        return mIsSplashEnabled;
     }
     
     public void showSplash()
     {
-        mSplashDialog = new SplashDialog(AppEngine.getInstance().getContext());
-        mSplashDialog.showSplash();
+        Intent intent = new Intent(mContext, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);;
     }
     
     public boolean isSplashShowing()
@@ -136,16 +137,9 @@ public class BootManager implements Shutter
         return mIsSplashShowing;
     }
     
-    public void removeSplash()
-    {
-        if (mSplashDialog != null)
-            mSplashDialog.checkTimeToRemove();
-    }
-    
     public void onSplashStarted()
     {
         mIsSplashShowing = true;
-        removeSplash();
     }
     
     public void onSplashFinished()
@@ -154,7 +148,6 @@ public class BootManager implements Shutter
             mOnSplashFinishedCallbackList.get(i).OnSplashFinished();
         
         mOnSplashFinishedCallbackList.clear();
-        mSplashDialog = null;
         mIsSplashShowing = false;
         
         new Handler().postDelayed(new Runnable() 
