@@ -1,27 +1,27 @@
 package com.tools.tvguide.activities;
 
+import android.app.TabActivity;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TabHost;
+import android.widget.Toast;
+
 import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.BootManager.OnStartedCallback;
 import com.tools.tvguide.managers.StatManager.ClickModule;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.app.TabActivity;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.Toast;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends TabActivity implements OnStartedCallback, Callback
