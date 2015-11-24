@@ -6,12 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tools.tvguide.R;
 import com.tools.tvguide.components.PackageInstaller;
+import com.tools.tvguide.managers.AdManager;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.StatManager.ClickModule;
 import com.tools.tvguide.managers.UrlManager;
@@ -25,6 +28,7 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
     private Dialog mCheckingDialog;
     private TextView mCheckTextView;
     private ImageView mUpdateNewIcon;
+    private ViewGroup mSupportUsLayout;
     private ImageView mSupportRedDot;
     private enum TextStatus {State_Check, State_Upgrade};
     
@@ -42,6 +46,7 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
         mCheckTextView.setTag(TextStatus.State_Check);
         
         mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
+        mSupportUsLayout = (RelativeLayout) findViewById(R.id.more_support_us);
         mSupportRedDot = (ImageView) findViewById(R.id.more_support_us_red_dot);
         UmengUpdateAgent.setUpdateListener(this);
     }
@@ -50,10 +55,18 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
     protected void onResume()
     {
         super.onResume();
-        if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMoreSupportUs) == 0) { // 从未点击过
-            mSupportRedDot.setVisibility(View.VISIBLE);
-        } else if (mSupportRedDot.getVisibility() == View.VISIBLE) {
-            mSupportRedDot.setVisibility(View.INVISIBLE);
+        if (AdManager.isTimeToShowAd()) {
+            // 显示“支持我们”
+            mSupportUsLayout.setVisibility(View.VISIBLE);
+            
+            // 显示“支持我们”小红点
+            if (AppEngine.getInstance().getStatManager().getClickTimes(ClickModule.TabMoreSupportUs) == 0) { // 从未点击过
+                mSupportRedDot.setVisibility(View.VISIBLE);
+            } else if (mSupportRedDot.getVisibility() == View.VISIBLE) {
+                mSupportRedDot.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            mSupportUsLayout.setVisibility(View.GONE);
         }
     }
     

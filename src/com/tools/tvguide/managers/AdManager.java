@@ -43,6 +43,11 @@ public class AdManager implements Shutter
 		mPreference = mContext.getSharedPreferences(SHARE_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 	
+	public static boolean isTimeToShowAd() {
+	    return AppEngine.getInstance().getBootManager().getStartupTimes() 
+	            > EnvironmentManager.AD_OPEN_AFTER_STARTUP_TIMES;
+	}
+	
 	public void init(Activity activity)
 	{
 	    assert (activity != null);
@@ -67,8 +72,7 @@ public class AdManager implements Shutter
 	    if (!AppEngine.getInstance().getEnvironmentManager().isAdEnable())
 	        return false;
 	    
-        if (AppEngine.getInstance().getBootManager().getStartupTimes() 
-                <= EnvironmentManager.AD_OPEN_AFTER_STARTUP_TIMES) 
+        if (isTimeToShowAd()) 
             return false;
 	    
 	    if (System.currentTimeMillis() < getDisableAdTillTime())
