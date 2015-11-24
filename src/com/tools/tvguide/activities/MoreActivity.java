@@ -48,7 +48,6 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
         mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
         mSupportUsLayout = (RelativeLayout) findViewById(R.id.more_support_us);
         mSupportRedDot = (ImageView) findViewById(R.id.more_support_us_red_dot);
-        UmengUpdateAgent.setUpdateListener(this);
     }
     
     @Override
@@ -68,6 +67,13 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
         } else {
             mSupportUsLayout.setVisibility(View.GONE);
         }
+        UmengUpdateAgent.setUpdateListener(this);
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        UmengUpdateAgent.setUpdateListener(null);
     }
     
     private void createDialogs()
