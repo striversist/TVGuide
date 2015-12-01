@@ -18,6 +18,7 @@ import com.tools.tvguide.managers.AdManager;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.StatManager.ClickModule;
 import com.tools.tvguide.managers.UrlManager;
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
@@ -31,6 +32,7 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
     private ViewGroup mSupportUsLayout;
     private ImageView mSupportRedDot;
     private enum TextStatus {State_Check, State_Upgrade};
+    private FeedbackAgent mFeedbackAgent;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -48,6 +50,7 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
         mUpdateNewIcon = (ImageView) findViewById(R.id.more_update_new_icon);
         mSupportUsLayout = (RelativeLayout) findViewById(R.id.more_support_us);
         mSupportRedDot = (ImageView) findViewById(R.id.more_support_us_red_dot);
+        mFeedbackAgent = new FeedbackAgent(this);
     }
     
     @Override
@@ -108,9 +111,7 @@ public class MoreActivity extends BaseActivity implements UmengUpdateListener
                     upgrade();
                 break;
             case R.id.more_feedback:
-//                Intent feedbackIntent = new Intent(MoreActivity.this, FeedbackActivity.class);
-//                startActivity(feedbackIntent);
-                AppEngine.getInstance().getAdManager().showFeedback(this);
+                mFeedbackAgent.startFeedbackActivity();
                 break;
             case R.id.more_about:
                 showAbout();

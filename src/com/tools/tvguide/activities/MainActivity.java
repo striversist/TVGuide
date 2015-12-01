@@ -22,6 +22,7 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.BootManager.OnStartedCallback;
 import com.tools.tvguide.managers.StatManager.ClickModule;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 @SuppressWarnings("deprecation")
@@ -164,6 +165,7 @@ public class MainActivity extends TabActivity implements OnStartedCallback, Call
         }
         
         UmengUpdateAgent.update(this);
+        new FeedbackAgent(this).sync();
     }
     
     @Override

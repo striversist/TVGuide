@@ -5,6 +5,7 @@ import com.tools.tvguide.R;
 import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.EnvironmentManager;
 import com.tools.tvguide.managers.UrlManager;
+import com.umeng.fb.push.FeedbackPush;
 
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
@@ -60,6 +61,7 @@ public class MyApplication extends Application
 		
 		AppEngine.getInstance().setApplicationContext(getApplicationContext());
 		CrashReport.initCrashReport(getApplicationContext(), "900012517", false);
+		FeedbackPush.getInstance(this).init(false);
 		if (EnvironmentManager.enableACRA)
 		{
 			ACRA.init(this);

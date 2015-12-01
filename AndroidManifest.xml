@@ -47,6 +47,19 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="Umeng" />
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.umeng.fb.ConversationActivity"
+            android:label="@string/umeng_fb_title"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name="com.tools.tvguide.activities.MainActivity"
@@ -146,17 +159,6 @@
         <activity
             android:name="com.tools.tvguide.activities.AdvanceAlarmActivity"
             android:label="@string/title_activity_advance_alarm" >
-        </activity>
-
-        <!-- umeng -->
-        <service
-            android:name="com.umeng.update.net.DownloadingService"
-            android:process=":DownloadingService" >
-        </service>
-
-        <activity
-            android:name="com.umeng.update.UpdateDialogActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
     </application>
 
