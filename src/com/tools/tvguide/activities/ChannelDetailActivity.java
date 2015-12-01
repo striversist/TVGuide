@@ -56,6 +56,7 @@ import com.tools.tvguide.managers.AppEngine;
 import com.tools.tvguide.managers.ChannelHtmlManager.ChannelDetailCallback;
 import com.tools.tvguide.managers.CollectManager;
 import com.tools.tvguide.managers.ContentManager;
+import com.tools.tvguide.managers.EnvironmentManager;
 import com.tools.tvguide.managers.UrlManager;
 import com.tools.tvguide.utils.NetDataGetter;
 import com.tools.tvguide.utils.NetworkManager;
@@ -68,7 +69,6 @@ public class ChannelDetailActivity extends BaseActivity implements AlarmListener
 {
     private static final int RequestCode = 100;
     private static boolean sHasShownFirstStartTips = false;
-    private static boolean sUseLocalTime = false;
     private static int sRequestId = 0;
     private String mChannelName;
     private String mChannelId;
@@ -544,7 +544,7 @@ public class ChannelDetailActivity extends BaseActivity implements AlarmListener
         mOnPlayingProgram = new Program();
         final StringBuffer buffer = new StringBuffer();
         // 使用本地时间
-        if (sUseLocalTime)
+        if (EnvironmentManager.useLocalTime)
         {
             Program onPlayingProgram = ProgramUtil.getOnplayingProgramByTime(mProgramList, System.currentTimeMillis());
             if (onPlayingProgram != null) {
@@ -567,14 +567,6 @@ public class ChannelDetailActivity extends BaseActivity implements AlarmListener
     	            if (onPlayingProgram != null) {
     	                mOnPlayingProgram.copy(onPlayingProgram);
     	            }
-    				
-    				// 优化：判断下次是否使用本地时间替代网络时间，以加快“正在播出”节目的显示
-    				long proxyHour = date.getHours();
-    				long proxyMinute = date.getMinutes();
-    				int localHour = Calendar.getInstance().getTime().getHours();
-    				int localMinute = Calendar.getInstance().getTime().getMinutes();
-    				if (Math.abs((proxyHour * 60 + proxyMinute) - (localHour * 60 + localMinute)) < 10)	// 相差在10分钟以内
-    					sUseLocalTime = true;
     				
     				mUiHandler.sendEmptyMessage(SelfMessage.MSG_UPDATE_ONPLAYING_PROGRAM.ordinal());
                 } catch (NumberFormatException ex) {
