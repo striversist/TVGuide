@@ -21,7 +21,7 @@ import com.tools.tvguide.managers.AppEngine;
 
 public class SupportActivity extends BaseActivity implements Callback 
 {
-    private static final int REMOVE_AD_POINTS           = 300;
+    private static final int REMOVE_AD_POINTS           = 200;
     private static final int REMOVE_ONEDAY_AD_POINTS    = 10;
     private static final int ONEDAY_MILLIS              = 24 * 3600 * 1000;
     
