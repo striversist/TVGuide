@@ -18,6 +18,7 @@ import com.tools.tvguide.components.Shutter;
 import com.tools.tvguide.data.GlobalData;
 import com.tools.tvguide.uninstall.UninstallObserver;
 import com.tools.tvguide.utils.Utility;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.onlineconfig.OnlineConfigAgent;
 
 public class BootManager implements Shutter
@@ -71,6 +72,8 @@ public class BootManager implements Shutter
         checkNetwork();
         OnlineConfigAgent.getInstance().setDebugMode(false);
         OnlineConfigAgent.getInstance().updateOnlineConfig(mContext);
+        // 统计SDK
+        MobclickAgent.updateOnlineConfig(mContext);
         AppEngine.getInstance().getEnvironmentManager().init();
         AppEngine.getInstance().getUrlManager().init(new UrlManager.OnInitCompleteCallback() 
         {
