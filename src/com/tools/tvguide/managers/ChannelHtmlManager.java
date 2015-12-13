@@ -90,7 +90,7 @@ public class ChannelHtmlManager
                     // 返回结果
                     List<Program> retProgramList = new ArrayList<Program>();
                     Elements programs = doc.select("ul[id=pgrow] li");
-                    if (programs.size() > 0) {
+                    if (programs.size() > 0 && hasNight(doc)) {
                         TimestampString tString = new TimestampString(System.currentTimeMillis(), doc.html());
                         AppEngine.getInstance().getDiskCacheManager().setTimestampString(makeKey_webview(channelUrl), tString);
                     }
@@ -306,6 +306,14 @@ public class ChannelHtmlManager
 		} else {
 			new Thread(runnable).start();
 		}
+    }
+    
+    private boolean hasNight(Document doc) {
+    	Elements nightElements = doc.select("li[id=night]");
+    	if (nightElements == null || nightElements.isEmpty()) {
+    		return false;
+    	}
+    	return true;
     }
     
     private String makeKey_webview(String url) {
