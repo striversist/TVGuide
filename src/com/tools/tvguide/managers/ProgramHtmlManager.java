@@ -98,7 +98,7 @@ public class ProgramHtmlManager
                             String name = entryElements.get(i).text().trim();
                             String link = prefix + entryElements.get(i).attr("href");
                             
-                            if (!name.equals("") && !link.equals(""))
+                            if (!name.equals("") && !link.equals("") && !link.contains("javascript:;"))
                             {
                                 HashMap<String, String> entry = new HashMap<String, String>();
                                 entry.put("name", name);
@@ -230,15 +230,17 @@ public class ProgramHtmlManager
             
             // -------------- 获取分集链接 --------------
             String episodesLink = null;
-            Element dlElement = doc.select("dl.hdtab").first();
+            Element dlElement = doc.select("dl.menu_tab").first();
             if (dlElement != null)
             {
                 Elements links = dlElement.select("a[href]");
                 for (int i=0; i<links.size(); ++i)
                 {
                     String text = links.get(i).ownText();
-                    if (text.startsWith("分集剧情"))
+                    if (text.contains("剧情")) {
                         episodesLink = prefix + links.get(i).attr("href");
+                        break;
+                    }
                 }
             }
             if (episodesLink != null)
