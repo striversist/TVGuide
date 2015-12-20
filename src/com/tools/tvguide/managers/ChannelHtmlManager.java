@@ -44,7 +44,7 @@ public class ChannelHtmlManager
         mWebView = new WebView(mContext);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setUserAgentString(GlobalData.ChromeUserAgent);
-        mWebView.getSettings().setBlockNetworkImage(true);
+//        mWebView.getSettings().setBlockNetworkImage(true);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -56,6 +56,7 @@ public class ChannelHtmlManager
             }
 
             public void onPageFinished(WebView view, String url) {
+            	Log.d(TAG, "WebView.onPageFinished url=" + url);
                 view.loadUrl("javascript:window.HTMLOUT.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
             }
         });
@@ -90,9 +91,13 @@ public class ChannelHtmlManager
                     // 返回结果
                     List<Program> retProgramList = new ArrayList<Program>();
                     Elements programs = doc.select("ul[id=pgrow] li");
-                    if (programs.size() > 0 && hasNight(doc)) {
-                        TimestampString tString = new TimestampString(System.currentTimeMillis(), doc.html());
-                        AppEngine.getInstance().getDiskCacheManager().setTimestampString(makeKey_webview(channelUrl), tString);
+                    if (hasNight(doc)) {
+	                    if (programs.size() > 0) {
+	                        TimestampString tString = new TimestampString(System.currentTimeMillis(), doc.html());
+	                        AppEngine.getInstance().getDiskCacheManager().setTimestampString(makeKey_webview(channelUrl), tString);
+	                    }
+                    } else {
+                    	Log.w(TAG, "getChannelDetailFromFullWebAsync: has no night programs!");
                     }
                     for (int i=0; i<programs.size(); ++i) {
                         // 过滤结果
@@ -320,7 +325,7 @@ public class ChannelHtmlManager
         return url + "_from_webview";
     }
     
-    private Document loadHTMLDocument(String url) {
+    private Document loadHTMLDocument(final String url) {
         TimestampString tString = AppEngine.getInstance().getDiskCacheManager().getTimestampString(makeKey_webview(url));
         if (tString != null && !HtmlUtils.isExpired(tString.getDate())) {
             return Jsoup.parse(tString.getString());
@@ -333,6 +338,7 @@ public class ChannelHtmlManager
                 if (html == null) {
                     html = "";
                 }
+                Log.d(TAG, "loadHTMLDocument.processHTML url=" + url + ", html.length=" + html.length());
                 buffer.append(html);
                 signal.countDown();
             }
